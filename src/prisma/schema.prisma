@@ -1,0 +1,307 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @default("")
+  showName              Boolean                 @default(true)
+  email                 String?                 @unique
+  password              String?
+  maxLoad               Float                   @default(1)
+  spellSlots            Float                   @default(1)
+  role                  Role
+  PlayerInfo            PlayerInfo[]
+  PlayerAttributes      PlayerAttribute[]
+  PlayerAttributeStatus PlayerAttributeStatus[]
+  PlayerSpec            PlayerSpec[]
+  PlayerCharacteristic  PlayerCharacteristic[]
+  PlayerSkill           PlayerSkill[]
+  PlayerEquipment       PlayerEquipment[]
+  PlayerItem            PlayerItem[]
+  PlayerExtraInfo       PlayerExtraInfo[]
+  PlayerNote            PlayerNote?
+  PlayerSpell           PlayerSpell[]
+  PlayerCurrency        PlayerCurrency[]
+  PlayerAvatar          PlayerAvatar[]
+  SenderTrade           Trade?                  @relation(name: "Sender")
+  ReceiverTrade         Trade?                  @relation(name: "Receiver")
+}
+
+model Info {
+  id             Int          @id @default(autoincrement())
+  name           String
+  visibleToAdmin Boolean
+  PlayerInfo     PlayerInfo[]
+}
+
+model Attribute {
+  id              Int                @id @default(autoincrement())
+  name            String
+  color           String             @db.Char(6)
+  rollable        Boolean
+  portrait        PortraitAttribute?
+  visibleToAdmin  Boolean
+  PlayerAttribute PlayerAttribute[]
+  AttributeStatus AttributeStatus[]
+}
+
+model AttributeStatus {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  Attribute             Attribute               @relation(fields: [attribute_id], references: [id])
+  attribute_id          Int
+  PlayerAttributeStatus PlayerAttributeStatus[]
+  PlayerAvatar          PlayerAvatar[]
+}
+
+model Spec {
+  id             Int          @id @default(autoincrement())
+  name           String
+  visibleToAdmin Boolean
+  PlayerSpec     PlayerSpec[]
+}
+
+model Characteristic {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  visibleToAdmin       Boolean
+  PlayerCharacteristic PlayerCharacteristic[]
+}
+
+model Specialization {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Skill Skill[]
+}
+
+model Skill {
+  id                Int             @id @default(autoincrement())
+  name              String
+  Specialization    Specialization? @relation(fields: [specialization_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  specialization_id Int?
+  startValue        Int
+  mandatory         Boolean
+  visibleToAdmin    Boolean
+  PlayerSkill       PlayerSkill[]
+}
+
+model Equipment {
+  id              Int               @id @default(autoincrement())
+  name            String
+  type            String
+  damage          String
+  range           String
+  attacks         String
+  ammo            Int?
+  visible         Boolean
+  PlayerEquipment PlayerEquipment[]
+}
+
+model Item {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String       @db.Text
+  weight      Float
+  visible     Boolean
+  PlayerItem  PlayerItem[]
+}
+
+model Currency {
+  id             Int              @id @default(autoincrement())
+  name           String
+  visibleToAdmin Boolean
+  PlayerCurrency PlayerCurrency[]
+}
+
+model ExtraInfo {
+  id              Int               @id @default(autoincrement())
+  name            String
+  PlayerExtraInfo PlayerExtraInfo[]
+}
+
+model Spell {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String        @db.Text
+  cost        String
+  type        String
+  damage      String
+  target      String
+  castingTime String
+  range       String
+  duration    String
+  slots       Int
+  visible     Boolean
+  PlayerSpell PlayerSpell[]
+}
+
+model PlayerInfo {
+  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id Int
+  Info      Info   @relation(fields: [info_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  info_id   Int
+  value     String @default("")
+
+  @@id([player_id, info_id])
+}
+
+model PlayerAttribute {
+  Player       Player    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id    Int
+  Attribute    Attribute @relation(fields: [attribute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attribute_id Int
+  value        Int       @default(0)
+  maxValue     Int       @default(0)
+  show         Boolean   @default(true)
+
+  @@id([player_id, attribute_id])
+}
+
+model PlayerAttributeStatus {
+  Player              Player          @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id           Int
+  AttributeStatus     AttributeStatus @relation(fields: [attribute_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attribute_status_id Int
+  value               Boolean         @default(false)
+
+  @@id([player_id, attribute_status_id])
+}
+
+model PlayerSpec {
+  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id Int
+  Spec      Spec   @relation(fields: [spec_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spec_id   Int
+  value     String @default("")
+
+  @@id([player_id, spec_id])
+}
+
+model PlayerCharacteristic {
+  Player            Player         @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id         Int
+  Characteristic    Characteristic @relation(fields: [characteristic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  characteristic_id Int
+  value             Int            @default(0)
+  modifier          Int            @default(0)
+
+  @@id([player_id, characteristic_id])
+}
+
+model PlayerSkill {
+  Player    Player  @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id Int
+  Skill     Skill   @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  skill_id  Int
+  value     Int
+  modifier  Int     @default(0)
+  checked   Boolean @default(false)
+
+  @@id([player_id, skill_id])
+}
+
+model PlayerEquipment {
+  Player       Player    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id    Int
+  Equipment    Equipment @relation(fields: [equipment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  equipment_id Int
+  currentAmmo  Int       @default(0)
+
+  @@id([player_id, equipment_id])
+}
+
+model PlayerItem {
+  Player             Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id          Int
+  Item               Item   @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  item_id            Int
+  currentDescription String @db.Text
+  quantity           Int    @default(1)
+
+  @@id([player_id, item_id])
+}
+
+model PlayerCurrency {
+  Player      Player   @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id   Int
+  Currency    Currency @relation(fields: [currency_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currency_id Int
+  value       String   @default("$0")
+
+  @@id([player_id, currency_id])
+}
+
+model PlayerExtraInfo {
+  Player        Player    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id     Int
+  ExtraInfo     ExtraInfo @relation(fields: [extra_info_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  extra_info_id Int
+  value         String    @db.Text
+
+  @@id([player_id, extra_info_id])
+}
+
+model PlayerSpell {
+  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id Int
+  Spell     Spell  @relation(fields: [spell_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spell_id  Int
+
+  @@id([player_id, spell_id])
+}
+
+model PlayerNote {
+  Player    Player @relation(fields: [player_id], references: [id])
+  player_id Int
+  value     String @db.Text
+
+  @@id([player_id])
+}
+
+model PlayerAvatar {
+  id                  Int              @id @default(autoincrement())
+  Player              Player           @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id           Int
+  AttributeStatus     AttributeStatus? @relation(fields: [attribute_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attribute_status_id Int?
+  link                String?          @db.Text
+
+  @@unique([player_id, attribute_status_id])
+}
+
+model Trade {
+  id                 Int    @id @default(autoincrement())
+  Sender             Player @relation(name: "Sender", fields: [sender_id], references: [id])
+  sender_id          Int    @unique
+  sender_object_id   Int
+  Receiver           Player @relation(name: "Receiver", fields: [receiver_id], references: [id])
+  receiver_id        Int    @unique
+  receiver_object_id Int?
+}
+
+model Config {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  value String @db.LongText
+}
+
+enum Role {
+  PLAYER
+  NPC
+  ADMIN
+}
+
+enum PortraitAttribute {
+  PRIMARY
+  SECONDARY
+}
