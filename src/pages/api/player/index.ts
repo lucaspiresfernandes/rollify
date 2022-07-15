@@ -1,6 +1,6 @@
 import type { IronSessionData } from 'iron-session';
 import type { NextApiHandler } from 'next';
-import { withSessionApi } from '../../utils/session';
+import { withSessionApi } from '../../../utils/session';
 
 type PlayerGetResponse = {
 	player: IronSessionData['player'];

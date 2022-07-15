@@ -35,4 +35,10 @@ export const table: Locale = {
 		registerAsPlayer: 'Você é um jogador? Registrar-se como jogador',
 		registerAsAdmin: 'Você é o mestre? Registrar-se como mestre',
 	},
+
+	recover: {
+		title: 'Nova senha',
+		recoverButton: 'Aplicar',
+		login: 'Voltar',
+	},
 };

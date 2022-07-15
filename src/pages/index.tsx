@@ -98,6 +98,8 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 		props.onSubmit(email, password);
 	};
 
+	const recoverQuery = email ? { email } : undefined;
+
 	return (
 		<Box component='form' sx={{ mt: 1 }} onSubmit={handleSubmit}>
 			<TextField
@@ -137,7 +139,7 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 					</Link>
 				</Grid>
 				<Grid item xs>
-					<Link href='/recover' passHref>
+					<Link href={{ pathname: '/recover', query: recoverQuery }} passHref>
 						<MuiLink variant='body2'>{t('login.forgotPassword')}</MuiLink>
 					</Link>
 				</Grid>

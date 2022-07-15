@@ -121,7 +121,6 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 		if (password !== confirmPassword)
 			return setPasswordError(t('error.credentials.password_mismatch'));
 
-		setPassword('');
 		props.onSubmit(email, password, adminKey);
 	};
 

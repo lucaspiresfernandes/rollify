@@ -35,4 +35,10 @@ export const table: Locale = {
 		registerAsPlayer: 'Are you a player? Register as a player',
 		registerAsAdmin: 'Are you the GM? Register as a GM',
 	},
+
+	recover: {
+		title: 'New password',
+		recoverButton: 'Apply',
+		login: 'Back to login',
+	},
 };

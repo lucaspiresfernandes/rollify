@@ -33,4 +33,10 @@ export interface Locale {
 		registerAsPlayer: string;
 		registerAsAdmin: string;
 	};
+
+	recover: {
+		title: string;
+		recoverButton: string;
+		login: string;
+	}
 }
