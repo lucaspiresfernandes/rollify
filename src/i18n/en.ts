@@ -21,7 +21,6 @@ export const table: Locale = {
 		password: 'Password',
 		loginButton: 'Sign In',
 		register: "Don't have an account? Register",
-		forgotPassword: 'Forgot password?',
 	},
 
 	register: {
@@ -34,11 +33,5 @@ export const table: Locale = {
 		login: 'Already got an account? Sign in',
 		registerAsPlayer: 'Are you a player? Register as a player',
 		registerAsAdmin: 'Are you the GM? Register as a GM',
-	},
-
-	recover: {
-		title: 'New password',
-		recoverButton: 'Apply',
-		login: 'Back to login',
 	},
 };

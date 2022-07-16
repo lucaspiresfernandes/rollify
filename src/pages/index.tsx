@@ -1,16 +1,15 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import MuiLink from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
-import Head from 'next/head';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useState } from 'react';
+import ApplicationHead from '../components/ApplicationHead';
 import SnackbarContainer from '../components/SnackbarContainer';
 
 import { Logger } from '../contexts';
@@ -25,14 +24,11 @@ import type { LoginResponse } from './api/login';
 type LoginHandler = (username: string, password: string) => void;
 
 const HomePage: NextPage = () => {
-	const { t } = useI18n<Locale>();
 	const [snackbarProps, updateSnackbar] = useSnackbar();
 
 	return (
 		<>
-			<Head>
-				<title>{t('login.title')}</title>
-			</Head>
+			<ApplicationHead title='Login' />
 			<Logger.Provider value={updateSnackbar}>
 				<Home />
 			</Logger.Provider>
@@ -98,8 +94,6 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 		props.onSubmit(email, password);
 	};
 
-	const recoverQuery = email ? { email } : undefined;
-
 	return (
 		<Box component='form' sx={{ mt: 1 }} onSubmit={handleSubmit}>
 			<TextField
@@ -132,18 +126,9 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 			<Button variant='contained' color='primary' type='submit' fullWidth sx={{ mt: 3, mb: 2 }}>
 				{t('login.loginButton')}
 			</Button>
-			<Grid container>
-				<Grid item xs>
-					<Link href='/register' passHref>
-						<MuiLink variant='body2'>{t('login.register')}</MuiLink>
-					</Link>
-				</Grid>
-				<Grid item xs>
-					<Link href={{ pathname: '/recover', query: recoverQuery }} passHref>
-						<MuiLink variant='body2'>{t('login.forgotPassword')}</MuiLink>
-					</Link>
-				</Grid>
-			</Grid>
+			<Link href='/register' passHref>
+				<MuiLink variant='body2'>{t('login.register')}</MuiLink>
+			</Link>
 		</Box>
 	);
 };

@@ -21,7 +21,6 @@ export const table: Locale = {
 		password: 'Senha',
 		loginButton: 'Entrar',
 		register: 'Não possui uma conta? Registrar-se',
-		forgotPassword: 'Esqueceu a senha?',
 	},
 
 	register: {
@@ -34,11 +33,5 @@ export const table: Locale = {
 		login: 'Já possui uma conta? Entrar',
 		registerAsPlayer: 'Você é um jogador? Registrar-se como jogador',
 		registerAsAdmin: 'Você é o mestre? Registrar-se como mestre',
-	},
-
-	recover: {
-		title: 'Nova senha',
-		recoverButton: 'Aplicar',
-		login: 'Voltar',
 	},
 };

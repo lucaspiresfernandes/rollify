@@ -19,7 +19,6 @@ export interface Locale {
 		password: string;
 		loginButton: string;
 		register: string;
-		forgotPassword: string;
 	};
 
 	register: {
@@ -33,10 +32,4 @@ export interface Locale {
 		registerAsPlayer: string;
 		registerAsAdmin: string;
 	};
-
-	recover: {
-		title: string;
-		recoverButton: string;
-		login: string;
-	}
 }

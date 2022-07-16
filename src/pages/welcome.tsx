@@ -1,18 +1,18 @@
-import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import _presets from '../utils/presets.json';
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
+import ApplicationHead from '../components/ApplicationHead';
 import api from '../utils/api';
-import type { BootResponse } from './api/boot';
+import _presets from '../utils/presets.json';
 import prisma from '../utils/prisma';
+import type { BootResponse } from './api/boot';
 
 const presets = _presets.map((p) => ({ id: p.preset_id, name: p.preset_name }));
 
@@ -21,9 +21,7 @@ type Preset = typeof presets[number];
 const WelcomePage: NextPage = () => {
 	return (
 		<>
-			<Head>
-				<title>Seja bem-vindo!</title>
-			</Head>
+			<ApplicationHead title='Welcome' />
 			<Welcome />
 		</>
 	);

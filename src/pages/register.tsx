@@ -7,10 +7,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
-import Head from 'next/head';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useState } from 'react';
+import ApplicationHead from '../components/ApplicationHead';
 import SnackbarContainer from '../components/SnackbarContainer';
 import { Logger } from '../contexts';
 import useSnackbar from '../hooks/useSnackbar';
@@ -28,14 +28,11 @@ type RegisterHandler = (email: string, password: string, adminKey?: string) => v
 type PageProps = InferSsrProps<typeof getSsp>;
 
 const HomePage: NextPage<PageProps> = (props) => {
-	const { t } = useI18n<Locale>();
 	const [snackbarProps, updateSnackbar] = useSnackbar();
 
 	return (
 		<>
-			<Head>
-				<title>{t('register.title')}</title>
-			</Head>
+			<ApplicationHead title='Register' />
 			<Logger.Provider value={updateSnackbar}>
 				<Home {...props} />
 			</Logger.Provider>
