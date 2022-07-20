@@ -1,8 +1,10 @@
 import type { IronSessionData } from 'iron-session';
 import { useEffect, useState } from 'react';
-import api from '../utils/api';
+import createApiClient from '../utils/createApiClient';
 
 type Session = IronSessionData['player'];
+
+const api = createApiClient();
 
 export default function useSession() {
 	const [session, setSession] = useState<Session>();

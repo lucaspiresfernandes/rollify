@@ -1,0 +1,23 @@
+.clickable {
+	cursor: pointer;
+}
+
+.dice {
+	flex: 1 0;
+}
+
+.labelContainer {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	color: white;
+	margin: 0;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+}
+
+.labelContainer label {
+	cursor: pointer;
+}

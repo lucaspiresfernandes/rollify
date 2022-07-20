@@ -38,7 +38,7 @@ const handlePut: NextApiHandler<NpcApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', id });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -66,7 +66,7 @@ const handleDelete: NextApiHandler<NpcApiResponse> = async (req, res) => {
 		await prisma.player.delete({ where: { id } });
 		res.json({ status: 'success', id });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

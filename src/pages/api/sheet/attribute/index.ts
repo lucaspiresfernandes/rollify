@@ -47,7 +47,7 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 
 		res.json({ status: 'success', attribute });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

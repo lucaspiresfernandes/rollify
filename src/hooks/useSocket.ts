@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
-import api from '../utils/api';
+import createApiClient from '../utils/createApiClient';
 import type { ClientToServerEvents, ServerToClientEvents } from '../utils/socket';
 
 export type SocketIO = Socket<ServerToClientEvents, ClientToServerEvents>;
+const api = createApiClient();
 
 export default function useSocket(roomJoin: string) {
 	const [socket, setSocket] = useState<SocketIO | null>(null);

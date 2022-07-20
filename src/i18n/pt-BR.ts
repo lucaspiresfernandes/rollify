@@ -4,6 +4,8 @@ export const table: Locale = {
 	locale: 'pt-BR',
 	title: 'Rollify',
 
+	search: 'Pesquisar',
+
 	error: {
 		unknown: 'Ocorreu um erro desconhecido: {{message}}',
 		credentials: {
@@ -33,5 +35,28 @@ export const table: Locale = {
 		login: 'Já possui uma conta? Entrar',
 		registerAsPlayer: 'Você é um jogador? Registrar-se como jogador',
 		registerAsAdmin: 'Você é o mestre? Registrar-se como mestre',
+	},
+
+	sheet: {
+		playerTitle: 'Ficha de Personagem',
+		npcTitle: 'Ficha de NPC',
+		playerInfoTitle: 'Detalhes Pessoais',
+		playerCharacteristicTitle: 'Características',
+		playerSkillTitle: 'Perícias',
+		playerCombatTitle: 'Combate',
+		playerItemTitle: 'Itens',
+		playerSpellTitle: 'Magias',
+		clearMarkers: 'Limpar Marcadores',
+		attributePoints: 'Pontos de {{name}}',
+
+		equipment: {
+			name: 'Nome',
+			type: 'Tipo',
+			damage: 'Dano',
+			range: 'Alcance',
+			attacks: 'Ataques',
+			currentAmmo: 'Mun. atual',
+			ammo: 'Mun. max.',
+		},
 	},
 };

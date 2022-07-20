@@ -39,7 +39,7 @@ const handlePost: NextApiHandler<InfoSheetApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', info });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -78,7 +78,7 @@ const handlePut: NextApiHandler<InfoSheetApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', info });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

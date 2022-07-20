@@ -1,9 +1,10 @@
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../../utils/next';
 import prisma from '../../../../../utils/prisma';
+import { withSessionApi } from '../../../../../utils/session';
 
 export type PlayerGetAvatarApiResponse = NextApiResponseData<
 	'avatar_not_found' | 'invalid_player_id',
-	{ link: string | null }
+	{ link: string }
 >;
 
 const handler: NextApiHandlerIO<PlayerGetAvatarApiResponse> = async (req, res) => {
@@ -43,7 +44,7 @@ const handler: NextApiHandlerIO<PlayerGetAvatarApiResponse> = async (req, res) =
 				select: { link: true },
 			});
 
-			if (availableAvatar === null)
+			if (availableAvatar === null || availableAvatar.link === null)
 				return res.json({
 					status: 'failure',
 					reason: 'avatar_not_found',
@@ -52,11 +53,11 @@ const handler: NextApiHandlerIO<PlayerGetAvatarApiResponse> = async (req, res) =
 			avatar = availableAvatar;
 		}
 
-		res.json({ status: 'success', link: avatar.link });
+		res.json({ status: 'success', link: avatar.link as string });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
 
-export default handler;
+export default withSessionApi(handler);

@@ -42,7 +42,7 @@ const handler: NextApiHandler<LoginResponse> = async (req, res) => {
 
 		res.json({ status: 'success', id: user.id, isAdmin });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

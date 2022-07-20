@@ -39,7 +39,7 @@ const handlePost: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', spec });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -100,7 +100,7 @@ const handleDelete: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 		const spec = await prisma.spec.delete({ where: { id } });
 		res.json({ status: 'success', spec });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

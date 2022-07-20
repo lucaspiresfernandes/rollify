@@ -12,6 +12,7 @@ export type DiceConfig = {
 	};
 	skill: DiceConfigCell & {
 		enable_modifiers: boolean;
+		enable_automatic_markers: boolean;
 	};
 	attribute: DiceConfigCell;
 };

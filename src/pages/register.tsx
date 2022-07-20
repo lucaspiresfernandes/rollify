@@ -12,12 +12,12 @@ import Router from 'next/router';
 import { useContext, useState } from 'react';
 import ApplicationHead from '../components/ApplicationHead';
 import SnackbarContainer from '../components/SnackbarContainer';
-import { Logger } from '../contexts';
+import { LoggerContext } from '../contexts';
 import useSnackbar from '../hooks/useSnackbar';
 
 import type { Locale } from '../i18n';
 import { EMAIL_REGEX } from '../utils';
-import api from '../utils/api';
+import createApiClient from '../utils/createApiClient';
 import type { InferSsrProps } from '../utils/next';
 import prisma from '../utils/prisma';
 import { withSessionSsr } from '../utils/session';
@@ -27,15 +27,17 @@ type RegisterHandler = (email: string, password: string, adminKey?: string) => v
 
 type PageProps = InferSsrProps<typeof getSsp>;
 
+const api = createApiClient();
+
 const HomePage: NextPage<PageProps> = (props) => {
 	const [snackbarProps, updateSnackbar] = useSnackbar();
 
 	return (
 		<>
 			<ApplicationHead title='Register' />
-			<Logger.Provider value={updateSnackbar}>
+			<LoggerContext.Provider value={updateSnackbar}>
 				<Home {...props} />
-			</Logger.Provider>
+			</LoggerContext.Provider>
 			<SnackbarContainer {...snackbarProps} />
 		</>
 	);
@@ -44,7 +46,7 @@ const HomePage: NextPage<PageProps> = (props) => {
 const Home: React.FC<PageProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const { t } = useI18n<Locale>();
-	const log = useContext(Logger);
+	const log = useContext(LoggerContext);
 
 	const onLogin: RegisterHandler = async (email, password, adminKey) => {
 		setLoading(true);
@@ -79,7 +81,7 @@ const Home: React.FC<PageProps> = (props) => {
 			{loading ? (
 				<>Loading...</>
 			) : (
-				<Box sx={{ mt: 6, display: 'flex', flexDirection: 'column' }}>
+				<Box mt={6} display='flex' flexDirection='column'>
 					<Typography variant='h4' component='h1'>
 						{t('register.title')}
 					</Typography>
@@ -122,7 +124,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 	};
 
 	return (
-		<Box component='form' sx={{ mt: 1 }} onSubmit={handleSubmit}>
+		<Box component='form' mt={1} onSubmit={handleSubmit}>
 			<TextField
 				fullWidth
 				label='Email'
@@ -166,7 +168,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 			/>
 			{props.registerAsAdmin &&
 				(props.firstAdmin ? (
-					<Typography variant='caption' sx={{ mt: 1 }}>
+					<Typography variant='caption' mt={1}>
 						{t('register.adminKeyDisabled')}
 					</Typography>
 				) : (

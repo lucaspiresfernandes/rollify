@@ -39,7 +39,7 @@ const handlePost: NextApiHandler<CharacteristicSheetApiResponse> = async (req, r
 
 		res.json({ status: 'success', characteristic });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -78,7 +78,7 @@ const handlePut: NextApiHandler<CharacteristicSheetApiResponse> = async (req, re
 
 		res.json({ status: 'success', characteristic });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -100,7 +100,7 @@ const handleDelete: NextApiHandler<CharacteristicSheetApiResponse> = async (req,
 		const characteristic = await prisma.characteristic.delete({ where: { id } });
 		res.json({ status: 'success', characteristic });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

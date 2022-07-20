@@ -4,6 +4,8 @@ export const table: Locale = {
 	locale: 'en',
 	title: 'Rollify',
 
+	search: 'Search',
+
 	error: {
 		unknown: 'An unknown error has occurred: {{message}}',
 		credentials: {
@@ -33,5 +35,28 @@ export const table: Locale = {
 		login: 'Already got an account? Sign in',
 		registerAsPlayer: 'Are you a player? Register as a player',
 		registerAsAdmin: 'Are you the GM? Register as a GM',
+	},
+
+	sheet: {
+		playerTitle: 'Character Sheet',
+		npcTitle: 'NPC Sheet',
+		playerInfoTitle: 'Personal Details',
+		playerCharacteristicTitle: 'Characteristics',
+		playerSkillTitle: 'Skills',
+		playerCombatTitle: 'Combat',
+		playerItemTitle: 'Items',
+		playerSpellTitle: 'Spells',
+		clearMarkers: 'Clear Markers',
+		attributePoints: '{{name}} Points',
+
+		equipment: {
+			name: 'Name',
+			type: 'Type',
+			damage: 'Damage',
+			range: 'Range',
+			attacks: 'Attacks',
+			currentAmmo: 'Cur. Ammo',
+			ammo: 'Max Ammo',
+		},
 	},
 };

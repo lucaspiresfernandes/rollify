@@ -1,12 +1,10 @@
 import type { NextApiHandler } from 'next';
-import prisma from '../../utils/prisma';
+import type { DiceConfig } from '../../utils/dice';
 import type { NextApiResponseData } from '../../utils/next';
 import type { Presets } from '../../utils/presets';
-import _presets from '../../utils/presets.json';
+import prisma from '../../utils/prisma';
 
 export type BootResponse = NextApiResponseData<'already_booted' | 'invalid_preset_id'>;
-
-const presets = _presets as Presets;
 
 const handler: NextApiHandler<BootResponse> = async (req, res) => {
 	if (req.method !== 'POST') return res.status(405).end();
@@ -15,6 +13,10 @@ const handler: NextApiHandler<BootResponse> = async (req, res) => {
 
 	if (config && config.value === 'true')
 		return res.json({ status: 'failure', reason: 'already_booted' });
+
+	const locale = req.headers['accept-language'] || 'en';
+
+	const presets = (await import(`../../utils/presets/${locale}.json`)) as Presets;
 
 	const presetId = req.body.presetId || presets[0].preset_id;
 
@@ -44,7 +46,7 @@ const handler: NextApiHandler<BootResponse> = async (req, res) => {
 
 		res.json({ status: 'success' });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -73,11 +75,6 @@ function getDefaultConfig() {
 		},
 		{
 			id: 5,
-			name: 'enable_automatic_markers',
-			value: 'true',
-		},
-		{
-			id: 6,
 			name: 'portrait_font',
 			value: 'null',
 		},
@@ -94,12 +91,13 @@ function getDefaultConfig() {
 					value: 20,
 					branched: false,
 					enable_modifiers: false,
+					enable_automatic_markers: false,
 				},
 				attribute: {
 					value: 100,
 					branched: false,
 				},
-			}),
+			} as DiceConfig),
 		},
 	];
 }

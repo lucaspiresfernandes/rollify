@@ -2,9 +2,9 @@ import type { NextApiHandlerIO, NextApiResponseData } from '../../../../../utils
 import prisma from '../../../../../utils/prisma';
 import { withSessionApi } from '../../../../../utils/session';
 
-export type PlayerCharacteristicApiResponse = NextApiResponseData<'unauthorized' | 'invalid_body'>;
+export type PlayerSkillClearChecksApiResponse = NextApiResponseData<'unauthorized'>;
 
-const handler: NextApiHandlerIO<PlayerCharacteristicApiResponse> = async (req, res) => {
+const handler: NextApiHandlerIO<PlayerSkillClearChecksApiResponse> = async (req, res) => {
 	if (req.method !== 'POST') return res.status(405).end();
 
 	const player = req.session.player;
@@ -13,15 +13,13 @@ const handler: NextApiHandlerIO<PlayerCharacteristicApiResponse> = async (req, r
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.id) return res.json({ status: 'failure', reason: 'invalid_body' });
-
 	const player_id = npcId || player.id;
 
 	try {
 		await prisma.playerSkill.updateMany({ where: { player_id }, data: { checked: false } });
 		res.json({ status: 'success' });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

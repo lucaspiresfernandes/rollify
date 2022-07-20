@@ -12,16 +12,17 @@ import { useContext, useState } from 'react';
 import ApplicationHead from '../components/ApplicationHead';
 import SnackbarContainer from '../components/SnackbarContainer';
 
-import { Logger } from '../contexts';
+import { LoggerContext } from '../contexts';
 import useSnackbar from '../hooks/useSnackbar';
 import type { Locale } from '../i18n';
 import { EMAIL_REGEX } from '../utils';
-import api from '../utils/api';
+import createApiClient from '../utils/createApiClient';
 import prisma from '../utils/prisma';
 import { withSessionSsr } from '../utils/session';
 import type { LoginResponse } from './api/login';
 
 type LoginHandler = (username: string, password: string) => void;
+const api = createApiClient();
 
 const HomePage: NextPage = () => {
 	const [snackbarProps, updateSnackbar] = useSnackbar();
@@ -29,9 +30,9 @@ const HomePage: NextPage = () => {
 	return (
 		<>
 			<ApplicationHead title='Login' />
-			<Logger.Provider value={updateSnackbar}>
+			<LoggerContext.Provider value={updateSnackbar}>
 				<Home />
-			</Logger.Provider>
+			</LoggerContext.Provider>
 			<SnackbarContainer {...snackbarProps} />
 		</>
 	);
@@ -40,7 +41,7 @@ const HomePage: NextPage = () => {
 const Home: React.FC = () => {
 	const { t } = useI18n<Locale>();
 	const [loading, setLoading] = useState(false);
-	const log = useContext(Logger);
+	const log = useContext(LoggerContext);
 
 	const onLogin: LoginHandler = async (email, password) => {
 		setLoading(true);
@@ -67,7 +68,7 @@ const Home: React.FC = () => {
 			{loading ? (
 				<>Loading...</>
 			) : (
-				<Box sx={{ mt: 6, display: 'flex', flexDirection: 'column' }}>
+				<Box mt={6} display='flex' flexDirection='column'>
 					<Typography variant='h4' component='h1'>
 						{t('login.title')}
 					</Typography>
@@ -95,7 +96,7 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 	};
 
 	return (
-		<Box component='form' sx={{ mt: 1 }} onSubmit={handleSubmit}>
+		<Box component='form' mt={1} onSubmit={handleSubmit}>
 			<TextField
 				fullWidth
 				label='Email'

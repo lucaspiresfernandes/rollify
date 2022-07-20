@@ -267,7 +267,7 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 				);
 		}
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

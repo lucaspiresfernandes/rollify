@@ -160,7 +160,7 @@ const handleDelete: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) =
 		res.json({ status: 'success', spell });
 		res.socket.server.io.emit('spellRemove', id);
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

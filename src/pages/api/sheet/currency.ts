@@ -39,7 +39,7 @@ const handlePost: NextApiHandler<CurrencySheetApiResponse> = async (req, res) =>
 
 		res.json({ status: 'success', currency });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -78,7 +78,7 @@ const handlePut: NextApiHandler<CurrencySheetApiResponse> = async (req, res) => 
 
 		res.json({ status: 'success', currency });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
@@ -100,7 +100,7 @@ const handleDelete: NextApiHandler<CurrencySheetApiResponse> = async (req, res) 
 		const currency = await prisma.currency.delete({ where: { id } });
 		res.json({ status: 'success', currency });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

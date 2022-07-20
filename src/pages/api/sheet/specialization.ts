@@ -60,7 +60,7 @@ const handlePut: NextApiHandler<SpecializationSheetApiResponse> = async (req, re
 		const specialization = await prisma.specialization.create({ data: { name } });
 		res.json({ status: 'success', specialization });
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };

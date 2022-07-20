@@ -14,7 +14,7 @@ const handler: NextApiHandler<PlayerSpecApiResponse> = async (req, res) => {
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.value || !req.body.id)
+	if (req.body.value === undefined || !req.body.id)
 		return res.json({ status: 'failure', reason: 'invalid_body' });
 
 	const spec_id = Number(req.body.id);

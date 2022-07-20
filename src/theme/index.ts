@@ -1,22 +1,23 @@
+import type { PaletteMode } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import type { ThemeOptions } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
 
-export const themeOptions: ThemeOptions = {
-	palette: {
-		primary: {
-			main: '#556cd6',
+export default function getTheme(mode: PaletteMode) {
+	return createTheme({
+		palette: {
+			mode,
+			background: {
+				default: mode === 'light' ? '#fafafa' : '#151d27',
+			},
+			primary: {
+				main: '#6d65d7',
+			},
+			secondary: {
+				main: '#3f51b5',
+			},
 		},
-		secondary: {
-			main: '#19857b',
-		},
-		error: {
-			main: red.A400,
-		},
-	},
-};
-
-// Create a theme instance.
-const theme = createTheme(themeOptions);
-
-export default theme;
+		// typography: {
+		// 	fontFamily: 'FantaisieArtistique',
+		// 	fontSize: 18,
+		// },
+	});
+}
