@@ -279,8 +279,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		<SheetContainer
 			title={props.title}
 			containerProps={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-			addButton={
-				<IconButton>
+			sideButton={
+				<IconButton aria-label='Add Equipment'>
 					<AddIcon />
 				</IconButton>
 			}>

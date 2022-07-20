@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 type ContainerProps = {
 	title: string;
 	children?: React.ReactNode;
-	addButton?: React.ReactNode;
+	sideButton?: React.ReactNode;
 	containerProps?: BoxProps;
 };
 
@@ -22,13 +22,21 @@ const Container: React.FC<ContainerProps> = (props) => {
 						content: '""',
 						flex: 1,
 					},
+					'::after': props.sideButton
+						? undefined
+						: {
+								content: '""',
+								flex: 1,
+						  },
 				}}>
 				<Typography variant='h4' component='h2'>
 					{props.title}
 				</Typography>
-				<Box flex='1' textAlign='end'>
-					{props.addButton}
-				</Box>
+				{props.sideButton && (
+					<Box flex='1' textAlign='end'>
+						{props.sideButton}
+					</Box>
+				)}
 			</Box>
 			<Divider />
 			{props.children}

@@ -220,8 +220,8 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 		<SheetContainer
 			title={props.title}
 			containerProps={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-			addButton={
-				<IconButton>
+			sideButton={
+				<IconButton aria-label='Add Skill'>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -398,14 +398,13 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					<TextField
 						variant='standard'
 						size='small'
-						id={`skillModifier${props.id}`}
-						aria-label={`Modifier for ${props.name}`}
 						autoComplete='off'
 						value={modifier}
 						onChange={(ev) => setModifier(ev.target.value)}
 						onBlur={onModifierBlur}
 						inputProps={{
 							style: { textAlign: 'center' },
+							'aria-label': `Modifier for ${props.name}`,
 						}}
 						style={{ width: '3rem' }}
 					/>

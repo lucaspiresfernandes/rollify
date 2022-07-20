@@ -1,12 +1,11 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
-import { useContext, useEffect } from 'react';
-import { ApiContext, PaletteModeContext, SocketContext } from '../../contexts';
+import { useEffect } from 'react';
+import { ApiContext, SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
@@ -21,7 +20,7 @@ import PlayerSkillContainer from './PlayerSkillContainer';
 const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 	const socket = useSocket(`player${props.player.id}`);
 	const { t } = useI18n<Locale>();
-	const modeContext = useContext(PaletteModeContext);
+	// const modeContext = useContext(PaletteModeContext);
 
 	const api = createApiClient({
 		transformRequest: [
@@ -51,11 +50,11 @@ const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 						<Typography variant='h3' component='h1'>
 							{t('sheet.playerTitle')}
 						</Typography>
-						<Switch
+						{/* <Switch
 							aria-label='Switch Theme'
 							checked={modeContext.mode === 'dark'}
 							onChange={modeContext.toggleMode}
-						/>
+						/> */}
 					</Box>
 					<Grid container spacing={1}>
 						<Grid item xs={12} sm={6}>

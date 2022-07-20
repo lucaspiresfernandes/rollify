@@ -77,7 +77,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 	};
 
 	return (
-		<Stack px={2} my={2} spacing={3}>
+		<Stack spacing={3}>
 			<PlayerAvatarImage
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
 				rerender={notify}
@@ -307,7 +307,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				alignItems='end'
 				justifyContent='space-between'
 				flexWrap='wrap'>
-				<Typography variant='body1' component='label' htmlFor={`attributeBar${props.id}`}>
+				<Typography variant='body1' component='label' id={`attributeBar${props.id}`}>
 					{t('sheet.attributePoints', { name: props.name })}
 				</Typography>
 				<div>
@@ -340,7 +340,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					onClick={() => props.onEdit(props.id, value, maxValue)}>
 					<LinearProgress
 						variant='determinate'
-						id={`attributeBar${props.id}`}
+						aria-label={t('sheet.attributePoints', { name: props.name })}
+						aria-labelledby={`attributeBar${props.id}`}
 						value={Math.min((value / maxValue || 0) * 100, 100)}
 						ref={barRef}
 						style={{

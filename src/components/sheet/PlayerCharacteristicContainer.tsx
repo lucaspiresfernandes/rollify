@@ -119,14 +119,13 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					<TextField
 						variant='standard'
 						size='small'
-						id={`characteristicModifier${props.id}`}
-						aria-label={`Modifier for ${props.name}`}
 						autoComplete='off'
 						value={modifier}
 						onChange={(ev) => setModifier(ev.target.value)}
 						onBlur={onModifierBlur}
 						inputProps={{
 							style: { textAlign: 'center' },
+							'aria-label': `Modifier for ${props.name}`,
 						}}
 						style={{ width: '3rem' }}
 					/>
