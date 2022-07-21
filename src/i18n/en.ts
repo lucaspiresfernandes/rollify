@@ -6,6 +6,21 @@ export const table: Locale = {
 
 	search: 'Search',
 
+	nav: {
+		language: 'Language',
+		exit: 'Logout',
+
+		player: {
+			firstPage: 'Page 1',
+			secondPage: 'Page 2',
+		},
+		admin: {
+			panel: 'Panel',
+			editor: 'Editor',
+			configurations: 'Configurations',
+		},
+	},
+
 	error: {
 		unknown: 'An unknown error has occurred: {{message}}',
 		credentials: {
@@ -46,10 +61,12 @@ export const table: Locale = {
 		playerCombatTitle: 'Combat',
 		playerItemTitle: 'Items',
 		playerSpellTitle: 'Spells',
+		playerNotesTitle: 'Annotations',
+		playerExtraInfoTitle: 'Personal Details (Extra)',
 		clearMarkers: 'Clear Markers',
 		attributePoints: '{{name}} Points',
 
-		equipment: {
+		table: {
 			name: 'Name',
 			type: 'Type',
 			damage: 'Damage',
@@ -57,6 +74,20 @@ export const table: Locale = {
 			attacks: 'Attacks',
 			currentAmmo: 'Cur. Ammo',
 			ammo: 'Max Ammo',
+
+			description: 'Description',
+			weight: 'Weight',
+			quantity: 'Quantity',
 		},
+	},
+
+	modal: {
+		close: 'Close',
+		cancel: 'Cancel',
+		apply: 'Apply',
+	},
+
+	prompt: {
+		delete: 'Are you sure you want to delete this {{name}}?',
 	},
 };

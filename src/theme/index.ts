@@ -5,9 +5,6 @@ export default function getTheme(mode: PaletteMode) {
 	return createTheme({
 		palette: {
 			mode,
-			background: {
-				default: mode === 'light' ? '#fafafa' : '#151d27',
-			},
 			primary: {
 				main: '#6d65d7',
 			},
@@ -19,5 +16,14 @@ export default function getTheme(mode: PaletteMode) {
 		// 	fontFamily: 'FantaisieArtistique',
 		// 	fontSize: 18,
 		// },
+		components: {
+			MuiAppBar: {
+				styleOverrides: {
+					colorPrimary: {
+						backgroundColor: mode === 'light' ? '#4D2E87' : undefined,
+					},
+				},
+			},
+		},
 	});
 }

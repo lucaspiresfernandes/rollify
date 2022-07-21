@@ -1,4 +1,5 @@
-import Box, { BoxProps } from '@mui/material/Box';
+import type { SxProps, Theme } from '@mui/material';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
@@ -6,12 +7,12 @@ type ContainerProps = {
 	title: string;
 	children?: React.ReactNode;
 	sideButton?: React.ReactNode;
-	containerProps?: BoxProps;
+	sx?: SxProps<Theme>;
 };
 
 const Container: React.FC<ContainerProps> = (props) => {
 	return (
-		<Box px={1} {...props.containerProps} border='1px solid gray' borderRadius={2}>
+		<Box px={1} sx={props.sx} border='1px solid gray' borderRadius={2}>
 			<Box
 				display='flex'
 				flexDirection='row'

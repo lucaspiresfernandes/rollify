@@ -7,6 +7,7 @@ import { I18nProvider } from 'next-rosetta';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
+import Navbar from '../components/Navbar';
 import { PaletteModeContext } from '../contexts';
 import '../styles/globals.css';
 import getTheme from '../theme';
@@ -47,6 +48,7 @@ export default function MyApp(props: MyAppProps) {
 				<ThemeProvider theme={theme}>
 					<CssBaseline />
 					<I18nProvider table={pageProps.table}>
+						<Navbar />
 						<Component {...pageProps} />
 					</I18nProvider>
 				</ThemeProvider>

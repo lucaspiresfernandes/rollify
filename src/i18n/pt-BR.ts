@@ -6,6 +6,21 @@ export const table: Locale = {
 
 	search: 'Pesquisar',
 
+	nav: {
+		language: 'Idioma',
+		exit: 'Sair',
+
+		player: {
+			firstPage: 'Página 1',
+			secondPage: 'Página 2',
+		},
+		admin: {
+			panel: 'Painel',
+			editor: 'Editor',
+			configurations: 'Configurações',
+		},
+	},
+
 	error: {
 		unknown: 'Ocorreu um erro desconhecido: {{message}}',
 		credentials: {
@@ -46,17 +61,33 @@ export const table: Locale = {
 		playerCombatTitle: 'Combate',
 		playerItemTitle: 'Itens',
 		playerSpellTitle: 'Magias',
+		playerNotesTitle: 'Anotações',
+		playerExtraInfoTitle: 'Detalhes Pessoais (Extras)',
 		clearMarkers: 'Limpar Marcadores',
 		attributePoints: 'Pontos de {{name}}',
 
-		equipment: {
+		table: {
 			name: 'Nome',
 			type: 'Tipo',
 			damage: 'Dano',
 			range: 'Alcance',
 			attacks: 'Ataques',
 			currentAmmo: 'Mun. atual',
-			ammo: 'Mun. max.',
+			ammo: 'Mun. máx.',
+
+			description: 'Descrição',
+			weight: 'Peso',
+			quantity: 'Quantidade',
 		},
+	},
+
+	modal: {
+		close: 'Fechar',
+		cancel: 'Cancelar',
+		apply: 'Aplicar',
+	},
+
+	prompt: {
+		delete: 'Tem certeza que deseja excluir esse(a) {{name}}?',
 	},
 };

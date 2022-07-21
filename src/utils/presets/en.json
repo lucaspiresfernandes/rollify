@@ -1,6 +1,6 @@
 [
 	{
-		"preset_name": "Nenhum",
+		"preset_name": "None",
 		"preset_id": "none",
 		"attribute": [],
 		"attribute_status": [],
@@ -21,7 +21,7 @@
 		"attribute": [
 			{
 				"id": 1,
-				"name": "Vida",
+				"name": "Health",
 				"color": "b62323",
 				"rollable": false,
 				"portrait": "PRIMARY",
@@ -29,7 +29,7 @@
 			},
 			{
 				"id": 2,
-				"name": "Sanidade",
+				"name": "Sanity",
 				"color": "1f3ce0",
 				"rollable": true,
 				"portrait": "PRIMARY",
@@ -37,7 +37,7 @@
 			},
 			{
 				"id": 3,
-				"name": "Magia",
+				"name": "Magic",
 				"color": "ae00ff",
 				"rollable": false,
 				"portrait": "SECONDARY",
@@ -45,56 +45,56 @@
 			}
 		],
 		"attribute_status": [
-			{ "id": 1, "name": "Inconsciente", "attribute_id": 1 },
-			{ "id": 2, "name": "Ferimento Grave", "attribute_id": 1 },
-			{ "id": 3, "name": "Traumatizado", "attribute_id": 2 },
-			{ "id": 4, "name": "Enlouquecido", "attribute_id": 2 }
+			{ "id": 1, "name": "Unconscious", "attribute_id": 1 },
+			{ "id": 2, "name": "Major Wound", "attribute_id": 1 },
+			{ "id": 3, "name": "Traumatized", "attribute_id": 2 },
+			{ "id": 4, "name": "Frenzied", "attribute_id": 2 }
 		],
 		"characteristic": [
-			{ "id": 1, "name": "Força", "visibleToAdmin": false },
-			{ "id": 2, "name": "Destreza", "visibleToAdmin": false },
-			{ "id": 3, "name": "Inteligência", "visibleToAdmin": false },
-			{ "id": 4, "name": "Constituição", "visibleToAdmin": false },
-			{ "id": 5, "name": "Aparência", "visibleToAdmin": false },
-			{ "id": 6, "name": "Poder", "visibleToAdmin": false },
-			{ "id": 7, "name": "Tamanho", "visibleToAdmin": false },
-			{ "id": 8, "name": "Educação", "visibleToAdmin": false }
+			{ "id": 1, "name": "Strength", "visibleToAdmin": false },
+			{ "id": 2, "name": "Dexterity", "visibleToAdmin": false },
+			{ "id": 3, "name": "Intelligence", "visibleToAdmin": false },
+			{ "id": 4, "name": "Constitution", "visibleToAdmin": false },
+			{ "id": 5, "name": "Appearance", "visibleToAdmin": false },
+			{ "id": 6, "name": "Power", "visibleToAdmin": false },
+			{ "id": 7, "name": "Size", "visibleToAdmin": false },
+			{ "id": 8, "name": "Education", "visibleToAdmin": false }
 		],
 		"currency": [
-			{ "id": 1, "name": "Nível de Gasto Diário", "visibleToAdmin": false },
-			{ "id": 2, "name": "Dinheiro", "visibleToAdmin": false }
+			{ "id": 1, "name": "Daily Spending Level", "visibleToAdmin": false },
+			{ "id": 2, "name": "Money", "visibleToAdmin": false }
 		],
 		"equipment": [
 			{
 				"id": 1,
-				"name": "Desarmado",
-				"type": "Comum",
+				"name": "Unarmed",
+				"type": "Common",
 				"damage": "1d3+DB",
-				"range": "Toque",
+				"range": "Touch",
 				"attacks": "1",
 				"ammo": null,
 				"visible": true
 			}
 		],
 		"extraInfo": [
-			{ "id": 1, "name": "Descrição Pessoal" },
-			{ "id": 2, "name": "Ideologia & Crenças" },
-			{ "id": 3, "name": "Pessoas & Lugares Significativos" },
-			{ "id": 4, "name": "Patrimônio & Bens Preciosos" },
-			{ "id": 5, "name": "Características" },
-			{ "id": 6, "name": "Lesões/Cicatrizes" },
-			{ "id": 7, "name": "Fobias & Manias" },
-			{ "id": 8, "name": "Encontros com Criaturas" }
+			{ "id": 1, "name": "Personal Description" },
+			{ "id": 2, "name": "Ideology & Beliefs" },
+			{ "id": 3, "name": "Significant People & Places" },
+			{ "id": 4, "name": "Heritage & Precious Goods" },
+			{ "id": 5, "name": "Character" },
+			{ "id": 6, "name": "Injuries/Scars" },
+			{ "id": 7, "name": "Phobias & Manias" },
+			{ "id": 8, "name": "Encounters with Creatures" }
 		],
 		"info": [
 			{ "id": 1, "name": "Player", "visibleToAdmin": false },
-			{ "id": 2, "name": "Ocupação", "visibleToAdmin": false },
-			{ "id": 3, "name": "Idade", "visibleToAdmin": false },
-			{ "id": 4, "name": "Gênero", "visibleToAdmin": false },
-			{ "id": 5, "name": "Residência", "visibleToAdmin": false },
-			{ "id": 6, "name": "Local de Nascimento", "visibleToAdmin": false },
-			{ "id": 7, "name": "Peso", "visibleToAdmin": false },
-			{ "id": 8, "name": "Altura", "visibleToAdmin": false }
+			{ "id": 2, "name": "Occupation", "visibleToAdmin": false },
+			{ "id": 3, "name": "Age", "visibleToAdmin": false },
+			{ "id": 4, "name": "Gender", "visibleToAdmin": false },
+			{ "id": 5, "name": "Residence", "visibleToAdmin": false },
+			{ "id": 6, "name": "Birthplace", "visibleToAdmin": false },
+			{ "id": 7, "name": "Weight", "visibleToAdmin": false },
+			{ "id": 8, "name": "Height", "visibleToAdmin": false }
 		],
 		"item": [],
 		"skill": [

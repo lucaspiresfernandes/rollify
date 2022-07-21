@@ -5,14 +5,37 @@ import { withSessionApi } from '../../../utils/session';
 
 export type SkillSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
-	{ skill: Skill }
+	{
+		skill: (Skill & {
+			Specialization: {
+				name: string;
+			} | null;
+		})[];
+	}
 >;
 
 const handler: NextApiHandlerIO = (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'PUT') return handlePut(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	res.status(405).end();
+};
+
+const handleGet: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
+	const player = req.session.player;
+	const npcId = Number(req.body.npcId) || undefined;
+
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
+
+	const skill = await prisma.skill.findMany({
+		where: { PlayerSkill: { none: { player_id } } },
+		include: { Specialization: { select: { name: true } } },
+	});
+
+	res.json({ status: 'success', skill });
 };
 
 const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
@@ -49,7 +72,7 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 			include: { Specialization: true },
 		});
 
-		res.json({ status: 'success', skill });
+		res.json({ status: 'success', skill: [skill] });
 
 		res.socket.server.io.emit('skillChange', id, skill.name, skill.Specialization?.name || null);
 	} catch (err) {
@@ -89,7 +112,7 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 			include: { Specialization: true },
 		});
 
-		res.json({ status: 'success', skill });
+		res.json({ status: 'success', skill: [skill] });
 
 		res.socket.server.io.emit('skillAdd', skill.id, skill.name, skill.Specialization?.name || null);
 	} catch (err) {
@@ -113,7 +136,7 @@ const handleDelete: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) =
 
 	try {
 		const skill = await prisma.skill.delete({ where: { id } });
-		res.json({ status: 'success', skill });
+		res.json({ status: 'success', skill: [{ ...skill, Specialization: null }] });
 		res.socket.server.io.emit('skillRemove', id);
 	} catch (err) {
 		console.error(err);

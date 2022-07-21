@@ -35,22 +35,21 @@ const handler: NextApiHandlerIO<PlayerGetAvatarApiResponse> = async (req, res) =
 					reason: 'avatar_not_found',
 				});
 
-			const availableAvatar = await prisma.playerAvatar.findFirst({
+			const defaultAvatar = await prisma.playerAvatar.findFirst({
 				where: {
 					player_id: playerID,
-					link: { not: null },
+					attribute_status_id: null,
 				},
-				orderBy: { attribute_status_id: 'asc' },
 				select: { link: true },
 			});
 
-			if (availableAvatar === null || availableAvatar.link === null)
+			if (defaultAvatar === null || defaultAvatar.link === null)
 				return res.json({
 					status: 'failure',
 					reason: 'avatar_not_found',
 				});
 
-			avatar = availableAvatar;
+			avatar = defaultAvatar;
 		}
 
 		res.json({ status: 'success', link: avatar.link as string });

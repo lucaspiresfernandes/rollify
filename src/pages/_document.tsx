@@ -5,7 +5,7 @@ import createEmotionCache from '../utils/createEmotionCache';
 export default class MyDocument extends Document {
 	render() {
 		return (
-			<Html lang='pt-BR'>
+			<Html>
 				<Head>
 					<link rel='icon' href='/favicon.ico' />
 					<link

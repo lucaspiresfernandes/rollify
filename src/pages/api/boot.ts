@@ -4,7 +4,9 @@ import type { NextApiResponseData } from '../../utils/next';
 import type { Presets } from '../../utils/presets';
 import prisma from '../../utils/prisma';
 
-export type BootResponse = NextApiResponseData<'already_booted' | 'invalid_preset_id'>;
+export type BootResponse = NextApiResponseData<
+	'already_booted' | 'invalid_preset_id' | 'invalid_locale'
+>;
 
 const handler: NextApiHandler<BootResponse> = async (req, res) => {
 	if (req.method !== 'POST') return res.status(405).end();
@@ -14,13 +16,17 @@ const handler: NextApiHandler<BootResponse> = async (req, res) => {
 	if (config && config.value === 'true')
 		return res.json({ status: 'failure', reason: 'already_booted' });
 
-	const locale = req.headers['accept-language'] || 'en';
+	const locale = String(req.body.locale) || 'en';
 
-	const presets = (await import(`../../utils/presets/${locale}.json`)) as Presets;
+	const presets = (await import(`../../utils/presets/${locale}.json`).then(
+		(mod) => mod.default
+	)) as Presets | undefined;
+
+	if (!presets) return res.json({ status: 'failure', reason: 'invalid_locale' });
 
 	const presetId = req.body.presetId || presets[0].preset_id;
 
-	const preset = presets.find((p) => p.preset_id === presetId);
+	const preset = presets?.find((p) => p.preset_id === presetId);
 
 	if (!preset) return res.json({ status: 'failure', reason: 'invalid_preset_id' });
 

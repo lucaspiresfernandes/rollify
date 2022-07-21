@@ -5,14 +5,30 @@ import { withSessionApi } from '../../../utils/session';
 
 export type EquipmentSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
-	{ equipment: Equipment }
+	{ equipment: Equipment[] }
 >;
 
 const handler: NextApiHandlerIO = (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'PUT') return handlePut(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	res.status(405).end();
+};
+
+const handleGet: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
+	const player = req.session.player;
+	const npcId = Number(req.body.npcId) || undefined;
+
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
+
+	const equipment = await prisma.equipment.findMany({
+		where: { visible: true, PlayerEquipment: { none: { player_id } } },
+	});
+
+	res.json({ status: 'success', equipment });
 };
 
 const handlePost: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
@@ -51,7 +67,7 @@ const handlePost: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res)
 			data: { name, type, damage, range, attacks, ammo, visible },
 		});
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', equipment: [equipment] });
 
 		res.socket.server.io.emit('equipmentChange', equipment);
 	} catch (err) {
@@ -111,7 +127,7 @@ const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 			},
 		});
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', equipment: [equipment] });
 
 		res.socket.server.io.emit('equipmentAdd', equipment.id, equipment.name);
 	} catch (err) {
@@ -136,7 +152,7 @@ const handleDelete: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, re
 	try {
 		const equipment = await prisma.equipment.delete({ where: { id } });
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', equipment: [equipment] });
 
 		res.socket.server.io.emit('equipmentRemove', id);
 	} catch (err) {

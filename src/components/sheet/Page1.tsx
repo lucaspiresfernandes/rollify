@@ -4,23 +4,29 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
-import { useEffect } from 'react';
-import { ApiContext, SocketContext } from '../../contexts';
+import { useEffect, useState } from 'react';
+import { AddDataContext, ApiContext, SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
 import createApiClient from '../../utils/createApiClient';
-import SheetContainer from './Container';
+import AddDataDialog, { AddDataDialogProps } from './dialogs/AddDataDialog';
 import PlayerAttributeContainer from './PlayerAttributeContainer';
 import PlayerCharacteristicContainer from './PlayerCharacteristicContainer';
 import PlayerCombatContainer from './PlayerCombatContainer';
 import PlayerInfoContainer from './PlayerInfoContainer';
+import PlayerItemContainer from './PlayerItemContainer';
 import PlayerSkillContainer from './PlayerSkillContainer';
+import PlayerSpellContainer from './PlayerSpellContainer';
 
-const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
+const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
+	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
+	const [dialogData, setDialogData] = useState<{
+		data: { id: number; name: string }[];
+		onSubmit: AddDataDialogProps['onSubmit'];
+	}>({ data: [], onSubmit: () => {} });
 	const socket = useSocket(`player${props.player.id}`);
 	const { t } = useI18n<Locale>();
-	// const modeContext = useContext(PaletteModeContext);
 
 	const api = createApiClient({
 		transformRequest: [
@@ -42,6 +48,13 @@ const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 
 	if (!socket) return null;
 
+	const openDialog = (data: typeof dialogData['data'], onSubmit: typeof dialogData['onSubmit']) => {
+		setDialogData({ data, onSubmit });
+		setAddDataDialogOpen(true);
+	};
+
+	const closeDialog = () => setAddDataDialogOpen(false);
+
 	return (
 		<SocketContext.Provider value={socket}>
 			<ApiContext.Provider value={api}>
@@ -50,13 +63,8 @@ const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 						<Typography variant='h3' component='h1'>
 							{t('sheet.playerTitle')}
 						</Typography>
-						{/* <Switch
-							aria-label='Switch Theme'
-							checked={modeContext.mode === 'dark'}
-							onChange={modeContext.toggleMode}
-						/> */}
 					</Box>
-					<Grid container spacing={1}>
+					<Grid container spacing={2} my={2}>
 						<Grid item xs={12} sm={6}>
 							<PlayerInfoContainer
 								title={t('sheet.playerInfoTitle')}
@@ -104,46 +112,60 @@ const Sheet: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 							/>
 						</Grid>
 
-						<Grid item xs={12} sm={6}>
-							<PlayerSkillContainer
-								title={t('sheet.playerSkillTitle')}
-								playerSkills={props.player.PlayerSkill.map((skill) => ({
-									...skill,
-									...skill.Skill,
-									specializationName: skill.Skill.Specialization?.name || null,
-								}))}
-								availableSkills={props.availableSkills.map((skill) => ({
-									...skill,
-									specializationName: skill.Specialization?.name || null,
-								}))}
-								skillDiceConfig={props.diceConfig.skill}
-							/>
-						</Grid>
+						<AddDataContext.Provider value={{ openDialog, closeDialog }}>
+							<Grid item xs={12} sm={6}>
+								<PlayerSkillContainer
+									title={t('sheet.playerSkillTitle')}
+									playerSkills={props.player.PlayerSkill.map((skill) => ({
+										...skill,
+										...skill.Skill,
+										specializationName: skill.Skill.Specialization?.name || null,
+									}))}
+									skillDiceConfig={props.diceConfig.skill}
+								/>
+							</Grid>
 
-						{/* Combate */}
-						<Grid item xs={12}>
-							<PlayerCombatContainer
-								title={t('sheet.playerCombatTitle')}
-								playerEquipments={props.player.PlayerEquipment}
-								availableEquipments={props.availableEquipments}
-								partners={props.partners}
-							/>
-						</Grid>
+							<Grid item xs={12}>
+								<PlayerCombatContainer
+									title={t('sheet.playerCombatTitle')}
+									playerEquipments={props.player.PlayerEquipment}
+								/>
+							</Grid>
 
-						{/* Itens */}
-						<Grid item xs={12}>
-							<SheetContainer title='Itens'></SheetContainer>
-						</Grid>
+							<Grid item xs={12}>
+								<PlayerItemContainer
+									title={t('sheet.playerItemTitle')}
+									playerCurrency={props.player.PlayerCurrency.map((cur) => ({
+										id: cur.Currency.id,
+										name: cur.Currency.name,
+										value: cur.value,
+									}))}
+									playerItems={props.player.PlayerItem.map((it) => ({
+										...it,
+										...it.Item,
+									}))}
+									maxLoad={props.player.maxLoad}
+								/>
+							</Grid>
 
-						{/* Magias */}
-						<Grid item xs={12}>
-							<SheetContainer title='Magias'></SheetContainer>
-						</Grid>
+							<Grid item xs={12}>
+								<PlayerSpellContainer
+									title={t('sheet.playerSpellTitle')}
+									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
+								/>
+							</Grid>
+						</AddDataContext.Provider>
 					</Grid>
 				</Container>
+				<AddDataDialog
+					open={addDataDialogOpen}
+					data={dialogData.data}
+					onClose={() => setAddDataDialogOpen(false)}
+					onSubmit={dialogData.onSubmit}
+				/>
 			</ApiContext.Provider>
 		</SocketContext.Provider>
 	);
 };
 
-export default Sheet;
+export default PlayerSheetPage1;

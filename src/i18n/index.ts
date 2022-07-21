@@ -4,6 +4,22 @@ export interface Locale {
 
 	search: string;
 
+	nav: {
+		language: string;
+		exit: string;
+
+		player: {
+			firstPage: string;
+			secondPage: string;
+		};
+
+		admin: {
+			panel: string;
+			editor: string;
+			configurations: string;
+		};
+	};
+
 	error: {
 		unknown: string;
 		credentials: {
@@ -44,10 +60,12 @@ export interface Locale {
 		playerCombatTitle: string;
 		playerItemTitle: string;
 		playerSpellTitle: string;
+		playerNotesTitle: string;
+		playerExtraInfoTitle: string;
 		clearMarkers: string;
 		attributePoints: string;
 
-		equipment: {
+		table: {
 			name: string;
 			type: string;
 			damage: string;
@@ -55,6 +73,20 @@ export interface Locale {
 			attacks: string;
 			currentAmmo: string;
 			ammo: string;
+
+			description: string;
+			weight: string;
+			quantity: string;
 		};
+	};
+
+	modal: {
+		close: string;
+		cancel: string;
+		apply: string;
+	}
+
+	prompt: {
+		delete: string;
 	};
 }

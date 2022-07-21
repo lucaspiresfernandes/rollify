@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
-import createApiClient from '../utils/createApiClient';
+import { api } from '../utils/createApiClient';
 import type { ClientToServerEvents, ServerToClientEvents } from '../utils/socket';
 
 export type SocketIO = Socket<ServerToClientEvents, ClientToServerEvents>;
-const api = createApiClient();
 
 export default function useSocket(roomJoin: string) {
 	const [socket, setSocket] = useState<SocketIO | null>(null);
@@ -17,9 +16,7 @@ export default function useSocket(roomJoin: string) {
 				setSocket(socket);
 			});
 			socket.on('connect_error', (err) => console.error('Socket.IO error:', err));
-			socket.on('disconnect', (reason) =>
-				console.warn('Socket.IO disconnect. Reason:', reason)
-			);
+			socket.on('disconnect', (reason) => console.warn('Socket.IO disconnect. Reason:', reason));
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

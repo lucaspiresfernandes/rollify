@@ -85,8 +85,8 @@ const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 	};
 
 	return (
-		<Box sx={props.sx} display='flex' alignItems='center'>
-			<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange}>
+		<Box sx={props.sx} display='flex' alignItems='end'>
+			<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange} size='small'>
 				{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
 			</IconButton>
 			<TextField

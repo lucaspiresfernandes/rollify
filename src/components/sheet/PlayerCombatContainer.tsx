@@ -2,6 +2,7 @@ import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,33 +15,23 @@ import type { Equipment } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
+import dice20 from '../../../public/dice20.webp';
 import SheetContainer from '../../components/sheet/Container';
-import { ApiContext, LoggerContext, SocketContext } from '../../contexts';
+import { AddDataContext, ApiContext, LoggerContext, SocketContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
+import type { Locale } from '../../i18n';
+import type { EquipmentSheetApiResponse } from '../../pages/api/sheet/equipment';
 import type { PlayerEquipmentApiResponse } from '../../pages/api/sheet/player/equipment';
 import type { TradeEquipmentApiResponse } from '../../pages/api/sheet/player/trade/equipment';
 import { handleDefaultApiResponse } from '../../utils';
-import type {
-	EquipmentAddEvent,
-	EquipmentChangeEvent,
-	EquipmentRemoveEvent,
-	PlayerTradeRequestEvent,
-	PlayerTradeResponseEvent,
-} from '../../utils/socket';
+import type { PlayerTradeRequestEvent, PlayerTradeResponseEvent } from '../../utils/socket';
+import PartialBackdrop from '../PartialBackdrop';
 
 type PlayerCombatContainerProps = {
 	title: string;
 	playerEquipments: {
 		Equipment: Equipment;
 		currentAmmo: number;
-	}[];
-	availableEquipments: {
-		id: number;
-		name: string;
-	}[];
-	partners: {
-		id: number;
-		name: string;
 	}[];
 };
 
@@ -51,12 +42,8 @@ type PlayerCombatContainerProps = {
 // 	donation: true,
 // };
 
-const TRADE_TIME_LIMIT = 10000;
-
 const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
-	const [addEquipmentShow, setAddEquipmentShow] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [availableEquipments, setAvailableEquipments] = useState(props.availableEquipments);
 	const [playerEquipments, setPlayerEquipments] = useState(props.playerEquipments);
 	// const [trade, setTrade] = useState<Trade<Equipment>>(tradeInitialValue);
 
@@ -68,67 +55,13 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	const socket = useContext(SocketContext);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-	const { t } = useI18n();
+	const addDataDialog = useContext(AddDataContext);
+	const { t } = useI18n<Locale>();
 
-	const socket_equipmentAdd = useRef<EquipmentAddEvent>(() => {});
-	const socket_equipmentRemove = useRef<EquipmentRemoveEvent>(() => {});
-	const socket_equipmentChange = useRef<EquipmentChangeEvent>(() => {});
 	const socket_requestReceived = useRef<PlayerTradeRequestEvent>(() => {});
 	const socket_responseReceived = useRef<PlayerTradeResponseEvent>(() => {});
 
 	useEffect(() => {
-		socket_equipmentAdd.current = (id, name) => {
-			if (availableEquipments.findIndex((eq) => eq.id === id) > -1) return;
-			setAvailableEquipments((equipments) => [...equipments, { id, name }]);
-		};
-
-		socket_equipmentRemove.current = (id) => {
-			const index = playerEquipments.findIndex((eq) => eq.Equipment.id === id);
-			if (index === -1) return;
-
-			setPlayerEquipments((equipments) => {
-				const newEquipments = [...equipments];
-				newEquipments.splice(index, 1);
-				return newEquipments;
-			});
-		};
-
-		socket_equipmentChange.current = (eq) => {
-			const availableIndex = availableEquipments.findIndex((_eq) => _eq.id === eq.id);
-			const playerIndex = playerEquipments.findIndex((_eq) => _eq.Equipment.id === eq.id);
-
-			if (eq.visible) {
-				if (availableIndex === -1 && playerIndex === -1)
-					return setAvailableEquipments((equipments) => [...equipments, eq]);
-			} else if (availableIndex > -1) {
-				return setAvailableEquipments((equipments) => {
-					const newEquipments = [...equipments];
-					newEquipments.splice(availableIndex, 1);
-					return newEquipments;
-				});
-			}
-
-			if (availableIndex > -1) {
-				setAvailableEquipments((equipments) => {
-					const newEquipments = [...equipments];
-					newEquipments[availableIndex] = {
-						id: eq.id,
-						name: eq.name,
-					};
-					return newEquipments;
-				});
-				return;
-			}
-
-			if (playerIndex === -1) return;
-
-			setPlayerEquipments((equipments) => {
-				const newEquipments = [...equipments];
-				newEquipments[playerIndex].Equipment = eq;
-				return newEquipments;
-			});
-		};
-
 		socket_requestReceived.current = (
 			type,
 			tradeId,
@@ -169,21 +102,12 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 
 					if (receiverObjectId) {
 						const index = playerEquipments.findIndex((eq) => eq.Equipment.id === receiverObjectId);
-						if (index === -1) return;
-						const oldEq = playerEquipments[index];
-
-						availableEquipments.push(oldEq.Equipment);
-						playerEquipments[index] = newEquip;
+						if (index > -1) playerEquipments[index] = newEquip;
 					} else {
 						playerEquipments.push(newEquip);
 					}
-					availableEquipments.splice(
-						availableEquipments.findIndex((e) => e.id === newEquip.Equipment.id),
-						1
-					);
 
 					setPlayerEquipments([...playerEquipments]);
-					setAvailableEquipments([...availableEquipments]);
 				})
 				.catch(log)
 				.finally(() => (currentTradeId.current = null));
@@ -226,9 +150,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	});
 
 	useEffect(() => {
-		socket.on('equipmentAdd', (id, name) => socket_equipmentAdd.current(id, name));
-		socket.on('equipmentRemove', (id) => socket_equipmentRemove.current(id));
-		socket.on('equipmentChange', (eq) => socket_equipmentChange.current(eq));
 		socket.on(
 			'playerTradeRequest',
 			(type, tradeId, receiverObjectId, senderName, senderObjectName) =>
@@ -251,8 +172,46 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const onAddEquipment = (id: number) => {
+		addDataDialog.closeDialog();
+		setLoading(true);
+		api
+			.put<PlayerEquipmentApiResponse>('/sheet/player/equipment', { id })
+			.then((res) => {
+				if (res.data.status === 'success') {
+					const equipment = res.data.equipment;
+					return setPlayerEquipments([
+						...playerEquipments,
+						{
+							...equipment,
+							...equipment.Equipment,
+						},
+					]);
+				}
+				handleDefaultApiResponse(res, log);
+			})
+			.catch((err) => log({ severity: 'error', text: err.message }))
+			.finally(() => setLoading(false));
+	};
+
+	const loadAvailableEquipments = () => {
+		setLoading(true);
+		api
+			.get<EquipmentSheetApiResponse>('/sheet/equipment')
+			.then((res) => {
+				if (res.data.status === 'success') {
+					const equipments = res.data.equipment;
+					addDataDialog.openDialog(equipments, onAddEquipment);
+					return;
+				}
+				handleDefaultApiResponse(res, log);
+			})
+			.catch((err) => log({ severity: 'error', text: err.message }))
+			.finally(() => setLoading(false));
+	};
+
 	const onDeleteEquipment = async (id: number) => {
-		if (!confirm('Você realmente deseja excluir esse equipamento?')) return;
+		if (!confirm(t('prompt.delete', { name: 'equip' }))) return;
 		setLoading(true);
 		api
 			.delete<PlayerEquipmentApiResponse>('/sheet/player/equipment', {
@@ -267,9 +226,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 
 				newPlayerEquipments.splice(index, 1);
 				setPlayerEquipments(newPlayerEquipments);
-
-				const modalEquipment = { id, name: playerEquipments[index].Equipment.name };
-				setAvailableEquipments([...availableEquipments, modalEquipment]);
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
 			.finally(() => setLoading(false));
@@ -278,31 +234,30 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	return (
 		<SheetContainer
 			title={props.title}
-			containerProps={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+			sx={{ position: 'relative' }}
 			sideButton={
-				<IconButton aria-label='Add Equipment'>
+				<IconButton aria-label='Add Equipment' onClick={loadAvailableEquipments}>
 					<AddIcon />
 				</IconButton>
 			}>
+			<PartialBackdrop open={loading}>
+				<CircularProgress color='inherit' disableShrink />
+			</PartialBackdrop>
 			<TableContainer>
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell></TableCell>
-							{props.partners.length > 0 && (
-								<>
-									<TableCell></TableCell>
-									<TableCell></TableCell>
-								</>
-							)}
-							<TableCell align='center'>{t('sheet.equipment.name')}</TableCell>
-							<TableCell align='center'>{t('sheet.equipment.type')}</TableCell>
-							<TableCell align='center'>{t('sheet.equipment.damage')}</TableCell>
-							<TableCell align='center'></TableCell>
-							<TableCell align='center'>{t('sheet.equipment.range')}</TableCell>
-							<TableCell align='center'>{t('sheet.equipment.attacks')}</TableCell>
-							<TableCell align='center'>{t('sheet.equipment.currentAmmo')}</TableCell>
-							<TableCell align='center'>{t('sheet.equipment.ammo')}</TableCell>
+							<TableCell padding='none'></TableCell>
+							<TableCell padding='none'></TableCell>
+							<TableCell padding='none'></TableCell>
+							<TableCell align='center'>{t('sheet.table.name')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.type')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
+							<TableCell align='center' padding='none'></TableCell>
+							<TableCell align='center'>{t('sheet.table.range')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.attacks')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.currentAmmo')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.ammo')}</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -311,7 +266,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 								key={eq.Equipment.id}
 								currentAmmo={eq.currentAmmo}
 								equipment={eq.Equipment}
-								disableTrades={props.partners.length === 0}
 								onDelete={() => onDeleteEquipment(eq.Equipment.id)}
 							/>
 						))}
@@ -325,7 +279,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 type PlayerCombatFieldProps = {
 	currentAmmo: number;
 	equipment: Equipment;
-	disableTrades?: boolean;
 	onDelete: () => void;
 };
 
@@ -360,35 +313,31 @@ const PlayerCombatField: React.FC<PlayerCombatFieldProps> = (props) => {
 	return (
 		<>
 			<TableRow>
-				<TableCell align='center'>
+				<TableCell align='center' padding='none'>
 					<IconButton size='small' onClick={props.onDelete}>
 						<DeleteIcon />
 					</IconButton>
 				</TableCell>
-				{!props.disableTrades && (
-					<>
-						<TableCell align='center'>
-							<IconButton size='small'>
-								<VolunteerActivismIcon />
-							</IconButton>
-						</TableCell>
-						<TableCell align='center'>
-							<IconButton size='small'>
-								<HandshakeIcon />
-							</IconButton>
-						</TableCell>
-					</>
-				)}
+				<TableCell align='center' padding='none'>
+					<IconButton size='small'>
+						<VolunteerActivismIcon />
+					</IconButton>
+				</TableCell>
+				<TableCell align='center' padding='none'>
+					<IconButton size='small'>
+						<HandshakeIcon />
+					</IconButton>
+				</TableCell>
 				<TableCell align='center'>{props.equipment.name}</TableCell>
 				<TableCell align='center'>{props.equipment.type}</TableCell>
 				<TableCell align='center'>{props.equipment.damage}</TableCell>
-				<TableCell align='center'>
+				<TableCell align='center' padding='none'>
 					<Image
-						src='/dice20.webp'
+						src={dice20}
 						alt='Dice'
 						// onClick={(ev) => rollDice(ev.ctrlKey)}
-						width={35}
-						height={35}
+						width={30}
+						height={30}
 					/>
 				</TableCell>
 				<TableCell align='center'>{props.equipment.range}</TableCell>

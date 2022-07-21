@@ -1,3 +1,9 @@
+const shouldAnalyzeBundles = process.env.ANALYZE === 'true';
+
+const withBundleAnalyzer = shouldAnalyzeBundles
+	? require('@next/bundle-analyzer')({ enabled: true })
+	: (config) => config;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: false,
@@ -6,6 +12,9 @@ const nextConfig = {
 		locales: ['en', 'pt-BR'],
 		defaultLocale: 'en',
 	},
+	images: {
+		domains: ['media.discordapp.net', 'i.imgur.com'],
+	},
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

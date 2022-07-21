@@ -5,14 +5,30 @@ import { withSessionApi } from '../../../utils/session';
 
 export type ItemSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
-	{ item: Item }
+	{ item: Item[] }
 >;
 
 const handler: NextApiHandlerIO = (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'PUT') return handlePut(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	res.status(405).end();
+};
+
+const handleGet: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
+	const player = req.session.player;
+	const npcId = Number(req.body.npcId) || undefined;
+
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
+
+	const item = await prisma.item.findMany({
+		where: { visible: true, PlayerItem: { none: { player_id } } },
+	});
+
+	res.json({ status: 'success', item });
 };
 
 const handlePost: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
@@ -45,7 +61,7 @@ const handlePost: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 			data: { name, description, weight, visible },
 		});
 
-		res.json({ status: 'success', item });
+		res.json({ status: 'success', item: [item] });
 
 		res.socket.server.io.emit('itemChange', item);
 	} catch (err) {
@@ -86,7 +102,7 @@ const handlePut: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 			},
 		});
 
-		res.json({ status: 'success', item });
+		res.json({ status: 'success', item: [item] });
 
 		res.socket.server.io.emit('itemAdd', item.id, item.name);
 	} catch (err) {
@@ -110,7 +126,7 @@ const handleDelete: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) =>
 
 	try {
 		const item = await prisma.item.delete({ where: { id } });
-		res.json({ status: 'success', item });
+		res.json({ status: 'success', item: [item] });
 		res.socket.server.io.emit('itemRemove', id);
 	} catch (err) {
 		console.error(err);

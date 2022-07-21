@@ -10,19 +10,19 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useState } from 'react';
 import ApplicationHead from '../components/ApplicationHead';
+import LoadingScreen from '../components/LoadingScreen';
 import SnackbarContainer from '../components/SnackbarContainer';
 
 import { LoggerContext } from '../contexts';
 import useSnackbar from '../hooks/useSnackbar';
 import type { Locale } from '../i18n';
 import { EMAIL_REGEX } from '../utils';
-import createApiClient from '../utils/createApiClient';
+import { api } from '../utils/createApiClient';
 import prisma from '../utils/prisma';
 import { withSessionSsr } from '../utils/session';
 import type { LoginResponse } from './api/login';
 
 type LoginHandler = (username: string, password: string) => void;
-const api = createApiClient();
 
 const HomePage: NextPage = () => {
 	const [snackbarProps, updateSnackbar] = useSnackbar();
@@ -63,18 +63,16 @@ const Home: React.FC = () => {
 		}
 	};
 
+	if (loading) return <LoadingScreen />;
+
 	return (
 		<Container sx={{ textAlign: 'center' }} maxWidth='sm'>
-			{loading ? (
-				<>Loading...</>
-			) : (
-				<Box mt={6} display='flex' flexDirection='column'>
-					<Typography variant='h4' component='h1'>
-						{t('login.title')}
-					</Typography>
-					<LoginForm onSubmit={onLogin} />
-				</Box>
-			)}
+			<Box mt={6} display='flex' flexDirection='column'>
+				<Typography variant='h4' component='h1'>
+					{t('login.title')}
+				</Typography>
+				<LoginForm onSubmit={onLogin} />
+			</Box>
 		</Container>
 	);
 };
@@ -140,14 +138,14 @@ export const getServerSideProps = withSessionSsr(async (ctx) => {
 		if (!init)
 			return {
 				redirect: {
-					destination: '/welcome',
+					destination: '/getting-started',
 					permanent: false,
 				},
 			};
 	} catch (err) {
 		return {
 			redirect: {
-				destination: '/welcome?error=true',
+				destination: '/getting-started/error',
 				permanent: false,
 			},
 		};

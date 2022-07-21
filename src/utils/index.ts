@@ -2,6 +2,8 @@ import type { AxiosResponse } from 'axios';
 import type { LoggerContextType } from '../contexts';
 import type { NextApiResponseData } from './next';
 
+export const TRADE_TIME_LIMIT = 10000;
+
 export const EMAIL_REGEX =
 	/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

@@ -5,14 +5,30 @@ import { withSessionApi } from '../../../utils/session';
 
 export type SpellSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
-	{ spell: Spell }
+	{ spell: Spell[] }
 >;
 
 const handler: NextApiHandlerIO = (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'PUT') return handlePut(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	res.status(405).end();
+};
+
+const handleGet: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
+	const player = req.session.player;
+	const npcId = Number(req.body.npcId) || undefined;
+
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
+
+	const spell = await prisma.spell.findMany({
+		where: { visible: true, PlayerSpell: { none: { player_id } } },
+	});
+
+	res.json({ status: 'success', spell });
 };
 
 const handlePost: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
@@ -71,7 +87,7 @@ const handlePost: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => 
 			},
 		});
 
-		res.json({ status: 'success', spell });
+		res.json({ status: 'success', spell: [spell] });
 
 		res.socket.server.io.emit('spellChange', spell);
 	} catch (err) {
@@ -133,7 +149,7 @@ const handlePut: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
 			},
 		});
 
-		res.json({ status: 'success', spell });
+		res.json({ status: 'success', spell: [spell] });
 
 		res.socket.server.io.emit('spellAdd', spell.id, spell.name);
 	} catch (err) {
@@ -157,7 +173,7 @@ const handleDelete: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) =
 
 	try {
 		const spell = await prisma.spell.delete({ where: { id } });
-		res.json({ status: 'success', spell });
+		res.json({ status: 'success', spell: [spell] });
 		res.socket.server.io.emit('spellRemove', id);
 	} catch (err) {
 		console.error(err);

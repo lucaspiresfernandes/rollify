@@ -14,6 +14,7 @@ import type { PortraitAttribute } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
+import dice20 from '../../../public/dice20.webp';
 import { ApiContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerAttributeApiResponse } from '../../pages/api/sheet/player/attribute';
@@ -22,18 +23,17 @@ import type { PlayerGetAvatarApiResponse } from '../../pages/api/sheet/player/av
 import styles from '../../styles/modules/PlayerAttributeContainer.module.css';
 import { clamp, handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
+import PlayerAttributeEditorDialog from './dialogs/PlayerAttributeEditorDialog';
+import PlayerAvatarDialog from './dialogs/PlayerAvatarDialog';
 
 const AVATAR_SIZE = getAvatarSize(0.75);
 
 const BAR_HEIGHT = 35;
 
-type AttributeEditor = { id: number; value: number; maxValue: number; show: boolean };
-
-const editorInitialValue: AttributeEditor = {
+const editorInitialValue = {
 	id: 0,
 	value: 0,
 	maxValue: 0,
-	show: false,
 };
 
 type PlayerAttributeContainerProps = {
@@ -64,10 +64,10 @@ type PlayerAttributeContainerProps = {
 };
 
 const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props) => {
-	// const [diceRollResultModalProps, onDiceRoll] = useDiceRoll(props.npcId);
-	const [attrEditor, setAttrEditor] = useState<AttributeEditor>(editorInitialValue);
+	const [attrEditorOpen, setAttrEditorOpen] = useState(false);
+	const [attrEditor, setAttrEditor] = useState(editorInitialValue);
 	const [playerAttributeStatus, setPlayerAttributeStatus] = useState(props.playerAttributeStatus);
-	const [notify, setNotify] = useState(false);
+	const [refresh, setRefresh] = useState(false);
 
 	const onStatusChanged = (id: number, newValue: boolean) => {
 		const newPlayerStatus = [...playerAttributeStatus];
@@ -80,9 +80,9 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 		<Stack spacing={3}>
 			<PlayerAvatarImage
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
-				rerender={notify}
+				refreshImage={refresh}
 				playerAvatars={props.playerAvatars}
-				onAvatarUpdate={() => setNotify((n) => !n)}
+				onAvatarUpdate={() => setRefresh((n) => !n)}
 			/>
 			{props.playerAttributes.map((attr) => {
 				const status = playerAttributeStatus.filter((stat) => stat.attributeId === attr.id);
@@ -94,28 +94,32 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 						status={status}
 						onStatusChanged={onStatusChanged}
 						editor={attrEditor}
-						onEdit={(id, value, maxValue) => setAttrEditor({ id, value, maxValue, show: true })}
+						onEdit={(id, value, maxValue) => {
+							setAttrEditorOpen(true);
+							setAttrEditor({ id, value, maxValue });
+						}}
 						visibilityEnabled={attr.portrait != null}
 						attributeDiceConfig={props.attributeDiceConfig}
 					/>
 				);
 			})}
-			{/* <PlayerAttributeEditorModal
-				value={attrEditor}
-				onHide={() => setAttrEditor(editorInitialValue)}
+			<PlayerAttributeEditorDialog
+				open={attrEditorOpen}
+				startValue={attrEditor}
+				onClose={() => setAttrEditorOpen(false)}
 				onSubmit={(value, maxValue) =>
 					setAttrEditor((e) => ({ id: e.id, value, maxValue, show: false }))
 				}
 			/>
-			<DiceRollModal {...diceRollResultModalProps} /> */}
+			{/* <DiceRollModal {...diceRollResultModalProps} /> */}
 		</Stack>
 	);
 };
 
 type PlayerAvatarImageProps = {
 	statusID?: number;
-	rerender: boolean;
-	onAvatarUpdate?: () => void;
+	refreshImage: boolean;
+	onAvatarUpdate: () => void;
 	playerAvatars: {
 		link: string | null;
 		attributeStatus: {
@@ -129,7 +133,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	const statusID = props.statusID || 0;
 
 	const [src, setSrc] = useState('/avatar404.png');
-	// const [avatarModalShow, setAvatarModalShow] = useState(false);
+	const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
 	const previousStatusID = useRef(statusID);
 	const api = useContext(ApiContext);
 
@@ -145,7 +149,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 			})
 			.catch(() => setSrc('/avatar404.png'));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.rerender]);
+	}, [props.refreshImage]);
 
 	useEffect(() => {
 		if (statusID === previousStatusID.current) return;
@@ -164,19 +168,21 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	}, [props.statusID]);
 
 	return (
-		<Box display='flex' alignItems='center' justifyContent='end' gap={2}>
+		<Box display='flex' alignItems='center' justifyContent='space-around' gap={2}>
+			<Box>
+				<Image
+					src={src}
+					alt='Character Avatar'
+					className={styles.clickable}
+					width={AVATAR_SIZE[0]}
+					height={AVATAR_SIZE[1]}
+					onError={() => setSrc('/avatar404.png')}
+					onClick={() => setAvatarDialogOpen(true)}
+				/>
+			</Box>
 			<Image
-				src={src}
-				alt='Character Avatar'
-				className={styles.clickable}
-				width={AVATAR_SIZE[0]}
-				height={AVATAR_SIZE[1]}
-				onError={() => setSrc('/avatar404.png')}
-				// onClick={() => setAvatarModalShow(true)}
-			/>
-			<Image
-				src='/dice20.webp'
-				alt='Dado Geral'
+				src={dice20}
+				alt='D20'
 				className={styles.clickable}
 				width={80}
 				height={80}
@@ -184,6 +190,12 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 				// 	if (ev.ctrlKey) return rollDice({ dices: DEFAULT_ROLL });
 				// 	setShow(true);
 				// }}
+			/>
+			<PlayerAvatarDialog
+				playerAvatars={props.playerAvatars}
+				open={avatarDialogOpen}
+				onClose={() => setAvatarDialogOpen(false)}
+				onSubmit={props.onAvatarUpdate}
 			/>
 		</Box>
 	);
@@ -328,7 +340,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			</Box>
 			<Box display='flex' flexDirection='row' alignItems='center'>
 				{props.visibilityEnabled && (
-					<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange}>
+					<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange} size='small'>
 						{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
 					</IconButton>
 				)}
@@ -351,12 +363,19 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 						}}
 					/>
 					<div className={styles.labelContainer}>
-						{value > maxValue ? <b>{value}</b> : value}/{maxValue}
+						{value > maxValue ? (
+							<b>
+								<i>{value}</i>
+							</b>
+						) : (
+							value
+						)}
+						/{maxValue}
 					</div>
 				</Box>
 				{props.rollable && (
 					<Image
-						src='/dice20.webp'
+						src={dice20}
 						alt='Dice'
 						className={styles.clickable}
 						width={BAR_HEIGHT}

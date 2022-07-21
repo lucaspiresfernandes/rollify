@@ -3,6 +3,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -13,14 +14,15 @@ import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import SheetContainer from '../../components/sheet/Container';
-import { ApiContext, LoggerContext, SocketContext } from '../../contexts';
+import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { PlayerSkillApiResponse } from '../../pages/api/sheet/player/skill';
 import type { PlayerSkillClearChecksApiResponse } from '../../pages/api/sheet/player/skill/clearchecks';
+import type { SkillSheetApiResponse } from '../../pages/api/sheet/skill';
 import { handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
-import type { SkillAddEvent, SkillChangeEvent, SkillRemoveEvent } from '../../utils/socket';
+import PartialBackdrop from '../PartialBackdrop';
 
 type PlayerSkillContainerProps = {
 	title: string;
@@ -32,119 +34,29 @@ type PlayerSkillContainerProps = {
 		checked: boolean;
 		specializationName: string | null;
 	}[];
-	availableSkills: {
-		id: number;
-		name: string;
-		specializationName: string | null;
-	}[];
 	skillDiceConfig: DiceConfig['skill'];
 };
 
 const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
-	const [availableSkills, setAvailableSkills] = useState(props.availableSkills);
 	const [playerSkills, setPlayerSkills] = useState(props.playerSkills);
 	const [loading, setLoading] = useState(false);
 	const [search, setSearch] = useState('');
 	const [notify, setNotify] = useState(false);
 
-	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-
-	const socket_skillAdd = useRef<SkillAddEvent>(() => {});
-	const socket_skillRemove = useRef<SkillRemoveEvent>(() => {});
-	const socket_skillChange = useRef<SkillChangeEvent>(() => {});
-
-	useEffect(() => {
-		socket_skillAdd.current = (id, name, specializationName) => {
-			if (availableSkills.findIndex((sk) => sk.id === id) > -1) return;
-			setAvailableSkills((skills) => [
-				...skills,
-				{
-					id,
-					name,
-					specializationName,
-				},
-			]);
-		};
-
-		socket_skillRemove.current = (id) => {
-			const availableSkillIndex = availableSkills.findIndex((skill) => skill.id === id);
-			if (availableSkillIndex > -1) {
-				setAvailableSkills((availableSkills) => {
-					const newSkills = [...availableSkills];
-					newSkills.splice(availableSkillIndex, 1);
-					return newSkills;
-				});
-				return;
-			}
-
-			const playerSkillIndex = playerSkills.findIndex((skill) => skill.id === id);
-			if (playerSkillIndex === -1) return;
-
-			setPlayerSkills((skills) => {
-				const newSkills = [...skills];
-				newSkills.splice(playerSkillIndex, 1);
-				return newSkills;
-			});
-		};
-
-		socket_skillChange.current = (id, name, specializationName) => {
-			const availableSkillIndex = availableSkills.findIndex((skill) => skill.id === id);
-
-			if (availableSkillIndex > -1) {
-				setAvailableSkills((skills) => {
-					const newSkills = [...skills];
-					newSkills[availableSkillIndex] = {
-						id,
-						name,
-						specializationName,
-					};
-					return newSkills;
-				});
-				return;
-			}
-
-			const playerSkillIndex = playerSkills.findIndex((skill) => skill.id === id);
-			if (playerSkillIndex === -1) return;
-
-			setPlayerSkills((skills) => {
-				const newSkills = [...skills];
-				newSkills[playerSkillIndex] = {
-					...newSkills[playerSkillIndex],
-					name,
-					specializationName,
-				};
-				return newSkills;
-			});
-		};
-	});
-
-	useEffect(() => {
-		socket.on('skillAdd', (id, name, specializationName) =>
-			socket_skillAdd.current(id, name, specializationName)
-		);
-		socket.on('skillRemove', (id) => socket_skillRemove.current(id));
-		socket.on('skillChange', (id, name, specializationName) =>
-			socket_skillChange.current(id, name, specializationName)
-		);
-		return () => {
-			socket.off('skillAdd');
-			socket.off('skillRemove');
-			socket.off('skillChange');
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	const addDataDialog = useContext(AddDataContext);
 
 	const onAddSkill = (id: number) => {
+		addDataDialog.closeDialog();
 		setLoading(true);
 		api
 			.put<PlayerSkillApiResponse>('/sheet/player/skill', { id })
 			.then((res) => {
 				if (res.data.status === 'success') {
 					const skill = res.data.skill;
-					setPlayerSkills([
+					return setPlayerSkills([
 						...playerSkills,
 						{
 							...skill,
@@ -152,22 +64,30 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 							specializationName: skill.Skill.Specialization?.name || null,
 						},
 					]);
+				}
+				handleDefaultApiResponse(res, log);
+			})
+			.catch((err) => log({ severity: 'error', text: err.message }))
+			.finally(() => setLoading(false));
+	};
 
-					const newSkills = [...availableSkills];
-					newSkills.splice(
-						newSkills.findIndex((sk) => sk.id === id),
-						1
-					);
-					setAvailableSkills(newSkills);
+	const loadAvailableSkills = () => {
+		setLoading(true);
+		api
+			.get<SkillSheetApiResponse>('/sheet/skill')
+			.then((res) => {
+				if (res.data.status === 'success') {
+					const skills = res.data.skill.map((sk) => ({
+						id: sk.id,
+						name: sk.Specialization?.name ? `${sk.Specialization.name} (${sk.name})` : sk.name,
+					}));
+					addDataDialog.openDialog(skills, onAddSkill);
 					return;
 				}
 				handleDefaultApiResponse(res, log);
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
-			.finally(() => {
-				// setAddSkillShow(false);
-				setLoading(false);
-			});
+			.finally(() => setLoading(false));
 	};
 
 	const clearChecks = () => {
@@ -203,28 +123,18 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 		[playerSkills]
 	);
 
-	const availableSkillsList = useMemo(
-		() =>
-			availableSkills.map((skill) => {
-				let name = skill.name;
-				if (skill.specializationName) name = `${skill.specializationName} (${name})`;
-				return {
-					id: skill.id,
-					name,
-				};
-			}),
-		[availableSkills]
-	);
-
 	return (
 		<SheetContainer
 			title={props.title}
-			containerProps={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+			sx={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}
 			sideButton={
-				<IconButton aria-label='Add Skill'>
+				<IconButton aria-label='Add Skill' onClick={loadAvailableSkills}>
 					<AddIcon />
 				</IconButton>
 			}>
+			<PartialBackdrop open={loading}>
+				<CircularProgress color='inherit' disableShrink />
+			</PartialBackdrop>
 			<Box display='flex' alignItems='center' gap={1} my={1}>
 				<Paper sx={{ p: 0.5, flex: '1 0' }}>
 					<InputBase

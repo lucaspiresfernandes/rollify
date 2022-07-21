@@ -12,4 +12,7 @@ const createApiClient: typeof axios.create = (config) => {
 	});
 };
 
+//Default API
+export const api = createApiClient();
+
 export default createApiClient;

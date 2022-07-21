@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useContext } from 'react';
+import dice20 from '../../../public/dice20.webp';
 import SheetContainer from '../../components/sheet/Container';
 import { ApiContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
@@ -102,11 +103,12 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>
 			<div>
 				<Image
-					src='/dice20.webp'
+					src={dice20}
 					alt='Dice'
 					// onClick={(ev) => rollDice(ev.ctrlKey)}
 					width={45}
 					height={45}
+					style={{ cursor: 'pointer' }}
 				/>
 			</div>
 			<div>

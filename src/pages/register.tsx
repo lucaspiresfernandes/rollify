@@ -17,7 +17,7 @@ import useSnackbar from '../hooks/useSnackbar';
 
 import type { Locale } from '../i18n';
 import { EMAIL_REGEX } from '../utils';
-import createApiClient from '../utils/createApiClient';
+import { api } from '../utils/createApiClient';
 import type { InferSsrProps } from '../utils/next';
 import prisma from '../utils/prisma';
 import { withSessionSsr } from '../utils/session';
@@ -26,8 +26,6 @@ import type { RegisterResponse } from './api/register';
 type RegisterHandler = (email: string, password: string, adminKey?: string) => void;
 
 type PageProps = InferSsrProps<typeof getSsp>;
-
-const api = createApiClient();
 
 const HomePage: NextPage<PageProps> = (props) => {
 	const [snackbarProps, updateSnackbar] = useSnackbar();
@@ -212,14 +210,14 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		if (!init)
 			return {
 				redirect: {
-					destination: '/welcome',
+					destination: '/getting-started',
 					permanent: false,
 				},
 			};
 	} catch (err) {
 		return {
 			redirect: {
-				destination: '/welcome?error=true',
+				destination: '/getting-started/error',
 				permanent: false,
 			},
 		};
