@@ -1,14 +1,14 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
 
-import ApplicationHead from '../../../components/ApplicationHead';
-import PlayerSheet from '../../../components/sheet/Page1';
-import SnackbarContainer from '../../../components/SnackbarContainer';
-import { LoggerContext } from '../../../contexts';
-import useSnackbar from '../../../hooks/useSnackbar';
-import type { DiceConfig } from '../../../utils/dice';
-import type { InferSsrProps } from '../../../utils/next';
-import prisma from '../../../utils/prisma';
-import { withSessionSsr } from '../../../utils/session';
+import ApplicationHead from '../../../../components/ApplicationHead';
+import PlayerSheet from '../../../../components/sheet/Page1';
+import SnackbarContainer from '../../../../components/SnackbarContainer';
+import { LoggerContext } from '../../../../contexts';
+import useSnackbar from '../../../../hooks/useSnackbar';
+import type { DiceConfig } from '../../../../utils/dice';
+import type { InferSsrProps } from '../../../../utils/next';
+import prisma from '../../../../utils/prisma';
+import { withSessionSsr } from '../../../../utils/session';
 
 export type SheetFirstPageProps = InferSsrProps<typeof getSsp>;
 
@@ -29,7 +29,7 @@ const SheetFirstPage: NextPage<SheetFirstPageProps> = (props) => {
 async function getSsp(ctx: GetServerSidePropsContext) {
 	const player = ctx.req.session.player;
 
-	if (!player) {
+	if (!player || !player.admin) {
 		return {
 			redirect: {
 				destination: '/',
@@ -38,9 +38,11 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		};
 	}
 
+	const npcId = parseInt(ctx.query.id as string);
+
 	const results = await prisma.$transaction([
 		prisma.player.findUnique({
-			where: { id: player.id },
+			where: { id: npcId },
 			select: {
 				id: true,
 				name: true,
@@ -77,39 +79,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 				PlayerSpell: { select: { Spell: true } },
 			},
 		}),
-		prisma.equipment.findMany({
-			where: { visible: true, PlayerEquipment: { none: { player_id: player.id } } },
-		}),
-		prisma.skill.findMany({
-			where: { PlayerSkill: { none: { player_id: player.id } } },
-			select: {
-				id: true,
-				name: true,
-				Specialization: {
-					select: {
-						name: true,
-					},
-				},
-			},
-		}),
-		prisma.item.findMany({
-			where: { visible: true, PlayerItem: { none: { player_id: player.id } } },
-		}),
-		prisma.spell.findMany({
-			where: { visible: true, PlayerSpell: { none: { player_id: player.id } } },
-		}),
 		prisma.config.findUnique({ where: { name: 'dice' } }),
 		prisma.config.findUnique({ where: { name: 'enable_automatic_markers' } }),
-		prisma.player.findMany({
-			where: {
-				role: { in: ['PLAYER'] },
-				id: { not: player.id },
-			},
-			select: {
-				id: true,
-				name: true,
-			},
-		}),
 	]);
 
 	if (!results[0]) {
@@ -123,18 +94,13 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	}
 
 	const locale = ctx.locale || ctx.defaultLocale;
-	const { table = {} } = await import(`../../../i18n/${locale}`);
+	const { table = {} } = await import(`../../../../i18n/${locale}`);
 
 	return {
 		props: {
 			player: results[0],
-			availableEquipments: results[1],
-			availableSkills: results[2],
-			availableItems: results[3],
-			availableSpells: results[4],
-			diceConfig: JSON.parse(results[5]?.value || 'null') as DiceConfig,
-			automaticMarking: results[6]?.value === 'true' ? true : false,
-			partners: results[7],
+			diceConfig: JSON.parse(results[1]?.value || 'null') as DiceConfig,
+			automaticMarking: results[2]?.value === 'true' ? true : false,
 			table,
 		},
 	};

@@ -106,7 +106,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 	const [password, setPassword] = useState('');
 	const [passwordError, setPasswordError] = useState<string>();
 	const [confirmPassword, setConfirmPassword] = useState('');
-	const [adminKey, setAdminKey] = useState(props.registerAsAdmin ? '' : undefined);
+	const [adminKey, setAdminKey] = useState('');
 	const { t } = useI18n<Locale>();
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
@@ -117,8 +117,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 			return setPasswordError(t('error.credentials.empty_password'));
 		if (password !== confirmPassword)
 			return setPasswordError(t('error.credentials.password_mismatch'));
-
-		props.onSubmit(email, password, adminKey);
+		props.onSubmit(email, password, props.registerAsAdmin ? adminKey : undefined);
 	};
 
 	return (

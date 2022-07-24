@@ -6,14 +6,15 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useContext, useRef, useState } from 'react';
-import SheetContainer from '../../components/sheet/Container';
-import { ApiContext, LoggerContext } from '../../contexts';
+import { memo, useContext, useRef, useState } from 'react';
+import SheetContainer from './Section';
+import { ApiContext, LoggerContext, LoggerContextType } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerInfoApiResponse } from '../../pages/api/sheet/player/info';
 import type { SxProps, Theme } from '@mui/material';
 import { handleDefaultApiResponse } from '../../utils';
+import type { AxiosInstance } from 'axios';
 
 type PlayerInfoContainerProps = {
 	title: string;
@@ -32,9 +33,18 @@ type PlayerInfoContainerProps = {
 };
 
 const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (props) => {
+	const log = useContext(LoggerContext);
+	const api = useContext(ApiContext);
+	
 	return (
 		<SheetContainer title={props.title}>
-			<PlayerNameField value={props.playerName} show={props.playerNameShow} sx={{ mt: 2 }} />
+			<PlayerNameField
+				value={props.playerName}
+				show={props.playerNameShow}
+				sx={{ mt: 2 }}
+				log={log}
+				api={api}
+			/>
 			<Stack my={2} spacing={3}>
 				{props.playerInfo.map((info) => (
 					<PlayerInfoField key={info.id} {...info} />
@@ -56,32 +66,32 @@ type PlayerNameFieldProps = {
 	sx?: SxProps<Theme>;
 	value: string;
 	show: boolean;
+	log: LoggerContextType;
+	api: AxiosInstance;
 };
 
 const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 	const [show, setShow] = useState(props.show);
 	const [value, setValue, isClean] = useExtendedState(props.value);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const log = useContext(LoggerContext);
-	const api = useContext(ApiContext);
 
 	const onShowChange = () => {
 		const newShow = !show;
 		setShow(newShow);
-		api
+		props.api
 			.post<PlayerApiResponse>('/sheet/player', {
 				showName: newShow,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, props.log))
+			.catch((err) => props.log({ severity: 'error', text: err.message }));
 	};
 
 	const onValueBlur = () => {
 		if (isClean()) return;
-		api
+		props.api
 			.post<PlayerApiResponse>('/sheet/player', { name: value })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.then((res) => handleDefaultApiResponse(res, props.log))
+			.catch((err) => props.log({ severity: 'error', text: 'Unknown error: ' + err.message }));
 	};
 
 	return (
@@ -182,4 +192,4 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 	);
 };
 
-export default PlayerInfoContainer;
+export default memo(PlayerInfoContainer, () => true);

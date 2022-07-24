@@ -1,4 +1,4 @@
-import SheetContainer from '../../components/sheet/Container';
+import SheetContainer from './Section';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import useExtendedState from '../../hooks/useExtendedState';

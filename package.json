@@ -16,6 +16,8 @@
 		"analyze": "cross-env ANALYZE=true next build"
 	},
 	"dependencies": {
+		"@dnd-kit/core": "^6.0.5",
+		"@dnd-kit/sortable": "^7.0.1",
 		"@emotion/cache": "^11.9.3",
 		"@emotion/react": "^11.9.3",
 		"@emotion/server": "^11.4.0",

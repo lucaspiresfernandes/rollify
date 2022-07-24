@@ -62,8 +62,6 @@ const handlePost: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 		});
 
 		res.json({ status: 'success', item: [item] });
-
-		res.socket.server.io.emit('itemChange', item);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -103,8 +101,6 @@ const handlePut: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 		});
 
 		res.json({ status: 'success', item: [item] });
-
-		res.socket.server.io.emit('itemAdd', item.id, item.name);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -127,7 +123,6 @@ const handleDelete: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) =>
 	try {
 		const item = await prisma.item.delete({ where: { id } });
 		res.json({ status: 'success', item: [item] });
-		res.socket.server.io.emit('itemRemove', id);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

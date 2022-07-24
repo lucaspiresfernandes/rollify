@@ -39,7 +39,6 @@ model Player {
 model Info {
   id             Int          @id @default(autoincrement())
   name           String
-  visibleToAdmin Boolean
   PlayerInfo     PlayerInfo[]
 }
 
@@ -49,7 +48,6 @@ model Attribute {
   color           String             @db.Char(6)
   rollable        Boolean
   portrait        PortraitAttribute?
-  visibleToAdmin  Boolean
   PlayerAttribute PlayerAttribute[]
   AttributeStatus AttributeStatus[]
 }
@@ -66,14 +64,12 @@ model AttributeStatus {
 model Spec {
   id             Int          @id @default(autoincrement())
   name           String
-  visibleToAdmin Boolean
   PlayerSpec     PlayerSpec[]
 }
 
 model Characteristic {
   id                   Int                    @id @default(autoincrement())
   name                 String
-  visibleToAdmin       Boolean
   PlayerCharacteristic PlayerCharacteristic[]
 }
 
@@ -91,7 +87,6 @@ model Skill {
   specialization_id Int?
   startValue        Int
   mandatory         Boolean
-  visibleToAdmin    Boolean
   PlayerSkill       PlayerSkill[]
 }
 
@@ -119,7 +114,6 @@ model Item {
 model Currency {
   id             Int              @id @default(autoincrement())
   name           String
-  visibleToAdmin Boolean
   PlayerCurrency PlayerCurrency[]
 }
 
@@ -261,7 +255,7 @@ model PlayerSpell {
 }
 
 model PlayerNote {
-  Player    Player @relation(fields: [player_id], references: [id])
+  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   player_id Int
   value     String @db.Text
 

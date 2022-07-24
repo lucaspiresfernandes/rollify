@@ -52,13 +52,17 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 
-	const onAvatarChange = (id: number | null, newValue: string) => {
-		setAvatars((avatars) => {
-			const newAvatars = [...avatars];
-			const av = newAvatars.find((avatar) => avatar.id === id);
-			if (av) av.link = newValue || null;
-			return newAvatars;
-		});
+	const onAvatarChange = (id: number | null, newLink: string) => {
+		setAvatars((avatars) =>
+			avatars.map((avatar) => {
+				if (avatar.id === id)
+					return {
+						...avatar,
+						link: newLink,
+					};
+				return avatar;
+			})
+		);
 	};
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {

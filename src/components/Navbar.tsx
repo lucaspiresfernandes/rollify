@@ -1,11 +1,12 @@
+import MenuIcon from '@mui/icons-material/Menu';
+import type { PaletteMode } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MuiLink from '@mui/material/Link';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,9 +14,8 @@ import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import whiteLogo from '../../public/rollify_white.png';
-import { PaletteModeContext } from '../contexts';
 import useSession from '../hooks/useSession';
 import type { Locale } from '../i18n';
 import { api } from '../utils/createApiClient';
@@ -25,25 +25,33 @@ const languages = new Map<string, string>([
 	['pt-BR', 'Português Brasileiro'],
 ]);
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode, toggleMode }) => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const router = useRouter();
 	const auth = useSession(router);
-	const { mode, toggleMode } = useContext(PaletteModeContext);
 	const { t } = useI18n<Locale>();
+
+	if (router.pathname.includes('/portrait')) return null;
 
 	function onLocaleChange(ev: SelectChangeEvent) {
 		const locale = ev.target.value;
 		router.push(router.pathname, undefined, { locale });
 	}
 
+	const npcId = router.query.id as string | undefined;
+
 	const links = auth
 		? auth.admin
-			? [
-					{ href: '/admin/panel', name: t('nav.admin.panel') },
-					{ href: '/admin/editor', name: t('nav.admin.editor') },
-					{ href: '/admin/config', name: t('nav.admin.configurations') },
-			  ]
+			? npcId
+				? [
+						{ href: `/sheet/npc/${npcId}/1`, name: t('nav.player.firstPage') },
+						{ href: `/sheet/npc/${npcId}/2`, name: t('nav.player.secondPage') },
+				  ]
+				: [
+						{ href: '/admin/panel', name: t('nav.admin.panel') },
+						{ href: '/admin/editor', name: t('nav.admin.editor') },
+						{ href: '/admin/config', name: t('nav.admin.configurations') },
+				  ]
 			: [
 					{ href: '/sheet/player/1', name: t('nav.player.firstPage') },
 					{ href: '/sheet/player/2', name: t('nav.player.secondPage') },
@@ -56,7 +64,7 @@ const Navbar: React.FC = () => {
 	return (
 		<AppBar position='static'>
 			<Toolbar>
-				<Box flexGrow={1} display={{ xs: 'none', sm: 'flex' }} gap={1}>
+				<Box flexGrow={1} width={{ md: 0 }} display={{ xs: 'none', md: 'flex' }} gap={1}>
 					{!router.pathname.includes('getting-started') &&
 						links.map(({ href, name }) => (
 							<Link key={href} href={href} passHref>
@@ -64,7 +72,7 @@ const Navbar: React.FC = () => {
 							</Link>
 						))}
 				</Box>
-				<Box flexGrow={1} display={{ xs: 'flex', sm: 'none' }} mr={2}>
+				<Box flexGrow={1} display={{ xs: 'flex', md: 'none' }} mr={2}>
 					<IconButton
 						size='large'
 						aria-label='account of current user'
@@ -103,18 +111,26 @@ const Navbar: React.FC = () => {
 				<div style={{ width: 200 }}>
 					<Image src={whiteLogo} alt='LOGO' layout='responsive' priority />
 				</div>
-				<Box display='flex' flexGrow={1} gap={1} justifyContent='end' ml={{ xs: 2, sm: 0 }}>
+				<Box
+					display='flex'
+					width={{ md: 0, xs: 200 }}
+					flexGrow={1}
+					gap={1}
+					justifyContent='end'
+					ml={{ xs: 2, md: 0 }}>
 					<Switch
 						inputProps={{ 'aria-label': 'Switch Theme' }}
 						checked={mode === 'dark'}
 						onChange={toggleMode}
 					/>
 					{auth ? (
-						<Button
-							color='inherit'
-							onClick={() => api.delete('/player').then(() => router.push('/'))}>
-							{t('nav.exit')}
-						</Button>
+						!npcId && (
+							<Button
+								color='inherit'
+								onClick={() => api.delete('/player').then(() => router.push('/'))}>
+								{t('nav.exit')}
+							</Button>
+						)
 					) : (
 						<Select
 							notched

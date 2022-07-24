@@ -81,10 +81,18 @@ export const table: Locale = {
 		},
 	},
 
+	admin: {
+		panelTitle: 'GM\'s Panel',
+		editorTitle: 'GM\'s Editor',
+		configurationsTitle: 'Settings',
+	},
+
 	modal: {
 		close: 'Close',
 		cancel: 'Cancel',
 		apply: 'Apply',
+		roll: 'Roll',
+		rollAgain: 'Roll Again',
 	},
 
 	prompt: {

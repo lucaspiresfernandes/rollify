@@ -4,13 +4,23 @@ import type { NextApiResponseData } from '../../utils/next';
 import type { Presets } from '../../utils/presets';
 import prisma from '../../utils/prisma';
 
-export type BootResponse = NextApiResponseData<
-	'already_booted' | 'invalid_preset_id' | 'invalid_locale'
+export type BootApiResponse = NextApiResponseData<
+	'already_booted' | 'invalid_preset_id' | 'invalid_locale',
+	{ init: boolean }
 >;
 
-const handler: NextApiHandler<BootResponse> = async (req, res) => {
-	if (req.method !== 'POST') return res.status(405).end();
+const handler: NextApiHandler<BootApiResponse> = async (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
+	if (req.method === 'POST') return handlePost(req, res);
+	return res.status(405).end();
+};
 
+const handleGet: NextApiHandler<BootApiResponse> = async (_, res) => {
+	const init = (await prisma.config.findUnique({ where: { name: 'init' } }))?.value === 'true';
+	return res.json({ status: 'success', init });
+};
+
+const handlePost: NextApiHandler<BootApiResponse> = async (req, res) => {
 	const config = await prisma.config.findUnique({ where: { name: 'init' } });
 
 	if (config && config.value === 'true')
@@ -50,7 +60,7 @@ const handler: NextApiHandler<BootResponse> = async (req, res) => {
 			prisma.skill.createMany({ data: preset.skill }),
 		]);
 
-		res.json({ status: 'success' });
+		res.json({ status: 'success', init: true });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

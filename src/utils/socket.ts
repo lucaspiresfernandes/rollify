@@ -15,11 +15,7 @@ export type PlayerAttributeStatusChangeEvent = (
 	value: boolean
 ) => void;
 
-export type PlayerInfoChangeEvent = (
-	playerId: number,
-	infoId: number,
-	value: string
-) => void;
+export type PlayerInfoChangeEvent = (playerId: number, infoId: number, value: string) => void;
 
 export type PlayerAttributeChangeEvent = (
 	playerId: number,
@@ -29,11 +25,7 @@ export type PlayerAttributeChangeEvent = (
 	show: boolean
 ) => void;
 
-export type PlayerSpecChangeEvent = (
-	playerId: number,
-	specId: number,
-	value: string
-) => void;
+export type PlayerSpecChangeEvent = (playerId: number, specId: number, value: string) => void;
 
 export type PlayerCurrencyChangeEvent = (
 	playerId: number,
@@ -81,57 +73,22 @@ export type PlayerSpellRemoveEvent = (playerId: number, spellId: number) => void
 
 export type PlayerMaxLoadChangeEvent = (playerId: number, newLoad: number) => void;
 
-export type PlayerSpellSlotsChangeEvent = (
-	playerId: number,
-	newSpellSlots: number
-) => void;
+export type PlayerSpellSlotsChangeEvent = (playerId: number, newSpellSlots: number) => void;
 
 export type EnvironmentChangeEvent = (newValue: string) => void;
 
 export type PlayerDeleteEvent = () => void;
-
-export type SkillAddEvent = (
-	id: number,
-	name: string,
-	specializationName: string | null
-) => void;
-
-export type SkillRemoveEvent = (id: number) => void;
-
-export type SkillChangeEvent = (
-	id: number,
-	name: string,
-	specializationName: string | null
-) => void;
-
-export type EquipmentAddEvent = (id: number, name: string) => void;
-
-export type EquipmentRemoveEvent = (id: number) => void;
-
-export type EquipmentChangeEvent = (equipment: Equipment) => void;
-
-export type ItemAddEvent = (id: number, name: string) => void;
-
-export type ItemRemoveEvent = (id: number) => void;
-
-export type ItemChangeEvent = (item: Item) => void;
-
-export type SpellAddEvent = (id: number, name: string) => void;
-
-export type SpellRemoveEvent = (id: number) => void;
-
-export type SpellChangeEvent = (spell: Spell) => void;
 
 export type DiceRollEvent = () => void;
 
 export type DiceResultEvent = (
 	playerId: number,
 	results: DiceResponse[],
-	dices: DiceRequest | DiceRequest[]
+	dices: DiceRequest
 ) => void;
 
 export type PlayerTradeRequestEvent = (
-	type: any,//TradeType,
+	type: any, //TradeType,
 	tradeId: number,
 	receiverObjectId: number | null,
 	senderName: string,
@@ -178,18 +135,6 @@ export interface ServerToClientEvents {
 	//---------- Admin-triggered Events ----------
 	environmentChange: EnvironmentChangeEvent;
 	playerDelete: PlayerDeleteEvent;
-	skillAdd: SkillAddEvent;
-	skillRemove: SkillRemoveEvent;
-	skillChange: SkillChangeEvent;
-	equipmentAdd: EquipmentAddEvent;
-	equipmentRemove: EquipmentRemoveEvent;
-	equipmentChange: EquipmentChangeEvent;
-	itemAdd: ItemAddEvent;
-	itemRemove: ItemRemoveEvent;
-	itemChange: ItemChangeEvent;
-	spellAdd: SpellAddEvent;
-	spellRemove: SpellRemoveEvent;
-	spellChange: SpellChangeEvent;
 
 	//---------- Dice-triggered Events ----------
 	diceRoll: DiceRollEvent;

@@ -88,8 +88,6 @@ const handlePost: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => 
 		});
 
 		res.json({ status: 'success', spell: [spell] });
-
-		res.socket.server.io.emit('spellChange', spell);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -150,8 +148,6 @@ const handlePut: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
 		});
 
 		res.json({ status: 'success', spell: [spell] });
-
-		res.socket.server.io.emit('spellAdd', spell.id, spell.name);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -174,7 +170,6 @@ const handleDelete: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) =
 	try {
 		const spell = await prisma.spell.delete({ where: { id } });
 		res.json({ status: 'success', spell: [spell] });
-		res.socket.server.io.emit('spellRemove', id);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

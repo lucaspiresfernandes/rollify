@@ -5,17 +5,20 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import type { GetServerSidePropsContext, NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
+import type { I18nProps } from 'next-rosetta';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ApplicationHead from '../../components/ApplicationHead';
 import LoadingScreen from '../../components/LoadingScreen';
+import useBoot from '../../hooks/useBoot';
+import useSession from '../../hooks/useSession';
+import type { Locale } from '../../i18n';
 import { api } from '../../utils/createApiClient';
 import type { Presets } from '../../utils/presets';
 import preset_en from '../../utils/presets/en.json';
 import preset_pt from '../../utils/presets/pt-BR.json';
-import prisma from '../../utils/prisma';
-import type { BootResponse } from '../api/boot';
+import type { BootApiResponse } from '../api/boot';
 
 type Preset = Presets[number];
 const presetsMap = new Map<string, Presets>([
@@ -23,7 +26,22 @@ const presetsMap = new Map<string, Presets>([
 	['pt-BR', preset_pt as Presets],
 ]);
 
-const GettingStartedPage: NextPage = (props) => {
+const GettingStartedPage: NextPage = () => {
+	const boot = useBoot();
+	const session = useSession();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (boot) router.push('/');
+	}, [boot, router]);
+
+	useEffect(() => {
+		if (session) {
+			if (session.admin) router.push('/admin/main');
+			router.push('/sheet/player/1');
+		}
+	}, [session, router]);
+
 	return (
 		<>
 			<ApplicationHead title='Getting Started' />
@@ -47,7 +65,7 @@ const GettingStarted: React.FC = () => {
 	const boot = () => {
 		setBooting(true);
 		api
-			.post<BootResponse>('/boot', { presetId: selectedPresetId, locale: router.locale })
+			.post<BootApiResponse>('/boot', { presetId: selectedPresetId, locale: router.locale })
 			.then(({ data }) => {
 				if (data.status === 'success') {
 					router.push('/');
@@ -126,29 +144,10 @@ const GettingStarted: React.FC = () => {
 	);
 };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-	try {
-		const init = (await prisma.config.findUnique({ where: { name: 'init' } }))?.value === 'true';
-		if (init)
-			return {
-				redirect: {
-					destination: '/',
-					permanent: false,
-				},
-			};
-	} catch (err) {
-		return {
-			redirect: {
-				destination: '/getting-started/error',
-				permanent: false,
-			},
-		};
-	}
-
+export const getStaticProps: GetStaticProps<I18nProps<Locale>> = async (ctx) => {
 	const locale = ctx.locale || ctx.defaultLocale;
 	const { table = {} } = await import(`../../i18n/${locale}`);
-
 	return { props: { table } };
-}
+};
 
 export default GettingStartedPage;

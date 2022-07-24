@@ -26,10 +26,10 @@ const handler: NextApiHandler<RegisterResponse> = async (req, res) => {
 
 	if (!req.body.email || !req.body.password)
 		return res.json({ status: 'failure', reason: 'invalid_credentials' });
-		
+
 	const email = String(req.body.email);
 	const plainPassword = String(req.body.password);
-	const adminKey = String(req.body.adminKey || '');
+	const adminKey = req.body.adminKey === undefined ? undefined : String(req.body.adminKey);
 
 	try {
 		const user = await prisma.player.findUnique({ where: { email } });
@@ -37,7 +37,7 @@ const handler: NextApiHandler<RegisterResponse> = async (req, res) => {
 		if (user) return res.json({ status: 'failure', reason: 'user_already_exists' });
 
 		let isAdmin = false;
-		if (adminKey) {
+		if (adminKey !== undefined) {
 			isAdmin = await validateAdminKey(adminKey);
 			if (!isAdmin) return res.json({ status: 'failure', reason: 'invalid_admin_key' });
 		}

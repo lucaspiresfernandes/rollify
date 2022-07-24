@@ -2,7 +2,7 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import type { InferSsrProps } from '../../utils/next';
 import type {
 	Environment,
-	PortraitEnvironmentOrientation,
+	portraitEnvironmentOrientation,
 	PortraitFontConfig,
 } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
@@ -156,7 +156,8 @@ export default PortraitPage;
 // }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-	const nameOrientation = (ctx.query.orientation as PortraitEnvironmentOrientation) || 'Direita';
+	const nameOrientation =
+		(ctx.query.orientation as typeof portraitEnvironmentOrientation[number]) || 'Direita';
 	const playerId = parseInt(ctx.query.characterID as string);
 	const diceColor = (ctx.query.dicecolor as string) || 'ddaf0f';
 	const showDiceRoll = (ctx.query.showdiceroll as string) === 'true';

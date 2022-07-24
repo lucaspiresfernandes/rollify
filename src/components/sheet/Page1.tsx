@@ -4,12 +4,20 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
-import { useEffect, useState } from 'react';
-import { AddDataContext, ApiContext, SocketContext } from '../../contexts';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+	AddDataContext,
+	ApiContext,
+	DiceRollContext,
+	DiceRollEvent,
+	SocketContext,
+} from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
 import createApiClient from '../../utils/createApiClient';
+import DiceRollDialog, { DiceRoll } from '../DiceRollDialog';
+import LoadingScreen from '../LoadingScreen';
 import AddDataDialog, { AddDataDialogProps } from './dialogs/AddDataDialog';
 import PlayerAttributeContainer from './PlayerAttributeContainer';
 import PlayerCharacteristicContainer from './PlayerCharacteristicContainer';
@@ -19,23 +27,36 @@ import PlayerItemContainer from './PlayerItemContainer';
 import PlayerSkillContainer from './PlayerSkillContainer';
 import PlayerSpellContainer from './PlayerSpellContainer';
 
+const MemoPlayerAttributeContainer = memo(PlayerAttributeContainer, () => true);
+const MemoPlayerCharacteristicContainer = memo(PlayerCharacteristicContainer, () => true);
+const MemoPlayerCombatContainer = memo(PlayerCombatContainer, () => true);
+const MemoPlayerInfoContainer = memo(PlayerInfoContainer, () => true);
+const MemoPlayerItemContainer = memo(PlayerItemContainer, () => true);
+const MemoPlayerSkillContainer = memo(PlayerSkillContainer, () => true);
+const MemoPlayerSpellContainer = memo(PlayerSpellContainer, () => true);
+
 const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
 	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
 	const [dialogData, setDialogData] = useState<{
 		data: { id: number; name: string }[];
 		onSubmit: AddDataDialogProps['onSubmit'];
 	}>({ data: [], onSubmit: () => {} });
+	const [diceRoll, setDiceRoll] = useState<DiceRoll>({ dice: null });
 	const socket = useSocket(`player${props.player.id}`);
 	const { t } = useI18n<Locale>();
 
-	const api = createApiClient({
-		transformRequest: [
-			(data) => {
-				if (props.isNpc) data.npcId = props.player.id;
-				return data;
-			},
-		],
-	});
+	const api = useMemo(
+		() =>
+			createApiClient({
+				transformRequest: [
+					(data) => {
+						if (props.isNpc) data.npcId = props.player.id;
+						return data;
+					},
+				],
+			}),
+		[props.isNpc, props.player.id]
+	);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -46,44 +67,53 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
-	if (!socket) return null;
+	const onRollDice: DiceRollEvent = useCallback(
+		(dice, onResult) => setDiceRoll({ dice, onResult }),
+		[]
+	);
 
-	const openDialog = (data: typeof dialogData['data'], onSubmit: typeof dialogData['onSubmit']) => {
-		setDialogData({ data, onSubmit });
-		setAddDataDialogOpen(true);
-	};
+	const addDataProvider = useMemo(
+		() => ({
+			openDialog: (data: typeof dialogData['data'], onSubmit: typeof dialogData['onSubmit']) => {
+				setDialogData({ data, onSubmit });
+				setAddDataDialogOpen(true);
+			},
+			closeDialog: () => setAddDataDialogOpen(false),
+		}),
+		[]
+	);
 
-	const closeDialog = () => setAddDataDialogOpen(false);
+	if (!socket) return <LoadingScreen />;
 
 	return (
-		<SocketContext.Provider value={socket}>
-			<ApiContext.Provider value={api}>
-				<Container sx={{ mt: 2 }}>
-					<Box textAlign='center'>
-						<Typography variant='h3' component='h1'>
-							{t('sheet.playerTitle')}
-						</Typography>
-					</Box>
-					<Grid container spacing={2} my={2}>
-						<Grid item xs={12} sm={6}>
-							<PlayerInfoContainer
-								title={t('sheet.playerInfoTitle')}
-								playerName={props.player.name}
-								playerNameShow={props.player.showName}
-								playerInfo={props.player.PlayerInfo.map((info) => ({
-									...info,
-									...info.Info,
-								}))}
-								playerSpec={props.player.PlayerSpec.map((spec) => ({
-									id: spec.Spec.id,
-									name: spec.Spec.name,
-									value: spec.value,
-								}))}
-							/>
-						</Grid>
+		<Container sx={{ mt: 2 }}>
+			<Box textAlign='center'>
+				<Typography variant='h3' component='h1'>
+					{t('sheet.playerTitle')}
+				</Typography>
+			</Box>
+			<Grid container spacing={2} my={2}>
+				<ApiContext.Provider value={api}>
+					<Grid item xs={12} sm={6}>
+						<MemoPlayerInfoContainer
+							title={t('sheet.playerInfoTitle')}
+							playerName={props.player.name}
+							playerNameShow={props.player.showName}
+							playerInfo={props.player.PlayerInfo.map((info) => ({
+								...info,
+								...info.Info,
+							}))}
+							playerSpec={props.player.PlayerSpec.map((spec) => ({
+								id: spec.Spec.id,
+								name: spec.Spec.name,
+								value: spec.value,
+							}))}
+						/>
+					</Grid>
 
+					<DiceRollContext.Provider value={onRollDice}>
 						<Grid item xs={12} sm={6}>
-							<PlayerAttributeContainer
+							<MemoPlayerAttributeContainer
 								playerAttributes={props.player.PlayerAttributes.map((attr) => ({
 									...attr,
 									...attr.Attribute,
@@ -102,7 +132,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 						</Grid>
 
 						<Grid item xs={12} sm={6}>
-							<PlayerCharacteristicContainer
+							<MemoPlayerCharacteristicContainer
 								title={t('sheet.playerCharacteristicTitle')}
 								playerCharacteristics={props.player.PlayerCharacteristic.map((char) => ({
 									...char,
@@ -112,59 +142,63 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 							/>
 						</Grid>
 
-						<AddDataContext.Provider value={{ openDialog, closeDialog }}>
-							<Grid item xs={12} sm={6}>
-								<PlayerSkillContainer
-									title={t('sheet.playerSkillTitle')}
-									playerSkills={props.player.PlayerSkill.map((skill) => ({
-										...skill,
-										...skill.Skill,
-										specializationName: skill.Skill.Specialization?.name || null,
-									}))}
-									skillDiceConfig={props.diceConfig.skill}
-								/>
-							</Grid>
+						<AddDataContext.Provider value={addDataProvider}>
+							<SocketContext.Provider value={socket}>
+								<Grid item xs={12} sm={6}>
+									<MemoPlayerSkillContainer
+										title={t('sheet.playerSkillTitle')}
+										playerSkills={props.player.PlayerSkill.map((skill) => ({
+											...skill,
+											...skill.Skill,
+											specializationName: skill.Skill.Specialization?.name || null,
+										}))}
+										automaticMarking={props.automaticMarking}
+										skillDiceConfig={props.diceConfig.skill}
+									/>
+								</Grid>
+
+								<Grid item xs={12}>
+									<MemoPlayerCombatContainer
+										title={t('sheet.playerCombatTitle')}
+										playerEquipments={props.player.PlayerEquipment}
+									/>
+								</Grid>
+
+								<Grid item xs={12}>
+									<MemoPlayerItemContainer
+										title={t('sheet.playerItemTitle')}
+										playerCurrency={props.player.PlayerCurrency.map((cur) => ({
+											id: cur.Currency.id,
+											name: cur.Currency.name,
+											value: cur.value,
+										}))}
+										playerItems={props.player.PlayerItem.map((it) => ({
+											...it,
+											...it.Item,
+										}))}
+										maxLoad={props.player.maxLoad}
+									/>
+								</Grid>
+							</SocketContext.Provider>
 
 							<Grid item xs={12}>
-								<PlayerCombatContainer
-									title={t('sheet.playerCombatTitle')}
-									playerEquipments={props.player.PlayerEquipment}
-								/>
-							</Grid>
-
-							<Grid item xs={12}>
-								<PlayerItemContainer
-									title={t('sheet.playerItemTitle')}
-									playerCurrency={props.player.PlayerCurrency.map((cur) => ({
-										id: cur.Currency.id,
-										name: cur.Currency.name,
-										value: cur.value,
-									}))}
-									playerItems={props.player.PlayerItem.map((it) => ({
-										...it,
-										...it.Item,
-									}))}
-									maxLoad={props.player.maxLoad}
-								/>
-							</Grid>
-
-							<Grid item xs={12}>
-								<PlayerSpellContainer
+								<MemoPlayerSpellContainer
 									title={t('sheet.playerSpellTitle')}
 									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
 								/>
 							</Grid>
 						</AddDataContext.Provider>
-					</Grid>
-				</Container>
-				<AddDataDialog
-					open={addDataDialogOpen}
-					data={dialogData.data}
-					onClose={() => setAddDataDialogOpen(false)}
-					onSubmit={dialogData.onSubmit}
-				/>
-			</ApiContext.Provider>
-		</SocketContext.Provider>
+					</DiceRollContext.Provider>
+					<DiceRollDialog onClose={() => setDiceRoll({ dice: null })} {...diceRoll} />
+				</ApiContext.Provider>
+			</Grid>
+			<AddDataDialog
+				open={addDataDialogOpen}
+				data={dialogData.data}
+				onClose={() => setAddDataDialogOpen(false)}
+				onSubmit={dialogData.onSubmit}
+			/>
+		</Container>
 	);
 };
 

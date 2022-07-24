@@ -14,7 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
-import SheetContainer from '../../components/sheet/Container';
+import SheetContainer from './Section';
 import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
@@ -106,13 +106,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
-				const newPlayerItems = [...playerItems];
-				const index = newPlayerItems.findIndex((it) => it.id === id);
-
-				if (index === -1) return;
-
-				newPlayerItems.splice(index, 1);
-				setPlayerItems(newPlayerItems);
+				setPlayerItems((i) => i.filter((item) => item.id !== id));
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
 			.finally(() => setLoading(false));

@@ -16,14 +16,21 @@ import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
 import dice20 from '../../../public/dice20.webp';
-import SheetContainer from '../../components/sheet/Container';
-import { AddDataContext, ApiContext, LoggerContext, SocketContext } from '../../contexts';
+import SheetContainer from './Section';
+import {
+	AddDataContext,
+	ApiContext,
+	DiceRollContext,
+	LoggerContext,
+	SocketContext,
+} from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { EquipmentSheetApiResponse } from '../../pages/api/sheet/equipment';
 import type { PlayerEquipmentApiResponse } from '../../pages/api/sheet/player/equipment';
 import type { TradeEquipmentApiResponse } from '../../pages/api/sheet/player/trade/equipment';
 import { handleDefaultApiResponse } from '../../utils';
+import { resolveDices } from '../../utils/dice';
 import type { PlayerTradeRequestEvent, PlayerTradeResponseEvent } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
 
@@ -75,9 +82,11 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 
 			const equip = playerEquipments.find((eq) => eq.Equipment.id === receiverObjectId);
 
+			if (!equip) return console.warn('Equipment not found:', receiverObjectId);
+
 			const accept = confirm(
 				`${senderName} te ofereceu ${equipmentName}${
-					receiverObjectId ? ` em troca de ${equip?.Equipment.name}.` : '.'
+					receiverObjectId ? ` em troca de ${equip.Equipment.name}.` : '.'
 				}` + ' Você deseja aceitar essa proposta?'
 			);
 
@@ -101,13 +110,15 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 					if (!accept || !newEquip) return;
 
 					if (receiverObjectId) {
-						const index = playerEquipments.findIndex((eq) => eq.Equipment.id === receiverObjectId);
-						if (index > -1) playerEquipments[index] = newEquip;
+						setPlayerEquipments((equipments) =>
+							equipments.map((eq) => {
+								if (eq.Equipment.id === receiverObjectId) return newEquip;
+								return eq;
+							})
+						);
 					} else {
-						playerEquipments.push(newEquip);
+						setPlayerEquipments((equipments) => [...equipments, newEquip]);
 					}
-
-					setPlayerEquipments([...playerEquipments]);
 				})
 				.catch(log)
 				.finally(() => (currentTradeId.current = null));
@@ -163,9 +174,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		);
 		socket.on('playerTradeResponse', (accept, eq) => socket_responseReceived.current(accept, eq));
 		return () => {
-			socket.off('equipmentAdd');
-			socket.off('equipmentRemove');
-			socket.off('equipmentChange');
 			socket.off('playerTradeRequest');
 			socket.off('playerTradeResponse');
 		};
@@ -199,11 +207,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		api
 			.get<EquipmentSheetApiResponse>('/sheet/equipment')
 			.then((res) => {
-				if (res.data.status === 'success') {
-					const equipments = res.data.equipment;
-					addDataDialog.openDialog(equipments, onAddEquipment);
-					return;
-				}
+				if (res.data.status === 'success')
+					return addDataDialog.openDialog(res.data.equipment, onAddEquipment);
 				handleDefaultApiResponse(res, log);
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
@@ -219,13 +224,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
-				const newPlayerEquipments = [...playerEquipments];
-				const index = newPlayerEquipments.findIndex((eq) => eq.Equipment.id === id);
-
-				if (index === -1) return;
-
-				newPlayerEquipments.splice(index, 1);
-				setPlayerEquipments(newPlayerEquipments);
+				setPlayerEquipments((e) => e.filter((e) => e.Equipment.id !== id));
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
 			.finally(() => setLoading(false));
@@ -264,8 +263,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 						{playerEquipments.map((eq) => (
 							<PlayerCombatField
 								key={eq.Equipment.id}
+								{...eq.Equipment}
 								currentAmmo={eq.currentAmmo}
-								equipment={eq.Equipment}
 								onDelete={() => onDeleteEquipment(eq.Equipment.id)}
 							/>
 						))}
@@ -276,9 +275,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	);
 };
 
-type PlayerCombatFieldProps = {
+type PlayerCombatFieldProps = { [T in keyof Equipment]: Equipment[T] } & {
 	currentAmmo: number;
-	equipment: Equipment;
 	onDelete: () => void;
 };
 
@@ -286,6 +284,27 @@ const PlayerCombatField: React.FC<PlayerCombatFieldProps> = (props) => {
 	const [currentAmmo, setCurrentAmmo, isClean] = useExtendedState(props.currentAmmo);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const rollDice = useContext(DiceRollContext);
+
+	const handleDiceClick = () => {
+		if (props.ammo && currentAmmo === 0) return alert('TODO: Você não tem munição suficiente.');
+
+		const aux = resolveDices(props.damage);
+
+		if (!aux) return;
+
+		rollDice(aux);
+
+		const ammo = currentAmmo - 1;
+		setCurrentAmmo(ammo);
+		api
+			.post<PlayerEquipmentApiResponse>('/sheet/player/equipment', {
+				id: props.id,
+				currentAmmo: ammo,
+			})
+			.then((res) => handleDefaultApiResponse(res, log))
+			.catch((err) => log({ severity: 'error', text: err.message }));
+	};
 
 	const onAmmoChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
 		const aux = ev.target.value;
@@ -297,13 +316,13 @@ const PlayerCombatField: React.FC<PlayerCombatFieldProps> = (props) => {
 		if (isClean()) return;
 		let newAmmo = currentAmmo;
 
-		if (props.equipment.ammo && currentAmmo > props.equipment.ammo) newAmmo = props.equipment.ammo;
+		if (props.ammo && currentAmmo > props.ammo) newAmmo = props.ammo;
 
 		setCurrentAmmo(newAmmo);
 
 		api
 			.post<PlayerEquipmentApiResponse>('/sheet/player/equipment', {
-				id: props.equipment.id,
+				id: props.id,
 				currentAmmo: newAmmo,
 			})
 			.then((res) => handleDefaultApiResponse(res, log))
@@ -328,22 +347,25 @@ const PlayerCombatField: React.FC<PlayerCombatFieldProps> = (props) => {
 						<HandshakeIcon />
 					</IconButton>
 				</TableCell>
-				<TableCell align='center'>{props.equipment.name}</TableCell>
-				<TableCell align='center'>{props.equipment.type}</TableCell>
-				<TableCell align='center'>{props.equipment.damage}</TableCell>
+				<TableCell align='center'>{props.name}</TableCell>
+				<TableCell align='center'>{props.type}</TableCell>
+				<TableCell align='center'>{props.damage}</TableCell>
 				<TableCell align='center' padding='none'>
-					<Image
-						src={dice20}
-						alt='Dice'
-						// onClick={(ev) => rollDice(ev.ctrlKey)}
-						width={30}
-						height={30}
-					/>
+					{props.damage && (
+						<Image
+							src={dice20}
+							alt='Dice'
+							className='clickable'
+							onClick={handleDiceClick}
+							width={30}
+							height={30}
+						/>
+					)}
 				</TableCell>
-				<TableCell align='center'>{props.equipment.range}</TableCell>
-				<TableCell align='center'>{props.equipment.attacks}</TableCell>
+				<TableCell align='center'>{props.range}</TableCell>
+				<TableCell align='center'>{props.attacks}</TableCell>
 				<TableCell align='center'>
-					{props.equipment.ammo ? (
+					{props.ammo ? (
 						<TextField
 							variant='standard'
 							value={currentAmmo}
@@ -354,7 +376,7 @@ const PlayerCombatField: React.FC<PlayerCombatFieldProps> = (props) => {
 						'-'
 					)}
 				</TableCell>
-				<TableCell align='center'>{props.equipment.ammo || '-'}</TableCell>
+				<TableCell align='center'>{props.ammo || '-'}</TableCell>
 			</TableRow>
 		</>
 	);

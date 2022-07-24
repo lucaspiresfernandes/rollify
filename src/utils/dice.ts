@@ -1,5 +1,5 @@
-export type DiceResolverKeyNum = 20 | 100;
-export type DiceResolverKey = '20' | '100' | '20b' | '100b';
+type DiceResolverKeyNum = 20 | 100;
+type DiceResolverKey = '20' | '100' | '20b' | '100b';
 
 type DiceConfigCell = {
 	value: DiceResolverKeyNum;
@@ -17,22 +17,22 @@ export type DiceConfig = {
 	attribute: DiceConfigCell;
 };
 
-export type DiceRequest = {
-	num: number;
+export type ResolvedDice = {
+	num?: number;
 	roll: number;
 	ref?: number;
+	branched?: boolean;
 };
 
-export type DiceResponseResultType = {
-	description: string;
-
-	//0: normal, < 0: failure, > 0: success
-	successWeight: number;
-};
+export type DiceRequest = ResolvedDice | ResolvedDice[];
 
 export type DiceResponse = {
 	roll: number;
-	resultType?: DiceResponseResultType;
+	resultType?: {
+		//0: normal, < 0: failure, > 0: success
+		successWeight: number;
+		description: string;
+	};
 };
 
 export function resolveDices(dices: string) {
@@ -56,7 +56,7 @@ export function resolveDices(dices: string) {
 	}
 
 	const diceArray = formattedDiceString.split('+');
-	const resolvedDices: DiceRequest[] = new Array(diceArray.length);
+	const resolvedDices: ResolvedDice[] = new Array(diceArray.length);
 
 	for (let i = 0; i < diceArray.length; i++) {
 		resolvedDices[i] = resolveDice(diceArray[i]);
@@ -65,7 +65,7 @@ export function resolveDices(dices: string) {
 	return resolvedDices;
 }
 
-function resolveDice(dice: string): DiceRequest {
+function resolveDice(dice: string): ResolvedDice {
 	if (dice.includes('DB')) {
 		const bonusDamageArray = document.getElementsByName(
 			'specDano Bônus'

@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useContext } from 'react';
 import dice20 from '../../../public/dice20.webp';
-import SheetContainer from '../../components/sheet/Container';
-import { ApiContext, LoggerContext } from '../../contexts';
+import SheetContainer from './Section';
+import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import { handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
@@ -31,6 +31,7 @@ const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps
 						<PlayerCharacteristicField
 							{...char}
 							modifier={props.characteristicDiceConfig.enable_modifiers ? char.modifier : null}
+							characteristicDiceConfig={props.characteristicDiceConfig}
 						/>
 					</Grid>
 				))}
@@ -44,6 +45,7 @@ type PlayerCharacteristicFieldProps = {
 	name: string;
 	value: number;
 	modifier: number | null;
+	characteristicDiceConfig: DiceConfig['characteristic'];
 };
 
 const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (props) => {
@@ -57,6 +59,28 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	});
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const rollDice = useContext(DiceRollContext);
+
+	const handleDiceClick = (standalone: boolean) => {
+		const roll = props.characteristicDiceConfig.value;
+		const branched = props.characteristicDiceConfig.branched;
+
+		let mod = 0;
+		if (modifier) mod = parseInt(modifier);
+
+		const val = parseInt(value);
+
+		rollDice(
+			{ num: standalone ? 1 : undefined, roll, ref: Math.max(0, val + mod), branched },
+			(results) => {
+				if (!mod) return;
+				return results.map((res) => ({
+					roll: Math.max(1, res.roll + mod),
+					resultType: res.resultType,
+				}));
+			}
+		);
+	};
 
 	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = () => {
 		const aux = value;
@@ -105,7 +129,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 				<Image
 					src={dice20}
 					alt='Dice'
-					// onClick={(ev) => rollDice(ev.ctrlKey)}
+					onClick={(ev) => handleDiceClick(ev.ctrlKey)}
 					width={45}
 					height={45}
 					style={{ cursor: 'pointer' }}

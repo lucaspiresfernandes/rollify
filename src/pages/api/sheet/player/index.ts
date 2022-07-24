@@ -1,13 +1,78 @@
+import type { AsyncReturnType } from '../../../../utils';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
 import { withSessionApi } from '../../../../utils/session';
 
-export type PlayerApiResponse = NextApiResponseData<'unauthorized' | 'invalid_body'>;
+const getPlayerData = async (id: number) => {
+	const data = await prisma.player.findUnique({
+		where: { id },
+		select: {
+			id: true,
+			name: true,
+			PlayerInfo: { select: { Info: { select: { id: true, name: true } }, value: true } },
+			PlayerSpec: { select: { Spec: { select: { id: true, name: true } }, value: true } },
+			PlayerAttributes: {
+				select: {
+					Attribute: { select: { id: true, name: true, color: true } },
+					value: true,
+					maxValue: true,
+				},
+			},
+			PlayerAttributeStatus: {
+				select: {
+					AttributeStatus: { select: { id: true, name: true, attribute_id: true } },
+					value: true,
+				},
+			},
+			PlayerCharacteristic: {
+				select: {
+					Characteristic: { select: { id: true, name: true } },
+					value: true,
+					modifier: true,
+				},
+			},
+			PlayerSkill: {
+				select: {
+					Skill: { select: { id: true, name: true, Specialization: { select: { name: true } } } },
+					value: true,
+					modifier: true,
+				},
+			},
+			PlayerEquipment: { select: { Equipment: true, currentAmmo: true } },
+			PlayerItem: { select: { Item: true, currentDescription: true, quantity: true } },
+			PlayerCurrency: { select: { Currency: { select: { id: true, name: true } }, value: true } },
+			PlayerSpell: { select: { Spell: true } },
+		},
+	});
+	return data;
+};
+
+export type PlayerApiResponsePlayerData = AsyncReturnType<typeof getPlayerData>;
+
+export type PlayerApiResponse = NextApiResponseData<
+	'unauthorized' | 'invalid_body',
+	{ player: PlayerApiResponsePlayerData }
+>;
 
 const handler: NextApiHandlerIO<PlayerApiResponse> = (req, res) => {
+	if (req.method === 'GET') return handleGet(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	res.status(405).end();
+};
+
+const handleGet: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
+	if (!req.session.player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	if (!req.query.id) return res.json({ status: 'failure', reason: 'invalid_body' });
+
+	try {
+		const id = Number(req.query.id);
+		res.json({ status: 'success', player: await getPlayerData(id) });
+	} catch (err) {
+		console.error(err);
+		res.json({ status: 'failure', reason: 'unknown_error' });
+	}
 };
 
 const handlePost: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
@@ -30,7 +95,7 @@ const handlePost: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
 			data: { name, showName, maxLoad, spellSlots: maxSlots },
 		});
 
-		res.json({ status: 'success' });
+		res.json({ status: 'success', player: null });
 
 		const listeners = res.socket.server.io.to(`portrait${playerId}`).to('admin');
 
@@ -59,7 +124,7 @@ const handleDelete: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
 	try {
 		await prisma.player.delete({ where: { id: playerId } });
 
-		res.json({ status: 'success' });
+		res.json({ status: 'success', player: null });
 
 		res.socket.server.io.to(`player${playerId}`).emit('playerDelete');
 	} catch (err) {

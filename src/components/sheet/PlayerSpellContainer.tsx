@@ -13,7 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
-import SheetContainer from '../../components/sheet/Container';
+import SheetContainer from './Section';
 import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerSpellApiResponse } from '../../pages/api/sheet/player/spell';
@@ -76,13 +76,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
-				const newPlayerSpells = [...playerSpells];
-				const index = newPlayerSpells.findIndex((it) => it.id === id);
-
-				if (index === -1) return;
-
-				newPlayerSpells.splice(index, 1);
-				setPlayerSpells(newPlayerSpells);
+				setPlayerSpells((s) => s.filter((spell) => spell.id !== id));
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
 			.finally(() => setLoading(false));

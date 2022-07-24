@@ -2,11 +2,11 @@ import type { IronSessionData } from 'iron-session';
 import type { NextApiHandler } from 'next';
 import { withSessionApi } from '../../utils/session';
 
-type PlayerGetResponse = {
+export type PlayerApiGetResponse = {
 	player: IronSessionData['player'];
 };
 
-const handler: NextApiHandler<PlayerGetResponse> = (req, res) => {
+const handler: NextApiHandler<PlayerApiGetResponse> = (req, res) => {
 	if (req.method === 'GET') return res.json({ player: req.session.player });
 
 	if (req.method === 'DELETE') {

@@ -11,10 +11,9 @@ const handler: NextApiHandler<PlayerAnnotationApiResponse> = async (req, res) =>
 	const player = req.session.player;
 	const npcId = Number(req.body.npcId) || undefined;
 
-	if (!player || (player.admin && !npcId))
-		return res.json({ status: 'failure', reason: 'unauthorized' });
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.value) return res.json({ status: 'failure', reason: 'invalid_body' });
+	if (req.body.value === undefined) return res.json({ status: 'failure', reason: 'invalid_body' });
 
 	const value = String(req.body.value);
 

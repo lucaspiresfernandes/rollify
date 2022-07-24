@@ -8,7 +8,6 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import { PaletteModeContext } from '../contexts';
 import '../styles/globals.css';
 import getTheme from '../theme';
 import createEmotionCache from '../utils/createEmotionCache';
@@ -44,15 +43,13 @@ export default function MyApp(props: MyAppProps) {
 				<meta name='theme-color' content={theme.palette.primary.main} />
 				<meta name='viewport' content='initial-scale=1, width=device-width' />
 			</Head>
-			<PaletteModeContext.Provider value={{ mode, toggleMode }}>
-				<ThemeProvider theme={theme}>
-					<CssBaseline />
-					<I18nProvider table={pageProps.table}>
-						<Navbar />
-						<Component {...pageProps} />
-					</I18nProvider>
-				</ThemeProvider>
-			</PaletteModeContext.Provider>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<I18nProvider table={pageProps.table}>
+					<Navbar mode={mode} toggleMode={toggleMode} />
+					<Component {...pageProps} />
+				</I18nProvider>
+			</ThemeProvider>
 		</CacheProvider>
 	);
 }

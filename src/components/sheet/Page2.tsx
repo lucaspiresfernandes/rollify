@@ -4,12 +4,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ApiContext, SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetSecondPageProps } from '../../pages/sheet/player/2';
 import createApiClient from '../../utils/createApiClient';
+import LoadingScreen from '../LoadingScreen';
 import PlayerExtraInfoContainer from './PlayerExtraInfoContainer';
 import PlayerNotesContainer from './PlayerNotesContainer';
 
@@ -17,14 +18,18 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc?: boolean }> = (
 	const socket = useSocket(`player${props.player.id}`);
 	const { t } = useI18n<Locale>();
 
-	const api = createApiClient({
-		transformRequest: [
-			(data) => {
-				if (props.isNpc) data.npcId = props.player.id;
-				return data;
-			},
-		],
-	});
+	const api = useMemo(
+		() =>
+			createApiClient({
+				transformRequest: [
+					(data) => {
+						if (props.isNpc) data.npcId = props.player.id;
+						return data;
+					},
+				],
+			}),
+		[props.player.id, props.isNpc]
+	);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -35,9 +40,7 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc?: boolean }> = (
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
-	if (!socket) return null;
-
-	console.log(props);
+	if (!socket) return <LoadingScreen />;
 
 	return (
 		<SocketContext.Provider value={socket}>

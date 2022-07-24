@@ -2,6 +2,12 @@ import type { AxiosResponse } from 'axios';
 import type { LoggerContextType } from '../contexts';
 import type { NextApiResponseData } from './next';
 
+export type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (
+	...args: any
+) => Promise<infer R>
+	? R
+	: any;
+
 export const TRADE_TIME_LIMIT = 10000;
 
 export const EMAIL_REGEX =
@@ -20,6 +26,10 @@ export function handleDefaultApiResponse<
 		default:
 			return log({ severity: 'error', text: 'Unknown error: ' + res.data.reason });
 	}
+}
+
+export function getAvatarSize(ratio: number): [number, number] {
+	return [420 * ratio, 600 * ratio];
 }
 
 export function clamp(num: number, min: number, max: number) {

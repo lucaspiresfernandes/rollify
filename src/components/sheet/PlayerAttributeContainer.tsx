@@ -15,14 +15,18 @@ import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
 import dice20 from '../../../public/dice20.webp';
-import { ApiContext, LoggerContext } from '../../contexts';
+import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerAttributeApiResponse } from '../../pages/api/sheet/player/attribute';
 import type { PlayerAttributeStatusApiResponse } from '../../pages/api/sheet/player/attribute/status';
 import type { PlayerGetAvatarApiResponse } from '../../pages/api/sheet/player/avatar/[attrStatusID]';
 import styles from '../../styles/modules/PlayerAttributeContainer.module.css';
-import { clamp, handleDefaultApiResponse } from '../../utils';
+import { clamp, getAvatarSize, handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
+import GeneralDiceRollDialog, {
+	DEFAULT_ROLL,
+	GeneralDiceRollDialogSubmitHandler,
+} from '../GeneralDiceRollDialog';
 import PlayerAttributeEditorDialog from './dialogs/PlayerAttributeEditorDialog';
 import PlayerAvatarDialog from './dialogs/PlayerAvatarDialog';
 
@@ -70,10 +74,12 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 	const [refresh, setRefresh] = useState(false);
 
 	const onStatusChanged = (id: number, newValue: boolean) => {
-		const newPlayerStatus = [...playerAttributeStatus];
-		const index = newPlayerStatus.findIndex((stat) => stat.id === id);
-		newPlayerStatus[index].value = newValue;
-		setPlayerAttributeStatus(newPlayerStatus);
+		setPlayerAttributeStatus((a) =>
+			a.map((status) => {
+				if (status.id === id) return { ...status, value: newValue };
+				return status;
+			})
+		);
 	};
 
 	return (
@@ -130,16 +136,19 @@ type PlayerAvatarImageProps = {
 };
 
 const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
-	const statusID = props.statusID || 0;
-
 	const [src, setSrc] = useState('/avatar404.png');
 	const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
-	const previousStatusID = useRef(statusID);
+	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);
+
+	const statusId = props.statusID || 0;
+	const previousStatusID = useRef(statusId);
+
+	const rollDice = useContext(DiceRollContext);
 	const api = useContext(ApiContext);
 
 	useEffect(() => {
 		api
-			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusID}`)
+			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
 			.then(({ data }) => {
 				if (data.status === 'success') {
 					setSrc(data.link);
@@ -152,10 +161,10 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	}, [props.refreshImage]);
 
 	useEffect(() => {
-		if (statusID === previousStatusID.current) return;
-		previousStatusID.current = statusID;
+		if (statusId === previousStatusID.current) return;
+		previousStatusID.current = statusId;
 		api
-			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusID}`)
+			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
 			.then(({ data }) => {
 				if (data.status === 'success') {
 					setSrc(data.link);
@@ -167,30 +176,40 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.statusID]);
 
+	const onGeneralDiceDialogSubmit: GeneralDiceRollDialogSubmitHandler = (dice) => {
+		setGeneralDiceDialogOpen(false);
+		if (dice.length > 0) rollDice(dice);
+	};
+
 	return (
 		<Box display='flex' alignItems='center' justifyContent='space-around' gap={2}>
-			<Box>
+			<div>
 				<Image
 					src={src}
 					alt='Character Avatar'
-					className={styles.clickable}
+					className='clickable'
 					width={AVATAR_SIZE[0]}
 					height={AVATAR_SIZE[1]}
 					onError={() => setSrc('/avatar404.png')}
 					onClick={() => setAvatarDialogOpen(true)}
 				/>
-			</Box>
-			<Image
-				src={dice20}
-				alt='D20'
-				className={styles.clickable}
-				width={80}
-				height={80}
-				// onClick={(ev) => {
-				// 	if (ev.ctrlKey) return rollDice({ dices: DEFAULT_ROLL });
-				// 	setShow(true);
-				// }}
-			/>
+			</div>
+			<GeneralDiceRollDialog
+				open={generalDiceDialogOpen}
+				onClose={() => setGeneralDiceDialogOpen(false)}
+				onSubmit={onGeneralDiceDialogSubmit}>
+				<Image
+					src={dice20}
+					alt='D20'
+					className='clickable'
+					width={80}
+					height={80}
+					onClick={(ev) => {
+						if (ev.ctrlKey) return rollDice(DEFAULT_ROLL);
+						setGeneralDiceDialogOpen(true);
+					}}
+				/>
+			</GeneralDiceRollDialog>
 			<PlayerAvatarDialog
 				playerAvatars={props.playerAvatars}
 				open={avatarDialogOpen}
@@ -232,6 +251,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 	const timeout = useRef<{ timeout?: NodeJS.Timeout; lastValue: number }>({
 		lastValue: value,
 	});
+	const rollDice = useContext(DiceRollContext);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const { t } = useI18n<Locale>();
@@ -264,6 +284,17 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.editor]);
+
+	const handleDiceClick = (standalone: boolean) => {
+		const roll = props.attributeDiceConfig.value;
+		const branched = props.attributeDiceConfig.branched;
+		rollDice({
+			num: standalone ? 1 : undefined,
+			roll,
+			ref: value,
+			branched,
+		});
+	};
 
 	const onShowChange: React.MouseEventHandler<HTMLButtonElement> = (ev) => {
 		const newShow = !show;
@@ -324,17 +355,17 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				</Typography>
 				<div>
 					<IconButton
+						aria-label='subtract'
+						size='small'
+						onClick={(ev) => updateValue(-1, ev.ctrlKey)}>
+						<RemoveIcon />
+					</IconButton>
+					<IconButton
 						aria-label='add'
 						size='small'
 						onClick={(ev) => updateValue(1, ev.ctrlKey)}
 						sx={{ mr: 1 }}>
 						<AddIcon />
-					</IconButton>
-					<IconButton
-						aria-label='subtract'
-						size='small'
-						onClick={(ev) => updateValue(-1, ev.ctrlKey)}>
-						<RemoveIcon />
 					</IconButton>
 				</div>
 			</Box>
@@ -377,7 +408,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					<Image
 						src={dice20}
 						alt='Dice'
-						className={styles.clickable}
+						className='clickable'
+						onClick={(ev) => handleDiceClick(ev.ctrlKey)}
 						width={BAR_HEIGHT}
 						height={BAR_HEIGHT}
 					/>
@@ -438,9 +470,5 @@ const PlayerAttributeStatusField: React.FC<PlayerAttributeStatusFieldProps> = (p
 		/>
 	);
 };
-
-function getAvatarSize(ratio: number): [number, number] {
-	return [420 * ratio, 600 * ratio];
-}
 
 export default PlayerAttributeContainer;

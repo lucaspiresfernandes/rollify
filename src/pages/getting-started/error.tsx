@@ -1,9 +1,30 @@
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import ApplicationHead from '../../components/ApplicationHead';
+import LoadingScreen from '../../components/LoadingScreen';
+import useBoot from '../../hooks/useBoot';
+import useSession from '../../hooks/useSession';
 
 const ErrorPage: NextPage = () => {
+	const boot = useBoot();
+	const session = useSession();
+	const router = useRouter();
+
+	if (boot) {
+		router.push('/');
+		return null;
+	}
+
+	if (session) {
+		if (session.admin) router.push('/admin/main');
+		router.push('/sheet/player/1');
+		return null;
+	}
+
+	if (boot === undefined) return <LoadingScreen />;
+
 	return (
 		<>
 			<ApplicationHead title='Error' />

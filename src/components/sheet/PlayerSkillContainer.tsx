@@ -11,10 +11,18 @@ import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import type { AxiosInstance } from 'axios';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import SheetContainer from '../../components/sheet/Container';
-import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
+import SheetContainer from './Section';
+import {
+	AddDataContext,
+	ApiContext,
+	DiceRollContext,
+	DiceRollEvent,
+	LoggerContext,
+	LoggerContextType,
+} from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { PlayerSkillApiResponse } from '../../pages/api/sheet/player/skill';
@@ -35,6 +43,7 @@ type PlayerSkillContainerProps = {
 		specializationName: string | null;
 	}[];
 	skillDiceConfig: DiceConfig['skill'];
+	automaticMarking: boolean;
 };
 
 const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
@@ -46,6 +55,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const rollDice = useContext(DiceRollContext);
 	const addDataDialog = useContext(AddDataContext);
 
 	const onAddSkill = (id: number) => {
@@ -95,10 +105,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 		api
 			.post<PlayerSkillClearChecksApiResponse>('/sheet/player/skill/clearchecks')
 			.then((res) => {
-				if (res.data.status === 'success') {
-					setNotify((n) => !n);
-					return;
-				}
+				if (res.data.status === 'success') return setNotify((n) => !n);
 				handleDefaultApiResponse(res, log);
 			})
 			.catch((err) => log({ severity: 'error', text: err.message }))
@@ -161,9 +168,9 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 			<Divider sx={{ mb: 2 }} />
 			<Box
 				position='relative'
-				flex={{ sm: '1 0', xs: undefined }}
-				height={{ sm: undefined, xs: 350 }}
-				style={{ overflowY: 'auto' }}>
+				flex={{ sm: '1 0' }}
+				height={{ xs: 350 }}
+				sx={{ overflowY: 'auto' }}>
 				<Grid
 					container
 					justifyContent='center'
@@ -186,7 +193,11 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 								<PlayerSkillField
 									{...skill}
 									skillDiceConfig={props.skillDiceConfig}
+									automaticMarking={props.automaticMarking}
 									notifyClearChecked={notify}
+									log={log}
+									api={api}
+									rollDice={rollDice}
 								/>
 							</Grid>
 						);
@@ -204,7 +215,11 @@ type PlayerSkillFieldProps = {
 	modifier: number;
 	checked: boolean;
 	skillDiceConfig: DiceConfig['skill'];
+	automaticMarking: boolean;
 	notifyClearChecked: boolean;
+	log: LoggerContextType;
+	api: AxiosInstance;
+	rollDice: DiceRollEvent;
 };
 
 const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
@@ -218,8 +233,6 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		return mod;
 	});
 	const componentDidMount = useRef(false);
-	const log = useContext(LoggerContext);
-	const api = useContext(ApiContext);
 
 	useEffect(() => {
 		if (!componentDidMount.current) {
@@ -230,13 +243,47 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.notifyClearChecked]);
 
+	const handleDiceRoll: React.MouseEventHandler<HTMLDivElement> = (ev) => {
+		const roll = props.skillDiceConfig.value;
+		const branched = props.skillDiceConfig.branched;
+
+		let mod = 0;
+		if (modifier) mod = parseInt(modifier);
+
+		const val = parseInt(value);
+		const standalone = ev.ctrlKey;
+
+		props.rollDice(
+			{ num: standalone ? 1 : undefined, roll, ref: Math.max(0, val + mod), branched },
+			(results) => {
+				const result = results[0];
+				if (props.automaticMarking && (result.resultType?.successWeight || -1) >= 0) {
+					setChecked(true);
+					props.api
+						.post('/sheet/player/skill', {
+							id: props.id,
+							checked: true,
+						})
+						.then((res) => handleDefaultApiResponse(res, props.log))
+						.catch((err) => props.log({ severity: 'error', text: err.message }));
+				}
+
+				if (!mod) return;
+				return results.map((res) => ({
+					roll: Math.max(1, res.roll + mod),
+					resultType: res.resultType,
+				}));
+			}
+		);
+	};
+
 	const onCheckChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
 		const chk = ev.target.checked;
 		setChecked(chk);
-		api
+		props.api
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: props.id, checked: chk })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, props.log))
+			.catch((err) => props.log({ severity: 'error', text: err.message }));
 	};
 
 	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = () => {
@@ -249,10 +296,10 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 
 		if (isValueClean()) return;
 
-		api
+		props.api
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: props.id, value: newValue })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, props.log))
+			.catch((err) => props.log({ severity: 'error', text: err.message }));
 	};
 
 	const onModifierBlur =
@@ -269,13 +316,13 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 
 					if (isModifierClean()) return;
 
-					api
+					props.api
 						.post<PlayerSkillApiResponse>('/sheet/player/skill', {
 							id: props.id,
 							modifier: parseInt(newModifier),
 						})
-						.then((res) => handleDefaultApiResponse(res, log))
-						.catch((err) => log({ severity: 'error', text: err.message }));
+						.then((res) => handleDefaultApiResponse(res, props.log))
+						.catch((err) => props.log({ severity: 'error', text: err.message }));
 			  }
 			: undefined;
 
@@ -294,7 +341,8 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 						cursor: 'pointer',
 						textDecoration: 'underline',
 					},
-				}}>
+				}}
+				onClick={handleDiceRoll}>
 				<Typography
 					variant='subtitle1'
 					component='label'

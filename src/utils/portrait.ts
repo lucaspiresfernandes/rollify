@@ -5,4 +5,4 @@ export type PortraitFontConfig = {
 
 export type Environment = 'idle' | 'combat';
 
-export type PortraitEnvironmentOrientation = 'Esquerda' | 'Direita';
+export const portraitEnvironmentOrientation = ['Esquerda', 'Direita'] as const;

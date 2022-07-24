@@ -1,18 +1,26 @@
 import type { SxProps, Theme } from '@mui/material';
-import Box from '@mui/material/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-type ContainerProps = {
+const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
+	border: '1px solid gray',
+	borderRadius: (theme.shape.borderRadius as number) * 2,
+	paddingRight: 8,
+	paddingLeft: 8,
+}));
+
+type SectionProps = {
 	title: string;
 	children?: React.ReactNode;
 	sideButton?: React.ReactNode;
 	sx?: SxProps<Theme>;
 };
 
-const Container: React.FC<ContainerProps> = (props) => {
+const Section: React.FC<SectionProps> = (props) => {
 	return (
-		<Box px={1} sx={props.sx} border='1px solid gray' borderRadius={2}>
+		<StyledBox sx={props.sx}>
 			<Box
 				display='flex'
 				flexDirection='row'
@@ -41,8 +49,8 @@ const Container: React.FC<ContainerProps> = (props) => {
 			</Box>
 			<Divider />
 			{props.children}
-		</Box>
+		</StyledBox>
 	);
 };
 
-export default Container;
+export default Section;

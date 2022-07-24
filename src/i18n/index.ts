@@ -80,10 +80,18 @@ export interface Locale {
 		};
 	};
 
+	admin: {
+		panelTitle: string;
+		editorTitle: string;
+		configurationsTitle: string;
+	}
+
 	modal: {
 		close: string;
 		cancel: string;
 		apply: string;
+		roll: string;
+		rollAgain: string;
 	}
 
 	prompt: {

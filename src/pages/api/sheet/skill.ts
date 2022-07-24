@@ -73,8 +73,6 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 		});
 
 		res.json({ status: 'success', skill: [skill] });
-
-		res.socket.server.io.emit('skillChange', id, skill.name, skill.Specialization?.name || null);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -113,8 +111,6 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 		});
 
 		res.json({ status: 'success', skill: [skill] });
-
-		res.socket.server.io.emit('skillAdd', skill.id, skill.name, skill.Specialization?.name || null);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -137,7 +133,6 @@ const handleDelete: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) =
 	try {
 		const skill = await prisma.skill.delete({ where: { id } });
 		res.json({ status: 'success', skill: [{ ...skill, Specialization: null }] });
-		res.socket.server.io.emit('skillRemove', id);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
