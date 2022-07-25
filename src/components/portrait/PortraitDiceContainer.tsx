@@ -6,7 +6,7 @@ import { sleep } from '../../utils';
 import type { DiceResponse } from '../../utils/dice';
 import { getAttributeStyle } from '../../utils/portrait';
 
-export default function PortraitDiceContainer(props: {
+type PortraitDiceContainerProps = {
 	socket: SocketIO;
 	playerId: number;
 	showDice: boolean;
@@ -14,7 +14,9 @@ export default function PortraitDiceContainer(props: {
 	onHideDice: () => void;
 	color: string;
 	showDiceRoll: boolean;
-}) {
+};
+
+const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 	const diceQueue = useRef<DiceResponse[]>([]);
 	const diceData = useRef<DiceResponse>();
 
@@ -44,7 +46,7 @@ export default function PortraitDiceContainer(props: {
 			diceDescriptionRef.current.style.textShadow = style.textShadow;
 		}
 
-		function showDiceRoll() {
+		const showDiceRoll = () => {
 			if (showDiceRef.current) return;
 			showDiceRef.current = true;
 			if (diceVideo.current) {
@@ -52,16 +54,16 @@ export default function PortraitDiceContainer(props: {
 				diceVideo.current.currentTime = 0;
 				diceVideo.current.play();
 			}
-		}
+		};
 
-		async function showNextResult(result: DiceResponse) {
+		const showNextResult = async (result: DiceResponse) => {
 			showDiceRoll();
 			await sleep(750);
 			diceData.current = undefined;
 			onDiceResult(result);
-		}
+		};
 
-		async function onDiceResult(result: DiceResponse) {
+		const onDiceResult = async (result: DiceResponse) => {
 			if (diceData.current) return diceQueue.current.push(result);
 			if (!showDiceRef.current) return showNextResult(result);
 
@@ -88,7 +90,7 @@ export default function PortraitDiceContainer(props: {
 			const next = diceQueue.current.shift();
 			if (next) showNextResult(next);
 			else diceData.current = undefined;
-		}
+		};
 
 		props.socket.on('diceRoll', showDiceRoll);
 		props.socket.on('diceResult', (playerId, results, dices) => {
@@ -136,4 +138,6 @@ export default function PortraitDiceContainer(props: {
 			</Fade>
 		</div>
 	);
-}
+};
+
+export default PortraitDiceContainer;

@@ -1,16 +1,17 @@
 import type { DiceConfig } from '../../../utils/dice';
+import type { Environment } from '../../../utils/portrait';
 import prisma from '../../../utils/prisma';
 import type { NextApiResponseServerIO } from '../../../utils/socket';
 
-type CustomBehaviourHandler = (
+type CustomBehaviourHandler<T = any> = (
 	res: NextApiResponseServerIO,
-	value: any
+	value: T
 ) => unknown | Promise<unknown>;
 
-const onEnvironmentChange: CustomBehaviourHandler = (res, value) =>
+const onEnvironmentChange: CustomBehaviourHandler<Environment> = (res, value) =>
 	res.socket.server.io.emit('environmentChange', value);
 
-const onDiceChange: CustomBehaviourHandler = async (_, value: DiceConfig) => {
+const onDiceChange: CustomBehaviourHandler<DiceConfig> = async (_, value) => {
 	if (!value.characteristic.enable_modifiers) {
 		await prisma.playerCharacteristic.updateMany({
 			where: { modifier: { not: 0 } },

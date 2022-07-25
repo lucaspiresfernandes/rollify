@@ -5,6 +5,7 @@ import type { NextApiResponse } from 'next';
 import type { Server as SocketIOServer } from 'socket.io';
 // import type { TradeType } from '../components/Modals/PlayerTradeModal';
 import type { DiceRequest, DiceResponse } from './dice';
+import type { Environment } from './portrait';
 
 export type PlayerNameChangeEvent = (playerId: number, value: string) => void;
 export type PlayerNameShowChangeEvent = (playerId: number, show: boolean) => void;
@@ -75,7 +76,7 @@ export type PlayerMaxLoadChangeEvent = (playerId: number, newLoad: number) => vo
 
 export type PlayerSpellSlotsChangeEvent = (playerId: number, newSpellSlots: number) => void;
 
-export type EnvironmentChangeEvent = (newValue: string) => void;
+export type EnvironmentChangeEvent = (newValue: Environment) => void;
 
 export type PlayerDeleteEvent = () => void;
 

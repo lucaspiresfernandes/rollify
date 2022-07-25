@@ -1,22 +1,26 @@
-import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import Button from '@mui/material/Button';
+import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useEffect, useState } from 'react';
+import LoadingScreen from '../../components/LoadingScreen';
+import type { PortraitAttributeStatus } from '../../components/portrait/PortraitAvatarContainer';
+import PortraitAvatarContainer from '../../components/portrait/PortraitAvatarContainer';
+import PortraitDiceContainer from '../../components/portrait/PortraitDiceContainer';
+import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEnvironmentalContainer';
+import PortraitSideAttributeContainer from '../../components/portrait/PortraitSideAttributeContainer';
 import type { SocketIO } from '../../hooks/useSocket';
 import useSocket from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
-import type { Environment, PortraitFontConfig } from '../../utils/portrait';
+import type { InferSsrProps } from '../../utils/next';
+import type {
+	Environment,
+	portraitEnvironmentOrientation,
+	PortraitFontConfig,
+} from '../../utils/portrait';
 import prisma from '../../utils/prisma';
-import type { portraitEnvironmentOrientation } from '../../utils/portrait';
-import LoadingScreen from '../../components/LoadingScreen';
-import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEnvironmentalContainer';
-import Button from '@mui/material/Button';
-import type { PortraitAttributeStatus } from '../../components/portrait/PortraitAvatarContainer';
-import PortraitAvatarContainer from '../../components/portrait/PortraitAvatarContainer';
-import PortraitSideAttributeContainer from '../../components/portrait/PortraitSideAttributeContainer';
-import PortraitDiceContainer from '../../components/portrait/PortraitDiceContainer';
 
-type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+type PageProps = InferSsrProps<typeof getServerSideProps>;
 
-export default function Page(props: PageProps) {
+const PortraitPage: NextPage<PageProps> = (props) => {
 	const socket = useSocket(`portrait${props.playerId}`);
 
 	useEffect(() => {
@@ -29,15 +33,14 @@ export default function Page(props: PageProps) {
 				document.body.classList.add('custom-font');
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [props.customFont]);
 
 	if (!socket) return <LoadingScreen />;
 
 	return <CharacterPortrait {...props} socket={socket} />;
-}
+};
 
-function CharacterPortrait(props: PageProps & { socket: SocketIO }) {
+const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) => {
 	const [debug, setDebug] = useState(false);
 
 	const divStyle: React.CSSProperties =
@@ -55,7 +58,7 @@ function CharacterPortrait(props: PageProps & { socket: SocketIO }) {
 				nameOrientation={props.nameOrientation}
 			/>
 			<PortraitEnvironmentalContainer
-				attributes={props.attributes}
+				attributes={props.attributes.map((attr) => ({ ...attr, ...attr.Attribute }))}
 				environment={props.environment}
 				playerId={props.playerId}
 				playerName={props.playerName}
@@ -73,9 +76,9 @@ function CharacterPortrait(props: PageProps & { socket: SocketIO }) {
 			</div>
 		</>
 	);
-}
+};
 
-function PortraitDiceRollContainer(props: {
+type PortraitDiceRollContainerProps = {
 	playerId: number;
 	attributeStatus: PortraitAttributeStatus;
 	sideAttribute: {
@@ -91,7 +94,9 @@ function PortraitDiceRollContainer(props: {
 	showDiceRoll: boolean;
 	socket: SocketIO;
 	nameOrientation: typeof portraitEnvironmentOrientation[number];
-}) {
+};
+
+const PortraitDiceRollContainer: React.FC<PortraitDiceRollContainerProps> = (props) => {
 	const [showDice, setShowDice] = useState(false);
 
 	const divStyle: React.CSSProperties =
@@ -105,7 +110,15 @@ function PortraitDiceRollContainer(props: {
 					attributeStatus={props.attributeStatus}
 					socket={props.socket}
 				/>
-				<PortraitSideAttributeContainer sideAttribute={props.sideAttribute} socket={props.socket} />
+				<PortraitSideAttributeContainer
+					playerId={props.playerId}
+					sideAttribute={
+						props.sideAttribute
+							? { ...props.sideAttribute, ...props.sideAttribute.Attribute }
+							: null
+					}
+					socket={props.socket}
+				/>
 			</div>
 			<PortraitDiceContainer
 				playerId={props.playerId}
@@ -118,7 +131,7 @@ function PortraitDiceRollContainer(props: {
 			/>
 		</div>
 	);
-}
+};
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 	const nameOrientation =
@@ -181,3 +194,5 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 		},
 	};
 }
+
+export default PortraitPage;

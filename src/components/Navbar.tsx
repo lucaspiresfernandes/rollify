@@ -33,10 +33,10 @@ const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode,
 
 	if (router.pathname.includes('/portrait')) return null;
 
-	function onLocaleChange(ev: SelectChangeEvent) {
+	const onLocaleChange = (ev: SelectChangeEvent) => {
 		const locale = ev.target.value;
 		router.push(router.pathname, undefined, { locale });
-	}
+	};
 
 	const npcId = router.query.id as string | undefined;
 

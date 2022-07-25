@@ -1,20 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ControlPosition, DraggableData, DraggableEvent } from 'react-draggable';
+import type { ControlPosition, DraggableEventHandler } from 'react-draggable';
 import Draggable from 'react-draggable';
 import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
 import { getAttributeStyle } from '../../utils/portrait';
-
-type PortraitSideAttribute = {
-	value: number;
-	show: boolean;
-	Attribute: {
-		id: number;
-		name: string;
-		color: string;
-	};
-} | null;
 
 const bounds = {
 	bottom: 475,
@@ -23,10 +13,19 @@ const bounds = {
 	right: 215,
 };
 
-export default function PortraitSideAttributeContainer(props: {
+type PortraitSideAttributeContainerProps = {
+	playerId: number;
 	socket: SocketIO;
-	sideAttribute: PortraitSideAttribute;
-}) {
+	sideAttribute: {
+		id: number;
+		name: string;
+		color: string;
+		value: number;
+		show: boolean;
+	} | null;
+};
+
+const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerProps> = (props) => {
 	const [sideAttribute, setSideAttribute] = useState(props.sideAttribute);
 	const [position, setPosition] = useState<ControlPosition>({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
@@ -41,10 +40,11 @@ export default function PortraitSideAttributeContainer(props: {
 	}, []);
 
 	useEffect(() => {
-		props.socket.on('playerAttributeChange', (playerId, attributeId, value, maxValue, show) => {
+		props.socket.on('playerAttributeChange', (playerId, attributeId, value, _, show) => {
+			if (playerId !== props.playerId) return;
 			setSideAttribute((attr) => {
-				if (attr === null || attributeId !== attr.Attribute.id) return attr;
-				return { value, show, Attribute: { ...attr.Attribute } };
+				if (attr === null || attributeId !== attr.id) return attr;
+				return { ...attr, value, show };
 			});
 		});
 
@@ -55,31 +55,31 @@ export default function PortraitSideAttributeContainer(props: {
 	}, [props.socket]);
 
 	const attributeStyle = useMemo(
-		() => getAttributeStyle(sideAttribute?.Attribute.color || 'ffffff'),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+		() => getAttributeStyle(sideAttribute?.color || 'ffffff'),
+		[sideAttribute]
 	);
 
 	if (!sideAttribute) return null;
 
-	function onDragStop(_ev: DraggableEvent, data: DraggableData) {
+	const onDragStop: DraggableEventHandler = (_, data) => {
 		const pos = {
 			x: clamp(data.x, bounds.left, bounds.right),
 			y: clamp(data.y, bounds.top, bounds.bottom),
 		};
 		setPosition(pos);
 		localStorage.setItem('side-attribute-pos', JSON.stringify(pos));
-	}
+	};
 
 	return (
 		<Draggable axis='both' onStop={onDragStop} position={position} bounds={bounds} nodeRef={ref}>
 			<div className={styles.sideContainer} style={{ ...attributeStyle }} ref={ref}>
 				<div className={styles.sideBackground}></div>
-				<label
-					className={`${styles.sideContent} atributo-secundario ${sideAttribute.Attribute.name}`}>
+				<label className={`${styles.sideContent} atributo-secundario ${sideAttribute.name}`}>
 					{sideAttribute.show ? sideAttribute.value : '?'}
 				</label>
 			</div>
 		</Draggable>
 	);
-}
+};
+
+export default PortraitSideAttributeContainer;

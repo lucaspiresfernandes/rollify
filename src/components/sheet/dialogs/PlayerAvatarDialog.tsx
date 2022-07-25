@@ -10,7 +10,9 @@ import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { PlayerPostAvatarApiResponse } from '../../../pages/api/sheet/player/avatar';
-import { handleDefaultApiResponse } from '../../../utils';
+import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
+
+const AVATAR_SIZE = getAvatarSize(1);
 
 type AvatarData = {
 	id: number | null;
@@ -85,8 +87,11 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 			<DialogTitle>TODO: PLAYER AVATAR</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
-					TODO: É recomendado que as imagens estejam no tamanho de <b>420x600</b> (ou no aspecto de
-					7:10) e em formato <b>PNG</b>.
+					TODO: É recomendado que as imagens estejam no tamanho de{' '}
+					<b>
+						{AVATAR_SIZE[0]}x{AVATAR_SIZE[1]}
+					</b>{' '}
+					(ou no aspecto de 7:10) e em formato <b>PNG</b>.
 				</DialogContentText>
 				<DialogContentText>
 					TODO: Apenas são aceitos links de imagens upadas no site{' '}

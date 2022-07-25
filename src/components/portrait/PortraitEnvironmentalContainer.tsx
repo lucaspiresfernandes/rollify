@@ -10,19 +10,6 @@ import {
 	portraitEnvironmentOrientation,
 } from '../../utils/portrait';
 
-type PortraitPlayerName = { name: string; show: boolean };
-
-type PortraitAttributes = {
-	value: number;
-	Attribute: {
-		id: number;
-		name: string;
-		color: string;
-	};
-	maxValue: number;
-	show: boolean;
-}[];
-
 const bounds = {
 	top: 0,
 	bottom: 450,
@@ -30,20 +17,21 @@ const bounds = {
 	right: 0,
 };
 
-export default function PortraitEnvironmentalContainer(props: {
+type PortraitEnvironmentalContainerProps = {
 	socket: SocketIO;
 	environment: Environment;
-	attributes: PortraitAttributes;
-	playerName: PortraitPlayerName;
+	attributes: PortraitAttributesContainerProps['attributes'];
+	playerName: PortraitNameContainerProps['playerName'];
 	playerId: number;
 	debug: boolean;
 	nameOrientation: typeof portraitEnvironmentOrientation[number];
-}) {
+};
+
+const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerProps> = (props) => {
 	const [environment, setEnvironment] = useState(props.environment);
 
 	useEffect(() => {
-		props.socket.on('environmentChange', (newValue) => setEnvironment(newValue as Environment));
-
+		props.socket.on('environmentChange', (newValue) => setEnvironment(newValue));
 		return () => {
 			props.socket.off('environmentChange');
 		};
@@ -73,15 +61,24 @@ export default function PortraitEnvironmentalContainer(props: {
 			/>
 		</div>
 	);
-}
+};
 
-function PortraitAttributesContainer(props: {
+type PortraitAttributesContainerProps = {
 	socket: SocketIO;
 	environment: Environment;
-	attributes: PortraitAttributes;
+	attributes: {
+		id: number;
+		name: string;
+		color: string;
+		value: number;
+		maxValue: number;
+		show: boolean;
+	}[];
 	playerId: number;
 	debug: boolean;
-}) {
+};
+
+const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = (props) => {
 	const [attributes, setAttributes] = useState(props.attributes);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
@@ -93,25 +90,17 @@ function PortraitAttributesContainer(props: {
 				y: 300,
 			}
 		);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		props.socket.on('playerAttributeChange', (playerId, attributeId, value, maxValue, show) => {
 			if (playerId !== props.playerId) return;
-
-			setAttributes((attributes) => {
-				const index = attributes.findIndex((attr) => attr.Attribute.id === attributeId);
-				if (index === -1) return attributes;
-
-				const newAttributes = [...attributes];
-
-				newAttributes[index].value = value;
-				newAttributes[index].maxValue = maxValue;
-				newAttributes[index].show = show;
-
-				return newAttributes;
-			});
+			setAttributes((attributes) =>
+				attributes.map((attr) => {
+					if (attr.id === attributeId) return { ...attr, value, maxValue, show };
+					return attr;
+				})
+			);
 		});
 
 		return () => {
@@ -140,10 +129,10 @@ function PortraitAttributesContainer(props: {
 					nodeRef={ref}>
 					<div className={styles.combat} ref={ref}>
 						{attributes.map((attr) => (
-							<Fragment key={attr.Attribute.id}>
+							<Fragment key={attr.id}>
 								<span
-									className={`${styles.attribute} atributo-primario ${attr.Attribute.name}`}
-									style={getAttributeStyle(attr.Attribute.color)}>
+									className={`${styles.attribute} atributo-primario ${attr.name}`}
+									style={getAttributeStyle(attr.color)}>
 									<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
 								</span>
 								<br />
@@ -154,15 +143,17 @@ function PortraitAttributesContainer(props: {
 			</div>
 		</Fade>
 	);
-}
+};
 
-function PortraitNameContainer(props: {
+type PortraitNameContainerProps = {
 	socket: SocketIO;
 	environment: Environment;
-	playerName: PortraitPlayerName;
+	playerName: { name: string; show: boolean };
 	playerId: number;
 	debug: boolean;
-}) {
+};
+
+const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	const [playerName, setPlayerName] = useState(props.playerName);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
@@ -191,6 +182,7 @@ function PortraitNameContainer(props: {
 		return () => {
 			props.socket.off('playerNameChange');
 		};
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.socket]);
 
@@ -221,4 +213,6 @@ function PortraitNameContainer(props: {
 			</div>
 		</Fade>
 	);
-}
+};
+
+export default PortraitEnvironmentalContainer;
