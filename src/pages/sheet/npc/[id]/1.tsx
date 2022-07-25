@@ -1,10 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import Head from 'next/head';
 
-import ApplicationHead from '../../../../components/ApplicationHead';
 import PlayerSheet from '../../../../components/sheet/Page1';
-import SnackbarContainer from '../../../../components/SnackbarContainer';
-import { LoggerContext } from '../../../../contexts';
-import useSnackbar from '../../../../hooks/useSnackbar';
 import type { DiceConfig } from '../../../../utils/dice';
 import type { InferSsrProps } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
@@ -13,15 +10,12 @@ import { withSessionSsr } from '../../../../utils/session';
 export type SheetFirstPageProps = InferSsrProps<typeof getSsp>;
 
 const SheetFirstPage: NextPage<SheetFirstPageProps> = (props) => {
-	const [snackbarProps, updateSnackbar] = useSnackbar();
-
 	return (
 		<>
-			<ApplicationHead title='Character Sheet' />
-			<LoggerContext.Provider value={updateSnackbar}>
-				<PlayerSheet {...props} isNpc={true} />
-			</LoggerContext.Provider>
-			<SnackbarContainer {...snackbarProps} />
+			<Head>
+				<title>Character Sheet</title>
+			</Head>
+			<PlayerSheet {...props} isNpc={true} />
 		</>
 	);
 };

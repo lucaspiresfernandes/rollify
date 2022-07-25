@@ -53,7 +53,7 @@ const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode,
 				links = [
 					{ href: '/admin/panel', name: t('nav.admin.panel') },
 					{ href: '/admin/editor', name: t('nav.admin.editor') },
-					{ href: '/admin/config', name: t('nav.admin.configurations') },
+					{ href: '/admin/settings', name: t('nav.admin.configurations') },
 				];
 			}
 		} else {

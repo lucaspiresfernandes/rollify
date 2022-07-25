@@ -12,18 +12,16 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
 import GetPortraitDialog from '../../components/admin/dialogs/GetPortraitDialog';
 import PlayerDetailsDialog from '../../components/admin/dialogs/PlayerDetailsDialog';
 import UtilitySection from '../../components/admin/dialogs/UtilitySection';
-import ApplicationHead from '../../components/ApplicationHead';
 import LoadingScreen from '../../components/LoadingScreen';
 import PartialBackdrop from '../../components/PartialBackdrop';
 import PlayerNotesContainer from '../../components/sheet/PlayerNotesContainer';
-import SnackbarContainer from '../../components/SnackbarContainer';
 import { LoggerContext, SocketContext } from '../../contexts';
-import useSnackbar from '../../hooks/useSnackbar';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import { getAvatarSize, handleDefaultApiResponse } from '../../utils';
@@ -37,15 +35,12 @@ import type { PlayerGetAvatarApiResponse } from '../api/sheet/player/avatar/[att
 type AdminPanelPageProps = InferSsrProps<typeof getSsp>;
 
 const AdminMainPage: NextPage<AdminPanelPageProps> = (props) => {
-	const [snackbarProps, updateSnackbar] = useSnackbar();
-
 	return (
 		<>
-			<ApplicationHead title='Panel' />
-			<LoggerContext.Provider value={updateSnackbar}>
-				<AdminMain {...props} />
-			</LoggerContext.Provider>
-			<SnackbarContainer {...snackbarProps} />
+			<Head>
+				<title>Panel</title>
+			</Head>
+			<AdminMain {...props} />
 		</>
 	);
 };

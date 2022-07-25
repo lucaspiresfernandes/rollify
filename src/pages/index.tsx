@@ -6,15 +6,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
+import Head from 'next/head';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useState } from 'react';
-import ApplicationHead from '../components/ApplicationHead';
 import LoadingScreen from '../components/LoadingScreen';
-import SnackbarContainer from '../components/SnackbarContainer';
 
 import { LoggerContext } from '../contexts';
-import useSnackbar from '../hooks/useSnackbar';
 import type { Locale } from '../i18n';
 import { EMAIL_REGEX } from '../utils';
 import { api } from '../utils/createApiClient';
@@ -25,15 +23,12 @@ import type { LoginResponse } from './api/login';
 type LoginHandler = (username: string, password: string) => void;
 
 const HomePage: NextPage = () => {
-	const [snackbarProps, updateSnackbar] = useSnackbar();
-
 	return (
 		<>
-			<ApplicationHead title='Login' />
-			<LoggerContext.Provider value={updateSnackbar}>
-				<Home />
-			</LoggerContext.Provider>
-			<SnackbarContainer {...snackbarProps} />
+			<Head>
+				<title>Login</title>
+			</Head>
+			<Home />
 		</>
 	);
 };

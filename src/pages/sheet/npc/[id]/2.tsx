@@ -1,12 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
-import { useI18n } from 'next-rosetta';
+import Head from 'next/head';
 
-import ApplicationHead from '../../../../components/ApplicationHead';
 import PlayerSheetPage2 from '../../../../components/sheet/Page2';
-import SnackbarContainer from '../../../../components/SnackbarContainer';
-import { LoggerContext } from '../../../../contexts';
-import useSnackbar from '../../../../hooks/useSnackbar';
-import type { Locale } from '../../../../i18n';
 import type { InferSsrProps } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
 import { withSessionSsr } from '../../../../utils/session';
@@ -14,16 +9,12 @@ import { withSessionSsr } from '../../../../utils/session';
 export type SheetSecondPageProps = InferSsrProps<typeof getSsp>;
 
 const SheetSecondPage: NextPage<SheetSecondPageProps> = (props) => {
-	const [snackbarProps, updateSnackbar] = useSnackbar();
-	const { t } = useI18n<Locale>();
-
 	return (
 		<>
-			<ApplicationHead title={t('sheet.playerTitle')} />
-			<LoggerContext.Provider value={updateSnackbar}>
-				<PlayerSheetPage2 {...props} />
-			</LoggerContext.Provider>
-			<SnackbarContainer {...snackbarProps} />
+			<Head>
+				<title>Character Sheet</title>
+			</Head>
+			<PlayerSheetPage2 {...props} />
 		</>
 	);
 };

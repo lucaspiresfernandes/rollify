@@ -7,9 +7,9 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import type { GetStaticProps, NextPage } from 'next';
 import type { I18nProps } from 'next-rosetta';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import ApplicationHead from '../../components/ApplicationHead';
 import LoadingScreen from '../../components/LoadingScreen';
 import useBoot from '../../hooks/useBoot';
 import useSession from '../../hooks/useSession';
@@ -44,7 +44,9 @@ const GettingStartedPage: NextPage = () => {
 
 	return (
 		<>
-			<ApplicationHead title='Getting Started' />
+			<Head>
+				<title>Getting Started</title>
+			</Head>
 			<GettingStarted />
 		</>
 	);
@@ -92,14 +94,14 @@ const GettingStarted: React.FC = () => {
 			{error ? (
 				<>
 					<Typography variant='h3' component='h1' gutterBottom color='Highlight'>
-						Ocorreu um erro ao inicializar o Rollify.
+						TODO: Ocorreu um erro ao inicializar o Rollify.
 					</Typography>
 					<Typography variant='h4' component='h2' gutterBottom>
 						{error}
 					</Typography>
 					<Typography variant='body1' gutterBottom>
-						Confira se o banco de dados está corretamente vinculado na Heroku e faça o redeploy.
-						Caso esse erro persista, contate o(a) administrador(a) do Rollify no{' '}
+						TODO: Confira se o banco de dados está corretamente vinculado na Heroku e faça o
+						redeploy. Caso esse erro persista, contate o(a) administrador(a) do Rollify no{' '}
 						<a
 							href='https://github.com/alyssapiresfernandescefet/openrpg/issues'
 							target='_blank'
@@ -112,13 +114,13 @@ const GettingStarted: React.FC = () => {
 			) : (
 				<>
 					<Typography variant='h3' component='h1' gutterBottom>
-						Seja bem-vindo ao Rollify!
+						TODO: Seja bem-vindo ao Rollify!
 					</Typography>
 					<Typography variant='h5' component='h2' gutterBottom>
-						Para começar, selecione uma predefinição de ficha abaixo:
+						TODO: Para começar, selecione uma predefinição de ficha abaixo:
 					</Typography>
 					<FormControl fullWidth sx={{ mb: 3 }}>
-						<InputLabel id='presetSelectLabel'>Predefinição</InputLabel>
+						<InputLabel id='presetSelectLabel'>TODO: Predefinição</InputLabel>
 						<Select
 							labelId='presetSelectLabel'
 							id='presetSelect'
@@ -136,7 +138,7 @@ const GettingStarted: React.FC = () => {
 						</Select>
 					</FormControl>
 					<Button variant='contained' onClick={boot}>
-						Aplicar
+						TODO: Aplicar
 					</Button>
 				</>
 			)}
