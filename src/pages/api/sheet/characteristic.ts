@@ -21,7 +21,7 @@ const handlePost: NextApiHandler<CharacteristicSheetApiResponse> = async (req, r
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.id || !req.body.name || req.body.visibleToAdmin === undefined)
+	if (!req.body.id || !req.body.name)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
@@ -29,12 +29,11 @@ const handlePost: NextApiHandler<CharacteristicSheetApiResponse> = async (req, r
 
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const characteristic = await prisma.characteristic.update({
 			where: { id },
-			data: { name, visibleToAdmin },
+			data: { name },
 		});
 
 		res.json({ status: 'success', characteristic });
@@ -49,14 +48,13 @@ const handlePut: NextApiHandler<CharacteristicSheetApiResponse> = async (req, re
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.name || req.body.visibleToAdmin === undefined)
+	if (!req.body.name)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
 		});
 
 	const name = String(req.body.name);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const players = await prisma.player.findMany({
@@ -67,7 +65,6 @@ const handlePut: NextApiHandler<CharacteristicSheetApiResponse> = async (req, re
 		const characteristic = await prisma.characteristic.create({
 			data: {
 				name,
-				visibleToAdmin,
 				PlayerCharacteristic: {
 					createMany: {
 						data: players.map(({ id: player_id }) => ({ player_id })),

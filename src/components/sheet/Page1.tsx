@@ -50,7 +50,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 			createApiClient({
 				transformRequest: [
 					(data) => {
-						if (props.isNpc) data.npcId = props.player.id;
+						if (props.isNpc) data = { ...data, npcId: props.player.id };
 						return data;
 					},
 				],

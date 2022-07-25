@@ -280,13 +280,13 @@ type PlayerAvatarFieldProps = {
 	status: { id: number; value: boolean }[];
 };
 
-const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = ({ id, status }) => {
+const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 	const [src, setSrc] = useState('/avatar404.png');
 	const previousStatusID = useRef(Number.MAX_SAFE_INTEGER);
 
 	useEffect(() => {
 		let statusId = 0;
-		for (const stat of status) {
+		for (const stat of props.status) {
 			if (stat.value) {
 				statusId = stat.id;
 				break;
@@ -295,7 +295,9 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = ({ id, status }) => 
 		if (statusId === previousStatusID.current) return;
 		previousStatusID.current = statusId;
 		api
-			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}?playerID=${id}`)
+			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`, {
+				params: { playerID: props.id },
+			})
 			.then(({ data }) => {
 				if (data.status === 'success') {
 					setSrc(data.link);
@@ -304,7 +306,7 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = ({ id, status }) => 
 				setSrc('/avatar404.png');
 			})
 			.catch(() => setSrc('/avatar404.png'));
-	}, [id, status]);
+	}, [props]);
 
 	return (
 		<div>

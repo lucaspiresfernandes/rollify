@@ -35,7 +35,7 @@ type PlayerInfoContainerProps = {
 const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-	
+
 	return (
 		<SheetContainer title={props.title}>
 			<PlayerNameField
@@ -185,6 +185,7 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 			label={props.name}
 			fullWidth
 			value={value}
+			name={`diceUtil${props.name.substring(0, 3).toUpperCase()}`}
 			onChange={(ev) => setValue(ev.target.value)}
 			autoComplete='off'
 			onBlur={onValueBlur}

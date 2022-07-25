@@ -21,7 +21,7 @@ const handlePost: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.id || !req.body.name || req.body.visibleToAdmin === undefined)
+	if (!req.body.id || !req.body.name)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
@@ -29,11 +29,10 @@ const handlePost: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const spec = await prisma.spec.update({
-			data: { name, visibleToAdmin },
+			data: { name },
 			where: { id },
 		});
 
@@ -49,14 +48,13 @@ const handlePut: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.name || req.body.visibleToAdmin === undefined)
+	if (!req.body.name)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
 		});
 
 	const name = String(req.body.name);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const players = await prisma.player.findMany({
@@ -67,7 +65,6 @@ const handlePut: NextApiHandler<SpecSheetApiResponse> = async (req, res) => {
 		const spec = await prisma.spec.create({
 			data: {
 				name,
-				visibleToAdmin,
 				PlayerSpec: {
 					createMany: {
 						data: players.map(({ id: player_id }) => ({ player_id })),

@@ -6,10 +6,10 @@ import { api } from '../utils/createApiClient';
 type Session = IronSessionData['player'];
 
 export default function useSession(...dependencies: any[]) {
-	const [session, setSession] = useState<Session>();
+	const [session, setSession] = useState<Session | null>(undefined);
 
 	useEffect(() => {
-		api.get<PlayerApiGetResponse>('/player').then((res) => setSession(res.data.player));
+		api.get<PlayerApiGetResponse>('/player').then((res) => setSession(res.data.player || null));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, dependencies);
 

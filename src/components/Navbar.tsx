@@ -40,26 +40,34 @@ const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode,
 
 	const npcId = router.query.id as string | undefined;
 
-	const links = auth
-		? auth.admin
-			? npcId
-				? [
-						{ href: `/sheet/npc/${npcId}/1`, name: t('nav.player.firstPage') },
-						{ href: `/sheet/npc/${npcId}/2`, name: t('nav.player.secondPage') },
-				  ]
-				: [
-						{ href: '/admin/panel', name: t('nav.admin.panel') },
-						{ href: '/admin/editor', name: t('nav.admin.editor') },
-						{ href: '/admin/config', name: t('nav.admin.configurations') },
-				  ]
-			: [
-					{ href: '/sheet/player/1', name: t('nav.player.firstPage') },
-					{ href: '/sheet/player/2', name: t('nav.player.secondPage') },
-			  ]
-		: [
-				{ href: '/', name: t('login.title') },
-				{ href: '/register', name: t('register.title') },
-		  ];
+	let links: { href: string; name: string }[] = [];
+
+	if (auth) {
+		if (auth.admin) {
+			if (npcId) {
+				links = [
+					{ href: `/sheet/npc/${npcId}/1`, name: t('nav.player.firstPage') },
+					{ href: `/sheet/npc/${npcId}/2`, name: t('nav.player.secondPage') },
+				];
+			} else {
+				links = [
+					{ href: '/admin/panel', name: t('nav.admin.panel') },
+					{ href: '/admin/editor', name: t('nav.admin.editor') },
+					{ href: '/admin/config', name: t('nav.admin.configurations') },
+				];
+			}
+		} else {
+			links = [
+				{ href: '/sheet/player/1', name: t('nav.player.firstPage') },
+				{ href: '/sheet/player/2', name: t('nav.player.secondPage') },
+			];
+		}
+	} else if (auth === null) {
+		links = [
+			{ href: '/', name: t('login.title') },
+			{ href: '/register', name: t('register.title') },
+		];
+	}
 
 	return (
 		<AppBar position='static'>

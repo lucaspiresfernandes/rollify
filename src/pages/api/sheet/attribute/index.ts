@@ -37,12 +37,11 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 	const name = String(req.body.name);
 	const color = String(req.body.color);
 	const rollable = Boolean(req.body.rollable);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const attribute = await prisma.attribute.update({
 			where: { id },
-			data: { name, color, rollable, visibleToAdmin },
+			data: { name, color, rollable },
 		});
 
 		res.json({ status: 'success', attribute });
@@ -71,7 +70,6 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 	const name = String(req.body.name);
 	const color = String(req.body.color);
 	const rollable = Boolean(req.body.rollable);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const players = await prisma.player.findMany({
@@ -84,7 +82,6 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 				name,
 				color,
 				rollable,
-				visibleToAdmin,
 				PlayerAttribute: {
 					createMany: {
 						data: players.map(({ id: player_id }) => ({ player_id })),

@@ -63,12 +63,11 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 	const specialization_id =
 		req.body.specializationId === null ? null : Number(req.body.specializationId);
 	const mandatory = Boolean(req.body.mandatory);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const skill = await prisma.skill.update({
 			where: { id },
-			data: { name, startValue, specialization_id, mandatory, visibleToAdmin },
+			data: { name, startValue, specialization_id, mandatory },
 			include: { Specialization: true },
 		});
 
@@ -102,11 +101,10 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 	const specialization_id =
 		req.body.specializationId === null ? null : Number(req.body.specializationId);
 	const mandatory = Boolean(req.body.mandatory);
-	const visibleToAdmin = Boolean(req.body.visibleToAdmin);
 
 	try {
 		const skill = await prisma.skill.create({
-			data: { name, startValue, specialization_id, mandatory, visibleToAdmin },
+			data: { name, startValue, specialization_id, mandatory },
 			include: { Specialization: true },
 		});
 

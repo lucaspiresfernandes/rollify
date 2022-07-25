@@ -5,13 +5,13 @@ import {
 	Over,
 	PointerSensor,
 	useSensor,
-	useSensors
+	useSensors,
 } from '@dnd-kit/core';
 import {
 	arrayMove,
 	SortableContext,
 	useSortable,
-	verticalListSortingStrategy
+	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
@@ -52,7 +52,9 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 
 	return (
 		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-			<span>{props.entity.name || 'Desconhecido'}</span>
+			<span style={{ fontStyle: props.selected ? 'italic' : 'normal' }}>
+				{props.entity.name || 'Desconhecido'}
+			</span>
 			<TextField
 				variant='standard'
 				defaultValue='0'
@@ -136,8 +138,6 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 		const oldIndex = activeEntities.findIndex((e) => e.id === ev.active.id);
 		const newIndex = activeEntities.findIndex((e) => e.id === over.id);
 
-		console.log(oldIndex, newIndex);
-
 		setActiveEntities((e) => arrayMove(e, oldIndex, newIndex));
 
 		if (oldIndex === pointer) return setPointer(newIndex);
@@ -201,7 +201,11 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					<IconButton onClick={handleDropdownClick} disabled={inactiveEntities.length === 0}>
 						<AddIcon />
 					</IconButton>
-					<Menu anchorEl={anchorEl} open={open} onClose={handleDropdownClose}>
+					<Menu
+						anchorEl={anchorEl}
+						open={open}
+						onClose={handleDropdownClose}
+						PaperProps={{ style: { maxHeight: 200 } }}>
 						{inactiveEntities.map((ent) => {
 							if (activeEntities.find((e) => e.id === ent.id)) return null;
 							return (
@@ -244,9 +248,24 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					</SortableContext>
 				</DndContext>
 			</Box>
-			<Box display='flex' justifyContent='center' mb={1}>
-				<Button variant='contained' onClick={reset}>
+			<Box display='flex' justifyContent='center' mb={1} gap={3}>
+				<Button
+					variant='contained'
+					onClick={() => movePointer(-1)}
+					disabled={activeEntities.length < 2}>
+					TODO: Move Back
+				</Button>
+				<Button
+					variant='contained'
+					onClick={reset}
+					disabled={activeEntities.length < 1 && round === 1}>
 					TODO: Reset
+				</Button>
+				<Button
+					variant='contained'
+					onClick={() => movePointer(1)}
+					disabled={activeEntities.length < 2}>
+					TODO: Move Foward
 				</Button>
 			</Box>
 		</Section>

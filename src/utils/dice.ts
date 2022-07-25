@@ -1,8 +1,5 @@
-type DiceResolverKeyNum = 20 | 100;
-type DiceResolverKey = '20' | '100' | '20b' | '100b';
-
 type DiceConfigCell = {
-	value: DiceResolverKeyNum;
+	value: 20 | 100;
 	branched: boolean;
 };
 
@@ -42,7 +39,7 @@ export function resolveDices(dices: string) {
 
 	if (options.length > 1) {
 		const selected = prompt(
-			'Escolha dentre as seguintes opções de rolagem:\n' +
+			'TODO: Escolha dentre as seguintes opções de rolagem:\n' +
 				options.map((opt, i) => `${i + 1}: ${opt}`).join('\n')
 		);
 
@@ -58,40 +55,35 @@ export function resolveDices(dices: string) {
 	const diceArray = formattedDiceString.split('+');
 	const resolvedDices: ResolvedDice[] = new Array(diceArray.length);
 
-	for (let i = 0; i < diceArray.length; i++) {
-		resolvedDices[i] = resolveDice(diceArray[i]);
-	}
+	for (let i = 0; i < diceArray.length; i++) resolvedDices[i] = resolveDice(diceArray[i]);
 
 	return resolvedDices;
 }
 
 function resolveDice(dice: string): ResolvedDice {
-	if (dice.includes('DB')) {
-		const bonusDamageArray = document.getElementsByName(
-			'specDano Bônus'
-		) as NodeListOf<HTMLInputElement>;
+	const regexResult = dice.match(/[A-Z][A-Z][A-Z]/);
 
-		if (bonusDamageArray.length > 0) {
-			const bonusDamage = bonusDamageArray[0].value.replace(/\s/g, '').toUpperCase();
+	if (regexResult) {
+		const utilName = regexResult[0];
+
+		const utilElement = (
+			document.getElementsByName(`diceUtil${utilName}`) as NodeListOf<HTMLInputElement>
+		)[0] as HTMLInputElement | undefined;
+
+		if (utilElement) {
+			const utilElementModifier = (
+				document.getElementsByName(`diceUtilMod${utilName}`) as NodeListOf<HTMLInputElement>
+			)[0] as HTMLInputElement | undefined;
+
+			const value = utilElement.value.replace(/\s/g, '').toUpperCase();
+			const modifier = Number(utilElementModifier?.value || 0) || 0;
 
 			const divider = parseInt(dice.split('/')[1]) || 1;
-			const split = bonusDamage.split('D');
+			const split = value.split('D');
 
-			if (split.length === 1) dice = Math.floor(parseInt(split[0]) / divider).toString();
-			else dice = `${split[0]}D${Math.floor(parseInt(split[1]) / divider)}`;
-		}
-	} else {
-		const regexResult = dice.match(/[A-Z][A-Z][A-Z]/g);
-		if (regexResult) {
-			const charName = regexResult[0];
-			const charElementArray = document.getElementsByName(`char${charName}`);
-
-			if (charElementArray.length > 0) {
-				const charElement = charElementArray[0] as HTMLInputElement;
-				const divider = parseInt(dice.split('/')[1]) || 1;
-
-				dice = Math.floor(parseInt(charElement.value) / divider).toString();
-			}
+			if (split.length === 1)
+				dice = Math.floor((parseInt(split[0]) + modifier) / divider).toString();
+			else dice = `${split[0]}D${Math.floor((parseInt(split[1]) + modifier) / divider)}`;
 		}
 	}
 

@@ -3,13 +3,16 @@ import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../../../contexts';
 import Section from '../../../sheet/Section';
 
 const highlightStyle = { color: '#00a000', fontWeight: 'bold' };
 
-type Dice = { name: string; dices: string; results: string };
+type Dice = { name: string; dices: string; results: string; total?: string };
 
 type HistoryProps = {
 	players: { id: number; name: string }[];
@@ -24,41 +27,42 @@ const History: React.FC<HistoryProps> = (props) => {
 	useEffect(() => {
 		setValues(JSON.parse(localStorage.getItem('admin_dice_history') || '[]') as Dice[]);
 
-		socket.on('diceResult', (playerID, _results, _dices) => {
-			const playerName = props.players.find((p) => p.id === playerID)?.name || 'Desconhecido';
+		socket.on('diceResult', (id, diceResponse, diceRequest) => {
+			let dices: string[];
+			let total: string | undefined;
 
-			const isArray = Array.isArray(_dices);
+			const isRequestArray = Array.isArray(diceRequest);
 
-			const dices = isArray
-				? _dices.map((dice) => {
-						const num = dice.num;
-						const roll = dice.roll;
-						return num || 0 > 0 ? `${num}d${roll}` : roll;
-				  })
-				: _dices.num || 0 > 0
-				? [`${_dices.num}d${_dices.roll}`]
-				: [_dices.roll];
+			if (isRequestArray) {
+				dices = diceRequest.map((dice) => {
+					const num = dice.num;
+					const roll = dice.roll;
+					if (num && num > 0) return `${num}d${roll}`;
+					return roll.toString();
+				});
+				total = diceResponse.reduce((acc, cur) => acc + cur.roll, 0).toString();
+			} else if (diceRequest.num && diceRequest.num > 0) {
+				dices = [`${diceRequest.num}d${diceRequest.roll}`];
+			} else {
+				dices = [diceRequest.roll.toString()];
+			}
 
-			const results = _results.map((res) => {
+			const results = diceResponse.map((res) => {
 				const roll = res.roll;
 				const description = res.resultType?.description;
 				if (description) return `${roll} (${description})`;
-				return roll;
+				return roll.toString();
 			});
 
-			const message = {
-				name: playerName,
-				dices: dices.join(', '),
-				results: results.join(', '),
+			const message: Dice = {
+				name: props.players.find((p) => p.id === id)?.name || 'Desconhecido',
+				dices: dices.join(' + '),
+				results: results.join(isRequestArray ? ' + ' : ' | '),
+				total,
 			};
 
 			setValues((values) => {
-				if (values.length > 10) {
-					const newValues = [...values];
-					newValues.unshift(message);
-					newValues.splice(newValues.length - 1, 1);
-					return newValues;
-				}
+				if (values.length > 10) return [message, ...values.slice(1)];
 				return [message, ...values];
 			});
 		});
@@ -80,7 +84,15 @@ const History: React.FC<HistoryProps> = (props) => {
 	}, [values]);
 
 	return (
-		<Section title='History'>
+		<Section
+			title='History'
+			sideButton={
+				<Tooltip title='TODO: Apagar'>
+					<IconButton onClick={() => setValues([])}>
+						<BackspaceIcon />
+					</IconButton>
+				</Tooltip>
+			}>
 			<Box height={250} sx={{ overflowY: 'auto' }} ref={wrapper}>
 				<List>
 					{values.map((val, index) => (
@@ -90,7 +102,14 @@ const History: React.FC<HistoryProps> = (props) => {
 									<span style={highlightStyle}>{val.name} </span>
 									rolou
 									<span style={highlightStyle}> {val.dices} </span>e tirou
-									<span style={highlightStyle}> {val.results}</span>.
+									<span style={highlightStyle}> {val.results}</span>
+									{val.total ? (
+										<>
+											, totalizando <span style={highlightStyle}>{eval(val.results)}</span>.
+										</>
+									) : (
+										'.'
+									)}
 								</ListItemText>
 							</ListItem>
 							{index < values.length - 1 && <Divider variant='middle' component='li' />}

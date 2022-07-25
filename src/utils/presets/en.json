@@ -55,7 +55,7 @@
 				"id": 1,
 				"name": "Unarmed",
 				"type": "Common",
-				"damage": "1d3+DB",
+				"damage": "1d3+BON",
 				"range": "Touch",
 				"attacks": "1",
 				"ammo": null,

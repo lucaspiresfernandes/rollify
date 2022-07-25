@@ -1,10 +1,33 @@
-@font-face {
+/* @font-face {
 	font-family: 'FantaisieArtistique';
 	src: url('../fonts/FantaisieArtistique.ttf');
 	font-weight: normal;
 	font-style: normal;
-}
+} */
 
 .clickable {
 	cursor: pointer;
+}
+
+.custom-font {
+	font-family: 'Rollify Custom Font';
+}
+
+.shadow {
+	transition: filter 0.25s ease;
+}
+
+.shadow.show {
+	filter: brightness(25%);
+	transition: filter 0.5s ease-out;
+}
+
+.popout {
+	transform: scale(0);
+	transition: transform 0.6s ease-in;
+}
+
+.popout.show {
+	transform: scale(1);
+	transition: transform 0.5s ease-out;
 }

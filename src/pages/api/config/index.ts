@@ -1,12 +1,8 @@
-import prisma from '../../utils/prisma';
-import type { NextApiHandlerIO, NextApiResponseData } from '../../utils/next';
-import type { NextApiResponseServerIO } from '../../utils/socket';
+import type { NextApiHandlerIO, NextApiResponseData } from '../../../utils/next';
+import prisma from '../../../utils/prisma';
+import customBehaviours from './customBehaviours';
 
 export type ConfigResponse = NextApiResponseData<'invalid_name_or_value'>;
-
-const customBehaviours = new Map<string, (res: NextApiResponseServerIO, value: any) => void>([
-	['environment', (res, value) => res.socket.server.io.emit('environmentChange', value)],
-]);
 
 const handler: NextApiHandlerIO<ConfigResponse> = async (req, res) => {
 	if (req.method !== 'POST') return res.status(405).end();
@@ -32,10 +28,10 @@ const handler: NextApiHandlerIO<ConfigResponse> = async (req, res) => {
 			create: { name, value },
 		});
 
-		res.json({ status: 'success' });
-
 		const behaviour = customBehaviours.get(name);
-		if (behaviour) behaviour(res, value);
+		if (behaviour) await behaviour(res, value);
+
+		res.json({ status: 'success' });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

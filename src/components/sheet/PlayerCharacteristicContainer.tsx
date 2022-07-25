@@ -145,6 +145,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					<TextField
 						variant='standard'
 						size='small'
+						name={`diceUtilMod${props.name.substring(0, 3).toUpperCase()}`}
 						autoComplete='off'
 						value={modifier}
 						onChange={(ev) => setModifier(ev.target.value)}
@@ -162,6 +163,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					variant='standard'
 					margin='dense'
 					id={`characteristic${props.id}`}
+					name={`diceUtil${props.name.substring(0, 3).toUpperCase()}`}
 					autoComplete='off'
 					value={value}
 					onChange={(ev) => setValue(ev.target.value)}

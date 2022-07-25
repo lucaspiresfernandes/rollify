@@ -117,7 +117,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>Cancel</Button>
-				<Button type='submit' form='playerAvatarDialogForm' onClick={props.onClose}>
+				<Button type='submit' form='playerAvatarDialogForm'>
 					Apply
 				</Button>
 			</DialogActions>

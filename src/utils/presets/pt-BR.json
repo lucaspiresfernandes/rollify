@@ -67,7 +67,7 @@
 				"id": 1,
 				"name": "Desarmado",
 				"type": "Comum",
-				"damage": "1d3+DB",
+				"damage": "1d3+DAN",
 				"range": "Toque",
 				"attacks": "1",
 				"ammo": null,

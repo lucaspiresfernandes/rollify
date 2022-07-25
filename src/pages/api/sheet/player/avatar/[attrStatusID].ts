@@ -8,9 +8,8 @@ export type PlayerGetAvatarApiResponse = NextApiResponseData<
 >;
 
 const handler: NextApiHandlerIO<PlayerGetAvatarApiResponse> = async (req, res) => {
-	if (req.method !== 'GET') return res.status(405).end();
-
-	const playerID = parseInt(req.query.playerID as string) || req.session.player?.id;
+	const playerID =
+		parseInt(req.query.playerID as string) || req.body.npcId || req.session.player?.id;
 	const statusID = parseInt(req.query.attrStatusID as string) || null;
 
 	if (!playerID)

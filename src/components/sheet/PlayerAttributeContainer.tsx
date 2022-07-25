@@ -71,7 +71,6 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 	const [attrEditorOpen, setAttrEditorOpen] = useState(false);
 	const [attrEditor, setAttrEditor] = useState(editorInitialValue);
 	const [playerAttributeStatus, setPlayerAttributeStatus] = useState(props.playerAttributeStatus);
-	const [refresh, setRefresh] = useState(false);
 
 	const onStatusChanged = (id: number, newValue: boolean) => {
 		setPlayerAttributeStatus((a) =>
@@ -86,9 +85,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 		<Stack spacing={3}>
 			<PlayerAvatarImage
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
-				refreshImage={refresh}
 				playerAvatars={props.playerAvatars}
-				onAvatarUpdate={() => setRefresh((n) => !n)}
 			/>
 			{props.playerAttributes.map((attr) => {
 				const status = playerAttributeStatus.filter((stat) => stat.attributeId === attr.id);
@@ -124,8 +121,6 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 
 type PlayerAvatarImageProps = {
 	statusID?: number;
-	refreshImage: boolean;
-	onAvatarUpdate: () => void;
 	playerAvatars: {
 		link: string | null;
 		attributeStatus: {
@@ -141,14 +136,14 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);
 
 	const statusId = props.statusID || 0;
-	const previousStatusID = useRef(statusId);
+	const previousStatusId = useRef(Number.MAX_SAFE_INTEGER);
 
 	const rollDice = useContext(DiceRollContext);
 	const api = useContext(ApiContext);
 
-	useEffect(() => {
+	const updateAvatar = () => {
 		api
-			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
+			.post<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
 			.then(({ data }) => {
 				if (data.status === 'success') {
 					setSrc(data.link);
@@ -157,24 +152,14 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 				setSrc('/avatar404.png');
 			})
 			.catch(() => setSrc('/avatar404.png'));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.refreshImage]);
+	};
 
 	useEffect(() => {
-		if (statusId === previousStatusID.current) return;
-		previousStatusID.current = statusId;
-		api
-			.get<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
-			.then(({ data }) => {
-				if (data.status === 'success') {
-					setSrc(data.link);
-					return;
-				}
-				setSrc('/avatar404.png');
-			})
-			.catch(() => setSrc('/avatar404.png'));
+		if (statusId === previousStatusId.current) return;
+		previousStatusId.current = statusId;
+		updateAvatar();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.statusID]);
+	}, [statusId]);
 
 	const onGeneralDiceDialogSubmit: GeneralDiceRollDialogSubmitHandler = (dice) => {
 		setGeneralDiceDialogOpen(false);
@@ -214,7 +199,10 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 				playerAvatars={props.playerAvatars}
 				open={avatarDialogOpen}
 				onClose={() => setAvatarDialogOpen(false)}
-				onSubmit={props.onAvatarUpdate}
+				onSubmit={() => {
+					setAvatarDialogOpen(false);
+					updateAvatar();
+				}}
 			/>
 		</Box>
 	);

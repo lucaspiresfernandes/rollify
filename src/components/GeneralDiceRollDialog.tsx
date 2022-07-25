@@ -75,8 +75,12 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 
 	const onRollClick: React.MouseEventHandler<HTMLButtonElement> = () => {
 		const diceRequest: ResolvedDice[] = [];
-		for (const dice of dices)
-			if (dice.num > 0) diceRequest.push({ num: dice.num, roll: dice.roll });
+		for (const dice of dices) {
+			const num = dice.num;
+			for (let i = 0; i < num; i++) {
+				diceRequest.push({ num: 1, roll: dice.roll });
+			}
+		}
 		props.onSubmit(diceRequest);
 	};
 
