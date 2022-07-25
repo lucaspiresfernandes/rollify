@@ -1,6 +1,8 @@
 import Grid from '@mui/material/Grid';
 import { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { DiceRollContext, DiceRollEvent, LoggerContext, SocketContext } from '../../../../contexts';
+import type { NpcApiResponse } from '../../../../pages/api/npc';
+import { handleDefaultApiResponse } from '../../../../utils';
 import { api } from '../../../../utils/createApiClient';
 import DiceRollDialog, { DiceRoll as DiceRollType } from '../../../DiceRollDialog';
 import CombatManager from './CombatManager';
@@ -25,10 +27,10 @@ type UtilitySectionProps = {
 const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	const [diceRoll, setDiceRoll] = useState<DiceRollType>({ dice: null });
 	const [basicNpcs, setBasicNpcs] = useState<NPC[]>([]);
-	const [complexNpcs, setComplexNpcs] = useState(props.npcs.map((n) => ({ ...n, npc: true })));
+	const [complexNpcs, setComplexNpcs] = useState(props.npcs);
 	const componentDidMount = useRef(false);
 	const socket = useContext(SocketContext);
-	const logError = useContext(LoggerContext);
+	const log = useContext(LoggerContext);
 
 	useEffect(() => {
 		setBasicNpcs(JSON.parse(localStorage.getItem('admin_npcs') || '[]') as NPC[]);
@@ -59,39 +61,32 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	};
 
 	const removeBasicNPC = (id: number) => {
-		const newNpcs = [...basicNpcs];
-		newNpcs.splice(
-			newNpcs.findIndex((npc) => npc.id === id),
-			1
-		);
-		setBasicNpcs(newNpcs);
+		setBasicNpcs(basicNpcs.filter((npc) => npc.id !== id));
 	};
 
 	const addComplexNPC = () => {
 		const name = prompt('TODO: Digite o nome do NPC:');
 		if (!name) return;
 		api
-			.put('/npc', { name })
+			.put<NpcApiResponse>('/npc', { name })
 			.then((res) => {
-				const id = res.data.id;
-				setComplexNpcs([...complexNpcs, { id, name, npc: true }]);
+				if (res.data.status === 'success')
+					return setComplexNpcs([...complexNpcs, { id: res.data.id, name }]);
+				handleDefaultApiResponse(res, log);
 			})
-			.catch(logError);
+			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
 	};
 
 	const removeComplexNPC = (id: number) => {
 		if (!confirm('TODO: Tem certeza de que deseja apagar esse NPC?')) return;
 		api
-			.delete('/npc', { data: { id } })
-			.then(() => {
-				const newNpcs = [...complexNpcs];
-				newNpcs.splice(
-					newNpcs.findIndex((npc) => npc.id === id),
-					1
-				);
-				setComplexNpcs(newNpcs);
+			.delete<NpcApiResponse>('/npc', { data: { id } })
+			.then((res) => {
+				if (res.data.status === 'success')
+					return setComplexNpcs(complexNpcs.filter((npc) => npc.id !== id));
+				handleDefaultApiResponse(res, log);
 			})
-			.catch(logError);
+			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
 	};
 
 	const onRollDice: DiceRollEvent = useCallback(

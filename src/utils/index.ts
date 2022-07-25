@@ -20,9 +20,12 @@ export function handleDefaultApiResponse<
 
 	switch (res.data.reason) {
 		case 'invalid_body':
-			return log({ severity: 'error', text: 'Invalid body' });
+			return log({ severity: 'error', text: 'TODO: Dados inválidos.' });
 		case 'unauthorized':
-			return log({ severity: 'error', text: 'Unauthorized' });
+			return log({
+				severity: 'error',
+				text: 'TODO: Você não está autorizado a fazer essa ação. Tente recarregar a página.',
+			});
 		default:
 			return log({ severity: 'error', text: 'Unknown error: ' + res.data.reason });
 	}

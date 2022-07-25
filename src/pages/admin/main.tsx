@@ -79,7 +79,9 @@ const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 						})),
 					}))}
 				/>
+
 				<Divider sx={{ my: 3 }} />
+
 				<UtilitySection npcs={props.npcs} players={props.players} />
 			</SocketContext.Provider>
 
@@ -161,6 +163,13 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			socket.off('playerAttributeStatusChange');
 		};
 	}, [socket]);
+
+	if (players.length === 0)
+		return (
+			<Typography variant='h5' component='h2' textAlign='center' mt={3} color='GrayText'>
+				TODO: Os jogadores cadastrados aparecerão aqui.
+			</Typography>
+		);
 
 	const showDetails: PlayerFieldProps['onShowDetails'] = (player) => {
 		console.log(player);

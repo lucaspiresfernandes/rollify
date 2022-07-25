@@ -4,10 +4,7 @@ import prisma from '../../utils/prisma';
 import { withSessionApi } from '../../utils/session';
 import { registerSheetData } from './register';
 
-export type NpcApiResponse = NextApiResponseData<
-	'unauthorized' | 'invalid_name' | 'invalid_id',
-	{ id: number }
->;
+export type NpcApiResponse = NextApiResponseData<'unauthorized' | 'invalid_body', { id: number }>;
 
 const handler: NextApiHandler = (req, res) => {
 	if (req.method === 'PUT') return handlePut(req, res);
@@ -28,7 +25,7 @@ const handlePut: NextApiHandler<NpcApiResponse> = async (req, res) => {
 	if (!req.body.name) {
 		return res.json({
 			status: 'failure',
-			reason: 'invalid_name',
+			reason: 'invalid_body',
 		});
 	}
 
@@ -56,7 +53,7 @@ const handleDelete: NextApiHandler<NpcApiResponse> = async (req, res) => {
 	if (!req.body.id) {
 		return res.json({
 			status: 'failure',
-			reason: 'invalid_id',
+			reason: 'invalid_body',
 		});
 	}
 
