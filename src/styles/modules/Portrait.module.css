@@ -5,12 +5,31 @@
 
 .editor {
 	position: absolute;
-	top: 650px;
-	left: 10px;
+	top: 610px;
+}
+
+.oldAvatar {
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
 
 .avatar {
 	position: absolute;
+	top: 0px;
+	left: 0px;
+
+	opacity: 0;
+
+	transition: none;
+}
+
+.avatar.show {
+	opacity: 1;
+	-webkit-transition: opacity 500ms linear;
+	-moz-transition: opacity 500ms linear;
+	-o-transition: opacity 500ms linear;
+	transition: opacity 500ms linear;
 }
 
 .sideContainer {
@@ -41,7 +60,6 @@
 }
 
 .nameContainer .name {
-	width: 6em;
 	color: white;
 	text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.75);
 
@@ -49,7 +67,6 @@
 	font-style: italic;
 	text-transform: uppercase;
 	line-height: 100%;
-	overflow-wrap: break-word;
 	padding-right: 1.5rem;
 }
 

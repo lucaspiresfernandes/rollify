@@ -11,6 +11,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useContext, useState } from 'react';
+import LoadingScreen from '../components/LoadingScreen';
 import { LoggerContext } from '../contexts';
 
 import type { Locale } from '../i18n';
@@ -69,22 +70,20 @@ const Home: React.FC<PageProps> = (props) => {
 		}
 	};
 
+	if (loading) return <LoadingScreen />;
+
 	return (
 		<Container sx={{ textAlign: 'center' }} maxWidth='sm'>
-			{loading ? (
-				<>Loading...</>
-			) : (
-				<Box mt={6} display='flex' flexDirection='column'>
-					<Typography variant='h4' component='h1'>
-						{t('register.title')}
-					</Typography>
-					<RegisterForm
-						onSubmit={onLogin}
-						firstAdmin={props.firstAdmin}
-						registerAsAdmin={props.registerAsAdmin}
-					/>
-				</Box>
-			)}
+			<Box mt={6} display='flex' flexDirection='column'>
+				<Typography variant='h4' component='h1'>
+					{t('register.title')}
+				</Typography>
+				<RegisterForm
+					onSubmit={onLogin}
+					firstAdmin={props.firstAdmin}
+					registerAsAdmin={props.registerAsAdmin}
+				/>
+			</Box>
 		</Container>
 	);
 };

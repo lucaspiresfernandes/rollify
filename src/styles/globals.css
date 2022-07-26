@@ -1,9 +1,9 @@
-/* @font-face {
+@font-face {
 	font-family: 'FantaisieArtistique';
 	src: url('../fonts/FantaisieArtistique.ttf');
 	font-weight: normal;
 	font-style: normal;
-} */
+}
 
 .clickable {
 	cursor: pointer;

@@ -17,7 +17,7 @@ const AVATAR_SIZE = getAvatarSize(1);
 type AvatarData = {
 	id: number | null;
 	name: string;
-	link: string | null;
+	link: string;
 };
 
 type PlayerAvatarDialogProps = {
@@ -33,24 +33,38 @@ type PlayerAvatarDialogProps = {
 	}[];
 };
 
+function isValidHttpUrl(str: string) {
+	let url;
+
+	try {
+		url = new URL(str);
+	} catch (_) {
+		return false;
+	}
+
+	return url.protocol === 'http:' || url.protocol === 'https:';
+}
+
+function getInitialState(avatars: PlayerAvatarDialogProps['playerAvatars']) {
+	return avatars.map((avatar) => {
+		if (avatar.attributeStatus) {
+			return {
+				id: avatar.attributeStatus.id,
+				name: avatar.attributeStatus.name,
+				link: avatar.link || '',
+			};
+		} else {
+			return {
+				id: null,
+				name: 'TODO: Padrão',
+				link: avatar.link || '',
+			};
+		}
+	});
+}
+
 const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
-	const [avatars, setAvatars] = useState<AvatarData[]>(
-		props.playerAvatars.map((avatar) => {
-			if (avatar.attributeStatus) {
-				return {
-					id: avatar.attributeStatus.id,
-					name: avatar.attributeStatus.name,
-					link: avatar.link,
-				};
-			} else {
-				return {
-					id: null,
-					name: 'TODO: Padrão',
-					link: avatar.link,
-				};
-			}
-		})
-	);
+	const [avatars, setAvatars] = useState<AvatarData[]>(getInitialState(props.playerAvatars));
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 
@@ -67,8 +81,17 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 		);
 	};
 
+	const onCancel = () => {
+		props.onClose();
+		setAvatars(getInitialState(props.playerAvatars));
+	};
+
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
 		ev.preventDefault();
+
+		for (const avatar of avatars)
+			if (!isValidHttpUrl(avatar.link)) return alert(`TODO: Avatar (${avatar.name}) inválido.`);
+
 		api
 			.post<PlayerPostAvatarApiResponse>('/sheet/player/avatar', { avatarData: avatars })
 			.then((res) => {
@@ -113,7 +136,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 								fullWidth
 								variant='standard'
 								label={`Avatar (${avatar.name})`}
-								value={avatar.link || ''}
+								value={avatar.link}
 								onChange={(ev) => onAvatarChange(avatar.id, ev.target.value)}
 							/>
 						</Grid>
@@ -121,7 +144,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 				</Grid>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={props.onClose}>Cancel</Button>
+				<Button onClick={onCancel}>Cancel</Button>
 				<Button type='submit' form='playerAvatarDialogForm'>
 					Apply
 				</Button>

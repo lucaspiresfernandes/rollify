@@ -7,7 +7,7 @@ export type PlayerPostAvatarApiResponse = NextApiResponseData<'unauthorized' | '
 
 type AvatarData = {
 	id: number | null;
-	link: string | null;
+	link: string;
 };
 
 const handler: NextApiHandler<PlayerPostAvatarApiResponse> = async (req, res) => {
@@ -50,7 +50,7 @@ const handler: NextApiHandler<PlayerPostAvatarApiResponse> = async (req, res) =>
 
 				return prisma.playerAvatar.update({
 					where: { id: avatar.id },
-					data: { link: newAvatar.link },
+					data: { link: newAvatar.link || null },
 				});
 			})
 		);

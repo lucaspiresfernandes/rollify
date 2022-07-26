@@ -22,18 +22,18 @@ import type { LoginResponse } from './api/login';
 
 type LoginHandler = (username: string, password: string) => void;
 
-const HomePage: NextPage = () => {
+const LoginPage: NextPage = () => {
 	return (
 		<>
 			<Head>
 				<title>Login</title>
 			</Head>
-			<Home />
+			<Login />
 		</>
 	);
 };
 
-const Home: React.FC = () => {
+const Login: React.FC = () => {
 	const { t } = useI18n<Locale>();
 	const [loading, setLoading] = useState(false);
 	const log = useContext(LoggerContext);
@@ -170,4 +170,4 @@ export const getServerSideProps = withSessionSsr(async (ctx) => {
 	return { props: { table } };
 });
 
-export default HomePage;
+export default LoginPage;

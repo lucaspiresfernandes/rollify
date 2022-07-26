@@ -12,9 +12,9 @@ import {
 
 const bounds = {
 	top: 0,
-	bottom: 450,
-	left: -400,
-	right: 0,
+	bottom: 480,
+	left: 0,
+	right: 800,
 };
 
 type PortraitEnvironmentalContainerProps = {
@@ -23,6 +23,7 @@ type PortraitEnvironmentalContainerProps = {
 	attributes: PortraitAttributesContainerProps['attributes'];
 	playerName: PortraitNameContainerProps['playerName'];
 	playerId: number;
+	rotation: number;
 	debug: boolean;
 	nameOrientation: typeof portraitEnvironmentOrientation[number];
 };
@@ -37,11 +38,8 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 		};
 	}, [props.socket]);
 
-	let divStyle: React.CSSProperties = { width: 800 };
-
-	props.nameOrientation === 'Direita'
-		? (divStyle = { ...divStyle, left: 430, textAlign: 'start' })
-		: (divStyle = { ...divStyle, left: 0, textAlign: 'end' });
+	let divStyle: React.CSSProperties =
+		props.nameOrientation === 'Direita' ? { textAlign: 'start' } : { textAlign: 'end' };
 
 	return (
 		<div className={styles.container} style={divStyle}>
@@ -51,6 +49,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 				playerId={props.playerId}
 				socket={props.socket}
 				debug={props.debug}
+				rotation={props.rotation}
 			/>
 			<PortraitNameContainer
 				environment={environment}
@@ -58,6 +57,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 				playerId={props.playerId}
 				socket={props.socket}
 				debug={props.debug}
+				rotation={props.rotation}
 			/>
 		</div>
 	);
@@ -76,12 +76,14 @@ type PortraitAttributesContainerProps = {
 	}[];
 	playerId: number;
 	debug: boolean;
+	rotation: number;
 };
 
 const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = (props) => {
 	const [attributes, setAttributes] = useState(props.attributes);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
+	const attributesRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		setPosition(
@@ -109,7 +111,13 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.socket]);
 
-	const onDragStop: DraggableEventHandler = (_ev, data) => {
+	useEffect(() => {
+		if (attributesRef.current) {
+			attributesRef.current.style.transform = `rotate(${props.rotation}deg)`;
+		}
+	}, [props.rotation]);
+
+	const onDragStop: DraggableEventHandler = (_, data) => {
 		const pos = {
 			x: clamp(data.x, bounds.left, bounds.right),
 			y: clamp(data.y, bounds.top, bounds.bottom),
@@ -128,16 +136,18 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 					onStop={onDragStop}
 					nodeRef={ref}>
 					<div className={styles.combat} ref={ref}>
-						{attributes.map((attr) => (
-							<Fragment key={attr.id}>
-								<span
-									className={`${styles.attribute} atributo-primario ${attr.name}`}
-									style={getAttributeStyle(attr.color)}>
-									<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
-								</span>
-								<br />
-							</Fragment>
-						))}
+						<div ref={attributesRef} style={{ display: 'inline-block' }}>
+							{attributes.map((attr) => (
+								<Fragment key={attr.id}>
+									<span
+										className={`${styles.attribute} atributo-primario ${attr.name}`}
+										style={getAttributeStyle(attr.color)}>
+										<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
+									</span>
+									<br />
+								</Fragment>
+							))}
+						</div>
 					</div>
 				</Draggable>
 			</div>
@@ -151,16 +161,18 @@ type PortraitNameContainerProps = {
 	playerName: { name: string; show: boolean };
 	playerId: number;
 	debug: boolean;
+	rotation: number;
 };
 
 const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	const [playerName, setPlayerName] = useState(props.playerName);
-	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const [transform, setTransform] = useState({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
+	const nameRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		setPosition(
-			(JSON.parse(localStorage.getItem('name-pos') || 'null') as typeof position) || {
+		setTransform(
+			(JSON.parse(localStorage.getItem('name-pos') || 'null') as typeof transform) || {
 				x: 0,
 				y: 300,
 			}
@@ -186,12 +198,18 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.socket]);
 
+	useEffect(() => {
+		if (nameRef.current) {
+			nameRef.current.style.transform = `rotate(${props.rotation}deg)`;
+		}
+	}, [props.rotation]);
+
 	const onDragStop: DraggableEventHandler = (_ev, data) => {
 		const pos = {
 			x: clamp(data.x, bounds.left, bounds.right),
 			y: clamp(data.y, bounds.top, bounds.bottom),
 		};
-		setPosition(pos);
+		setTransform(pos);
 		localStorage.setItem('name-pos', JSON.stringify(pos));
 	};
 
@@ -200,14 +218,16 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 			<div>
 				<Draggable
 					axis='both'
-					position={position}
+					position={transform}
 					bounds={bounds}
 					onStop={onDragStop}
 					nodeRef={ref}>
 					<div ref={ref} className={styles.nameContainer}>
-						<label className={`${styles.name} nome`}>
-							{playerName.show ? playerName.name || 'Desconhecido' : '???'}
-						</label>
+						<div ref={nameRef} style={{ display: 'inline-block' }}>
+							<label className={styles.name}>
+								{playerName.show ? playerName.name || 'Desconhecido' : '???'}
+							</label>
+						</div>
 					</div>
 				</Draggable>
 			</div>

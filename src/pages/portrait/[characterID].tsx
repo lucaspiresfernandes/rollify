@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+import Slider from '@mui/material/Slider';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '../../components/LoadingScreen';
@@ -32,6 +33,8 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 				document.fonts.add(font);
 				document.body.classList.add('custom-font');
 			});
+		} else {
+			document.body.style.fontFamily = 'FantaisieArtistique';
 		}
 	}, [props.customFont]);
 
@@ -42,9 +45,19 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 
 const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) => {
 	const [debug, setDebug] = useState(false);
+	const [rotation, setRotation] = useState(0);
 
 	const divStyle: React.CSSProperties =
-		props.nameOrientation === 'Direita' ? { left: 0 } : { left: 800 };
+		props.nameOrientation === 'Direita' ? { left: 20 } : { left: 800 };
+
+	useEffect(() => {
+		setRotation(parseInt(JSON.parse(localStorage.getItem('environment-rot') || 'null') || 0));
+	}, []);
+
+	const handleRotationChange = (_: Event, val: number | number[]) => {
+		setRotation(val as number);
+		localStorage.setItem('environment-rot', JSON.stringify(val));
+	};
 
 	return (
 		<>
@@ -63,16 +76,31 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 				playerId={props.playerId}
 				playerName={props.playerName}
 				socket={props.socket}
+				rotation={rotation}
 				debug={debug}
 				nameOrientation={props.nameOrientation}
 			/>
 			<div className={styles.editor} style={divStyle}>
-				<Button
-					variant='contained'
-					title='Desativa o controle do ambiente pelo mestre.'
-					onClick={() => setDebug((e) => !e)}>
-					{debug ? 'Desativar' : 'Ativar'} Editor
-				</Button>
+				<div style={{ display: 'inline-block', marginRight: 16 }}>
+					<Button
+						variant='contained'
+						title='Desativa o controle do ambiente pelo mestre.'
+						onClick={() => setDebug((e) => !e)}>
+						TODO: {debug ? 'Desativar' : 'Ativar'} Editor
+					</Button>
+				</div>
+				{debug && (
+					<div style={{ display: 'inline-block', width: 360 }}>
+						<Slider
+							min={0}
+							max={360}
+							step={5}
+							value={rotation}
+							onChange={handleRotationChange}
+							valueLabelDisplay='auto'
+						/>
+					</div>
+				)}
 			</div>
 		</>
 	);
@@ -146,6 +174,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 			select: {
 				name: true,
 				showName: true,
+				role: true,
 				PlayerAttributes: {
 					where: { Attribute: { portrait: { in: ['PRIMARY', 'SECONDARY'] } } },
 					select: {
@@ -164,7 +193,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 		prisma.config.findUnique({ where: { name: 'portrait_font' } }),
 	]);
 
-	if (!results[0])
+	if (!results[0] || results[0].role === 'ADMIN')
 		return {
 			redirect: {
 				destination: '/portrait/error',
