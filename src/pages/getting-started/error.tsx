@@ -28,7 +28,7 @@ const ErrorPage: NextPage = () => {
 	return (
 		<>
 			<Head>
-				<title>Error</title>
+				<title>Error - Rollify</title>
 			</Head>
 			<Container sx={{ textAlign: 'center' }}>
 				<Typography variant='h1' gutterBottom>

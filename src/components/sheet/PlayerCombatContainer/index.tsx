@@ -128,7 +128,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	return (
 		<SheetContainer
 			title={props.title}
-			sx={{ position: 'relative' }}
+			position='relative'
 			sideButton={
 				<>
 					<Tooltip title='TODO: Add Armor' describeChild>

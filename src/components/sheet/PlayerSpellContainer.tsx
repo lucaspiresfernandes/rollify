@@ -85,7 +85,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 	return (
 		<SheetContainer
 			title={props.title}
-			sx={{ position: 'relative' }}
+			position='relative'
 			sideButton={
 				<IconButton aria-label='Add Spell' onClick={loadAvailableSpells}>
 					<AddIcon />

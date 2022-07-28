@@ -1,19 +1,13 @@
-import ClearIcon from '@mui/icons-material/Clear';
 import StarsIcon from '@mui/icons-material/Stars';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
-import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
-import { MemoPlayerSkillField, PlayerSkillContainerProps } from '.';
+import { startTransition, useContext, useState } from 'react';
+import { PlayerSkillField, PlayerSkillContainerProps, Searchbar } from '.';
 import { AddDataContext, ApiContext, LoggerContext } from '../../../contexts';
-import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import type { PlayerSkillClearChecksApiResponse } from '../../../pages/api/sheet/player/skill/clearchecks';
 import { handleDefaultApiResponse } from '../../../utils';
@@ -38,7 +32,6 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	const [search, setSearch] = useState('');
 	const [notify, setNotify] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const { t } = useI18n<Locale>();
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataContext);
@@ -75,7 +68,9 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	return (
 		<SheetContainer
 			title={props.title}
-			sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
+			display='flex'
+			flexDirection='column'
+			position='relative'
 			sideButton={
 				<Tooltip title='TODO: Star Skill' describeChild>
 					<IconButton onClick={showFavouriteDialog}>
@@ -86,36 +81,19 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<Box display='flex' alignItems='center' gap={1} my={1}>
-				<Paper sx={{ p: 0.5, flex: '1 0' }}>
-					<InputBase
-						fullWidth
-						placeholder={t('search')}
-						inputProps={{ 'aria-label': t('search') }}
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-						endAdornment={
-							search ? (
-								<IconButton size='small' onClick={() => setSearch('')}>
-									<ClearIcon />
-								</IconButton>
-							) : undefined
-						}
-					/>
-				</Paper>
-				<div>
-					<Button size='small' variant='outlined' onClick={clearChecks}>
-						{t('sheet.clearMarkers')}
-					</Button>
-				</div>
-			</Box>
+			<Searchbar
+				onSearchChange={(s) => startTransition(() => setSearch(s))}
+				onClearChecks={clearChecks}
+			/>
 			<Divider sx={{ mb: 2 }} />
 			<Box height={330} sx={{ overflowY: 'auto' }}>
 				<Grid
 					container
 					justifyContent='center'
-					alignItems='end'
-					style={{ overflowWrap: 'break-word' }}>
+					alignItems='stretch'
+					rowSpacing={4}
+					columnSpacing={1}
+					sx={{ overflowWrap: 'break-word' }}>
 					{props.playerSkills.map((skill) => {
 						return (
 							<Grid
@@ -125,10 +103,11 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 								md={3}
 								sm={4}
 								xs={6}
-								display={
-									skill.name.toLowerCase().includes(search.toLowerCase()) ? undefined : 'none'
-								}>
-								<MemoPlayerSkillField
+								display={skill.name.toLowerCase().includes(search.toLowerCase()) ? 'flex' : 'none'}
+								flexDirection='column'
+								justifyContent='center'
+								textAlign='center'>
+								<PlayerSkillField
 									{...skill}
 									skillDiceConfig={props.skillDiceConfig}
 									automaticMarking={props.automaticMarking}

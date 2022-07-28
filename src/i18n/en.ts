@@ -8,6 +8,9 @@ export const table: Locale = {
 
 	quickAccess: 'Quick Access',
 
+	weight: 'Weight',
+	quantity: 'Quantity',
+
 	nav: {
 		language: 'Language',
 		exit: 'Logout',

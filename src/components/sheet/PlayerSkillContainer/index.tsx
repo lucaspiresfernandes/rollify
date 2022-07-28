@@ -1,14 +1,19 @@
-import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
-import Tooltip from '@mui/material/Tooltip';
-import TextField from '@mui/material/TextField';
 import ClearIcon from '@mui/icons-material/Clear';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import InputBase from '@mui/material/InputBase';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { memo, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useI18n } from 'next-rosetta';
+import { memo, useContext, useEffect, useRef, useState } from 'react';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../../contexts';
 import useExtendedState from '../../../hooks/useExtendedState';
+import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import { handleDefaultApiResponse } from '../../../utils';
 import type { DiceConfig } from '../../../utils/dice';
@@ -32,43 +37,36 @@ export type PlayerSkillContainerProps = {
 
 const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 	const [playerSkills, setPlayerSkills] = useState(props.playerSkills);
+	const { t } = useI18n<Locale>();
 
-	const baseSkills = useMemo(
-		() =>
-			playerSkills
-				.filter((skill) => !skill.favourite)
-				.map((skill) => {
-					let name = skill.name;
-					if (skill.specializationName) name = `${skill.specializationName} (${name})`;
-					return {
-						id: skill.id,
-						name,
-						modifier: skill.modifier,
-						value: skill.value,
-						checked: skill.checked,
-					};
-				})
-				.sort((a, b) => a.name.localeCompare(b.name)),
-		[playerSkills]
-	);
+	const baseSkills = playerSkills
+		.filter((skill) => !skill.favourite)
+		.map((skill) => {
+			let name = skill.name;
+			if (skill.specializationName) name = `${skill.specializationName} (${name})`;
+			return {
+				id: skill.id,
+				name,
+				modifier: skill.modifier,
+				value: skill.value,
+				checked: skill.checked,
+			};
+		})
+		.sort((a, b) => a.name.localeCompare(b.name));
 
-	const favouriteSkills = useMemo(
-		() =>
-			playerSkills
-				.filter((skill) => skill.favourite)
-				.map((skill) => {
-					let name = skill.name;
-					if (skill.specializationName) name = `${skill.specializationName} (${name})`;
-					return {
-						id: skill.id,
-						name,
-						modifier: skill.modifier,
-						value: skill.value,
-						checked: skill.checked,
-					};
-				}),
-		[playerSkills]
-	);
+	const favouriteSkills = playerSkills
+		.filter((skill) => skill.favourite)
+		.map((skill) => {
+			let name = skill.name;
+			if (skill.specializationName) name = `${skill.specializationName} (${name})`;
+			return {
+				id: skill.id,
+				name,
+				modifier: skill.modifier,
+				value: skill.value,
+				checked: skill.checked,
+			};
+		});
 
 	const onSetFavourite = (id: number, favourite: boolean) => {
 		setPlayerSkills((sk) =>
@@ -88,7 +86,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 		<>
 			<Grid item xs={12} sm={6}>
 				<FavouriteSkillsContainer
-					title={props.title}
+					title={`${props.title} (${t('quickAccess')})`}
 					playerSkills={favouriteSkills}
 					automaticMarking={props.automaticMarking}
 					skillDiceConfig={props.skillDiceConfig}
@@ -121,7 +119,7 @@ type PlayerSkillFieldProps = {
 	onDelete?: () => void;
 };
 
-const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
+const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
 	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
@@ -146,7 +144,7 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.notifyClearChecked]);
 
-	const handleDiceRoll: React.MouseEventHandler<HTMLDivElement> = (ev) => {
+	const handleDiceRoll: React.MouseEventHandler<HTMLLabelElement> = (ev) => {
 		const roll = props.skillDiceConfig.value;
 		const branched = props.skillDiceConfig.branched;
 
@@ -230,34 +228,35 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 			: undefined;
 
 	return (
-		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' m={2}>
-			<div>
-				<Checkbox
-					inputProps={{ 'aria-label': 'Marker' }}
-					checked={checked}
-					onChange={onCheckChange}
-				/>
-				{props.onDelete && (
-					<Tooltip title='TODO: Unstar' describeChild>
-						<IconButton size='small' onClick={props.onDelete}>
-							<ClearIcon />
-						</IconButton>
-					</Tooltip>
-				)}
-			</div>
-			<Box
-				sx={{
-					cursor: 'pointer',
-					':hover': {
-						textDecoration: 'underline',
-					},
-				}}
-				onClick={handleDiceRoll}>
+		<>
+			<Box flexGrow={1} display='flex' flexDirection='column' justifyContent='center'>
+				<div>
+					<Checkbox
+						inputProps={{ 'aria-label': 'Marker' }}
+						checked={checked}
+						onChange={onCheckChange}
+						size='small'
+						sx={{ padding: 0 }}
+					/>
+					{props.onDelete && (
+						<Tooltip title='TODO: Unstar' describeChild>
+							<IconButton size='small' onClick={props.onDelete} sx={{ padding: 0, ml: 2 }}>
+								<ClearIcon />
+							</IconButton>
+						</Tooltip>
+					)}
+				</div>
 				<Typography
 					variant='subtitle1'
 					component='label'
 					htmlFor={`skill${props.id}`}
-					style={{ cursor: 'pointer' }}>
+					sx={{
+						cursor: 'pointer',
+						':hover': {
+							textDecoration: 'underline',
+						},
+					}}
+					onClick={handleDiceRoll}>
 					{props.name}
 				</Typography>
 			</Box>
@@ -293,11 +292,11 @@ const PlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					style={{ width: '5rem' }}
 				/>
 			</div>
-		</Box>
+		</>
 	);
 };
 
-export const MemoPlayerSkillField = memo(PlayerSkillField, (prev, next) => {
+export const PlayerSkillField = memo(UnderlyingPlayerSkillField, (prev, next) => {
 	return (
 		prev.notifyClearChecked === next.notifyClearChecked &&
 		Object.is(prev.skillDiceConfig, next.skillDiceConfig) &&
@@ -305,5 +304,46 @@ export const MemoPlayerSkillField = memo(PlayerSkillField, (prev, next) => {
 		prev.name === next.name
 	);
 });
+
+type SearchbarProps = {
+	onSearchChange: (search: string) => void;
+	onClearChecks: () => void;
+};
+
+export const Searchbar: React.FC<SearchbarProps> = (props) => {
+	const [search, setSearch] = useState('');
+	const { t } = useI18n<Locale>();
+
+	useEffect(() => {
+		props.onSearchChange(search);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [search]);
+
+	return (
+		<Box display='flex' alignItems='center' gap={1} my={1}>
+			<Paper sx={{ p: 0.5, flex: '1 0' }}>
+				<InputBase
+					fullWidth
+					placeholder={t('search')}
+					inputProps={{ 'aria-label': t('search') }}
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+					endAdornment={
+						search ? (
+							<IconButton size='small' onClick={() => setSearch('')}>
+								<ClearIcon />
+							</IconButton>
+						) : undefined
+					}
+				/>
+			</Paper>
+			<div>
+				<Button size='small' variant='outlined' onClick={props.onClearChecks}>
+					{t('sheet.clearMarkers')}
+				</Button>
+			</div>
+		</Box>
+	);
+};
 
 export default PlayerSkillContainer;

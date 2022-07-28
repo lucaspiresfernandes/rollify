@@ -26,7 +26,7 @@ const LoginPage: NextPage = () => {
 	return (
 		<>
 			<Head>
-				<title>Login</title>
+				<title>Login - Rollify</title>
 			</Head>
 			<Login />
 		</>

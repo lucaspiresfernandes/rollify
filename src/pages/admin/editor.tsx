@@ -10,7 +10,7 @@ const AdminEditorPage: NextPage<AdminEditorPageProps> = (props) => {
 	return (
 		<>
 			<Head>
-				<title>Editor</title>
+				<title>Editor - Rollify</title>
 			</Head>
 			<h1>Editor</h1>
 		</>

@@ -123,7 +123,7 @@ const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode,
 					display='flex'
 					width={{ md: 0, xs: 200 }}
 					flexGrow={1}
-					gap={1}
+					gap={2}
 					justifyContent='end'
 					ml={{ xs: 2, md: 0 }}>
 					<Switch

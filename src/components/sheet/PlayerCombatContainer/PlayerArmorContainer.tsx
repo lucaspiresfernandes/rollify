@@ -20,6 +20,7 @@ type PlayerArmorContainerProps = {
 
 const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
+	console.log('render');
 
 	return (
 		<TableContainer>

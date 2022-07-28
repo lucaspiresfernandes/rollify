@@ -100,6 +100,8 @@ const handlePut: NextApiHandlerIO<PlayerItemApiResponse> = async (req, res) => {
 			data: { currentDescription: item.Item.description },
 		});
 
+		item.currentDescription = item.Item.description;
+
 		res.json({ status: 'success', item });
 
 		res.socket.server.io

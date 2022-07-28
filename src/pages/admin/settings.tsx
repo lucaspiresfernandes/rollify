@@ -12,7 +12,7 @@ const AdminSettingsPage: NextPage<AdminSettingsPageProps> = (props) => {
 	return (
 		<>
 			<Head>
-				<title>Settings</title>
+				<title>Settings - Rollify</title>
 			</Head>
 			<h1>Settings</h1>
 		</>

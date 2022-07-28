@@ -45,7 +45,7 @@ const GettingStartedPage: NextPage = () => {
 	return (
 		<>
 			<Head>
-				<title>Getting Started</title>
+				<title>Getting Started - Rollify</title>
 			</Head>
 			<GettingStarted />
 		</>

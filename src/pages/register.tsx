@@ -30,7 +30,7 @@ const HomePage: NextPage<PageProps> = (props) => {
 	return (
 		<>
 			<Head>
-				<title>Register</title>
+				<title>Register - Rollify</title>
 			</Head>
 			<Home {...props} />
 		</>

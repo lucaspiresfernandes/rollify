@@ -9,6 +9,8 @@ const getPlayerData = async (id: number) => {
 		select: {
 			id: true,
 			name: true,
+			maxLoad: true,
+			spellSlots: true,
 			PlayerInfo: { select: { Info: { select: { id: true, name: true } }, value: true } },
 			PlayerSpec: { select: { Spec: { select: { id: true, name: true } }, value: true } },
 			PlayerAttributes: {
@@ -36,6 +38,7 @@ const getPlayerData = async (id: number) => {
 					Skill: { select: { id: true, name: true, Specialization: { select: { name: true } } } },
 					value: true,
 					modifier: true,
+					favourite: true,
 				},
 			},
 			PlayerWeapon: { select: { Weapon: true, currentAmmo: true } },

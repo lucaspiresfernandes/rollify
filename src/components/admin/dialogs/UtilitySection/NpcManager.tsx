@@ -51,11 +51,13 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 
 	return (
 		<Section
-			sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
 			title='NPCs'
+			display='flex'
+			flexDirection='column'
+			height='100%'
 			sideButton={
 				<>
-					<IconButton onClick={handleClick}>
+					<IconButton onClick={handleClick} aria-label='Add' >
 						<AddIcon />
 					</IconButton>
 					<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>

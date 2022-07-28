@@ -12,7 +12,7 @@ const SheetSecondPage: NextPage<SheetSecondPageProps> = (props) => {
 	return (
 		<>
 			<Head>
-				<title>Character Sheet</title>
+				<title>Character Sheet - Rollify</title>
 			</Head>
 			<PlayerSheetPage2 {...props} />
 		</>

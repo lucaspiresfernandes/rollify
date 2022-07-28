@@ -6,6 +6,9 @@ export interface Locale {
 
 	quickAccess: string;
 
+	weight: string;
+	quantity: string;
+
 	nav: {
 		language: string;
 		exit: string;

@@ -115,7 +115,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	return (
 		<SheetContainer
 			title={props.title}
-			sx={{ position: 'relative' }}
+			position='relative'
 			sideButton={
 				<IconButton aria-label='Add Item' onClick={loadAvailableItems}>
 					<AddIcon />

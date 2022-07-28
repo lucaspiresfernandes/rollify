@@ -198,7 +198,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 			title='Combat'
 			sideButton={
 				<>
-					<IconButton onClick={handleDropdownClick} disabled={inactiveEntities.length === 0}>
+					<IconButton onClick={handleDropdownClick} disabled={inactiveEntities.length === 0} aria-label='Add'>
 						<AddIcon />
 					</IconButton>
 					<Menu

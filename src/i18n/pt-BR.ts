@@ -7,6 +7,9 @@ export const table: Locale = {
 	search: 'Pesquisar',
 
 	quickAccess: 'Acesso Rápido',
+	
+	weight: 'Peso',
+	quantity: 'Quantidade',
 
 	nav: {
 		language: 'Idioma',
