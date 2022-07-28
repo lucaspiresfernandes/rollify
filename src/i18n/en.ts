@@ -6,6 +6,8 @@ export const table: Locale = {
 
 	search: 'Search',
 
+	quickAccess: 'Quick Access',
+
 	nav: {
 		language: 'Language',
 		exit: 'Logout',
@@ -78,12 +80,15 @@ export const table: Locale = {
 			description: 'Description',
 			weight: 'Weight',
 			quantity: 'Quantity',
+
+			damageReduction: 'Dam. Reduction',
+			penalty: 'Penalty',
 		},
 	},
 
 	admin: {
-		panelTitle: 'GM\'s Panel',
-		editorTitle: 'GM\'s Editor',
+		panelTitle: "GM's Panel",
+		editorTitle: "GM's Editor",
 		configurationsTitle: 'Settings',
 	},
 
@@ -96,6 +101,6 @@ export const table: Locale = {
 	},
 
 	prompt: {
-		delete: 'Are you sure you want to delete this {{name}}?',
+		delete: 'Are you sure you want to delete this item?',
 	},
 };

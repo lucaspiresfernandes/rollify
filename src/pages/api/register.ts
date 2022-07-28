@@ -74,10 +74,7 @@ export async function registerSheetData(
 		prisma.attributeStatus.findMany({ select: { id: true } }),
 		prisma.spec.findMany({ select: { id: true } }),
 		prisma.characteristic.findMany({ select: { id: true } }),
-		prisma.skill.findMany({
-			select: { id: true, startValue: true },
-			where: { mandatory: true },
-		}),
+		prisma.skill.findMany({ select: { id: true, startValue: true } }),
 		prisma.extraInfo.findMany({ select: { id: true } }),
 		prisma.currency.findMany({ select: { id: true } }),
 	]);

@@ -9,13 +9,12 @@ import { useEffect, useState } from 'react';
 
 type PlayerAttributeEditorDialogProps = {
 	open: boolean;
+	onClose: () => void;
+	onSubmit: (value: number, maxValue: number) => void;
 	startValue: {
-		id: number;
 		value: number;
 		maxValue: number;
 	};
-	onClose: () => void;
-	onSubmit: (value: number, maxValue: number) => void;
 };
 
 const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = (props) => {
@@ -23,7 +22,7 @@ const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = 
 	const [maxValue, setMaxValue] = useState('0');
 
 	useEffect(() => {
-		if (props.open && props.startValue.id > 0) {
+		if (props.open) {
 			setValue(props.startValue.value.toString());
 			setMaxValue(props.startValue.maxValue.toString());
 		}
@@ -69,7 +68,7 @@ const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = 
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>Cancel</Button>
-				<Button type='submit' form='PlayerAttributeEditorDialogForm' onClick={props.onClose}>
+				<Button type='submit' form='PlayerAttributeEditorDialogForm'>
 					Apply
 				</Button>
 			</DialogActions>

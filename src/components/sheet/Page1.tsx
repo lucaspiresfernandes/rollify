@@ -5,13 +5,7 @@ import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-	AddDataContext,
-	ApiContext,
-	DiceRollContext,
-	DiceRollEvent,
-	SocketContext,
-} from '../../contexts';
+import { AddDataContext, ApiContext, DiceRollContext, DiceRollEvent } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
@@ -143,43 +137,43 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 						</Grid>
 
 						<AddDataContext.Provider value={addDataProvider}>
-							<SocketContext.Provider value={socket}>
-								<Grid item xs={12} sm={6}>
-									<MemoPlayerSkillContainer
-										title={t('sheet.playerSkillTitle')}
-										playerSkills={props.player.PlayerSkill.map((skill) => ({
-											...skill,
-											...skill.Skill,
-											specializationName: skill.Skill.Specialization?.name || null,
-										}))}
-										automaticMarking={props.automaticMarking}
-										skillDiceConfig={props.diceConfig.skill}
-									/>
-								</Grid>
+							<MemoPlayerSkillContainer
+								title={t('sheet.playerSkillTitle')}
+								playerSkills={props.player.PlayerSkill.map((skill) => ({
+									...skill,
+									...skill.Skill,
+									specializationName: skill.Skill.Specialization?.name || null,
+								}))}
+								automaticMarking={props.automaticMarking}
+								skillDiceConfig={props.diceConfig.skill}
+							/>
+							
+							<Grid item xs={12}>
+								<MemoPlayerCombatContainer
+									title={t('sheet.playerCombatTitle')}
+									playerWeapons={props.player.PlayerWeapon.map((weap) => ({
+										...weap,
+										...weap.Weapon,
+									}))}
+									playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
+								/>
+							</Grid>
 
-								<Grid item xs={12}>
-									<MemoPlayerCombatContainer
-										title={t('sheet.playerCombatTitle')}
-										playerEquipments={props.player.PlayerEquipment}
-									/>
-								</Grid>
-
-								<Grid item xs={12}>
-									<MemoPlayerItemContainer
-										title={t('sheet.playerItemTitle')}
-										playerCurrency={props.player.PlayerCurrency.map((cur) => ({
-											id: cur.Currency.id,
-											name: cur.Currency.name,
-											value: cur.value,
-										}))}
-										playerItems={props.player.PlayerItem.map((it) => ({
-											...it,
-											...it.Item,
-										}))}
-										maxLoad={props.player.maxLoad}
-									/>
-								</Grid>
-							</SocketContext.Provider>
+							<Grid item xs={12}>
+								<MemoPlayerItemContainer
+									title={t('sheet.playerItemTitle')}
+									playerCurrency={props.player.PlayerCurrency.map((cur) => ({
+										id: cur.Currency.id,
+										name: cur.Currency.name,
+										value: cur.value,
+									}))}
+									playerItems={props.player.PlayerItem.map((it) => ({
+										...it,
+										...it.Item,
+									}))}
+									maxLoad={props.player.maxLoad}
+								/>
+							</Grid>
 
 							<Grid item xs={12}>
 								<MemoPlayerSpellContainer

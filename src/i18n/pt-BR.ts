@@ -6,6 +6,8 @@ export const table: Locale = {
 
 	search: 'Pesquisar',
 
+	quickAccess: 'Acesso Rápido',
+
 	nav: {
 		language: 'Idioma',
 		exit: 'Sair',
@@ -78,6 +80,9 @@ export const table: Locale = {
 			description: 'Descrição',
 			weight: 'Peso',
 			quantity: 'Quantidade',
+
+			damageReduction: 'Redução de dano',
+			penalty: 'Penalidade',
 		},
 	},
 
@@ -96,6 +101,6 @@ export const table: Locale = {
 	},
 
 	prompt: {
-		delete: 'Tem certeza que deseja excluir esse(a) {{name}}?',
+		delete: 'Tem certeza que deseja excluir esse item?',
 	},
 };

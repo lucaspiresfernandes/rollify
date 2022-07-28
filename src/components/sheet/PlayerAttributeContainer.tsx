@@ -8,6 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
+import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { PortraitAttribute } from '@prisma/client';
@@ -68,8 +69,6 @@ type PlayerAttributeContainerProps = {
 };
 
 const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props) => {
-	const [attrEditorOpen, setAttrEditorOpen] = useState(false);
-	const [attrEditor, setAttrEditor] = useState(editorInitialValue);
 	const [playerAttributeStatus, setPlayerAttributeStatus] = useState(props.playerAttributeStatus);
 
 	const onStatusChanged = (id: number, newValue: boolean) => {
@@ -96,25 +95,11 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 						{...attr}
 						status={status}
 						onStatusChanged={onStatusChanged}
-						editor={attrEditor}
-						onEdit={(id, value, maxValue) => {
-							setAttrEditorOpen(true);
-							setAttrEditor({ id, value, maxValue });
-						}}
 						visibilityEnabled={attr.portrait != null}
 						attributeDiceConfig={props.attributeDiceConfig}
 					/>
 				);
 			})}
-			<PlayerAttributeEditorDialog
-				open={attrEditorOpen}
-				startValue={attrEditor}
-				onClose={() => setAttrEditorOpen(false)}
-				onSubmit={(value, maxValue) =>
-					setAttrEditor((e) => ({ id: e.id, value, maxValue, show: false }))
-				}
-			/>
-			{/* <DiceRollModal {...diceRollResultModalProps} /> */}
 		</Stack>
 	);
 };
@@ -224,14 +209,12 @@ type PlayerAttributeFieldProps = {
 	}[];
 
 	onStatusChanged: (id: number, newValue: boolean) => void;
-	onEdit: (id: number, value: number, maxValue: number) => void;
 	attributeDiceConfig: DiceConfig['attribute'];
-	// showDiceRollResult: DiceRollEvent;
 	visibilityEnabled: boolean;
-	editor: { id: number; value: number; maxValue: number };
 };
 
 const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
+	const [attrEditorOpen, setAttrEditorOpen] = useState(false);
 	const [show, setShow] = useState(props.show);
 	const [value, setValue] = useState(props.value);
 	const [maxValue, setMaxValue] = useState(props.maxValue);
@@ -254,14 +237,10 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 		if (timeout.current.timeout) clearTimeout(timeout.current.timeout);
 	}, [maxValue]);
 
-	useEffect(() => {
-		if (props.editor.id !== props.id) return;
-		const newValue = props.editor.value;
-		const newMaxValue = props.editor.maxValue;
-
+	const onEditorSubmit = (newValue: number, newMaxValue: number) => {
+		setAttrEditorOpen(false);
 		setValue(newValue);
 		setMaxValue(newMaxValue);
-
 		api
 			.post<PlayerAttributeApiResponse>('/sheet/player/attribute', {
 				id: props.id,
@@ -270,8 +249,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			})
 			.then((res) => handleDefaultApiResponse(res, log))
 			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.editor]);
+	};
 
 	const handleDiceClick = (standalone: boolean) => {
 		const roll = props.attributeDiceConfig.value;
@@ -359,16 +337,18 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			</Box>
 			<Box display='flex' flexDirection='row' alignItems='center'>
 				{props.visibilityEnabled && (
-					<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange} size='small'>
-						{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
-					</IconButton>
+					<Tooltip title={show ? 'TODO: Hide' : 'Show'} describeChild>
+						<IconButton onClick={onShowChange} size='small'>
+							{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
+						</IconButton>
+					</Tooltip>
 				)}
 				<Box
 					flex='1 0'
 					mx={1}
 					position='relative'
 					style={{ cursor: 'pointer' }}
-					onClick={() => props.onEdit(props.id, value, maxValue)}>
+					onClick={() => setAttrEditorOpen(true)}>
 					<LinearProgress
 						variant='determinate'
 						aria-label={t('sheet.attributePoints', { name: props.name })}
@@ -415,6 +395,12 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					))}
 				</FormGroup>
 			</div>
+			<PlayerAttributeEditorDialog
+				open={attrEditorOpen}
+				startValue={{ value, maxValue }}
+				onClose={() => setAttrEditorOpen(false)}
+				onSubmit={onEditorSubmit}
+			/>
 		</div>
 	);
 };

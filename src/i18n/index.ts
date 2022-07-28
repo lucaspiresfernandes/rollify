@@ -4,6 +4,8 @@ export interface Locale {
 
 	search: string;
 
+	quickAccess: string;
+
 	nav: {
 		language: string;
 		exit: string;
@@ -77,6 +79,9 @@ export interface Locale {
 			description: string;
 			weight: string;
 			quantity: string;
+
+			damageReduction: string;
+			penalty: string;
 		};
 	};
 

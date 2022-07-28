@@ -1,11 +1,11 @@
-import type { Equipment } from '@prisma/client';
+import type { Weapon } from '@prisma/client';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../utils/next';
 import prisma from '../../../utils/prisma';
 import { withSessionApi } from '../../../utils/session';
 
-export type EquipmentSheetApiResponse = NextApiResponseData<
+export type WeaponSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
-	{ equipment: Equipment[] }
+	{ weapon: Weapon[] }
 >;
 
 const handler: NextApiHandlerIO = (req, res) => {
@@ -16,7 +16,7 @@ const handler: NextApiHandlerIO = (req, res) => {
 	res.status(405).end();
 };
 
-const handleGet: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
+const handleGet: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
 	const npcId = Number(req.body.npcId) || undefined;
 
@@ -24,14 +24,14 @@ const handleGet: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 
 	const player_id = npcId || player.id;
 
-	const equipment = await prisma.equipment.findMany({
-		where: { visible: true, PlayerEquipment: { none: { player_id } } },
+	const weapon = await prisma.weapon.findMany({
+		where: { visible: true, PlayerWeapon: { none: { player_id } } },
 	});
 
-	res.json({ status: 'success', equipment });
+	res.json({ status: 'success', weapon });
 };
 
-const handlePost: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
+const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -62,19 +62,19 @@ const handlePost: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res)
 	const visible = Boolean(req.body.visible);
 
 	try {
-		const equipment = await prisma.equipment.update({
+		const weapon = await prisma.weapon.update({
 			where: { id },
 			data: { name, type, damage, range, attacks, ammo, visible },
 		});
 
-		res.json({ status: 'success', equipment: [equipment] });
+		res.json({ status: 'success', weapon: [weapon] });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
 
-const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
+const handlePut: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -85,6 +85,7 @@ const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 		!req.body.damage ||
 		!req.body.range ||
 		!req.body.attacks ||
+		req.body.weight === undefined ||
 		req.body.ammo === undefined ||
 		req.body.visible === undefined
 	) {
@@ -96,6 +97,7 @@ const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const weight = Number(req.body.weight);
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
 	const attacks = String(req.body.attacks);
@@ -108,16 +110,17 @@ const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 	});
 
 	try {
-		const equipment = await prisma.equipment.create({
+		const weapon = await prisma.weapon.create({
 			data: {
 				name,
+				weight,
 				ammo,
 				attacks,
 				damage,
 				range,
 				type,
 				visible,
-				PlayerEquipment: {
+				PlayerWeapon: {
 					createMany: {
 						data: players.map(({ id: player_id }) => ({ player_id })),
 					},
@@ -125,14 +128,14 @@ const handlePut: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) 
 			},
 		});
 
-		res.json({ status: 'success', equipment: [equipment] });
+		res.json({ status: 'success', weapon: [weapon] });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
 
-const handleDelete: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, res) => {
+const handleDelete: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -146,9 +149,9 @@ const handleDelete: NextApiHandlerIO<EquipmentSheetApiResponse> = async (req, re
 	const id = Number(req.body.id);
 
 	try {
-		const equipment = await prisma.equipment.delete({ where: { id } });
+		const weapon = await prisma.weapon.delete({ where: { id } });
 
-		res.json({ status: 'success', equipment: [equipment] });
+		res.json({ status: 'success', weapon: [weapon] });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

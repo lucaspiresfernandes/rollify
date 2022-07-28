@@ -25,7 +25,6 @@ model Player {
   PlayerSpec            PlayerSpec[]
   PlayerCharacteristic  PlayerCharacteristic[]
   PlayerSkill           PlayerSkill[]
-  PlayerEquipment       PlayerEquipment[]
   PlayerItem            PlayerItem[]
   PlayerExtraInfo       PlayerExtraInfo[]
   PlayerNote            PlayerNote?
@@ -34,12 +33,14 @@ model Player {
   PlayerAvatar          PlayerAvatar[]
   SenderTrade           Trade?                  @relation(name: "Sender")
   ReceiverTrade         Trade?                  @relation(name: "Receiver")
+  PlayerWeapon          PlayerWeapon[]
+  PlayerArmor           PlayerArmor[]
 }
 
 model Info {
-  id             Int          @id @default(autoincrement())
-  name           String
-  PlayerInfo     PlayerInfo[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  PlayerInfo PlayerInfo[]
 }
 
 model Attribute {
@@ -62,9 +63,9 @@ model AttributeStatus {
 }
 
 model Spec {
-  id             Int          @id @default(autoincrement())
-  name           String
-  PlayerSpec     PlayerSpec[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  PlayerSpec PlayerSpec[]
 }
 
 model Characteristic {
@@ -86,20 +87,31 @@ model Skill {
   Specialization    Specialization? @relation(fields: [specialization_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
   specialization_id Int?
   startValue        Int
-  mandatory         Boolean
   PlayerSkill       PlayerSkill[]
 }
 
-model Equipment {
-  id              Int               @id @default(autoincrement())
+model Weapon {
+  id           Int            @id @default(autoincrement())
+  name         String
+  type         String
+  weight       Float
+  damage       String
+  range        String
+  attacks      String
+  ammo         Int?
+  visible      Boolean
+  PlayerWeapon PlayerWeapon[]
+}
+
+model Armor {
+  id              Int           @id @default(autoincrement())
   name            String
   type            String
-  damage          String
-  range           String
-  attacks         String
-  ammo            Int?
+  weight          Float
+  damageReduction String
+  penalty         String
   visible         Boolean
-  PlayerEquipment PlayerEquipment[]
+  PlayerArmor     PlayerArmor[]
 }
 
 model Item {
@@ -200,18 +212,28 @@ model PlayerSkill {
   value     Int
   modifier  Int     @default(0)
   checked   Boolean @default(false)
+  favourite Boolean @default(false)
 
   @@id([player_id, skill_id])
 }
 
-model PlayerEquipment {
-  Player       Player    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  player_id    Int
-  Equipment    Equipment @relation(fields: [equipment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  equipment_id Int
-  currentAmmo  Int       @default(0)
+model PlayerWeapon {
+  Player      Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id   Int
+  Weapon      Weapon @relation(fields: [weapon_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  weapon_id   Int
+  currentAmmo Int    @default(0)
 
-  @@id([player_id, equipment_id])
+  @@id([player_id, weapon_id])
+}
+
+model PlayerArmor {
+  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id Int
+  Armor     Armor  @relation(fields: [armor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  armor_id  Int
+
+  @@id([player_id, armor_id])
 }
 
 model PlayerItem {

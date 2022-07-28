@@ -87,12 +87,14 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 
 	useEffect(() => {
 		setPosition(
-			(JSON.parse(localStorage.getItem('attribute-pos') || 'null') as typeof position) || {
+			(JSON.parse(
+				localStorage.getItem(`attribute-pos-${props.playerId}`) || 'null'
+			) as typeof position) || {
 				x: 0,
 				y: 300,
 			}
 		);
-	}, []);
+	}, [props.playerId]);
 
 	useEffect(() => {
 		props.socket.on('playerAttributeChange', (playerId, attributeId, value, maxValue, show) => {
@@ -123,7 +125,7 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 			y: clamp(data.y, bounds.top, bounds.bottom),
 		};
 		setPosition(pos);
-		localStorage.setItem('attribute-pos', JSON.stringify(pos));
+		localStorage.setItem(`attribute-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
 	return (
@@ -172,13 +174,14 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 
 	useEffect(() => {
 		setTransform(
-			(JSON.parse(localStorage.getItem('name-pos') || 'null') as typeof transform) || {
+			(JSON.parse(
+				localStorage.getItem(`name-pos-${props.playerId}`) || 'null'
+			) as typeof transform) || {
 				x: 0,
 				y: 300,
 			}
 		);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [props.playerId]);
 
 	useEffect(() => {
 		props.socket.on('playerNameChange', (playerId, name) => {
@@ -210,7 +213,7 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 			y: clamp(data.y, bounds.top, bounds.bottom),
 		};
 		setTransform(pos);
-		localStorage.setItem('name-pos', JSON.stringify(pos));
+		localStorage.setItem(`name-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
 	return (

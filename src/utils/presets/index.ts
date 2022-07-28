@@ -1,16 +1,16 @@
 import type {
+	Armor,
 	Attribute,
 	AttributeStatus,
 	Characteristic,
-	Currency,
-	Equipment,
-	ExtraInfo,
+	Currency, ExtraInfo,
 	Info,
 	Item,
 	Skill,
 	Spec,
 	Specialization,
-	Spell
+	Spell,
+	Weapon
 } from '@prisma/client';
 
 export type Presets = {
@@ -20,7 +20,8 @@ export type Presets = {
 	attribute_status: AttributeStatus[];
 	characteristic: Characteristic[];
 	currency: Currency[];
-	equipment: Equipment[];
+	weapon: Weapon[];
+	armor: Armor[];
 	extraInfo: ExtraInfo[];
 	info: Info[];
 	item: Item[];

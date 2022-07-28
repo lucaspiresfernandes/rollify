@@ -1,48 +1,43 @@
-import type { Equipment, PlayerEquipment, Trade } from '@prisma/client';
+import type { Armor, Trade } from '@prisma/client';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../../utils/next';
 import prisma from '../../../../../utils/prisma';
 import { withSessionApi } from '../../../../../utils/session';
 
-export type TradeEquipmentApiResponse = NextApiResponseData<
+export type TradeArmorApiResponse = NextApiResponseData<
 	| 'unauthorized'
 	| 'invalid_body'
 	| 'trade_already_exists'
 	| 'trading_same_item'
-	| 'sender_does_not_have_equipment'
-	| 'receiver_equipment_already_exists'
-	| 'receiver_does_not_have_equipment'
-	| 'receiver_already_has_equipment'
+	| 'sender_does_not_have_armor'
+	| 'receiver_armor_already_exists'
+	| 'receiver_does_not_have_armor'
+	| 'receiver_already_has_armor'
 	| 'trade_does_not_exist',
 	{
 		trade: Trade;
-		equipment:
-			| (PlayerEquipment & {
-					Equipment: Equipment;
-			  })
-			| null;
+		armor: Armor | null;
 	}
 >;
 
-const handler: NextApiHandlerIO<TradeEquipmentApiResponse> = (req, res) => {
+const handler: NextApiHandlerIO<TradeArmorApiResponse> = (req, res) => {
 	if (req.method === 'PUT') return handlePut(req, res);
 	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	res.status(405).end();
 };
 
-const handlePut: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res) => {
+const handlePut: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const senderId = player.id;
-	const senderEquipmentId: number | undefined = req.body.offerId;
+	const senderArmorId: number | undefined = req.body.offerId;
 
 	const receiverId: number | undefined = req.body.playerId;
-	const receiverEquipmentId: number | undefined = req.body.tradeId;
+	const receiverArmorId: number | undefined = req.body.tradeId;
 
-	if (!senderEquipmentId || !receiverId)
-		return res.json({ status: 'failure', reason: 'invalid_body' });
+	if (!senderArmorId || !receiverId) return res.json({ status: 'failure', reason: 'invalid_body' });
 
 	try {
 		const existingTrade = await prisma.trade.findFirst({
@@ -57,95 +52,95 @@ const handlePut: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res) 
 				reason: 'trade_already_exists',
 			});
 
-		if (receiverEquipmentId) {
-			if (senderEquipmentId === receiverEquipmentId)
+		if (receiverArmorId) {
+			if (senderArmorId === receiverArmorId)
 				return res.json({ status: 'failure', reason: 'trading_same_item' });
 
-			const senderTradeEquip = await prisma.playerEquipment.findUnique({
+			const senderTradeArmor = await prisma.playerArmor.findUnique({
 				where: {
-					player_id_equipment_id: {
+					player_id_armor_id: {
 						player_id: senderId,
-						equipment_id: receiverEquipmentId,
+						armor_id: receiverArmorId,
 					},
 				},
 			});
 
-			if (senderTradeEquip)
+			if (senderTradeArmor)
 				return res.json({
 					status: 'failure',
-					reason: 'receiver_equipment_already_exists',
+					reason: 'receiver_armor_already_exists',
 				});
 
-			const receiverEquip = await prisma.playerEquipment.findUnique({
+			const receiverArmor = await prisma.playerArmor.findUnique({
 				where: {
-					player_id_equipment_id: {
+					player_id_armor_id: {
 						player_id: receiverId,
-						equipment_id: receiverEquipmentId,
+						armor_id: receiverArmorId,
 					},
 				},
 			});
 
-			if (receiverEquip === null)
+			if (receiverArmor === null)
 				return res.json({
 					status: 'failure',
-					reason: 'receiver_does_not_have_equipment',
+					reason: 'receiver_does_not_have_armor',
 				});
 		} else {
-			const receiverEquip = await prisma.playerEquipment.findUnique({
+			const receiverArmor = await prisma.playerArmor.findUnique({
 				where: {
-					player_id_equipment_id: {
+					player_id_armor_id: {
 						player_id: receiverId,
-						equipment_id: senderEquipmentId,
+						armor_id: senderArmorId,
 					},
 				},
 			});
 
-			if (receiverEquip !== null)
+			if (receiverArmor !== null)
 				return res.json({
 					status: 'failure',
-					reason: 'receiver_already_has_equipment',
+					reason: 'receiver_already_has_armor',
 				});
 		}
 
-		const senderEquip = await prisma.playerEquipment.findUnique({
+		const senderArmor = await prisma.playerArmor.findUnique({
 			where: {
-				player_id_equipment_id: {
+				player_id_armor_id: {
 					player_id: senderId,
-					equipment_id: senderEquipmentId,
+					armor_id: senderArmorId,
 				},
 			},
 			select: {
 				Player: { select: { name: true } },
-				Equipment: { select: { name: true } },
+				Armor: { select: { name: true } },
 			},
 		});
 
-		if (!senderEquip)
+		if (!senderArmor)
 			return res.json({
 				status: 'failure',
-				reason: 'sender_does_not_have_equipment',
+				reason: 'sender_does_not_have_armor',
 			});
 
 		const trade = await prisma.trade.create({
 			data: {
 				sender_id: senderId,
-				sender_object_id: senderEquipmentId,
+				sender_object_id: senderArmorId,
 				receiver_id: receiverId,
-				receiver_object_id: receiverEquipmentId,
+				receiver_object_id: receiverArmorId,
 			},
 		});
 
-		res.json({ status: 'success', trade, equipment: null });
+		res.json({ status: 'success', trade, armor: null });
 
 		res.socket.server.io
 			.to(`player${receiverId}`)
 			.emit(
 				'playerTradeRequest',
-				'equipment',
+				'armor',
 				trade.id,
-				receiverEquipmentId || null,
-				senderEquip.Player.name,
-				senderEquip.Equipment.name
+				receiverArmorId || null,
+				senderArmor.Player.name,
+				senderArmor.Armor.name
 			);
 	} catch (err) {
 		console.error(err);
@@ -153,7 +148,7 @@ const handlePut: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res) 
 	}
 };
 
-const handlePost: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res) => {
+const handlePost: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -174,77 +169,75 @@ const handlePost: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res)
 
 		if (!accept) {
 			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', false);
-			return res.json({ status: 'success', trade, equipment: null });
+			return res.json({ status: 'success', trade, armor: null });
 		}
 
 		if (trade.receiver_object_id) {
 			const results = await prisma.$transaction([
-				prisma.playerEquipment.update({
+				prisma.playerArmor.update({
 					where: {
-						player_id_equipment_id: {
+						player_id_armor_id: {
 							player_id: trade.sender_id,
-							equipment_id: trade.sender_object_id,
+							armor_id: trade.sender_object_id,
 						},
 					},
 					data: { player_id: trade.receiver_id },
-					include: { Equipment: true },
+					include: { Armor: true },
 				}),
-				prisma.playerEquipment.update({
+				prisma.playerArmor.update({
 					where: {
-						player_id_equipment_id: {
+						player_id_armor_id: {
 							player_id: trade.receiver_id,
-							equipment_id: trade.receiver_object_id,
+							armor_id: trade.receiver_object_id,
 						},
 					},
 					data: { player_id: trade.sender_id },
-					include: { Equipment: true },
+					include: { Armor: true },
 				}),
 			]);
 
-			const newSenderEquipment = results[0];
-			const newReceiverEquipment = results[1];
+			const newSenderArmor = results[0];
+			const newReceiverArmor = results[1];
 
-			res.json({ status: 'success', trade, equipment: newSenderEquipment });
+			res.json({ status: 'success', trade, armor: newSenderArmor.Armor });
 
 			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', accept, {
-				type: 'equipment',
+				type: 'armor',
 				obj: results[1],
 			});
 
 			res.socket.server.io
 				.to('admin')
-				.emit('playerEquipmentRemove', trade.sender_id, trade.sender_object_id);
+				.emit('playerArmorRemove', trade.sender_id, trade.sender_object_id);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerEquipmentRemove', trade.receiver_id, trade.receiver_object_id);
+				.emit('playerArmorRemove', trade.receiver_id, trade.receiver_object_id);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerEquipmentAdd', trade.sender_id, newSenderEquipment.Equipment);
+				.emit('playerArmorAdd', trade.sender_id, newSenderArmor.Armor);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerEquipmentAdd', trade.receiver_id, newReceiverEquipment.Equipment);
+				.emit('playerArmorAdd', trade.receiver_id, newReceiverArmor.Armor);
 		} else {
-			const equipment = await prisma.playerEquipment.update({
+			const armor = await prisma.playerArmor.update({
 				where: {
-					player_id_equipment_id: {
+					player_id_armor_id: {
 						player_id: trade.sender_id,
-						equipment_id: trade.sender_object_id,
+						armor_id: trade.sender_object_id,
 					},
 				},
 				data: { player_id: trade.receiver_id },
-				include: { Equipment: true },
+				include: { Armor: true },
 			});
 
-			res.json({ status: 'success', trade, equipment });
+			res.json({ status: 'success', trade, armor: armor.Armor });
 
 			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', accept);
 
 			res.socket.server.io
 				.to('admin')
-				.emit('playerEquipmentRemove', trade.sender_id, trade.sender_object_id);
-			res.socket.server.io
-				.to('admin')
-				.emit('playerEquipmentAdd', trade.receiver_id, equipment.Equipment);
+				.emit('playerArmorRemove', trade.sender_id, trade.sender_object_id);
+			res.socket.server.io.to('admin').emit('playerArmorAdd', trade.receiver_id, armor.Armor);
 		}
 	} catch (err) {
 		console.error(err);
@@ -252,7 +245,7 @@ const handlePost: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res)
 	}
 };
 
-const handleDelete: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, res) => {
+const handleDelete: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => {
 	if (!req.session.player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const tradeId: number | undefined = req.body.tradeId;
@@ -273,7 +266,7 @@ const handleDelete: NextApiHandlerIO<TradeEquipmentApiResponse> = async (req, re
 
 		const trade = await prisma.trade.delete({ where: { id: existingTrade.id } });
 
-		res.json({ status: 'success', trade, equipment: null });
+		res.json({ status: 'success', trade, armor: null });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

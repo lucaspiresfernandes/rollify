@@ -32,12 +32,14 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 
 	useEffect(() => {
 		setPosition(
-			(JSON.parse(localStorage.getItem('side-attribute-pos') || 'null') as ControlPosition) || {
+			(JSON.parse(
+				localStorage.getItem(`side-attribute-pos-${props.playerId}`) || 'null'
+			) as ControlPosition) || {
 				x: 0,
 				y: 420,
 			}
 		);
-	}, []);
+	}, [props.playerId]);
 
 	useEffect(() => {
 		props.socket.on('playerAttributeChange', (playerId, attributeId, value, _, show) => {
@@ -67,7 +69,7 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 			y: clamp(data.y, bounds.top, bounds.bottom),
 		};
 		setPosition(pos);
-		localStorage.setItem('side-attribute-pos', JSON.stringify(pos));
+		localStorage.setItem(`side-attribute-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
 	return (

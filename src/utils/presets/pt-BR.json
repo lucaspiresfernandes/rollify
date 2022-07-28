@@ -6,7 +6,8 @@
 		"attribute_status": [],
 		"characteristic": [],
 		"currency": [],
-		"equipment": [],
+		"weapon": [],
+		"armor": [],
 		"extraInfo": [],
 		"info": [],
 		"item": [],
@@ -62,11 +63,12 @@
 			{ "id": 1, "name": "Nível de Gasto Diário" },
 			{ "id": 2, "name": "Dinheiro" }
 		],
-		"equipment": [
+		"weapon": [
 			{
 				"id": 1,
 				"name": "Desarmado",
 				"type": "Comum",
+				"weight": 0,
 				"damage": "1d3+DAN",
 				"range": "Toque",
 				"attacks": "1",
@@ -74,6 +76,7 @@
 				"visible": true
 			}
 		],
+		"armor": [],
 		"extraInfo": [
 			{ "id": 1, "name": "Descrição Pessoal" },
 			{ "id": 2, "name": "Ideologia & Crenças" },
@@ -100,553 +103,474 @@
 				"id": 1,
 				"name": "Antropologia",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 2,
 				"name": "Arcos",
 				"specialization_id": 1,
-				"mandatory": false,
 				"startValue": 15
 			},
 			{
 				"id": 3,
 				"name": "Armas Pesadas",
 				"specialization_id": 1,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 4,
 				"name": "Lança-Chamas",
 				"specialization_id": 1,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 5,
 				"name": "Metralhadoras",
 				"specialization_id": 1,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 6,
 				"name": "Pistolas",
 				"specialization_id": 1,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 7,
 				"name": "Rifles/Espingardas",
 				"specialization_id": 1,
-				"mandatory": true,
 				"startValue": 25
 			},
 			{
 				"id": 8,
 				"name": "Submetralhadoras",
 				"specialization_id": 1,
-				"mandatory": false,
 				"startValue": 15
 			},
 			{
 				"id": 9,
 				"name": "Arqueologia",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 10,
 				"name": "Arremessar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 11,
 				"name": "Atuação",
 				"specialization_id": 2,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 12,
 				"name": "Belas Artes",
 				"specialization_id": 2,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 13,
 				"name": "Criptografia",
 				"specialization_id": 2,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 14,
 				"name": "Falsificação",
 				"specialization_id": 2,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 15,
 				"name": "Fotografia",
 				"specialization_id": 2,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 16,
 				"name": "Artilharia",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 17,
 				"name": "Avaliação",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 18,
 				"name": "Cavalgar",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 19,
 				"name": "Charme",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 15
 			},
 			{
 				"id": 20,
 				"name": "Chaveiro",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 21,
 				"name": "Astronomia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 22,
 				"name": "Biologia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 23,
 				"name": "Botânica",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 24,
 				"name": "Ciência Forense",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 25,
 				"name": "Engenharia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 26,
 				"name": "Farmácia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 27,
 				"name": "Física",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 28,
 				"name": "Geologia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 29,
 				"name": "Matemática",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 30,
 				"name": "Meteorologia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 31,
 				"name": "Química",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 32,
 				"name": "Zoologia",
 				"specialization_id": 3,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 33,
 				"name": "Consertos Elétricos",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 34,
 				"name": "Consertos Mecânicos",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 35,
 				"name": "Contabilidade",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 36,
 				"name": "Demolições",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 37,
 				"name": "Direito",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 38,
 				"name": "Dirigir Automóveis",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 39,
 				"name": "Disfarce",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 5
 			},
 			{
 				"id": 40,
 				"name": "Eletrônica",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 41,
 				"name": "Encontrar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 25
 			},
 			{
 				"id": 42,
 				"name": "Escalar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 43,
 				"name": "Escutar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 44,
 				"name": "Esquivar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 45,
 				"name": "Furtividade",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 46,
 				"name": "Hipnose",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 47,
 				"name": "História",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 48,
 				"name": "Intimidação",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 15
 			},
 			{
 				"id": 49,
 				"name": "Lábia",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 5
 			},
 			{
 				"id": 50,
 				"name": "Leitura Labial",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 51,
 				"name": "Nativa",
 				"specialization_id": 4,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 52,
 				"name": "Briga",
 				"specialization_id": 5,
-				"mandatory": true,
 				"startValue": 25
 			},
 			{
 				"id": 53,
 				"name": "Chicotes",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 54,
 				"name": "Espadas",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 20
 			},
 			{
 				"id": 55,
 				"name": "Garrote",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 15
 			},
 			{
 				"id": 56,
 				"name": "Lanças",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 20
 			},
 			{
 				"id": 57,
 				"name": "Machados",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 15
 			},
 			{
 				"id": 58,
 				"name": "Manguais",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 59,
 				"name": "Motosserras",
 				"specialization_id": 5,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 60,
 				"name": "Medicina",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 1
 			},
 			{
 				"id": 61,
 				"name": "Mergulho",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 62,
 				"name": "Mundo Natural",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 63,
 				"name": "Natação",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 64,
 				"name": "Navegação",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 65,
 				"name": "Nível de Crédito",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 66,
 				"name": "Ocultismo",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 5
 			},
 			{
 				"id": 67,
 				"name": "Operar Maquinário Pesado",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 68,
 				"name": "Persuasão",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 10
 			},
 			{
 				"id": 69,
 				"name": "Aeronave",
 				"specialization_id": 6,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 70,
 				"name": "Barco",
 				"specialization_id": 6,
-				"mandatory": false,
 				"startValue": 1
 			},
 			{
 				"id": 71,
 				"name": "Prestidigitação",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 10
 			},
 			{
 				"id": 72,
 				"name": "Primeiros Socorros",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 30
 			},
 			{
 				"id": 73,
 				"name": "Psicanálise",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 1
 			},
 			{
 				"id": 74,
 				"name": "Psicologia",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 10
 			},
 			{
 				"id": 75,
 				"name": "Rastrear",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 10
 			},
 			{
 				"id": 76,
 				"name": "Saltar",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 77,
 				"name": "Treinar Animais",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			},
 			{
 				"id": 78,
 				"name": "Usar Bibliotecas",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 20
 			},
 			{
 				"id": 79,
 				"name": "Usar Computadores",
 				"specialization_id": null,
-				"mandatory": false,
 				"startValue": 5
 			}
 		],
@@ -701,7 +625,8 @@
 			{ "id": 4, "name": "Peças de Ouro" },
 			{ "id": 5, "name": "Peças de Platina" }
 		],
-		"equipment": [],
+		"weapon": [],
+		"armor": [],
 		"extraInfo": [
 			{ "id": 1, "name": "Descrição Pessoal" },
 			{ "id": 2, "name": "Traços de Personalidade" },
@@ -729,126 +654,108 @@
 				"id": 1,
 				"name": "Acrobacia (Des)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 2,
 				"name": "Arcanismo (Int)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 3,
 				"name": "Atletismo (For)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 4,
 				"name": "Atuação (Car)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 5,
 				"name": "Blefar (Car)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 6,
 				"name": "Furtividade (Des)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 7,
 				"name": "História (Int)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 8,
 				"name": "Intimidação (Car)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 9,
 				"name": "Intuição (Sab)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 10,
 				"name": "Investigação (Int)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 11,
 				"name": "Lidar com Animais (Sab)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 12,
 				"name": "Medicina (Sab)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 13,
 				"name": "Natureza (Int)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 14,
 				"name": "Percepção (Sab)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 15,
 				"name": "Persuasão (Car)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 16,
 				"name": "Prestidigitação (Des)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 17,
 				"name": "Religião (Int)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			},
 			{
 				"id": 18,
 				"name": "Sobrevivência (Sab)",
 				"specialization_id": null,
-				"mandatory": true,
 				"startValue": 0
 			}
 		],

@@ -1,4 +1,12 @@
-import type { Equipment, Item, PlayerEquipment, PlayerItem, Spell } from '@prisma/client';
+import type {
+	Item,
+	PlayerItem,
+	Spell,
+	Weapon,
+	PlayerWeapon,
+	PlayerArmor,
+	Armor,
+} from '@prisma/client';
 import type { Server as HTTPServer } from 'http';
 import type { Socket as NetSocket } from 'net';
 import type { NextApiResponse } from 'next';
@@ -7,139 +15,84 @@ import type { Server as SocketIOServer } from 'socket.io';
 import type { DiceRequest, DiceResponse } from './dice';
 import type { Environment } from './portrait';
 
-export type PlayerNameChangeEvent = (playerId: number, value: string) => void;
-export type PlayerNameShowChangeEvent = (playerId: number, show: boolean) => void;
+type TradeType = 'weapon' | 'armor' | 'item';
 
-export type PlayerAttributeStatusChangeEvent = (
-	playerId: number,
-	attStatusId: number,
-	value: boolean
-) => void;
+type ArmorTradeObject = {
+	type: Extract<TradeType, 'armor'>;
+	obj: PlayerArmor & { Armor: Armor };
+};
 
-export type PlayerInfoChangeEvent = (playerId: number, infoId: number, value: string) => void;
-
-export type PlayerAttributeChangeEvent = (
-	playerId: number,
-	attributeId: number,
-	value: number,
-	maxValue: number,
-	show: boolean
-) => void;
-
-export type PlayerSpecChangeEvent = (playerId: number, specId: number, value: string) => void;
-
-export type PlayerCurrencyChangeEvent = (
-	playerId: number,
-	currencyId: number,
-	value: string
-) => void;
-
-export type PlayerCharacteristicChangeEvent = (
-	playerId: number,
-	characteristicId: number,
-	value: number,
-	modifier: number
-) => void;
-
-export type PlayerSkillChangeEvent = (
-	playerId: number,
-	skillId: number,
-	value: number,
-	modifier: number
-) => void;
-
-export type PlayerEquipmentAddEvent = (playerId: number, equipment: Equipment) => void;
-
-export type PlayerEquipmentRemoveEvent = (playerId: number, id: number) => void;
-
-export type PlayerItemAddEvent = (
-	playerId: number,
-	item: Item,
-	currentDescription: string,
-	quantity: number
-) => void;
-
-export type PlayerItemRemoveEvent = (playerId: number, id: number) => void;
-
-export type PlayerItemChangeEvent = (
-	playerId: number,
-	itemID: number,
-	currentDescription: string,
-	quantity: number
-) => void;
-
-export type PlayerSpellAddEvent = (playerId: number, spell: Spell) => void;
-
-export type PlayerSpellRemoveEvent = (playerId: number, spellId: number) => void;
-
-export type PlayerMaxLoadChangeEvent = (playerId: number, newLoad: number) => void;
-
-export type PlayerSpellSlotsChangeEvent = (playerId: number, newSpellSlots: number) => void;
-
-export type EnvironmentChangeEvent = (newValue: Environment) => void;
-
-export type PlayerDeleteEvent = () => void;
-
-export type DiceRollEvent = () => void;
-
-export type DiceResultEvent = (
-	playerId: number,
-	results: DiceResponse[],
-	dices: DiceRequest
-) => void;
-
-export type PlayerTradeRequestEvent = (
-	type: any, //TradeType,
-	tradeId: number,
-	receiverObjectId: number | null,
-	senderName: string,
-	senderObjectName: string
-) => void;
-
-type EquipmentTradeObject = {
-	type: 'equipment';
-	obj: PlayerEquipment & { Equipment: Equipment };
+type WeaponTradeObject = {
+	type: Extract<TradeType, 'weapon'>;
+	obj: PlayerWeapon & { Weapon: Weapon };
 };
 
 type ItemTradeObject = {
-	type: 'item';
+	type: Extract<TradeType, 'item'>;
 	obj: PlayerItem & { Item: Item };
 };
 
-type TradeObject = EquipmentTradeObject | ItemTradeObject;
-
-export type PlayerTradeResponseEvent = (accept: boolean, object?: TradeObject) => void;
+type TradeObject = WeaponTradeObject | ItemTradeObject | ArmorTradeObject;
 
 export interface ServerToClientEvents {
 	//---------- Player-triggered Events ----------
-	playerNameChange: PlayerNameChangeEvent;
-	playerNameShowChange: PlayerNameShowChangeEvent;
-	playerAttributeStatusChange: PlayerAttributeStatusChangeEvent;
-	playerInfoChange: PlayerInfoChangeEvent;
-	playerAttributeChange: PlayerAttributeChangeEvent;
-	playerSpecChange: PlayerSpecChangeEvent;
-	playerCurrencyChange: PlayerCurrencyChangeEvent;
-	playerCharacteristicChange: PlayerCharacteristicChangeEvent;
-	playerSkillChange: PlayerSkillChangeEvent;
-	playerEquipmentAdd: PlayerEquipmentAddEvent;
-	playerEquipmentRemove: PlayerEquipmentRemoveEvent;
-	playerItemAdd: PlayerItemAddEvent;
-	playerItemRemove: PlayerItemRemoveEvent;
-	playerItemChange: PlayerItemChangeEvent;
-	playerSpellAdd: PlayerSpellAddEvent;
-	playerSpellRemove: PlayerSpellRemoveEvent;
-	playerMaxLoadChange: PlayerMaxLoadChangeEvent;
-	playerSpellSlotsChange: PlayerSpellSlotsChangeEvent;
-	playerTradeRequest: PlayerTradeRequestEvent;
-	playerTradeResponse: PlayerTradeResponseEvent;
+	playerNameChange: (playerId: number, value: string) => void;
+	playerNameShowChange: (playerId: number, show: boolean) => void;
+	playerAttributeStatusChange: (playerId: number, attStatusId: number, value: boolean) => void;
+	playerInfoChange: (playerId: number, infoId: number, value: string) => void;
+	playerAttributeChange: (
+		playerId: number,
+		attributeId: number,
+		value: number,
+		maxValue: number,
+		show: boolean
+	) => void;
+	playerSpecChange: (playerId: number, specId: number, value: string) => void;
+	playerCurrencyChange: (playerId: number, currencyId: number, value: string) => void;
+	playerCharacteristicChange: (
+		playerId: number,
+		characteristicId: number,
+		value: number,
+		modifier: number
+	) => void;
+	playerSkillChange: (playerId: number, skillId: number, value: number, modifier: number) => void;
+	playerWeaponAdd: (playerId: number, weapon: Weapon) => void;
+	playerWeaponRemove: (playerId: number, id: number) => void;
+	playerArmorAdd: (playerId: number, armor: Armor) => void;
+	playerArmorRemove: (playerId: number, id: number) => void;
+	playerItemAdd: (
+		playerId: number,
+		item: Item,
+		currentDescription: string,
+		quantity: number
+	) => void;
+	playerItemRemove: (playerId: number, id: number) => void;
+	playerItemChange: (
+		playerId: number,
+		itemID: number,
+		currentDescription: string,
+		quantity: number
+	) => void;
+	playerSpellAdd: (playerId: number, spell: Spell) => void;
+	playerSpellRemove: (playerId: number, spellId: number) => void;
+	playerMaxLoadChange: (playerId: number, newLoad: number) => void;
+	playerSpellSlotsChange: (playerId: number, newSpellSlots: number) => void;
+	playerTradeRequest: (
+		type: TradeType,
+		tradeId: number,
+		receiverObjectId: number | null,
+		senderName: string,
+		senderObjectName: string
+	) => void;
+	playerTradeResponse: (accept: boolean, object?: TradeObject) => void;
 
 	//---------- Admin-triggered Events ----------
-	environmentChange: EnvironmentChangeEvent;
-	playerDelete: PlayerDeleteEvent;
+	environmentChange: (newValue: Environment) => void;
+	playerDelete: () => void;
 
 	//---------- Dice-triggered Events ----------
-	diceRoll: DiceRollEvent;
-	diceResult: DiceResultEvent;
+	diceRoll: () => void;
+	diceResult: (playerId: number, results: DiceResponse[], dices: DiceRequest) => void;
 }
 
 export interface ClientToServerEvents {

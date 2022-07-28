@@ -1,20 +1,21 @@
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { memo, useContext, useRef, useState } from 'react';
-import SheetContainer from './Section';
+import type { SxProps, Theme } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import type { AxiosInstance } from 'axios';
+import { useContext, useRef, useState } from 'react';
 import { ApiContext, LoggerContext, LoggerContextType } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerInfoApiResponse } from '../../pages/api/sheet/player/info';
-import type { SxProps, Theme } from '@mui/material';
 import { handleDefaultApiResponse } from '../../utils';
-import type { AxiosInstance } from 'axios';
+import SheetContainer from './Section';
 
 type PlayerInfoContainerProps = {
 	title: string;
@@ -96,9 +97,11 @@ const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 
 	return (
 		<Box sx={props.sx} display='flex' alignItems='end'>
-			<IconButton aria-label={show ? 'Hide' : 'Show'} onClick={onShowChange} size='small'>
-				{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
-			</IconButton>
+			<Tooltip title={show ? 'TODO: Hide' : 'Show'} describeChild>
+				<IconButton onClick={onShowChange} size='small'>
+					{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
+				</IconButton>
+			</Tooltip>
 			<TextField
 				sx={{ ml: 1, flex: '1 0' }}
 				variant='standard'
@@ -193,4 +196,4 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 	);
 };
 
-export default memo(PlayerInfoContainer, () => true);
+export default PlayerInfoContainer;

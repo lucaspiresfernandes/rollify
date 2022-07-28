@@ -89,8 +89,10 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
 		ev.preventDefault();
 
-		for (const avatar of avatars)
+		for (const avatar of avatars) {
+			if (!avatar.link) continue;
 			if (!isValidHttpUrl(avatar.link)) return alert(`TODO: Avatar (${avatar.name}) inválido.`);
+		}
 
 		api
 			.post<PlayerPostAvatarApiResponse>('/sheet/player/avatar', { avatarData: avatars })

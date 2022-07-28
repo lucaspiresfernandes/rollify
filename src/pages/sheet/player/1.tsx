@@ -56,7 +56,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 				PlayerCharacteristic: {
 					select: { Characteristic: true, value: true, modifier: true },
 				},
-				PlayerEquipment: { select: { Equipment: true, currentAmmo: true } },
+				PlayerWeapon: { select: { Weapon: true, currentAmmo: true } },
+				PlayerArmor: { select: { Armor: true } },
 				PlayerSkill: {
 					select: {
 						Skill: {
@@ -69,6 +70,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 						value: true,
 						checked: true,
 						modifier: true,
+						favourite: true,
 					},
 				},
 				PlayerCurrency: { select: { value: true, Currency: true } },

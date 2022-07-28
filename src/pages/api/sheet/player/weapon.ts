@@ -1,20 +1,20 @@
-import type { Equipment, PlayerEquipment } from '@prisma/client';
+import type { Weapon, PlayerWeapon } from '@prisma/client';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
 import { withSessionApi } from '../../../../utils/session';
 
-export type PlayerEquipmentApiResponse = NextApiResponseData<
+export type PlayerWeaponApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
 	{
-		equipment: PlayerEquipment & {
-			Equipment: Equipment;
+		weapon: PlayerWeapon & {
+			Weapon: Weapon;
 		};
 	}
 >;
 
-export type PlayerGetEquipmentApiResponse = NextApiResponseData<
+export type PlayerGetWeaponApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_player_id',
-	{ equipments: Equipment[] }
+	{ weapons: Weapon[] }
 >;
 
 const handler: NextApiHandlerIO = async (req, res) => {
@@ -25,7 +25,7 @@ const handler: NextApiHandlerIO = async (req, res) => {
 	return res.status(405).end();
 };
 
-const handleGet: NextApiHandlerIO<PlayerGetEquipmentApiResponse> = async (req, res) => {
+const handleGet: NextApiHandlerIO<PlayerGetWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -34,17 +34,17 @@ const handleGet: NextApiHandlerIO<PlayerGetEquipmentApiResponse> = async (req, r
 
 	if (!playerId) return res.json({ status: 'failure', reason: 'invalid_player_id' });
 
-	const equipments = (
-		await prisma.playerEquipment.findMany({
+	const weapons = (
+		await prisma.playerWeapon.findMany({
 			where: { player_id: playerId },
-			select: { Equipment: true },
+			select: { Weapon: true },
 		})
-	).map((e) => e.Equipment);
+	).map((e) => e.Weapon);
 
-	res.json({ status: 'success', equipments });
+	res.json({ status: 'success', weapons: weapons });
 };
 
-const handlePost: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, res) => {
+const handlePost: NextApiHandlerIO<PlayerWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
 	const npcId = Number(req.body.npcId) || undefined;
 
@@ -53,25 +53,25 @@ const handlePost: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, res
 
 	if (!req.body.id) return res.json({ status: 'failure', reason: 'invalid_body' });
 
-	const equipment_id = Number(req.body.id);
+	const weapon_id = Number(req.body.id);
 	const player_id = npcId || player.id;
 	const currentAmmo = req.body.currentAmmo === undefined ? undefined : Number(req.body.currentAmmo);
 
 	try {
-		const equipment = await prisma.playerEquipment.update({
+		const weapon = await prisma.playerWeapon.update({
 			data: { currentAmmo },
-			where: { player_id_equipment_id: { player_id, equipment_id } },
-			include: { Equipment: true },
+			where: { player_id_weapon_id: { player_id, weapon_id } },
+			include: { Weapon: true },
 		});
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', weapon });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
 
-const handlePut: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, res) => {
+const handlePut: NextApiHandlerIO<PlayerWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
 	const npcId = Number(req.body.npcId) || undefined;
 
@@ -80,29 +80,29 @@ const handlePut: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, res)
 
 	if (!req.body.id) return res.json({ status: 'failure', reason: 'invalid_body' });
 
-	const equipment_id = Number(req.body.id);
+	const weapon_id = Number(req.body.id);
 	const player_id = npcId || player.id;
 
 	try {
-		const equipment = await prisma.playerEquipment.create({
+		const weapon = await prisma.playerWeapon.create({
 			data: {
 				currentAmmo: 0,
 				player_id,
-				equipment_id,
+				weapon_id,
 			},
-			include: { Equipment: true },
+			include: { Weapon: true },
 		});
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', weapon });
 
-		res.socket.server.io.to('admin').emit('playerEquipmentAdd', player_id, equipment.Equipment);
+		res.socket.server.io.to('admin').emit('playerWeaponAdd', player_id, weapon.Weapon);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
 
-const handleDelete: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, res) => {
+const handleDelete: NextApiHandlerIO<PlayerWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
 	const npcId = Number(req.body.npcId) || undefined;
 
@@ -111,18 +111,18 @@ const handleDelete: NextApiHandlerIO<PlayerEquipmentApiResponse> = async (req, r
 
 	if (!req.body.id) return res.json({ status: 'failure', reason: 'invalid_body' });
 
-	const equipment_id = Number(req.body.id);
+	const weapon_id = Number(req.body.id);
 	const player_id = npcId || player.id;
 
 	try {
-		const equipment = await prisma.playerEquipment.delete({
-			where: { player_id_equipment_id: { player_id, equipment_id } },
-			include: { Equipment: true },
+		const weapon = await prisma.playerWeapon.delete({
+			where: { player_id_weapon_id: { player_id, weapon_id } },
+			include: { Weapon: true },
 		});
 
-		res.json({ status: 'success', equipment });
+		res.json({ status: 'success', weapon });
 
-		res.socket.server.io.to('admin').emit('playerEquipmentRemove', player_id, equipment_id);
+		res.socket.server.io.to('admin').emit('playerWeaponRemove', player_id, weapon_id);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
