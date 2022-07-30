@@ -17,6 +17,7 @@ import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -55,9 +56,12 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 
 	return (
 		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-			<span style={{ fontStyle: props.selected ? 'italic' : 'normal' }}>
+			<Typography
+				variant='body1'
+				component='label'
+				sx={{ fontStyle: props.selected ? 'italic' : 'normal', userSelect: 'none' }}>
 				{props.entity.name || 'Desconhecido'}
-			</span>
+			</Typography>
 			<TextField
 				variant='standard'
 				defaultValue='0'
@@ -85,7 +89,10 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
 			activationConstraint: {
-				distance: 1,
+				distance: {
+					x: 0,
+					y: 1,
+				},
 			},
 		})
 	);
@@ -173,7 +180,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 	};
 
 	const reset = () => {
-		setActiveEntities([]);
+		setActiveEntities((e) => (e.length === 0 ? e : []));
 		setPointer(0);
 		setRound(1);
 	};

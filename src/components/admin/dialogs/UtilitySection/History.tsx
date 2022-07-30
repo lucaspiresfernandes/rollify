@@ -85,13 +85,13 @@ const History: React.FC<HistoryProps> = (props) => {
 		}
 		componentDidMount.current = true;
 	}, [values]);
-
+	
 	return (
 		<Section
 			title='History'
 			sideButton={
 				<Tooltip title={t('erase')}>
-					<IconButton onClick={() => setValues([])}>
+					<IconButton onClick={() => setValues((val) => (val.length === 0 ? val : []))}>
 						<BackspaceIcon />
 					</IconButton>
 				</Tooltip>
