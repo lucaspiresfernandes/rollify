@@ -54,7 +54,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 							key={weapon.id}
 							{...weapon}
 							onDelete={() => {
-								if (confirm(t('prompt.delete'))) props.onDeleteWeapon(weapon.id);
+								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteWeapon(weapon.id);
 							}}
 						/>
 					))}
@@ -74,9 +74,10 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const rollDice = useContext(DiceRollContext);
+	const { t } = useI18n<Locale>();
 
 	const handleDiceClick = () => {
-		if (props.ammo && currentAmmo === 0) return alert('TODO: Você não tem munição suficiente.');
+		if (props.ammo && currentAmmo === 0) return alert(t('prompt.noAmmo'));
 
 		const aux = resolveDices(props.damage);
 
@@ -91,8 +92,8 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				id: props.id,
 				currentAmmo: ammo,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onAmmoChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
@@ -114,8 +115,8 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				id: props.id,
 				currentAmmo: newAmmo,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (

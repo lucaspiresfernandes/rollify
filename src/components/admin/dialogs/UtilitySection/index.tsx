@@ -1,6 +1,8 @@
 import Grid from '@mui/material/Grid';
+import { useI18n } from 'next-rosetta';
 import { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { DiceRollContext, DiceRollEvent, LoggerContext, SocketContext } from '../../../../contexts';
+import type { Locale } from '../../../../i18n';
 import type { NpcApiResponse } from '../../../../pages/api/npc';
 import { handleDefaultApiResponse } from '../../../../utils';
 import { api } from '../../../../utils/createApiClient';
@@ -31,6 +33,7 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	const componentDidMount = useRef(false);
 	const socket = useContext(SocketContext);
 	const log = useContext(LoggerContext);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		setBasicNpcs(JSON.parse(localStorage.getItem('admin_npcs') || '[]') as NPC[]);
@@ -65,28 +68,28 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	};
 
 	const addComplexNPC = () => {
-		const name = prompt('TODO: Digite o nome do NPC:');
+		const name = prompt(t('prompt.addNpcName'));
 		if (!name) return;
 		api
 			.put<NpcApiResponse>('/npc', { name })
 			.then((res) => {
 				if (res.data.status === 'success')
 					return setComplexNpcs([...complexNpcs, { id: res.data.id, name }]);
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const removeComplexNPC = (id: number) => {
-		if (!confirm('TODO: Tem certeza de que deseja apagar esse NPC?')) return;
+		if (!confirm(t('prompt.removeNpc'))) return;
 		api
 			.delete<NpcApiResponse>('/npc', { data: { id } })
 			.then((res) => {
 				if (res.data.status === 'success')
 					return setComplexNpcs(complexNpcs.filter((npc) => npc.id !== id));
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onRollDice: DiceRollEvent = useCallback(

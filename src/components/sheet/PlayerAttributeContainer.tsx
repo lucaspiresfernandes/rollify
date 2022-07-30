@@ -247,8 +247,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				value: newValue,
 				maxValue: newMaxValue,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const handleDiceClick = (standalone: boolean) => {
@@ -270,8 +270,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				id: props.id,
 				show: newShow,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const updateValue = (coeff: number, multiply: boolean) => {
@@ -301,8 +301,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 						id: props.id,
 						value: newVal,
 					})
-					.then((res) => handleDefaultApiResponse(res, log))
-					.catch((err) => log({ severity: 'error', text: err.message }))
+					.then((res) => handleDefaultApiResponse(res, log, t))
+					.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 					.finally(() => (timeout.current.lastValue = newVal)),
 			750
 		);
@@ -337,7 +337,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			</Box>
 			<Box display='flex' flexDirection='row' alignItems='center'>
 				{props.visibilityEnabled && (
-					<Tooltip title={show ? 'TODO: Hide' : 'Show'} describeChild>
+					<Tooltip title={show ? t('hide') : t('show')} describeChild>
 						<IconButton onClick={onShowChange} size='small'>
 							{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
 						</IconButton>
@@ -417,6 +417,7 @@ const PlayerAttributeStatusField: React.FC<PlayerAttributeStatusFieldProps> = (p
 	const [checked, setChecked] = useState(props.value);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const changeValue: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
 		const value = ev.target.checked;
@@ -431,9 +432,9 @@ const PlayerAttributeStatusField: React.FC<PlayerAttributeStatusFieldProps> = (p
 					props.onStatusChanged(props.id, value);
 					return;
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (

@@ -15,6 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Fragment, useState } from 'react';
 import Section from '../../../sheet/Section';
 import GetPortraitDialog from '../GetPortraitDialog';
+import { useI18n } from 'next-rosetta';
+import type { Locale } from '../../../../i18n';
 
 type NpcManagerProps = {
 	basicNpcs: { id: number; name: string }[];
@@ -33,6 +35,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
+	const {t} = useI18n<Locale>();
 
 	const handleClick: React.MouseEventHandler<HTMLButtonElement> = (ev) =>
 		setAnchorEl(ev.currentTarget);
@@ -61,8 +64,8 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 						<AddIcon />
 					</IconButton>
 					<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-						<MenuItem onClick={onSimpleClick}>TODO: Basico</MenuItem>
-						<MenuItem onClick={onComplexClick}>TODO: Complexo</MenuItem>
+						<MenuItem onClick={onSimpleClick}>{t('simple')}</MenuItem>
+						<MenuItem onClick={onComplexClick}>{t('advanced')}</MenuItem>
 					</Menu>
 				</>
 			}>
@@ -72,7 +75,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 						<Fragment key={npc.id}>
 							<ListItem
 								secondaryAction={
-									<Tooltip title='TODO: Excluir' describeChild>
+									<Tooltip title={t('delete')} describeChild>
 										<IconButton size='small' onClick={() => props.onRemoveBasicNpc(npc.id)}>
 											<DeleteIcon />
 										</IconButton>
@@ -102,12 +105,12 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 							<ListItem
 								secondaryAction={
 									<>
-										<Tooltip title='TODO: Acessar' describeChild>
+										<Tooltip title={t('access')} describeChild>
 											<IconButton size='small' href={`/sheet/npc/${npc.id}/1`} target='_blank'>
 												<LaunchIcon />
 											</IconButton>
 										</Tooltip>
-										<Tooltip title='TODO: Retrato' describeChild>
+										<Tooltip title={t('portrait')} describeChild>
 											<IconButton
 												size='small'
 												onClick={() => setPortraitDialogPlayerId(npc.id)}
@@ -115,7 +118,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 												<VideoCameraFrontIcon />
 											</IconButton>
 										</Tooltip>
-										<Tooltip title='TODO: Excluir' describeChild>
+										<Tooltip title={t('delete')} describeChild>
 											<IconButton size='small' onClick={() => props.onRemoveComplexNpc(npc.id)}>
 												<DeleteIcon />
 											</IconButton>

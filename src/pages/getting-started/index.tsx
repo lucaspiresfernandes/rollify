@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import type { GetStaticProps, NextPage } from 'next';
-import type { I18nProps } from 'next-rosetta';
+import { I18nProps, useI18n } from 'next-rosetta';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -61,6 +61,7 @@ const GettingStarted: React.FC = () => {
 		() => (presetsMap.get(router.locale || 'en') || preset_en) as Presets,
 		[router]
 	);
+	const {t} = useI18n<Locale>();
 
 	if (booting) return <LoadingScreen />;
 
@@ -138,7 +139,7 @@ const GettingStarted: React.FC = () => {
 						</Select>
 					</FormControl>
 					<Button variant='contained' onClick={boot}>
-						TODO: Aplicar
+						{t('modal.apply')}
 					</Button>
 				</>
 			)}

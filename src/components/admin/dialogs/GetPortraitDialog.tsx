@@ -48,25 +48,22 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const copyLink = () => {
 		const copied = copyToClipboard(portraitLink);
 		if (copied) {
-			alert('TODO: Link copiado para a sua área de transferência.');
+			alert(t('prompt.linkCopied'));
 			return props.onClose();
 		}
-		alert(
-			'TODO: O link não pôde ser copiado para sua área de transferência.' +
-				' Por favor, copie o link manualmente.'
-		);
+		alert(t('prompt.linkCopyFailed'));
 	};
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose}>
-			<DialogTitle>TODO: Retrato de Jogador</DialogTitle>
+			<DialogTitle>{t('modal.title.playerPortrait')}</DialogTitle>
 			<DialogContent>
-				<DialogContentText>TODO: O Retrato é a integração com o OBS.</DialogContentText>
+				<DialogContentText>{t('modal.label.portraitDescription')}</DialogContentText>
 				<Box display='flex' flexDirection='column' gap={3} mt={4}>
 					<div>
 						<TextField
 							fullWidth
-							label='TODO: Cor dos dados'
+							label={t('modal.label.diceColor')}
 							value={diceColor}
 							onChange={(ev) => setDiceColor(ev.target.value)}
 						/>
@@ -79,16 +76,16 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 									onChange={(ev) => setShowDiceRoll(ev.target.checked)}
 								/>
 							}
-							label='TODO: Mostrar rolagem de dados'
+							label={t('modal.label.showDiceRoll')}
 						/>
 					</div>
 					<div>
 						<FormControl fullWidth>
-							<InputLabel id='portraitSelectLabel'>TODO: Orientação</InputLabel>
+							<InputLabel id='portraitSelectLabel'>{t('orientation')}</InputLabel>
 							<Select
 								labelId='portraitSelectLabel'
 								id='portraitSelect'
-								label='TODO: Orientação'
+								label={t('orientation')}
 								value={nameOrientation}
 								onChange={(ev) => setNameOrientation(ev.target.value as Orientation)}>
 								{portraitEnvironmentOrientation.map((orientation) => (
@@ -102,7 +99,7 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 					<div>
 						<TextField
 							fullWidth
-							label='TODO: Link do retrato'
+							label={t('modal.label.portraitLink')}
 							InputProps={{
 								endAdornment: (
 									<IconButton onClick={copyLink}>

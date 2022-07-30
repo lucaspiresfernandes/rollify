@@ -11,6 +11,8 @@ import Link from 'next/link';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { PlayerPostAvatarApiResponse } from '../../../pages/api/sheet/player/avatar';
 import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
+import type { Locale } from '../../../i18n';
+import { useI18n } from 'next-rosetta';
 
 const AVATAR_SIZE = getAvatarSize(1);
 
@@ -45,26 +47,25 @@ function isValidHttpUrl(str: string) {
 	return url.protocol === 'http:' || url.protocol === 'https:';
 }
 
-function getInitialState(avatars: PlayerAvatarDialogProps['playerAvatars']) {
-	return avatars.map((avatar) => {
-		if (avatar.attributeStatus) {
-			return {
-				id: avatar.attributeStatus.id,
-				name: avatar.attributeStatus.name,
-				link: avatar.link || '',
-			};
-		} else {
-			return {
-				id: null,
-				name: 'TODO: Padrão',
-				link: avatar.link || '',
-			};
-		}
-	});
-}
-
 const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
-	const [avatars, setAvatars] = useState<AvatarData[]>(getInitialState(props.playerAvatars));
+	const { t } = useI18n<Locale>();
+	const [avatars, setAvatars] = useState<AvatarData[]>(
+		props.playerAvatars.map((avatar) => {
+			if (avatar.attributeStatus) {
+				return {
+					id: avatar.attributeStatus.id,
+					name: avatar.attributeStatus.name,
+					link: avatar.link || '',
+				};
+			} else {
+				return {
+					id: null,
+					name: t('default'),
+					link: avatar.link || '',
+				};
+			}
+		})
+	);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 
@@ -83,7 +84,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 
 	const onCancel = () => {
 		props.onClose();
-		setAvatars(getInitialState(props.playerAvatars));
+		setAvatars((avatars) => avatars.map((avatar) => ({ ...avatar, link: '' })));
 	};
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
@@ -101,15 +102,15 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 					props.onSubmit();
 					return;
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => props.onClose());
 	};
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose}>
-			<DialogTitle>TODO: PLAYER AVATAR</DialogTitle>
+			<DialogTitle>{t('modal.title.avatarEditor')}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
 					TODO: É recomendado que as imagens estejam no tamanho de{' '}

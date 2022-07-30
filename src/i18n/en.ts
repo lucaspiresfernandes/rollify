@@ -5,11 +5,34 @@ export const table: Locale = {
 	title: 'Rollify',
 
 	search: 'Search',
+	orientation: 'Orientation',
+	delete: 'Delete',
+	erase: 'Erase',
+	round: 'Round',
+	previous: 'Previous',
+	reset: 'Reset',
+	next: 'Next',
+	simple: 'Simple',
+	advanced: 'Advanced',
+	access: 'Access',
+	portrait: 'Portrait',
+	hide: 'Hide',
+	show: 'Show',
+	availableSlots: 'Available Slots',
+	currentWeight: 'Current Weight',
+	enable: 'Enable',
+	disable: 'Disable',
+	armor: 'Armor',
+	weapon: 'Weapon',
+	add: 'Add',
+	star: 'Star',
+	unstar: 'Unstar',
+	skill: 'Skill',
+	default: 'Default',
+	details: 'Details',
+	player: 'Player',
 
 	quickAccess: 'Quick Access',
-
-	weight: 'Weight',
-	quantity: 'Quantity',
 
 	nav: {
 		language: 'Language',
@@ -36,6 +59,9 @@ export const table: Locale = {
 			password_mismatch: 'Passwords do not match',
 			invalid_email: 'Invalid email',
 		},
+		invalidBody: 'Unable to update character information. Try again later.',
+		unauthorized: 'Unable to update character information. Try to relogin.',
+		playerDetailsFetchFailed: 'Failed to fetch player details.',
 	},
 
 	login: {
@@ -93,9 +119,30 @@ export const table: Locale = {
 		panelTitle: "GM's Panel",
 		editorTitle: "GM's Editor",
 		configurationsTitle: 'Settings',
+
+		info: {
+			noPlayers: 'All registered players will be listed here.',
+		},
 	},
 
 	modal: {
+		title: {
+			generalDiceRoll: 'General Dice Roll',
+			rollDice: 'Roll Dices',
+			playerPortrait: 'Player Portrait',
+			addData: 'Add Data',
+			attributeEditor: 'Attribute Editor',
+			avatarEditor: 'Avatar Editor',
+		},
+		label: {
+			numberOfDices: 'Dice number',
+			portraitDescription: 'Portrait description',
+			diceColor: 'Dice color',
+			portraitLink: 'Portrait link',
+			showDiceRoll: 'Show dice roll',
+			currentValue: 'Current value',
+			maxValue: 'Max value',
+		},
 		close: 'Close',
 		cancel: 'Cancel',
 		apply: 'Apply',
@@ -104,6 +151,11 @@ export const table: Locale = {
 	},
 
 	prompt: {
-		delete: 'Are you sure you want to delete this item?',
+		delete: 'Are you sure you want to delete this {{name}}?',
+		linkCopied: 'Link copied to clipboard.',
+		linkCopyFailed: 'Failed to copy link. Please, manually copy it.',
+		addNpcName: 'Enter the NPC name:',
+		removeNpc: 'Are you sure you want to remove this NPC?',
+		noAmmo: 'You do not have enough ammo.',
 	},
 };

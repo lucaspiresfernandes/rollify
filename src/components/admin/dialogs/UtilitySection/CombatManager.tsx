@@ -23,7 +23,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
+import { useI18n } from 'next-rosetta';
 import { useEffect, useRef, useState } from 'react';
+import type { Locale } from '../../../../i18n';
 import { clamp } from '../../../../utils';
 import Section from '../../../sheet/Section';
 
@@ -49,6 +51,7 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 		transform: CSS.Transform.toString(transform),
 		transition,
 	};
+	const { t } = useI18n<Locale>();
 
 	return (
 		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
@@ -61,7 +64,7 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 				sx={{ width: '3rem', mx: 1 }}
 				inputProps={{ style: { textAlign: 'center' } }}
 			/>
-			<Tooltip title='TODO: Excluir' placement='right'>
+			<Tooltip title={t('delete')} placement='right'>
 				<IconButton size='small' onClick={() => props.removeEntity()}>
 					<DeleteIcon />
 				</IconButton>
@@ -86,8 +89,9 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 			},
 		})
 	);
-
+	const { t } = useI18n<Locale>();
 	const componentDidMount = useRef(false);
+
 	const open = Boolean(anchorEl);
 
 	useEffect(() => {
@@ -198,7 +202,10 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 			title='Combat'
 			sideButton={
 				<>
-					<IconButton onClick={handleDropdownClick} disabled={inactiveEntities.length === 0} aria-label='Add'>
+					<IconButton
+						onClick={handleDropdownClick}
+						disabled={inactiveEntities.length === 0}
+						aria-label='Add'>
 						<AddIcon />
 					</IconButton>
 					<Menu
@@ -227,7 +234,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					variant='standard'
 					type='number'
 					fullWidth
-					label='TODO: Rodada'
+					label={t('round')}
 					value={round}
 					onChange={roundUpdate}
 				/>
@@ -253,19 +260,19 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					variant='contained'
 					onClick={() => movePointer(-1)}
 					disabled={activeEntities.length < 2}>
-					TODO: Move Back
+					{t('previous')}
 				</Button>
 				<Button
 					variant='contained'
 					onClick={reset}
 					disabled={activeEntities.length < 1 && round === 1}>
-					TODO: Reset
+					{t('reset')}
 				</Button>
 				<Button
 					variant='contained'
 					onClick={() => movePointer(1)}
 					disabled={activeEntities.length < 2}>
-					TODO: Move Foward
+					{t('next')}
 				</Button>
 			</Box>
 		</Section>

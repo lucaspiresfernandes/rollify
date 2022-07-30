@@ -45,9 +45,9 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 					const spell = res.data.spell;
 					return setPlayerSpells([...playerSpells, { ...spell }]);
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -61,24 +61,24 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 					addDataDialog.openDialog(spells, onAddSpell);
 					return;
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
 	const onDeleteSpell = async (id: number) => {
-		if (!confirm(t('prompt.delete', { name: 'magi' }))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<PlayerSpellApiResponse>('/sheet/player/spell', {
 				data: { id },
 			})
 			.then((res) => {
-				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerSpells((s) => s.filter((spell) => spell.id !== id));
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 

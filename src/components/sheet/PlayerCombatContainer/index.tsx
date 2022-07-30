@@ -2,8 +2,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import type { Armor, Weapon } from '@prisma/client';
+import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
 import { AddDataContext, ApiContext, LoggerContext } from '../../../contexts';
+import type { Locale } from '../../../i18n';
 import type { ArmorSheetApiResponse } from '../../../pages/api/sheet/armor';
 import type { PlayerArmorApiResponse } from '../../../pages/api/sheet/player/armor';
 import type { PlayerWeaponApiResponse } from '../../../pages/api/sheet/player/weapon';
@@ -47,6 +49,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataContext);
+	const { t } = useI18n<Locale>();
 
 	const onDeleteWeapon = (id: number) => {
 		setLoading(true);
@@ -55,10 +58,10 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				data: { id },
 			})
 			.then((res) => {
-				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerWeapons((e) => e.filter((e) => e.id !== id));
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -69,10 +72,10 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				data: { id },
 			})
 			.then((res) => {
-				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerArmor((a) => a.filter((e) => e.id !== id));
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -93,9 +96,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 					}
 					return;
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -106,9 +109,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'success')
 					return addDataDialog.openDialog(res.data.weapon, (id) => onAddEquipment(id, 'weapon'));
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -119,9 +122,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'success')
 					return addDataDialog.openDialog(res.data.armor, (id) => onAddEquipment(id, 'armor'));
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -131,12 +134,12 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			position='relative'
 			sideButton={
 				<>
-					<Tooltip title='TODO: Add Armor' describeChild>
+					<Tooltip title={`${t('add')} ${t('armor')}`} describeChild>
 						<IconButton onClick={loadAvailableArmor} sx={{ mr: 1 }}>
 							<ArmorIcon />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title='TODO: Add Weapon' describeChild>
+					<Tooltip title={`${t('add')} ${t('weapon')}`} describeChild>
 						<IconButton onClick={loadAvailableWeapons}>
 							<WeaponIcon />
 						</IconButton>

@@ -5,11 +5,34 @@ export const table: Locale = {
 	title: 'Rollify',
 
 	search: 'Pesquisar',
+	orientation: 'Orientação',
+	delete: 'Excluir',
+	erase: 'Apagar',
+	round: 'Rodada',
+	previous: 'Anterior',
+	reset: 'Resetar',
+	next: 'Próximo',
+	simple: 'Simples',
+	advanced: 'Avançado',
+	access: 'Acessar',
+	portrait: 'Retrato',
+	hide: 'Ocultar',
+	show: 'Mostrar',
+	availableSlots: 'Slots Disponíveis',
+	currentWeight: 'Peso Atual',
+	enable: 'Habilitar',
+	disable: 'Desabilitar',
+	weapon: 'Arma',
+	armor: 'Armadura',
+	add: 'Adicionar',
+	star: 'Favoritar',
+	unstar: 'Desfavoritar',
+	skill: 'Perícia',
+	default: 'Padrão',
+	details: 'Detalhes',
+	player: 'Jogador',
 
 	quickAccess: 'Acesso Rápido',
-	
-	weight: 'Peso',
-	quantity: 'Quantidade',
 
 	nav: {
 		language: 'Idioma',
@@ -36,6 +59,9 @@ export const table: Locale = {
 			password_mismatch: 'Senhas não conferem',
 			invalid_email: 'Email inválido',
 		},
+		invalidBody: 'Não foi possível atualizar as informações do personagem. Se esse erro persistir, entre em contato com o desenvolvedor.',
+		unauthorized: 'Não foi possível atualizar as informações do personagem. Tente relogar.',
+		playerDetailsFetchFailed: 'Falha ao carregar os detalhes do jogador.',
 	},
 
 	login: {
@@ -93,9 +119,30 @@ export const table: Locale = {
 		panelTitle: 'Painel do Mestre',
 		editorTitle: 'Editor',
 		configurationsTitle: 'Configurações',
+
+		info: {
+			noPlayers: 'Todos os jogadores cadastrados aparecerão aqui.',
+		},
 	},
 
 	modal: {
+		title: {
+			generalDiceRoll: 'Rolagem Geral de Dados',
+			rollDice: 'Rolar Dados',
+			playerPortrait: 'Retrato de Jogador',
+			addData: 'Adicionar Dados',
+			attributeEditor: 'Editor de Atributo',
+			avatarEditor: 'Editor de Avatar',
+		},
+		label: {
+			numberOfDices: 'Número de dados',
+			portraitDescription: 'Descrição',
+			diceColor: 'Cor dos dados',
+			portraitLink: 'Link do retrato',
+			showDiceRoll: 'Mostrar rolagem de dados',
+			currentValue: 'Valor atual',
+			maxValue: 'Valor máximo',
+		},
 		close: 'Fechar',
 		cancel: 'Cancelar',
 		apply: 'Aplicar',
@@ -104,6 +151,12 @@ export const table: Locale = {
 	},
 
 	prompt: {
-		delete: 'Tem certeza que deseja excluir esse item?',
+		delete: 'Tem certeza que deseja excluir esse(a) {{name}}?',
+		linkCopied: 'Link copiado para a sua área de transferência.',
+		linkCopyFailed:
+			'O link não pôde ser copiado para sua área de transferência. Por favor, copie o link manualmente.',
+		addNpcName: 'Digite o nome do NPC.',
+		removeNpc: 'Tem certeza que deseja remover esse NPC?',
+		noAmmo: 'Você não possui munição o suficiente.',
 	},
 };

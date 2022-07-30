@@ -43,7 +43,7 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 							key={armor.id}
 							{...armor}
 							onDelete={() => {
-								if (confirm(t('prompt.delete'))) props.onDeleteArmor(armor.id);
+								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteArmor(armor.id);
 							}}
 						/>
 					))}

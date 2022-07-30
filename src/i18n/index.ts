@@ -3,11 +3,33 @@ export interface Locale {
 	title: string;
 
 	search: string;
-
+	orientation: string;
+	delete: string;
+	erase: string;
+	round: string;
+	previous: string;
+	reset: string;
+	next: string;
+	simple: string;
+	advanced: string;
+	access: string;
+	portrait: string;
+	hide: string;
+	show: string;
 	quickAccess: string;
-
-	weight: string;
-	quantity: string;
+	currentWeight: string;
+	availableSlots: string;
+	enable: string;
+	disable: string;
+	armor: string;
+	weapon: string;
+	add: string;
+	star: string;
+	unstar: string;
+	skill: string;
+	default: string;
+	details: string;
+	player: string;
 
 	nav: {
 		language: string;
@@ -35,6 +57,9 @@ export interface Locale {
 			password_mismatch: string;
 			invalid_email: string;
 		};
+		unauthorized: string;
+		invalidBody: string;
+		playerDetailsFetchFailed: string;
 	};
 
 	login: {
@@ -92,17 +117,43 @@ export interface Locale {
 		panelTitle: string;
 		editorTitle: string;
 		configurationsTitle: string;
-	}
+
+		info: {
+			noPlayers: string;
+		};
+	};
 
 	modal: {
+		title: {
+			generalDiceRoll: string;
+			rollDice: string;
+			playerPortrait: string;
+			addData: string;
+			attributeEditor: string;
+			avatarEditor: string;
+		};
+		label: {
+			numberOfDices: string;
+			portraitDescription: string;
+			diceColor: string;
+			showDiceRoll: string;
+			portraitLink: string;
+			currentValue: string;
+			maxValue: string;
+		};
 		close: string;
 		cancel: string;
 		apply: string;
 		roll: string;
 		rollAgain: string;
-	}
+	};
 
 	prompt: {
 		delete: string;
+		linkCopied: string;
+		linkCopyFailed: string;
+		addNpcName: string;
+		removeNpc: string;
+		noAmmo: string;
 	};
 }

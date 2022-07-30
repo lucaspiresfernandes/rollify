@@ -10,6 +10,8 @@ import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import { handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
+import { useI18n } from 'next-rosetta';
+import type { Locale } from '../../i18n';
 
 type PlayerCharacteristicContainerProps = {
 	title: string;
@@ -59,6 +61,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	});
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 	const rollDice = useContext(DiceRollContext);
 
 	const handleDiceClick = (standalone: boolean) => {
@@ -95,13 +98,14 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 				id: props.id,
 				value: newValue,
 			})
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onModifierBlur =
-		modifier !== null
-			? () => {
+		modifier === null
+			? undefined
+			: () => {
 					const num = parseInt(modifier);
 
 					let newModifier = modifier;
@@ -118,10 +122,9 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 							id: props.id,
 							modifier: parseInt(newModifier),
 						})
-						.then((res) => handleDefaultApiResponse(res, log))
-						.catch((err) => log({ severity: 'error', text: err.message }));
-			  }
-			: undefined;
+						.then((res) => handleDefaultApiResponse(res, log, t))
+						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+			  };
 
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>

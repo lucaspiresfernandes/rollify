@@ -6,20 +6,22 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { LoggerContext, SocketContext } from '../../../contexts';
+import type { Locale } from '../../../i18n';
 import type { PlayerApiResponse } from '../../../pages/api/sheet/player';
 import type { PlayerGetAvatarApiResponse } from '../../../pages/api/sheet/player/avatar/[attrStatusID]';
 import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
 import GetPortraitDialog from '../dialogs/GetPortraitDialog';
-import PlayerDetailsDialog from '../dialogs/PlayerDetailsDialog';
 import Details, { DetailsProps } from './Details';
 
 type PlayerContainerProps = {
@@ -43,8 +45,8 @@ type PlayerContainerProps = {
 const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	const [players, setPlayers] = useState(props.players);
 	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>();
-	const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
 	const socket = useContext(SocketContext);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		socket.on('playerNameChange', (id, name) => {
@@ -96,7 +98,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	if (players.length === 0)
 		return (
 			<Typography variant='h6' component='h2' textAlign='center' mt={3} color='GrayText'>
-				TODO: Os jogadores cadastrados aparecerão aqui.
+				{t('admin.info.noPlayers')}
 			</Typography>
 		);
 
@@ -117,7 +119,6 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 				onClose={() => setPortraitDialogPlayerId(undefined)}
 				playerId={portraitDialogPlayerId || 0}
 			/>
-			<PlayerDetailsDialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} />
 		</>
 	);
 };
@@ -128,11 +129,13 @@ type PlayerFieldProps = PlayerContainerProps['players'][number] & {
 };
 
 const PlayerField: React.FC<PlayerFieldProps> = (props) => {
+	const [showDetails, setShowDetails] = useState(false);
 	const [details, setDetails] = useState<DetailsProps['details']>();
 	const [loading, setLoading] = useState(false);
 	const log = useContext(LoggerContext);
 	const socket = useContext(SocketContext);
 	const ref = useRef<HTMLDivElement>(null);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		socket.on('playerInfoChange', (id, infoId, value) => {
@@ -314,15 +317,15 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 	}, [socket, props.id]);
 
 	const deletePlayer = () => {
-		if (!confirm('TODO: Tem certeza que deseja apagar esse jogador?')) return;
+		if (!confirm(t('prompt.delete', { name: t('player') }))) return;
 		setLoading(true);
 		api
 			.delete<PlayerApiResponse>('/sheet/player', { data: { id: props.id } })
 			.then((res) => {
 				if (res.data.status === 'success') return props.onDeletePlayer();
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -331,14 +334,15 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 		api
 			.get<PlayerApiResponse>('/sheet/player', { params: { id: props.id } })
 			.then((res) => {
-				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				if (res.data.player) {
 					setDetails(res.data.player);
+					setShowDetails(true);
 					return window.scrollTo({ top: ref.current?.offsetTop || 0, behavior: 'smooth' });
 				}
-				log({ severity: 'error', text: 'TODO: Não foi possível carregar os dados do jogador' });
+				log({ severity: 'error', text: t('error.playerDetailsFetchFailed') });
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -364,25 +368,25 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 							))}
 						</div>
 						<Box display='flex' gap={1}>
-							{details ? (
-								<Tooltip title='TODO: Esconder Detalhes' describeChild>
-									<Button variant='outlined' size='small' onClick={() => setDetails(undefined)}>
+							{showDetails ? (
+								<Tooltip title={`${t('hide')} ${t('details')}`} describeChild>
+									<Button variant='outlined' size='small' onClick={() => setShowDetails(false)}>
 										<CloseFullscreenIcon />
 									</Button>
 								</Tooltip>
 							) : (
-								<Tooltip title='TODO: Detalhes' describeChild>
+								<Tooltip title={t('details')} describeChild>
 									<Button variant='outlined' size='small' onClick={onShowDetails}>
 										<OpenInFullIcon />
 									</Button>
 								</Tooltip>
 							)}
-							<Tooltip title='TODO: Retrato' describeChild>
+							<Tooltip title={t('portrait')} describeChild>
 								<Button variant='outlined' size='small' onClick={props.onGetPortrait}>
 									<VideoCameraFrontIcon />
 								</Button>
 							</Tooltip>
-							<Tooltip title='TODO: Excluir' describeChild>
+							<Tooltip title={t('delete')} describeChild>
 								<Button variant='outlined' size='small' onClick={deletePlayer}>
 									<DeleteIcon />
 								</Button>
@@ -390,7 +394,12 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 						</Box>
 					</Box>
 				</Box>
-				{details && <Details details={details} />}
+				<Collapse
+					in={showDetails}
+					timeout={{ enter: 750, exit: 750 }}
+					onExited={() => setDetails(undefined)}>
+					{details && <Details details={details} />}
+				</Collapse>
 			</Box>
 		</Grid>
 	);

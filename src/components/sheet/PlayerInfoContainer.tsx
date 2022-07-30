@@ -8,10 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
-import type { AxiosInstance } from 'axios';
+import { useI18n } from 'next-rosetta';
 import { useContext, useRef, useState } from 'react';
-import { ApiContext, LoggerContext, LoggerContextType } from '../../contexts';
+import { ApiContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
+import type { Locale } from '../../i18n';
 import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerInfoApiResponse } from '../../pages/api/sheet/player/info';
 import { handleDefaultApiResponse } from '../../utils';
@@ -34,18 +35,9 @@ type PlayerInfoContainerProps = {
 };
 
 const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (props) => {
-	const log = useContext(LoggerContext);
-	const api = useContext(ApiContext);
-
 	return (
 		<SheetContainer title={props.title}>
-			<PlayerNameField
-				value={props.playerName}
-				show={props.playerNameShow}
-				sx={{ mt: 2 }}
-				log={log}
-				api={api}
-			/>
+			<PlayerNameField value={props.playerName} show={props.playerNameShow} sx={{ mt: 2 }} />
 			<Stack my={2} spacing={3}>
 				{props.playerInfo.map((info) => (
 					<PlayerInfoField key={info.id} {...info} />
@@ -67,37 +59,38 @@ type PlayerNameFieldProps = {
 	sx?: SxProps<Theme>;
 	value: string;
 	show: boolean;
-	log: LoggerContextType;
-	api: AxiosInstance;
 };
 
 const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 	const [show, setShow] = useState(props.show);
 	const [value, setValue, isClean] = useExtendedState(props.value);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const log = useContext(LoggerContext);
+	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const onShowChange = () => {
 		const newShow = !show;
 		setShow(newShow);
-		props.api
+		api
 			.post<PlayerApiResponse>('/sheet/player', {
 				showName: newShow,
 			})
-			.then((res) => handleDefaultApiResponse(res, props.log))
-			.catch((err) => props.log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onValueBlur = () => {
 		if (isClean()) return;
-		props.api
+		api
 			.post<PlayerApiResponse>('/sheet/player', { name: value })
-			.then((res) => handleDefaultApiResponse(res, props.log))
-			.catch((err) => props.log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (
 		<Box sx={props.sx} display='flex' alignItems='end'>
-			<Tooltip title={show ? 'TODO: Hide' : 'Show'} describeChild>
+			<Tooltip title={show ? t('hide') : t('show')} describeChild>
 				<IconButton onClick={onShowChange} size='small'>
 					{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
 				</IconButton>
@@ -127,6 +120,7 @@ const PlayerInfoField: React.FC<PlayerInfoFieldProps> = (props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const onValueBlur = () => {
 		if (isClean()) return;
@@ -147,7 +141,7 @@ const PlayerInfoField: React.FC<PlayerInfoFieldProps> = (props) => {
 						return log({ severity: 'error', text: 'Unknown error: ' + data.reason });
 				}
 			})
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (
@@ -173,13 +167,14 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 	const [value, setValue, isClean] = useExtendedState(props.value);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const onValueBlur = () => {
 		if (isClean()) return;
 		api
 			.post('/sheet/player/spec', { id: props.id, value })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: 'Unknown error: ' + err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (

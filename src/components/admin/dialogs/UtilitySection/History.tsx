@@ -9,6 +9,8 @@ import BackspaceIcon from '@mui/icons-material/Backspace';
 import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../../../contexts';
 import Section from '../../../sheet/Section';
+import { useI18n } from 'next-rosetta';
+import type { Locale } from '../../../../i18n';
 
 const highlightStyle = { color: '#00a000', fontWeight: 'bold' };
 
@@ -23,6 +25,7 @@ const History: React.FC<HistoryProps> = (props) => {
 	const wrapper = useRef<HTMLDivElement>(null);
 	const socket = useContext(SocketContext);
 	const componentDidMount = useRef(false);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		setValues(JSON.parse(localStorage.getItem('admin_dice_history') || '[]') as Dice[]);
@@ -87,7 +90,7 @@ const History: React.FC<HistoryProps> = (props) => {
 		<Section
 			title='History'
 			sideButton={
-				<Tooltip title='TODO: Apagar'>
+				<Tooltip title={t('erase')}>
 					<IconButton onClick={() => setValues([])}>
 						<BackspaceIcon />
 					</IconButton>

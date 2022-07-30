@@ -23,109 +23,112 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
 	const slots = details.PlayerSpell.reduce((acc, sp) => acc + sp.Spell.slots, 0);
 
 	return (
-		<Box>
+		<Box textAlign='center' my={2}>
+			<Typography variant='h5' gutterBottom>
+				{t('sheet.playerInfoTitle')}
+			</Typography>
+			<Box
+				display='flex'
+				flexDirection='row'
+				gap={3}
+				flexWrap='wrap'
+				justifyContent='center'
+				mb={3}>
+				{details.PlayerInfo.map((info) => (
+					<div key={info.Info.id}>
+						<Typography variant='h6'>{info.value || '?'}</Typography>
+						<Typography variant='caption'>{info.Info.name}</Typography>
+					</div>
+				))}
+			</Box>
+
+			<Box display='flex' flexDirection='row' gap={3} flexWrap='wrap' justifyContent='center'>
+				{details.PlayerSpec.map((spec) => (
+					<div key={spec.Spec.id}>
+						<Typography variant='h6'>{spec.value || '?'}</Typography>
+						<Typography variant='caption'>{spec.Spec.name}</Typography>
+					</div>
+				))}
+			</Box>
+
 			<Divider sx={{ my: 2 }} />
-			<Box>
-				<Box
-					display='flex'
-					flexDirection='row'
-					gap={3}
-					flexWrap='wrap'
-					justifyContent='center'
-					textAlign='center'>
-					{details.PlayerInfo.map((info) => (
-						<Box key={info.Info.id} display='flex' flexDirection='column'>
-							<Typography variant='h6'>{info.value}</Typography>
-							<Typography variant='caption'>{info.Info.name}</Typography>
-						</Box>
-					))}
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Box
-					display='flex'
-					flexDirection='row'
-					gap={3}
-					flexWrap='wrap'
-					justifyContent='center'
-					textAlign='center'>
-					{details.PlayerSpec.map((spec) => (
-						<Box key={spec.Spec.id} display='flex' flexDirection='column'>
-							<Typography variant='h6'>{spec.value || '0'}</Typography>
-							<Typography variant='caption'>{spec.Spec.name}</Typography>
-						</Box>
-					))}
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Box
-					display='flex'
-					flexDirection='row'
-					gap={3}
-					flexWrap='wrap'
-					justifyContent='center'
-					textAlign='center'>
-					{details.PlayerCharacteristic.map((char) => (
-						<Box key={char.Characteristic.id} display='flex' flexDirection='column'>
-							<Typography variant='h6'>
-								{char.value || '0'}
-								{char.modifier ? `+ ${char.modifier}` : ''}
-							</Typography>
-							<Typography variant='caption'>{char.Characteristic.name}</Typography>
-						</Box>
-					))}
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Box
-					display='flex'
-					flexDirection='row'
-					gap={3}
-					flexWrap='wrap'
-					justifyContent='center'
-					textAlign='center'>
-					{details.PlayerSkill.filter((sk) => sk.favourite).map((skill) => (
-						<Box key={skill.Skill.id} display='flex' flexDirection='column'>
-							<Typography variant='h6'>
-								{skill.value || '0'}
-								{skill.modifier ? `+ ${skill.modifier}` : ''}
-							</Typography>
-							<Typography variant='caption'>{skill.Skill.name}</Typography>
-						</Box>
-					))}
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Typography variant='h5' textAlign='center'>
-					Itens
-				</Typography>
-				<Typography variant='body2' textAlign='center' mb={2}>
-					TODO: Peso Atual:{' '}
-					<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
-						{load} / {details.maxLoad}
-					</span>
-				</Typography>
-				<Box
-					display='flex'
-					flexDirection='column'
-					flexWrap='wrap'
-					justifyContent='center'
-					textAlign='center'>
-					{details.PlayerItem.map((item) => (
-						<Tooltip
-							key={item.Item.id}
-							title={`${item.currentDescription} (${t('weight')}: ${item.Item.weight}) (${t(
-								'quantity'
-							)}: ${item.quantity})`}
-							placement='top'
-							sx={{ margin: 0 }}>
-							<Typography variant='h6' component='label' gutterBottom>
-								{item.Item.name}
-							</Typography>
-						</Tooltip>
-					))}
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Typography variant='h5' textAlign='center'>
-					Equipamentos
-				</Typography>
-				<Box>
+
+			<Typography variant='h5' gutterBottom>
+				{t('sheet.playerCharacteristicTitle')}
+			</Typography>
+			<Box display='flex' flexDirection='row' gap={3} flexWrap='wrap' justifyContent='center'>
+				{details.PlayerCharacteristic.map((char) => (
+					<div key={char.Characteristic.id}>
+						<Typography variant='h6'>
+							{char.value || '0'}
+							{char.modifier ? `+ ${char.modifier}` : ''}
+						</Typography>
+						<Typography variant='caption'>{char.Characteristic.name}</Typography>
+					</div>
+				))}
+			</Box>
+
+			{details.PlayerSkill.length > 0 && (
+				<>
+					<Divider sx={{ my: 2 }} />
+
+					<Typography variant='h5' gutterBottom>
+						{t('sheet.playerSkillTitle')}
+					</Typography>
+					<Box display='flex' flexDirection='row' gap={3} flexWrap='wrap' justifyContent='center'>
+						{details.PlayerSkill.map((skill) => (
+							<div key={skill.Skill.id}>
+								<Typography variant='h6'>
+									{skill.value || '0'}
+									{skill.modifier ? `+ ${skill.modifier}` : ''}
+								</Typography>
+								<Typography variant='caption'>{skill.Skill.name}</Typography>
+							</div>
+						))}
+					</Box>
+				</>
+			)}
+
+			{details.PlayerItem.length > 0 && (
+				<>
+					<Divider sx={{ my: 2 }} />
+
+					<Typography variant='h5'>{t('sheet.playerItemTitle')}</Typography>
+					<Typography variant='body2' mb={2}>
+						{t('currentWeight')}:{' '}
+						<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
+							{load} / {details.maxLoad}
+						</span>
+					</Typography>
+					<Box display='flex' flexDirection='column' flexWrap='wrap' justifyContent='center'>
+						{details.PlayerItem.map((item) => {
+							const title =
+								item.currentDescription +
+								' ' +
+								`(${t('sheet.table.weight')}: ${item.Item.weight})` +
+								`(${t('sheet.table.quantity')}: ${item.quantity})`;
+
+							return (
+								<Tooltip key={item.Item.id} title={title} placement='top'>
+									<Typography variant='h6' component='label'>
+										{item.Item.name}
+									</Typography>
+								</Tooltip>
+							);
+						})}
+					</Box>
+				</>
+			)}
+
+			{details.PlayerWeapon.length > 0 && details.PlayerWeapon.length > 0 && (
+				<>
+					<Divider sx={{ my: 2 }} />
+					<Typography variant='h5'>{t('sheet.playerCombatTitle')}</Typography>
+				</>
+			)}
+
+			{details.PlayerWeapon.length > 0 && (
+				<>
 					<TableContainer>
 						<Table>
 							<TableHead>
@@ -150,6 +153,11 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
 							</TableBody>
 						</Table>
 					</TableContainer>
+				</>
+			)}
+
+			{details.PlayerArmor.length > 0 && (
+				<>
 					<TableContainer>
 						<Table>
 							<TableHead>
@@ -168,18 +176,20 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
 							</TableBody>
 						</Table>
 					</TableContainer>
-				</Box>
-				<Divider sx={{ my: 2 }} />
-				<Typography variant='h5' textAlign='center'>
-					Magias
-				</Typography>
-				<Typography variant='body2' textAlign='center' mb={2}>
-					TODO: Slots Disponíveis:{' '}
-					<span style={{ color: slots > details.spellSlots ? 'red' : undefined }}>
-						{slots} / {details.spellSlots}
-					</span>
-				</Typography>
-				<Box>
+				</>
+			)}
+
+			{details.PlayerSpell.length > 0 && (
+				<>
+					<Divider sx={{ my: 2 }} />
+
+					<Typography variant='h5'>{t('sheet.playerSpellTitle')}</Typography>
+					<Typography variant='body2' mb={2}>
+						{t('availableSlots')}:{' '}
+						<span style={{ color: slots > details.spellSlots ? 'red' : undefined }}>
+							{slots} / {details.spellSlots}
+						</span>
+					</Typography>
 					<TableContainer>
 						<Table>
 							<TableHead>
@@ -198,8 +208,8 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
 							</TableBody>
 						</Table>
 					</TableContainer>
-				</Box>
-			</Box>
+				</>
+			)}
 		</Box>
 	);
 };

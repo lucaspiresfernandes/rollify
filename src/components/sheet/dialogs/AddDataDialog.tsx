@@ -34,7 +34,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose}>
-			<DialogTitle>TODO: Adicionar Dados</DialogTitle>
+			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
 			<DialogContent>
 				<form id='playerAddDataDialogForm' onSubmit={onSubmit}>
 					<Select

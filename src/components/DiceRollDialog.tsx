@@ -137,7 +137,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 			})
 			.catch((err) => {
 				closeDialog();
-				log({ severity: 'error', text: err.message });
+				log({ severity: 'error', text: t('error.unknown') });
 			});
 	};
 
@@ -165,7 +165,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 
 	return (
 		<Dialog open={props.dice !== null} onClose={closeDialog}>
-			<DialogTitle>TODO: Rolar Dados</DialogTitle>
+			<DialogTitle>{t('modal.title.rollDice')}</DialogTitle>
 			<DialogContent sx={{ textAlign: 'center', mt: 2 }}>
 				{diceRequest.dice ? (
 					result ? (
@@ -188,7 +188,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 					<TextField
 						variant='outlined'
 						type='number'
-						label='TODO: Quantidade de Dados'
+						label={t('modal.label.numberOfDices')}
 						value={num}
 						onChange={(ev) => setNum(Math.max(1, Number(ev.target.value)))}
 					/>

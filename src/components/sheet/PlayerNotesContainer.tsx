@@ -6,6 +6,8 @@ import { ApiContext, LoggerContext } from '../../contexts';
 import { useContext } from 'react';
 import { handleDefaultApiResponse } from '../../utils';
 import type { PlayerAnnotationApiResponse } from '../../pages/api/sheet/player/annotation';
+import { useI18n } from 'next-rosetta';
+import type { Locale } from '../../i18n';
 
 type PlayerNotesContainerProps = {
 	title: string;
@@ -16,13 +18,14 @@ const PlayerNotesContainer: React.FC<PlayerNotesContainerProps> = (props) => {
 	const [value, setValue, isClean] = useExtendedState(props.value);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = () => {
 		if (isClean()) return;
 		api
 			.post<PlayerAnnotationApiResponse>('/sheet/player/annotation', { value })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (

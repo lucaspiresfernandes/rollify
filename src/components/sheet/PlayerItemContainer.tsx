@@ -75,9 +75,9 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 						},
 					]);
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -91,9 +91,9 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					addDataDialog.openDialog(items, onAddItem);
 					return;
 				}
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -105,10 +105,10 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				data: { id },
 			})
 			.then((res) => {
-				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerItems((i) => i.filter((item) => item.id !== id));
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -200,6 +200,7 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 	);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const quantityChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
 		const aux = ev.currentTarget.value;
@@ -220,17 +221,17 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'success') return props.onQuantityChange(quantity);
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const descriptionBlur: React.FocusEventHandler<HTMLInputElement> = () => {
 		if (isDescriptionClean()) return;
 		api
 			.post<PlayerItemApiResponse>('/sheet/player/item', { id: props.id, currentDescription })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	return (

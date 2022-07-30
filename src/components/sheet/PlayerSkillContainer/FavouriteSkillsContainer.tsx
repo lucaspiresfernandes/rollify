@@ -2,9 +2,11 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
 import { PlayerSkillField, PlayerSkillContainerProps, Searchbar } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
+import type { Locale } from '../../../i18n';
 import type { PlayerSkillClearChecksApiResponse } from '../../../pages/api/sheet/player/skill/clearchecks';
 import { handleDefaultApiResponse } from '../../../utils';
 import PartialBackdrop from '../../PartialBackdrop';
@@ -30,6 +32,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 	const [loading, setLoading] = useState(false);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
 	const clearChecks = () => {
 		setLoading(true);
@@ -37,9 +40,9 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			.post<PlayerSkillClearChecksApiResponse>('/sheet/player/skill/clearchecks')
 			.then((res) => {
 				if (res.data.status === 'success') return setNotify((n) => !n);
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 

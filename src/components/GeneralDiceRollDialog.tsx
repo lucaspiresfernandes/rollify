@@ -93,7 +93,7 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 				TransitionProps={{
 					onExited: () => setDices((dices) => dices.map((d) => ({ ...d, num: 0 }))),
 				}}>
-				<DialogTitle>TODO: Rolagem Geral de Dados</DialogTitle>
+				<DialogTitle>{t('modal.title.generalDiceRoll')}</DialogTitle>
 				<DialogContent>
 					<Grid container spacing={4}>
 						{dices.map((dice) => (

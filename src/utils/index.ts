@@ -1,5 +1,7 @@
 import type { AxiosResponse } from 'axios';
+import type { RosettaExtended } from 'next-rosetta';
 import type { LoggerContextType } from '../contexts';
+import type { Locale } from '../i18n';
 import type { NextApiResponseData } from './next';
 
 export type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (
@@ -15,19 +17,16 @@ export const EMAIL_REGEX =
 
 export function handleDefaultApiResponse<
 	T extends NextApiResponseData<'unauthorized' | 'invalid_body'>
->(res: AxiosResponse<T>, log: LoggerContextType) {
+>(res: AxiosResponse<T>, log: LoggerContextType, t: RosettaExtended<Locale>['t']) {
 	if (res.data.status === 'success') return;
 
 	switch (res.data.reason) {
 		case 'invalid_body':
-			return log({ severity: 'error', text: 'TODO: Dados inválidos.' });
+			return log({ severity: 'error', text: t('error.invalidBody') });
 		case 'unauthorized':
-			return log({
-				severity: 'error',
-				text: 'TODO: Você não está autorizado a fazer essa ação. Tente recarregar a página.',
-			});
+			return log({ severity: 'error', text: t('error.unauthorized') });
 		default:
-			return log({ severity: 'error', text: 'Unknown error: ' + res.data.reason });
+			return log({ severity: 'error', text: t('error.unknown', { message: res.data.reason }) });
 	}
 }
 

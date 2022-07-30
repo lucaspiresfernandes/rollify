@@ -134,6 +134,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const rollDice = useContext(DiceRollContext);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		if (!componentDidMount.current) {
@@ -165,8 +166,8 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 							id: props.id,
 							checked: true,
 						})
-						.then((res) => handleDefaultApiResponse(res, log))
-						.catch((err) => log({ severity: 'error', text: err.message }));
+						.then((res) => handleDefaultApiResponse(res, log, t))
+						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 				}
 
 				if (!mod) return;
@@ -183,8 +184,8 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		setChecked(chk);
 		api
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: props.id, checked: chk })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = () => {
@@ -199,8 +200,8 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 
 		api
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: props.id, value: newValue })
-			.then((res) => handleDefaultApiResponse(res, log))
-			.catch((err) => log({ severity: 'error', text: err.message }));
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
 	const onModifierBlur =
@@ -222,8 +223,8 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 							id: props.id,
 							modifier: parseInt(newModifier),
 						})
-						.then((res) => handleDefaultApiResponse(res, log))
-						.catch((err) => log({ severity: 'error', text: err.message }));
+						.then((res) => handleDefaultApiResponse(res, log, t))
+						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 			  }
 			: undefined;
 
@@ -239,7 +240,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 						sx={{ padding: 0 }}
 					/>
 					{props.onDelete && (
-						<Tooltip title='TODO: Unstar' describeChild>
+						<Tooltip title={t('unstar')} describeChild>
 							<IconButton size='small' onClick={props.onDelete} sx={{ padding: 0, ml: 2 }}>
 								<ClearIcon />
 							</IconButton>

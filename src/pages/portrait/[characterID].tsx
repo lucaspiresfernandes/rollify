@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '../../components/LoadingScreen';
 import type { PortraitAttributeStatus } from '../../components/portrait/PortraitAvatarContainer';
@@ -10,6 +11,7 @@ import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEn
 import PortraitSideAttributeContainer from '../../components/portrait/PortraitSideAttributeContainer';
 import type { SocketIO } from '../../hooks/useSocket';
 import useSocket from '../../hooks/useSocket';
+import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import type { InferSsrProps } from '../../utils/next';
 import type {
@@ -46,6 +48,7 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) => {
 	const [debug, setDebug] = useState(false);
 	const [rotation, setRotation] = useState(0);
+	const { t } = useI18n<Locale>();
 
 	const divStyle: React.CSSProperties =
 		props.nameOrientation === 'Direita' ? { left: 20 } : { left: 800 };
@@ -86,7 +89,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 						variant='contained'
 						title='Desativa o controle do ambiente pelo mestre.'
 						onClick={() => setDebug((e) => !e)}>
-						TODO: {debug ? 'Desativar' : 'Ativar'} Editor
+						{debug ? t('disable') : t('enable')} Editor
 					</Button>
 				</div>
 				{debug && (

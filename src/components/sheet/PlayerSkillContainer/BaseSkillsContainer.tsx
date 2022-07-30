@@ -5,9 +5,11 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
 import { PlayerSkillField, PlayerSkillContainerProps, Searchbar } from '.';
 import { AddDataContext, ApiContext, LoggerContext } from '../../../contexts';
+import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import type { PlayerSkillClearChecksApiResponse } from '../../../pages/api/sheet/player/skill/clearchecks';
 import { handleDefaultApiResponse } from '../../../utils';
@@ -35,6 +37,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataContext);
+	const { t } = useI18n<Locale>();
 
 	const clearChecks = () => {
 		setLoading(true);
@@ -42,9 +45,9 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			.post<PlayerSkillClearChecksApiResponse>('/sheet/player/skill/clearchecks')
 			.then((res) => {
 				if (res.data.status === 'success') return setNotify((n) => !n);
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -55,9 +58,9 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id, favourite: true })
 			.then((res) => {
 				if (res.data.status === 'success') return props.onSkillFavourite(id);
-				handleDefaultApiResponse(res, log);
+				handleDefaultApiResponse(res, log, t);
 			})
-			.catch((err) => log({ severity: 'error', text: err.message }))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
 	};
 
@@ -72,7 +75,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			flexDirection='column'
 			position='relative'
 			sideButton={
-				<Tooltip title='TODO: Star Skill' describeChild>
+				<Tooltip title={`${t('star')} ${t('skill')}`} describeChild>
 					<IconButton onClick={showFavouriteDialog}>
 						<StarsIcon />
 					</IconButton>
