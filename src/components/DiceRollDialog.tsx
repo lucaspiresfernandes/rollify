@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -5,7 +6,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Fade from '@mui/material/Fade';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -164,35 +164,52 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	const loading = diceRequest.dice !== null && diceResponse === null;
 
 	return (
-		<Dialog open={props.dice !== null} onClose={closeDialog}>
+		<Dialog open={props.dice !== null} onClose={closeDialog} maxWidth='xs' fullWidth>
 			<DialogTitle>{t('modal.title.rollDice')}</DialogTitle>
 			<DialogContent sx={{ textAlign: 'center', mt: 2 }}>
-				{diceRequest.dice ? (
-					result ? (
-						<>
-							<Fade in appear>
-								<Typography variant='h5' component='h2'>
-									{result.roll}
-								</Typography>
-							</Fade>
-							<Fade in={descriptionFade}>
-								<Typography variant='body1' color='GrayText'>
-									{result.description}
-								</Typography>
-							</Fade>
-						</>
+				<Box display='flex' flexDirection='column' justifyContent='center' height={110}>
+					{diceRequest.dice ? (
+						result ? (
+							<div>
+								<Fade in appear>
+									<Typography variant='h4' component='h2' gutterBottom>
+										{result.roll}
+									</Typography>
+								</Fade>
+								<Fade in={descriptionFade}>
+									<Typography variant='body1'>{result.description}</Typography>
+								</Fade>
+							</div>
+						) : (
+							<div>
+								<CircularProgress disableShrink />
+							</div>
+						)
 					) : (
-						<CircularProgress />
-					)
-				) : (
-					<TextField
-						variant='outlined'
-						type='number'
-						label={t('modal.label.numberOfDices')}
-						value={num}
-						onChange={(ev) => setNum(Math.max(1, Number(ev.target.value)))}
-					/>
-				)}
+						<div>
+							<Typography variant='h6' component='h2'>
+								{t('modal.label.numberOfDices')}
+							</Typography>
+							<Box
+								display='flex'
+								flexDirection='row'
+								alignItems='center'
+								justifyContent='center'
+								gap={3}
+								my={2}>
+								<Button variant='contained' onClick={() => setNum((n) => Math.max(1, n - 1))}>
+									-
+								</Button>
+								<Typography variant='h4' component='h2'>
+									{num}
+								</Typography>
+								<Button variant='contained' onClick={() => setNum((n) => Math.max(1, n + 1))}>
+									+
+								</Button>
+							</Box>
+						</div>
+					)}
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={closeDialog}>

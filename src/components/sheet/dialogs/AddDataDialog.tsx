@@ -52,7 +52,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>
-				<Button type='submit' form='playerAddDataDialogForm'>
+				<Button type='submit' form='playerAddDataDialogForm' disabled={props.data.length === 0}>
 					{t('modal.apply')}
 				</Button>
 			</DialogActions>

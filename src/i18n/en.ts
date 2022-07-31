@@ -135,7 +135,7 @@ export const table: Locale = {
 			avatarEditor: 'Avatar Editor',
 		},
 		label: {
-			numberOfDices: 'Dice number',
+			numberOfDices: 'Dice Number',
 			portraitDescription: 'Portrait description',
 			diceColor: 'Dice color',
 			portraitLink: 'Portrait link',

@@ -98,22 +98,24 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 					<Grid container spacing={4}>
 						{dices.map((dice) => (
 							<Grid item key={dice.roll} sm={4} xs={6} textAlign='center'>
-								<div style={{ maxWidth: 100 }}>
-									<Image
-										src={dice.img}
-										alt={`${dice.num || ''}D${dice.roll}`}
-										title={`${dice.num || ''}D${dice.roll}`}
-										layout='responsive'
-									/>
+								<div>
+									<Box width={100} display='inline-block'>
+										<Image
+											src={dice.img}
+											alt={`${dice.num || ''}D${dice.roll}`}
+											title={`${dice.num || ''}D${dice.roll}`}
+											layout='responsive'
+										/>
+									</Box>
 								</div>
-								<Box mt={1} display='flex' alignItems='center'>
+								<Box display='flex' alignItems='center'>
 									<Button
 										variant='contained'
 										size='small'
 										onClick={() => updateDice(dice.roll, -1)}>
 										-
 									</Button>
-									<Typography variant='body1' flex='1'>
+									<Typography variant='body1' flexGrow={1}>
 										{dice.num}
 									</Typography>
 									<Button variant='contained' size='small' onClick={() => updateDice(dice.roll, 1)}>

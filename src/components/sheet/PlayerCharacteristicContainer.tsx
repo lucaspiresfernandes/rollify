@@ -2,16 +2,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Image from 'next/image';
+import { useI18n } from 'next-rosetta';
 import { useContext } from 'react';
-import dice20 from '../../../public/dice20.webp';
-import SheetContainer from './Section';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
+import type { Locale } from '../../i18n';
 import { handleDefaultApiResponse } from '../../utils';
 import type { DiceConfig } from '../../utils/dice';
-import { useI18n } from 'next-rosetta';
-import type { Locale } from '../../i18n';
+import SheetContainer from './Section';
 
 type PlayerCharacteristicContainerProps = {
 	title: string;
@@ -64,7 +62,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	const { t } = useI18n<Locale>();
 	const rollDice = useContext(DiceRollContext);
 
-	const handleDiceClick = (standalone: boolean) => {
+	const handleDiceClick: React.MouseEventHandler<HTMLLabelElement> = (ev) => {
 		const roll = props.characteristicDiceConfig.value;
 		const branched = props.characteristicDiceConfig.branched;
 
@@ -72,6 +70,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 		if (modifier) mod = parseInt(modifier);
 
 		const val = parseInt(value);
+		const standalone = ev.ctrlKey;
 
 		rollDice(
 			{ num: standalone ? 1 : undefined, roll, ref: Math.max(0, val + mod), branched },
@@ -129,17 +128,17 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>
 			<div>
-				<Image
-					src={dice20}
-					alt='Dice'
-					onClick={(ev) => handleDiceClick(ev.ctrlKey)}
-					width={45}
-					height={45}
-					style={{ cursor: 'pointer' }}
-				/>
-			</div>
-			<div>
-				<Typography variant='body1' component='label' htmlFor={`characteristic${props.id}`}>
+				<Typography
+					variant='body1'
+					component='label'
+					htmlFor={`characteristic${props.id}`}
+					sx={{
+						cursor: 'pointer',
+						':hover': {
+							textDecoration: 'underline',
+						},
+					}}
+					onClick={handleDiceClick}>
 					{props.name}
 				</Typography>
 			</div>

@@ -103,7 +103,7 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 				const result = data[index];
 				results[index] = { roll: result };
 				if (reference === undefined || !successTypeEnabled) continue;
-				results[index].resultType = resolveSuccessType(reference, result, branched);
+				results[index].resultType = resolveSuccessType(roll, reference, result, branched);
 			}
 		}
 
@@ -118,54 +118,57 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 };
 
 function resolveSuccessType(
-	reference: number,
 	roll: number,
+	reference: number,
+	result: number,
 	branched?: boolean
 ): DiceResponse['resultType'] {
 	let successType = { description: '', successWeight: 0 };
 
 	switch (roll) {
 		case 20:
-			if (roll > 20 - Math.floor(reference * 0.2))
+			if (result > 20 - Math.floor(reference * 0.2))
 				successType = {
 					description: 'Extremo',
 					successWeight: 2,
 				};
-			if (roll > 20 - Math.floor(reference * 0.5))
+			else if (result > 20 - Math.floor(reference * 0.5))
 				successType = {
 					description: 'Bom',
 					successWeight: 1,
 				};
-			if (roll > 20 - reference)
+			else if (result > 20 - reference)
 				successType = {
 					description: 'Sucesso',
 					successWeight: 0,
 				};
-			successType = {
-				description: 'Fracasso',
-				successWeight: -1,
-			};
+			else
+				successType = {
+					description: 'Fracasso',
+					successWeight: -1,
+				};
 			break;
 		case 100:
-			if (roll <= Math.floor(reference * 0.2))
+			if (result <= Math.floor(reference * 0.2))
 				successType = {
 					description: 'Extremo',
 					successWeight: 2,
 				};
-			if (roll <= Math.floor(reference * 0.5))
+			else if (result <= Math.floor(reference * 0.5))
 				successType = {
 					description: 'Bom',
 					successWeight: 1,
 				};
-			if (roll <= reference)
+			else if (result <= reference)
 				successType = {
 					description: 'Sucesso',
 					successWeight: 0,
 				};
-			successType = {
-				description: 'Fracasso',
-				successWeight: -1,
-			};
+			else
+				successType = {
+					description: 'Fracasso',
+					successWeight: -1,
+				};
 			break;
 		default:
 			return;
