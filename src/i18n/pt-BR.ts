@@ -31,6 +31,9 @@ export const table: Locale = {
 	default: 'Padrão',
 	details: 'Detalhes',
 	player: 'Jogador',
+	unknown: 'Desconhecido',
+	none: 'Nenhum',
+	offering: 'Oferecendo',
 
 	quickAccess: 'Acesso Rápido',
 
@@ -59,7 +62,8 @@ export const table: Locale = {
 			password_mismatch: 'Senhas não conferem',
 			invalid_email: 'Email inválido',
 		},
-		invalidBody: 'Não foi possível atualizar as informações do personagem. Se esse erro persistir, entre em contato com o desenvolvedor.',
+		invalidBody:
+			'Não foi possível atualizar as informações do personagem. Se esse erro persistir, entre em contato com o desenvolvedor.',
 		unauthorized: 'Não foi possível atualizar as informações do personagem. Tente relogar.',
 		playerDetailsFetchFailed: 'Falha ao carregar os detalhes do jogador.',
 	},
@@ -104,7 +108,7 @@ export const table: Locale = {
 			range: 'Alcance',
 			attacks: 'Ataques',
 			currentAmmo: 'Mun. atual',
-			ammo: 'Mun. máx.',
+			ammo: 'Munição',
 
 			description: 'Descrição',
 			weight: 'Peso',
@@ -137,11 +141,11 @@ export const table: Locale = {
 		label: {
 			numberOfDices: 'Número de Dados',
 			portraitDescription: 'Descrição',
-			diceColor: 'Cor dos dados',
-			portraitLink: 'Link do retrato',
-			showDiceRoll: 'Mostrar rolagem de dados',
-			currentValue: 'Valor atual',
-			maxValue: 'Valor máximo',
+			diceColor: 'Cor dos Dados (em hexadecimal)',
+			portraitLink: 'Link do Retrato',
+			showDiceRoll: 'Mostrar Rolagem de dados',
+			currentValue: 'Valor Atual',
+			maxValue: 'Valor Máximo',
 		},
 		close: 'Fechar',
 		cancel: 'Cancelar',

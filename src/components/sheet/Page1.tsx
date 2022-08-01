@@ -5,7 +5,16 @@ import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { AddDataContext, ApiContext, DiceRollContext, DiceRollEvent } from '../../contexts';
+import {
+	AddDataContextType,
+	AddDataDialogContext,
+	ApiContext,
+	DiceRollContext,
+	DiceRollEvent,
+	SocketContext,
+	TradeContextType,
+	TradeDialogContext,
+} from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
@@ -13,6 +22,7 @@ import createApiClient from '../../utils/createApiClient';
 import DiceRollDialog, { DiceRoll } from '../DiceRollDialog';
 import LoadingScreen from '../LoadingScreen';
 import AddDataDialog, { AddDataDialogProps } from './dialogs/AddDataDialog';
+import PlayerTradeDialog, { PlayerTradeDialogProps } from './dialogs/PlayerTradeDialog';
 import PlayerAttributeContainer from './PlayerAttributeContainer';
 import PlayerCharacteristicContainer from './PlayerCharacteristicContainer';
 import PlayerCombatContainer from './PlayerCombatContainer';
@@ -31,11 +41,28 @@ const MemoPlayerSpellContainer = memo(PlayerSpellContainer, () => true);
 
 const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
 	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
-	const [dialogData, setDialogData] = useState<{
-		data: { id: number; name: string }[];
+	const [addDialogData, setAddDialogData] = useState<{
+		data: AddDataDialogProps['data'];
 		onSubmit: AddDataDialogProps['onSubmit'];
 	}>({ data: [], onSubmit: () => {} });
+
+	const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
+	const [tradeDialogData, setTradeDialogData] = useState<{
+		type: PlayerTradeDialogProps['type'];
+		offerId: PlayerTradeDialogProps['offerId'];
+		partners: PlayerTradeDialogProps['partners'];
+		currentItems: PlayerTradeDialogProps['currentItems'];
+		onSubmit: PlayerTradeDialogProps['onSubmit'];
+	}>({
+		type: 'armor',
+		offerId: 0,
+		partners: [],
+		currentItems: [],
+		onSubmit: () => {},
+	});
+
 	const [diceRoll, setDiceRoll] = useState<DiceRoll>({ dice: null });
+
 	const socket = useSocket(`player${props.player.id}`);
 	const { t } = useI18n<Locale>();
 
@@ -66,13 +93,24 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 		[]
 	);
 
-	const addDataProvider = useMemo(
+	const addDataProvider: AddDataContextType = useMemo(
 		() => ({
-			openDialog: (data: typeof dialogData['data'], onSubmit: typeof dialogData['onSubmit']) => {
-				setDialogData({ data, onSubmit });
+			openDialog: (data, onSubmit) => {
+				setAddDialogData({ data, onSubmit });
 				setAddDataDialogOpen(true);
 			},
 			closeDialog: () => setAddDataDialogOpen(false),
+		}),
+		[]
+	);
+
+	const tradeProvider: TradeContextType = useMemo(
+		() => ({
+			openDialog: (type, offerId, partners, currentItems, onSubmit) => {
+				setTradeDialogData({ type, offerId, partners, currentItems, onSubmit });
+				setTradeDialogOpen(true);
+			},
+			closeDialog: () => setTradeDialogOpen(false),
 		}),
 		[]
 	);
@@ -136,7 +174,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 							/>
 						</Grid>
 
-						<AddDataContext.Provider value={addDataProvider}>
+						<AddDataDialogContext.Provider value={addDataProvider}>
 							<MemoPlayerSkillContainer
 								title={t('sheet.playerSkillTitle')}
 								playerSkills={props.player.PlayerSkill.map((skill) => ({
@@ -147,33 +185,37 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 								automaticMarking={props.automaticMarking}
 								skillDiceConfig={props.diceConfig.skill}
 							/>
-							
-							<Grid item xs={12}>
-								<MemoPlayerCombatContainer
-									title={t('sheet.playerCombatTitle')}
-									playerWeapons={props.player.PlayerWeapon.map((weap) => ({
-										...weap,
-										...weap.Weapon,
-									}))}
-									playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
-								/>
-							</Grid>
 
-							<Grid item xs={12}>
-								<MemoPlayerItemContainer
-									title={t('sheet.playerItemTitle')}
-									playerCurrency={props.player.PlayerCurrency.map((cur) => ({
-										id: cur.Currency.id,
-										name: cur.Currency.name,
-										value: cur.value,
-									}))}
-									playerItems={props.player.PlayerItem.map((it) => ({
-										...it,
-										...it.Item,
-									}))}
-									maxLoad={props.player.maxLoad}
-								/>
-							</Grid>
+							<TradeDialogContext.Provider value={tradeProvider}>
+								<SocketContext.Provider value={socket}>
+									<Grid item xs={12}>
+										<MemoPlayerCombatContainer
+											title={t('sheet.playerCombatTitle')}
+											playerWeapons={props.player.PlayerWeapon.map((weap) => ({
+												...weap,
+												...weap.Weapon,
+											}))}
+											playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
+										/>
+									</Grid>
+
+									<Grid item xs={12}>
+										<MemoPlayerItemContainer
+											title={t('sheet.playerItemTitle')}
+											playerCurrency={props.player.PlayerCurrency.map((cur) => ({
+												id: cur.Currency.id,
+												name: cur.Currency.name,
+												value: cur.value,
+											}))}
+											playerItems={props.player.PlayerItem.map((it) => ({
+												...it,
+												...it.Item,
+											}))}
+											maxLoad={props.player.maxLoad}
+										/>
+									</Grid>
+								</SocketContext.Provider>
+							</TradeDialogContext.Provider>
 
 							<Grid item xs={12}>
 								<MemoPlayerSpellContainer
@@ -181,16 +223,20 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
 								/>
 							</Grid>
-						</AddDataContext.Provider>
+						</AddDataDialogContext.Provider>
 					</DiceRollContext.Provider>
 					<DiceRollDialog onClose={() => setDiceRoll({ dice: null })} {...diceRoll} />
 				</ApiContext.Provider>
 			</Grid>
 			<AddDataDialog
 				open={addDataDialogOpen}
-				data={dialogData.data}
 				onClose={() => setAddDataDialogOpen(false)}
-				onSubmit={dialogData.onSubmit}
+				{...addDialogData}
+			/>
+			<PlayerTradeDialog
+				open={tradeDialogOpen}
+				onClose={() => setTradeDialogOpen(false)}
+				{...tradeDialogData}
 			/>
 		</Container>
 	);

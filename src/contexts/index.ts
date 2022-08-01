@@ -2,6 +2,7 @@ import type { AlertColor } from '@mui/material';
 import type { AxiosInstance } from 'axios';
 import { createContext } from 'react';
 import type { AddDataDialogProps } from '../components/sheet/dialogs/AddDataDialog';
+import type { PlayerTradeDialogProps } from '../components/sheet/dialogs/PlayerTradeDialog';
 import type { SocketIO } from '../hooks/useSocket';
 import { api } from '../utils/createApiClient';
 import type { DiceRequest, DiceResponse } from '../utils/dice';
@@ -13,9 +14,17 @@ export type LoggerProps = {
 };
 
 export type AddDataContextType = {
+	openDialog: (data: AddDataDialogProps['data'], onSubmit: AddDataDialogProps['onSubmit']) => void;
+	closeDialog: () => void;
+};
+
+export type TradeContextType = {
 	openDialog: (
-		data: { id: number; name: string }[],
-		onSubmit: AddDataDialogProps['onSubmit']
+		type: PlayerTradeDialogProps['type'],
+		offerId: PlayerTradeDialogProps['offerId'],
+		partners: PlayerTradeDialogProps['partners'],
+		currentItems: PlayerTradeDialogProps['currentItems'],
+		onSubmit: PlayerTradeDialogProps['onSubmit']
 	) => void;
 	closeDialog: () => void;
 };
@@ -28,8 +37,12 @@ export type DiceRollEvent = (
 export const LoggerContext = createContext<LoggerContextType>(() => {});
 export const SocketContext = createContext<SocketIO>(undefined as any);
 export const ApiContext = createContext<AxiosInstance>(api);
-export const AddDataContext = createContext<AddDataContextType>({
+export const AddDataDialogContext = createContext<AddDataContextType>({
 	openDialog: () => {},
 	closeDialog: () => {},
 });
 export const DiceRollContext = createContext<DiceRollEvent>(() => {});
+export const TradeDialogContext = createContext<TradeContextType>({
+	openDialog: () => {},
+	closeDialog: () => {},
+});

@@ -30,6 +30,9 @@ export interface Locale {
 	default: string;
 	details: string;
 	player: string;
+	unknown: string;
+	none: string;
+	offering: string;
 
 	nav: {
 		language: string;

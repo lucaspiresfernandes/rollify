@@ -1,6 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,22 +11,22 @@ import type { Armor } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import type { PlayerCombatContainerProps } from '.';
 import type { Locale } from '../../../i18n';
+import type { TradeType } from '../../../utils/socket';
 
 type PlayerArmorContainerProps = {
 	playerArmor: PlayerCombatContainerProps['playerArmor'];
 	onDeleteArmor: (id: number) => void;
+	onTrade: (type: Extract<TradeType, 'weapon' | 'armor'>, id: number) => void;
 };
 
 const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
-	console.log('render');
 
 	return (
 		<TableContainer>
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding='none'></TableCell>
 						<TableCell padding='none'></TableCell>
 						<TableCell padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
@@ -45,6 +44,7 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 							onDelete={() => {
 								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteArmor(armor.id);
 							}}
+							onTrade={() => props.onTrade('armor', armor.id)}
 						/>
 					))}
 				</TableBody>
@@ -55,6 +55,7 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 
 type PlayerArmorFieldProps = { [T in keyof Armor]: Armor[T] } & {
 	onDelete: () => void;
+	onTrade: () => void;
 };
 
 const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
@@ -66,12 +67,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 						<DeleteIcon />
 					</IconButton>
 				</TableCell>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small'>
-						<VolunteerActivismIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center' padding='none'>
+				<TableCell align='center' padding='none' onClick={props.onTrade}>
 					<IconButton size='small'>
 						<HandshakeIcon />
 					</IconButton>

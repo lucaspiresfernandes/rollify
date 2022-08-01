@@ -52,7 +52,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 		socket.on('playerNameChange', (id, name) => {
 			setPlayers((p) =>
 				p.map((player) => {
-					if (player.id === id) return { ...player, name: name || 'Desconhecido' };
+					if (player.id === id) return { ...player, name: name || t('unknown') };
 					return player;
 				})
 			);

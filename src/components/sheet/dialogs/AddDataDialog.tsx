@@ -17,23 +17,28 @@ export type AddDataDialogProps = {
 };
 
 const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
-	const [value, setValue] = useState(props.data[0]?.id || '');
+	const [value, setValue] = useState<number | ''>(props.data[0]?.id || '');
 	const { t } = useI18n<Locale>();
-
-	useEffect(() => {}, [props.data]);
 
 	useEffect(() => {
 		if (props.open) setValue(props.data[0]?.id || '');
-		else setValue('');
 	}, [props.open, props.data]);
+
+	const onDialogExited = () => {
+		setValue('');
+	};
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
-		props.onSubmit(Number(value));
+		if (value === '') return;
+		props.onSubmit(value);
 	};
 
 	return (
-		<Dialog open={props.open} onClose={props.onClose}>
+		<Dialog
+			open={props.open}
+			onClose={props.onClose}
+			TransitionProps={{ onExited: onDialogExited }}>
 			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
 			<DialogContent>
 				<form id='playerAddDataDialogForm' onSubmit={onSubmit}>

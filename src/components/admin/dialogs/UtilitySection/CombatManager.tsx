@@ -60,7 +60,7 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 				variant='body1'
 				component='label'
 				sx={{ fontStyle: props.selected ? 'italic' : 'normal', userSelect: 'none' }}>
-				{props.entity.name || 'Desconhecido'}
+				{props.entity.name || t('unknown')}
 			</Typography>
 			<TextField
 				variant='standard'
@@ -229,7 +229,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 										setActiveEntities([...activeEntities, { ...ent }]);
 										handleDropdownClose();
 									}}>
-									{ent.name || 'Desconhecido'}
+									{ent.name || t('unknown')}
 								</MenuItem>
 							);
 						})}

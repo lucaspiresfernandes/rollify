@@ -135,7 +135,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 						return log({ severity: 'error', text: 'Unknown error: ' + data.reason });
 				}
 			})
-			.catch((err) => {
+			.catch(() => {
 				closeDialog();
 				log({ severity: 'error', text: t('error.unknown') });
 			});
@@ -167,7 +167,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 		<Dialog open={props.dice !== null} onClose={closeDialog} maxWidth='xs' fullWidth>
 			<DialogTitle>{t('modal.title.rollDice')}</DialogTitle>
 			<DialogContent sx={{ textAlign: 'center', mt: 2 }}>
-				<Box display='flex' flexDirection='column' justifyContent='center' height={110}>
+				<Box display='flex' flexDirection='column' justifyContent='center' minHeight={110}>
 					{diceRequest.dice ? (
 						result ? (
 							<div>

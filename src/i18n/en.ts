@@ -31,6 +31,9 @@ export const table: Locale = {
 	default: 'Default',
 	details: 'Details',
 	player: 'Player',
+	unknown: 'Unknown',
+	none: 'None',
+	offering: 'Offering',
 
 	quickAccess: 'Quick Access',
 
@@ -45,7 +48,7 @@ export const table: Locale = {
 		admin: {
 			panel: 'Panel',
 			editor: 'Editor',
-			configurations: 'Configurations',
+			configurations: 'Settings',
 		},
 	},
 
@@ -104,7 +107,7 @@ export const table: Locale = {
 			range: 'Range',
 			attacks: 'Attacks',
 			currentAmmo: 'Cur. Ammo',
-			ammo: 'Max Ammo',
+			ammo: 'Ammo',
 
 			description: 'Description',
 			weight: 'Weight',
@@ -136,12 +139,12 @@ export const table: Locale = {
 		},
 		label: {
 			numberOfDices: 'Dice Number',
-			portraitDescription: 'Portrait description',
-			diceColor: 'Dice color',
-			portraitLink: 'Portrait link',
-			showDiceRoll: 'Show dice roll',
-			currentValue: 'Current value',
-			maxValue: 'Max value',
+			portraitDescription: 'Portrait Description',
+			diceColor: 'Dice Color (in hexadecimal)',
+			portraitLink: 'Portrait Link',
+			showDiceRoll: 'Show Dice Roll',
+			currentValue: 'Current Value',
+			maxValue: 'Max Value',
 		},
 		close: 'Close',
 		cancel: 'Cancel',

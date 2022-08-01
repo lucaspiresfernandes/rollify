@@ -1,6 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import type { Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
@@ -21,10 +22,12 @@ import type { Locale } from '../../../i18n';
 import type { PlayerWeaponApiResponse } from '../../../pages/api/sheet/player/weapon';
 import { handleDefaultApiResponse } from '../../../utils';
 import { resolveDices } from '../../../utils/dice';
+import type { TradeType } from '../../../utils/socket';
 
 type PlayerWeaponContainerProps = {
 	playerWeapons: PlayerCombatContainerProps['playerWeapons'];
 	onDeleteWeapon: (id: number) => void;
+	onTrade: (type: Extract<TradeType, 'weapon' | 'armor'>, id: number) => void;
 };
 
 const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
@@ -37,14 +40,12 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 					<TableRow>
 						<TableCell padding='none'></TableCell>
 						<TableCell padding='none'></TableCell>
-						<TableCell padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.type')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
 						<TableCell align='center' padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.range')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.attacks')}</TableCell>
-						<TableCell align='center'>{t('sheet.table.currentAmmo')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.ammo')}</TableCell>
 					</TableRow>
 				</TableHead>
@@ -56,6 +57,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 							onDelete={() => {
 								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteWeapon(weapon.id);
 							}}
+							onTrade={() => props.onTrade('weapon', weapon.id)}
 						/>
 					))}
 				</TableBody>
@@ -67,6 +69,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 type PlayerWeaponFieldProps = { [T in keyof Weapon]: Weapon[T] } & {
 	currentAmmo: number;
 	onDelete: () => void;
+	onTrade: () => void;
 };
 
 const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
@@ -127,12 +130,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 						<DeleteIcon />
 					</IconButton>
 				</TableCell>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small'>
-						<VolunteerActivismIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center' padding='none'>
+				<TableCell align='center' padding='none' onClick={props.onTrade}>
 					<IconButton size='small'>
 						<HandshakeIcon />
 					</IconButton>
@@ -156,17 +154,25 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				<TableCell align='center'>{props.attacks}</TableCell>
 				<TableCell align='center'>
 					{props.ammo ? (
-						<TextField
-							variant='standard'
-							value={currentAmmo}
-							onChange={onAmmoChange}
-							onBlur={onAmmoBlur}
-						/>
+						<Box display='flex' flexDirection='row' alignItems='center' justifyContent='center'>
+							<TextField
+								variant='standard'
+								value={currentAmmo}
+								onChange={onAmmoChange}
+								onBlur={onAmmoBlur}
+								sx={{ width: '3em' }}
+								inputProps={{
+									style: { textAlign: 'center' },
+								}}
+							/>
+							<Typography variant='body1' component='span'>
+								/ {props.ammo}
+							</Typography>
+						</Box>
 					) : (
 						'-'
 					)}
 				</TableCell>
-				<TableCell align='center'>{props.ammo || '-'}</TableCell>
 			</TableRow>
 		</>
 	);

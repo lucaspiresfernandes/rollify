@@ -6,31 +6,22 @@ import type {
 	PlayerWeapon,
 	PlayerArmor,
 	Armor,
+	Trade,
 } from '@prisma/client';
 import type { Server as HTTPServer } from 'http';
 import type { Socket as NetSocket } from 'net';
 import type { NextApiResponse } from 'next';
 import type { Server as SocketIOServer } from 'socket.io';
-// import type { TradeType } from '../components/Modals/PlayerTradeModal';
 import type { DiceRequest, DiceResponse } from './dice';
 import type { Environment } from './portrait';
 
-type TradeType = 'weapon' | 'armor' | 'item';
+export type TradeType = 'weapon' | 'armor' | 'item';
 
-type ArmorTradeObject = {
-	type: Extract<TradeType, 'armor'>;
-	obj: PlayerArmor & { Armor: Armor };
-};
+export type ArmorTradeObject = PlayerArmor & { Armor: Armor };
 
-type WeaponTradeObject = {
-	type: Extract<TradeType, 'weapon'>;
-	obj: PlayerWeapon & { Weapon: Weapon };
-};
+export type WeaponTradeObject = PlayerWeapon & { Weapon: Weapon };
 
-type ItemTradeObject = {
-	type: Extract<TradeType, 'item'>;
-	obj: PlayerItem & { Item: Item };
-};
+export type ItemTradeObject = PlayerItem & { Item: Item };
 
 type TradeObject = WeaponTradeObject | ItemTradeObject | ArmorTradeObject;
 
@@ -79,12 +70,14 @@ export interface ServerToClientEvents {
 	playerSpellSlotsChange: (playerId: number, newSpellSlots: number) => void;
 	playerTradeRequest: (
 		type: TradeType,
-		tradeId: number,
-		receiverObjectId: number | null,
-		senderName: string,
-		senderObjectName: string
+		trade: Trade,
 	) => void;
-	playerTradeResponse: (accept: boolean, object?: TradeObject) => void;
+	playerTradeResponse: (
+		type: TradeType,
+		trade: Trade,
+		accept: boolean,
+		object?: TradeObject
+	) => void;
 
 	//---------- Admin-triggered Events ----------
 	environmentChange: (newValue: Environment) => void;

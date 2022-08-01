@@ -14,7 +14,7 @@ export type PlayerItemApiResponse = NextApiResponseData<
 
 export type PlayerGetItemApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_player_id',
-	{ items: Item[] }
+	{ item: Item[] }
 >;
 
 const handler: NextApiHandlerIO = async (req, res) => {
@@ -30,18 +30,18 @@ const handleGet: NextApiHandlerIO<PlayerGetItemApiResponse> = async (req, res) =
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	const playerId = parseInt(req.query.playerId as string);
+	const player_id = parseInt(req.query.playerId as string) || player.id;
 
-	if (!playerId) return res.json({ status: 'failure', reason: 'invalid_player_id' });
+	if (!player_id) return res.json({ status: 'failure', reason: 'invalid_player_id' });
 
-	const items = (
+	const item = (
 		await prisma.playerItem.findMany({
-			where: { player_id: playerId },
+			where: { player_id: player_id },
 			select: { Item: true },
 		})
 	).map((e) => e.Item);
 
-	res.json({ status: 'success', items });
+	res.json({ status: 'success', item });
 };
 
 const handlePost: NextApiHandlerIO<PlayerItemApiResponse> = async (req, res) => {

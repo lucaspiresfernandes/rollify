@@ -1,9 +1,10 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,16 +13,27 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
-import SheetContainer from './Section';
-import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+	AddDataDialogContext,
+	ApiContext,
+	LoggerContext,
+	SocketContext,
+	TradeDialogContext,
+} from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { ItemSheetApiResponse } from '../../pages/api/sheet/item';
+import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerItemApiResponse } from '../../pages/api/sheet/player/item';
-import { handleDefaultApiResponse } from '../../utils';
+import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
+import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
+import { handleDefaultApiResponse, TRADE_TIME_LIMIT } from '../../utils';
+import type { ItemTradeObject } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
+import SheetContainer from './Section';
 
 type PlayerItemContainerProps = {
 	title: string;
@@ -40,24 +52,82 @@ type PlayerItemContainerProps = {
 	}[];
 };
 
-// const tradeInitialValue: Trade<Item> = {
-// 	type: 'item',
-// 	show: false,
-// 	offer: { id: 0, name: '' } as Item,
-// 	donation: true,
-// };
-
 const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [playerItems, setPlayerItems] = useState(props.playerItems);
-	// const [trade, setTrade] = useState<Trade<Item>>(tradeInitialValue);
-	// const currentTradeId = useRef<number | null>(null);
-	// const tradeTimeout = useRef<NodeJS.Timeout | null>(null);
-
+	const tradeTimeout = useRef<NodeJS.Timeout | null>(null);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-	const addDataDialog = useContext(AddDataContext);
+	const addDataDialog = useContext(AddDataDialogContext);
+	const tradeDialog = useContext(TradeDialogContext);
+	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
+
+	useEffect(() => {
+		socket.on('playerTradeRequest', (type, trade) => {
+			if (type !== 'item') return;
+
+			const item = playerItems.find((it) => it.id === trade.receiver_object_id);
+
+			const accept = confirm(
+				`${trade.sender_id} te ofereceu ${trade.sender_object_id}${
+					trade.receiver_object_id ? ` em troca de ${item?.name}.` : '.'
+				}` + ' Você deseja aceitar essa proposta?'
+			);
+
+			api
+				.post<TradeItemApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
+				.then((res) => {
+					if (!accept) return;
+
+					if (res.data.status === 'failure')
+						return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+
+					const newItem = res.data.item as NonNullable<typeof res.data.item>;
+					if (trade.receiver_object_id) {
+						setPlayerItems((items) =>
+							items.map((item) => {
+								if (item.id === trade.receiver_object_id) return { ...newItem, ...newItem.Item };
+								return item;
+							})
+						);
+					} else setPlayerItems((items) => [...items, { ...newItem, ...newItem.Item }]);
+				});
+		});
+
+		socket.on('playerTradeResponse', (type, trade, accept, _tradeObject) => {
+			if (type !== 'item') return;
+
+			if (tradeTimeout.current) {
+				clearTimeout(tradeTimeout.current);
+				tradeTimeout.current = null;
+			}
+
+			if (accept) {
+				const tradeObject = _tradeObject as ItemTradeObject | undefined;
+
+				if (tradeObject) {
+					setPlayerItems((items) =>
+						items.map((item) => {
+							if (item.id === tradeObject.Item.id) return { ...tradeObject, ...tradeObject.Item };
+							return item;
+						})
+					);
+				} else {
+					setPlayerItems((items) => items.filter((item) => item.id !== trade.sender_object_id));
+				}
+			} else {
+				alert('TODO: Trade Rejection');
+			}
+			setLoading(false);
+		});
+
+		return () => {
+			socket.off('playerTradeRequest');
+			socket.off('playerTradeResponse');
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket, playerItems]);
 
 	const onAddItem = (id: number) => {
 		addDataDialog.closeDialog();
@@ -112,6 +182,58 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const onTrade = (id: number) => {
+		setLoading(true);
+
+		const item = playerItems.find((i) => i.id === id) as typeof playerItems[number];
+
+		api
+			.get<PlayerListApiResponse>('/sheet/player/list')
+			.then((res) => {
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				tradeDialog.openDialog(
+					'item',
+					item.id,
+					res.data.players,
+					playerItems,
+					(partnerId, partnerItemId) => onTradeSubmit(item.id, partnerId, partnerItemId)
+				);
+			})
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
+			.finally(() => setLoading(false));
+	};
+
+	const onTradeSubmit = (offerId: number, partnerId: number, partnerItemId?: number) => {
+		tradeDialog.closeDialog();
+
+		setLoading(true);
+
+		api
+			.put<TradeItemApiResponse>('/sheet/player/trade/item', {
+				offerId,
+				to: partnerId,
+				for: partnerItemId,
+			})
+			.then((res) => {
+				if (res.data.status === 'failure')
+					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+
+				const tradeId = res.data.trade.id;
+
+				tradeTimeout.current = setTimeout(() => {
+					setLoading(false);
+					api.delete('/sheet/player/trade/item', { data: { tradeId } }).finally(() => {
+						alert(`TODO: A troca excedeu o tempo limite (${TRADE_TIME_LIMIT}ms) e foi cancelada.`);
+					});
+				}, TRADE_TIME_LIMIT);
+			})
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			);
+	};
+
 	return (
 		<SheetContainer
 			title={props.title}
@@ -121,12 +243,19 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					<AddIcon />
 				</IconButton>
 			}>
-			<Divider />
+			<PlayerLoadField playerItems={playerItems} playerMaxLoad={props.maxLoad} />
+			<Grid container justifyContent='center' textAlign='center' mt={1} spacing={1}>
+				{props.playerCurrency.map((cur) => (
+					<Grid item key={cur.id} xs={12} sm={6} md={4}>
+						<PlayerCurrencyField {...cur} />
+					</Grid>
+				))}
+			</Grid>
+			<Divider sx={{ mt: 2, mb: 1 }} />
 			<TableContainer>
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell padding='none'></TableCell>
 							<TableCell padding='none'></TableCell>
 							<TableCell padding='none'></TableCell>
 							<TableCell align='center'>{t('sheet.table.name')}</TableCell>
@@ -136,12 +265,20 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{playerItems.map((it) => (
+						{playerItems.map((item) => (
 							<PlayerItemField
-								key={it.id}
-								{...it}
-								onDelete={() => onDeleteItem(it.id)}
-								onQuantityChange={(quantity) => {}}
+								key={item.id}
+								{...item}
+								onDelete={() => onDeleteItem(item.id)}
+								onQuantityChange={(quantity) =>
+									setPlayerItems((items) =>
+										items.map((it) => {
+											if (it.id === item.id) return { ...it, quantity };
+											return it;
+										})
+									)
+								}
+								onTrade={() => onTrade(item.id)}
 							/>
 						))}
 					</TableBody>
@@ -154,33 +291,91 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	);
 };
 
-type PlayerCurrencyFieldProps = {};
-
-const PlayerCurrencyField: React.FC<PlayerCurrencyFieldProps> = (props) => {
-	const log = useContext(LoggerContext);
-	const api = useContext(ApiContext);
-
-	return <></>;
-};
-
 type PlayerLoadFieldProps = {
-	maxLoad: number;
-	items: {
-		id: number;
-		quantity: number;
-		weight: number;
-	}[];
+	playerMaxLoad: number;
+	playerItems: PlayerItemContainerProps['playerItems'];
 };
 
 const PlayerLoadField: React.FC<PlayerLoadFieldProps> = (props) => {
-	const [currentLoad, setCurrentLoad] = useState(
-		props.items.reduce((prev, cur) => prev + cur.weight * cur.quantity, 0)
+	const [playerMaxLoad, setPlayerMaxLoad, isMaxLoadClean] = useExtendedState(props.playerMaxLoad);
+	const playerCurrentLoad = useMemo(
+		() => props.playerItems.reduce((acc, item) => acc + item.weight * item.quantity, 0),
+		[props.playerItems]
 	);
-	const [maxLoad, setMaxLoad, isClean] = useExtendedState(props.maxLoad.toString());
+	const api = useContext(ApiContext);
+	const log = useContext(LoggerContext);
+	const { t } = useI18n<Locale>();
+
+	const onMaxLoadBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+		if (isMaxLoadClean()) return;
+		api
+			.post<PlayerApiResponse>('/sheet/player', { maxLoad: playerMaxLoad })
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
+	const loadColor = playerCurrentLoad > playerMaxLoad ? 'red' : undefined;
+
+	return (
+		<Box
+			display='flex'
+			flexDirection='row'
+			alignItems='center'
+			justifyContent='center'
+			textAlign='center'
+			mt={1}>
+			<Typography variant='h6' component='span' mr={1}>
+				TODO: Player Load:
+			</Typography>
+			<Typography variant='body1' component='span' color={loadColor} mr={-0.5}>
+				{playerCurrentLoad} /
+			</Typography>
+			<TextField
+				variant='standard'
+				value={playerMaxLoad}
+				onChange={(ev) => setPlayerMaxLoad(parseInt(ev.target.value) || 0)}
+				onBlur={onMaxLoadBlur}
+				InputProps={{ sx: { color: loadColor } }}
+				inputProps={{ style: { textAlign: 'center' } }}
+				sx={{ width: '2em' }}
+			/>
+		</Box>
+	);
+};
+
+type PlayerCurrencyFieldProps = {
+	id: number;
+	name: string;
+	value: string;
+};
+
+const PlayerCurrencyField: React.FC<PlayerCurrencyFieldProps> = (props) => {
+	const [value, setValue, isValueClean] = useExtendedState(props.value);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
+	const { t } = useI18n<Locale>();
 
-	return <></>;
+	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+		if (isValueClean()) return;
+		api
+			.post<PlayerItemApiResponse>('/sheet/player/currency', { id: props.id, value })
+			.then((res) => {
+				if (res.data.status === 'failure') handleDefaultApiResponse(res, log, t);
+			})
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
+	return (
+		<TextField
+			id={`playerCurrency${props.id}`}
+			label={props.name}
+			autoComplete='off'
+			size='small'
+			value={value}
+			onChange={(ev) => setValue(ev.target.value)}
+			onBlur={onValueBlur}
+		/>
+	);
 };
 
 type PlayerItemFieldProps = {
@@ -191,6 +386,7 @@ type PlayerItemFieldProps = {
 	weight: number;
 	onDelete: () => void;
 	onQuantityChange: (quantity: number) => void;
+	onTrade: () => void;
 };
 
 const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
@@ -213,11 +409,18 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 	};
 
 	const quantityBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+		let newQuantity = quantity;
+		if (newQuantity < 0) {
+			newQuantity = 0;
+			setQuantity(newQuantity);
+		}
+
 		if (isQuantityClean()) return;
+
 		api
 			.post<PlayerItemApiResponse>('/sheet/player/item', {
 				id: props.id,
-				quantity,
+				quantity: newQuantity,
 			})
 			.then((res) => {
 				if (res.data.status === 'success') return props.onQuantityChange(quantity);
@@ -235,53 +438,46 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 	};
 
 	return (
-		<>
-			<TableRow>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small' onClick={props.onDelete}>
-						<DeleteIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small'>
-						<VolunteerActivismIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small'>
-						<HandshakeIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center'>{props.name}</TableCell>
-				<TableCell align='center'>
-					<TextField
-						multiline
-						maxRows={3}
-						size='small'
-						value={currentDescription}
-						onChange={(ev) => setCurrentDescription(ev.target.value)}
-						onBlur={descriptionBlur}
-						inputProps={{
-							'aria-label': 'Description',
-						}}
-					/>
-				</TableCell>
-				<TableCell align='center'>{props.weight}</TableCell>
-				<TableCell align='center'>
-					<TextField
-						variant='standard'
-						value={quantity}
-						onChange={quantityChange}
-						onBlur={quantityBlur}
-						inputProps={{
-							style: { textAlign: 'center' },
-							'aria-label': 'Quantity',
-						}}
-						style={{ width: '3rem' }}
-					/>
-				</TableCell>
-			</TableRow>
-		</>
+		<TableRow>
+			<TableCell align='center' padding='none'>
+				<IconButton size='small' onClick={props.onDelete}>
+					<DeleteIcon />
+				</IconButton>
+			</TableCell>
+			<TableCell align='center' padding='none'>
+				<IconButton size='small' onClick={props.onTrade}>
+					<HandshakeIcon />
+				</IconButton>
+			</TableCell>
+			<TableCell align='center'>{props.name}</TableCell>
+			<TableCell align='center'>
+				<TextField
+					multiline
+					maxRows={3}
+					size='small'
+					value={currentDescription}
+					onChange={(ev) => setCurrentDescription(ev.target.value)}
+					onBlur={descriptionBlur}
+					inputProps={{
+						'aria-label': 'Description',
+					}}
+				/>
+			</TableCell>
+			<TableCell align='center'>{props.weight}</TableCell>
+			<TableCell align='center'>
+				<TextField
+					variant='standard'
+					value={quantity}
+					onChange={quantityChange}
+					onBlur={quantityBlur}
+					inputProps={{
+						style: { textAlign: 'center' },
+						'aria-label': 'Quantity',
+					}}
+					style={{ width: '3rem' }}
+				/>
+			</TableCell>
+		</TableRow>
 	);
 };
 

@@ -228,7 +228,7 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 					<div ref={ref} className={styles.nameContainer}>
 						<div ref={nameRef} style={{ display: 'inline-block' }}>
 							<label className={styles.name}>
-								{playerName.show ? playerName.name || 'Desconhecido' : '???'}
+								{playerName.show ? playerName.name || t('unknown') : '???'}
 							</label>
 						</div>
 					</div>

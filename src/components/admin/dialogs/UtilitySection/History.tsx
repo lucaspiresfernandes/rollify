@@ -58,7 +58,7 @@ const History: React.FC<HistoryProps> = (props) => {
 			});
 
 			const message: Dice = {
-				name: props.players.find((p) => p.id === id)?.name || 'Desconhecido',
+				name: props.players.find((p) => p.id === id)?.name || t('unknown'),
 				dices: dices.join(' + '),
 				results: results.join(isRequestArray ? ' + ' : ' | '),
 				total,

@@ -14,7 +14,7 @@ import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
 import SheetContainer from './Section';
-import { AddDataContext, ApiContext, LoggerContext } from '../../contexts';
+import { AddDataDialogContext, ApiContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerSpellApiResponse } from '../../pages/api/sheet/player/spell';
 import type { SpellSheetApiResponse } from '../../pages/api/sheet/spell';
@@ -32,7 +32,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-	const addDataDialog = useContext(AddDataContext);
+	const addDataDialog = useContext(AddDataDialogContext);
 	const { t } = useI18n<Locale>();
 
 	const onAddSpell = (id: number) => {

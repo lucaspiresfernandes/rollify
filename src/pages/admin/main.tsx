@@ -47,7 +47,7 @@ const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 				<PlayerContainer
 					players={props.players.map((player) => ({
 						id: player.id,
-						name: player.name || 'Desconhecido',
+						name: player.name || t('unknown'),
 						attribute: player.PlayerAttributes.map((attr) => ({
 							...attr,
 							...attr.Attribute,

@@ -41,8 +41,8 @@ const handlePut: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 	const senderId = player.id;
 	const senderItemId: number | undefined = req.body.offerId;
 
-	const receiverId: number | undefined = req.body.playerId;
-	const receiverItemId: number | undefined = req.body.tradeId;
+	const receiverId: number | undefined = req.body.to;
+	const receiverItemId: number | undefined = req.body.for;
 
 	if (!senderItemId || !receiverId) return res.json({ status: 'failure', reason: 'invalid_body' });
 
@@ -139,16 +139,15 @@ const handlePut: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', trade, item: null });
 
-		res.socket.server.io
-			.to(`player${receiverId}`)
-			.emit(
-				'playerTradeRequest',
-				'item',
-				trade.id,
-				trade.receiver_object_id,
-				senderItem.Player.name,
-				senderItem.Item.name
-			);
+		res.socket.server.io.to(`player${receiverId}`).emit(
+			'playerTradeRequest',
+			'item',
+			trade
+			// trade.id,
+			// trade.receiver_object_id,
+			// senderItem.Player.name,
+			// senderItem.Item.name
+		);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -161,9 +160,8 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const tradeId: number | undefined = req.body.tradeId;
-	const accept: boolean | undefined = req.body.accept;
 
-	if (accept === undefined || !tradeId)
+	if (req.body.accept === undefined || !tradeId)
 		return res.json({ status: 'failure', reason: 'invalid_body' });
 
 	try {
@@ -174,8 +172,10 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 		await prisma.trade.delete({ where: { id: tradeId } });
 
-		if (!accept) {
-			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', false);
+		if (!req.body.accept) {
+			res.socket.server.io
+				.to(`player${trade.sender_id}`)
+				.emit('playerTradeResponse', 'item', trade, false);
 			return res.json({ status: 'success', trade, item: null });
 		}
 
@@ -208,10 +208,9 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 			res.json({ status: 'success', trade, item: newSenderItem });
 
-			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', accept, {
-				type: 'item',
-				obj: results[1],
-			});
+			res.socket.server.io
+				.to(`player${trade.sender_id}`)
+				.emit('playerTradeResponse', 'item', trade, true, results[1]);
 
 			res.socket.server.io
 				.to('admin')
@@ -251,7 +250,9 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 			res.json({ status: 'success', trade, item });
 
-			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', accept);
+			res.socket.server.io
+				.to(`player${trade.sender_id}`)
+				.emit('playerTradeResponse', 'item', trade, true);
 
 			res.socket.server.io
 				.to('admin')
