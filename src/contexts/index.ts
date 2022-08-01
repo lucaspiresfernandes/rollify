@@ -19,6 +19,7 @@ export type AddDataContextType = {
 };
 
 export type TradeContextType = {
+	openRequest: (request: NonNullable<PlayerTradeDialogProps['tradeRequest']>) => void;
 	openDialog: (
 		type: PlayerTradeDialogProps['type'],
 		offerId: PlayerTradeDialogProps['offerId'],
@@ -43,6 +44,7 @@ export const AddDataDialogContext = createContext<AddDataContextType>({
 });
 export const DiceRollContext = createContext<DiceRollEvent>(() => {});
 export const TradeDialogContext = createContext<TradeContextType>({
+	openRequest: () => {},
 	openDialog: () => {},
 	closeDialog: () => {},
 });

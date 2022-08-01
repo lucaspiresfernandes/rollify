@@ -15,7 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
 	AddDataDialogContext,
 	ApiContext,
@@ -30,7 +30,7 @@ import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerItemApiResponse } from '../../pages/api/sheet/player/item';
 import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
 import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
-import { handleDefaultApiResponse, TRADE_TIME_LIMIT } from '../../utils';
+import { handleDefaultApiResponse } from '../../utils';
 import type { ItemTradeObject } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
@@ -55,7 +55,6 @@ type PlayerItemContainerProps = {
 const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [playerItems, setPlayerItems] = useState(props.playerItems);
-	const tradeTimeout = useRef<NodeJS.Timeout | null>(null);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataDialogContext);
@@ -67,41 +66,39 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 		socket.on('playerTradeRequest', (type, trade) => {
 			if (type !== 'item') return;
 
-			const item = playerItems.find((it) => it.id === trade.receiver_object_id);
+			const itemName = playerItems.find((it) => it.id === trade.receiver_object_id)?.name;
 
-			const accept = confirm(
-				`${trade.sender_id} te ofereceu ${trade.sender_object_id}${
-					trade.receiver_object_id ? ` em troca de ${item?.name}.` : '.'
-				}` + ' Você deseja aceitar essa proposta?'
-			);
+			tradeDialog.openRequest({
+				from: trade.sender_id.toString(),
+				offer: trade.sender_object_id.toString(),
+				for: itemName,
+				onResponse: (accept) => {
+					tradeDialog.closeDialog();
+					api
+						.post<TradeItemApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
+						.then((res) => {
+							if (!accept) return;
 
-			api
-				.post<TradeItemApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
-				.then((res) => {
-					if (!accept) return;
+							if (res.data.status === 'failure')
+								return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
 
-					if (res.data.status === 'failure')
-						return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-
-					const newItem = res.data.item as NonNullable<typeof res.data.item>;
-					if (trade.receiver_object_id) {
-						setPlayerItems((items) =>
-							items.map((item) => {
-								if (item.id === trade.receiver_object_id) return { ...newItem, ...newItem.Item };
-								return item;
-							})
-						);
-					} else setPlayerItems((items) => [...items, { ...newItem, ...newItem.Item }]);
-				});
+							const newItem = res.data.item as NonNullable<typeof res.data.item>;
+							if (trade.receiver_object_id) {
+								setPlayerItems((items) =>
+									items.map((item) => {
+										if (item.id === trade.receiver_object_id)
+											return { ...newItem, ...newItem.Item };
+										return item;
+									})
+								);
+							} else setPlayerItems((items) => [...items, { ...newItem, ...newItem.Item }]);
+						});
+				},
+			});
 		});
 
 		socket.on('playerTradeResponse', (type, trade, accept, _tradeObject) => {
 			if (type !== 'item') return;
-
-			if (tradeTimeout.current) {
-				clearTimeout(tradeTimeout.current);
-				tradeTimeout.current = null;
-			}
 
 			if (accept) {
 				const tradeObject = _tradeObject as ItemTradeObject | undefined;
@@ -116,8 +113,9 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				} else {
 					setPlayerItems((items) => items.filter((item) => item.id !== trade.sender_object_id));
 				}
+				log({ severity: 'success', text: 'TODO: Trade accepted.' });
 			} else {
-				alert('TODO: Trade Rejection');
+				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
 			}
 			setLoading(false);
 		});
@@ -217,17 +215,10 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				for: partnerItemId,
 			})
 			.then((res) => {
-				if (res.data.status === 'failure')
-					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-
-				const tradeId = res.data.trade.id;
-
-				tradeTimeout.current = setTimeout(() => {
-					setLoading(false);
-					api.delete('/sheet/player/trade/item', { data: { tradeId } }).finally(() => {
-						alert(`TODO: A troca excedeu o tempo limite (${TRADE_TIME_LIMIT}ms) e foi cancelada.`);
-					});
-				}, TRADE_TIME_LIMIT);
+				if (res.data.status === 'failure') {
+					log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+					return setLoading(false);
+				}
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })

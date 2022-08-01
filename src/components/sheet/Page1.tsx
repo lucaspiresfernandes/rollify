@@ -106,6 +106,10 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 
 	const tradeProvider: TradeContextType = useMemo(
 		() => ({
+			openRequest: (tradeRequest) => {
+				setTradeDialogData((data) => ({ ...data, tradeRequest }));
+				setTradeDialogOpen(true);
+			},
 			openDialog: (type, offerId, partners, currentItems, onSubmit) => {
 				setTradeDialogData({ type, offerId, partners, currentItems, onSubmit });
 				setTradeDialogOpen(true);

@@ -71,58 +71,66 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				equipmentName = playerWeapons.find((it) => it.id === trade.receiver_object_id)?.name;
 			else equipmentName = playerArmor.find((it) => it.id === trade.receiver_object_id)?.name;
 
-			const accept = confirm(
-				`TODO: ${trade.sender_id} te ofereceu ${trade.sender_object_id}` +
-					`${equipmentName ? ` em troca de ${equipmentName}.` : '.'}` +
-					' Você deseja aceitar essa proposta?'
-			);
-
-			if (type === 'weapon') {
-				return api
-					.post<TradeWeaponApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
-					.then((res) => {
-						if (!accept) return;
-
-						if (res.data.status === 'failure')
-							return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-
-						const newWeapon = res.data.weapon as NonNullable<typeof res.data.weapon>;
-
-						if (trade.receiver_object_id) {
-							setPlayerWeapons((weapons) =>
-								weapons.map((weapon) => {
-									if (weapon.id === trade.receiver_object_id)
-										return { ...newWeapon, ...newWeapon.Weapon };
-									return weapon;
-								})
-							);
-						} else {
-							setPlayerWeapons((weapons) => [...weapons, { ...newWeapon, ...newWeapon.Weapon }]);
-						}
-					});
-			}
-
-			api
-				.post<TradeArmorApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
-				.then((res) => {
-					if (!accept) return;
-
-					if (res.data.status === 'failure')
-						return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-
-					const newArmor = res.data.armor as NonNullable<typeof res.data.armor>;
-
-					if (trade.receiver_object_id) {
-						setPlayerArmor((armor) =>
-							armor.map((ar) => {
-								if (ar.id === trade.receiver_object_id) return newArmor;
-								return ar;
+			tradeDialog.openRequest({
+				from: trade.sender_id.toString(),
+				offer: trade.sender_object_id.toString(),
+				for: equipmentName,
+				onResponse: (accept) => {
+					tradeDialog.closeDialog();
+					if (type === 'weapon') {
+						return api
+							.post<TradeWeaponApiResponse>('/sheet/player/trade/item', {
+								tradeId: trade.id,
+								accept,
 							})
-						);
-					} else {
-						setPlayerArmor((weapons) => [...weapons, newArmor]);
+							.then((res) => {
+								if (!accept) return;
+
+								if (res.data.status === 'failure')
+									return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+
+								const newWeapon = res.data.weapon as NonNullable<typeof res.data.weapon>;
+
+								if (trade.receiver_object_id) {
+									setPlayerWeapons((weapons) =>
+										weapons.map((weapon) => {
+											if (weapon.id === trade.receiver_object_id)
+												return { ...newWeapon, ...newWeapon.Weapon };
+											return weapon;
+										})
+									);
+								} else {
+									setPlayerWeapons((weapons) => [
+										...weapons,
+										{ ...newWeapon, ...newWeapon.Weapon },
+									]);
+								}
+							});
 					}
-				});
+
+					api
+						.post<TradeArmorApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
+						.then((res) => {
+							if (!accept) return;
+
+							if (res.data.status === 'failure')
+								return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+
+							const newArmor = res.data.armor as NonNullable<typeof res.data.armor>;
+
+							if (trade.receiver_object_id) {
+								setPlayerArmor((armor) =>
+									armor.map((ar) => {
+										if (ar.id === trade.receiver_object_id) return newArmor;
+										return ar;
+									})
+								);
+							} else {
+								setPlayerArmor((weapons) => [...weapons, newArmor]);
+							}
+						});
+				},
+			});
 		});
 
 		socket.on('playerTradeResponse', (type, trade, accept, _tradeObject) => {
@@ -165,8 +173,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				} else {
 					setPlayerArmor((armor) => armor.filter((arm) => arm.id !== trade.sender_object_id));
 				}
+				log({ severity: 'success', text: 'TODO: Trade accepted.' });
 			} else {
-				alert('TODO: Trade Rejection');
+				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
 			}
 			setLoading(false);
 		});
