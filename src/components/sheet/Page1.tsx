@@ -181,18 +181,18 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 							/>
 						</Grid>
 
-						<AddDataDialogContext.Provider value={addDataProvider}>
-							<MemoPlayerSkillContainer
-								title={t('sheet.playerSkillTitle')}
-								playerSkills={props.player.PlayerSkill.map((skill) => ({
-									...skill,
-									...skill.Skill,
-									specializationName: skill.Skill.Specialization?.name || null,
-								}))}
-								automaticMarking={props.automaticMarking}
-								skillDiceConfig={props.diceConfig.skill}
-							/>
+						<MemoPlayerSkillContainer
+							title={t('sheet.playerSkillTitle')}
+							playerSkills={props.player.PlayerSkill.map((skill) => ({
+								...skill,
+								...skill.Skill,
+								specializationName: skill.Skill.Specialization?.name || null,
+							}))}
+							automaticMarking={props.automaticMarking}
+							skillDiceConfig={props.diceConfig.skill}
+						/>
 
+						<AddDataDialogContext.Provider value={addDataProvider}>
 							<TradeDialogContext.Provider value={tradeProvider}>
 								<SocketContext.Provider value={socket}>
 									<Grid item xs={12}>

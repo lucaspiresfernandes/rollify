@@ -1,3 +1,4 @@
+import StarsIcon from '@mui/icons-material/Stars';
 import ClearIcon from '@mui/icons-material/Clear';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
@@ -116,7 +117,8 @@ type PlayerSkillFieldProps = {
 	skillDiceConfig: DiceConfig['skill'];
 	automaticMarking: boolean;
 	notifyClearChecked: boolean;
-	onDelete?: () => void;
+	onFavourite?: () => void;
+	onUnfavourite?: () => void;
 };
 
 const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
@@ -145,7 +147,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.notifyClearChecked]);
 
-	const handleDiceRoll: React.MouseEventHandler<HTMLLabelElement> = (ev) => {
+	const handleDiceRoll: React.MouseEventHandler<HTMLDivElement> = (ev) => {
 		const roll = props.skillDiceConfig.value;
 		const branched = props.skillDiceConfig.branched;
 
@@ -230,34 +232,46 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 
 	return (
 		<>
-			<Box flexGrow={1} display='flex' flexDirection='column' justifyContent='center'>
-				<div>
-					<Checkbox
-						inputProps={{ 'aria-label': 'Marker' }}
-						checked={checked}
-						onChange={onCheckChange}
-						size='small'
-						sx={{ padding: 0 }}
-					/>
-					{props.onDelete && (
-						<Tooltip title={t('unstar')} describeChild>
-							<IconButton size='small' onClick={props.onDelete} sx={{ padding: 0, ml: 2 }}>
-								<ClearIcon />
-							</IconButton>
-						</Tooltip>
-					)}
-				</div>
+			<div>
+				<Checkbox
+					inputProps={{ 'aria-label': 'Marker' }}
+					checked={checked}
+					onChange={onCheckChange}
+					size='small'
+					sx={{ padding: 0 }}
+				/>
+				{props.onFavourite && (
+					<Tooltip title={t('star')} describeChild>
+						<IconButton size='small' onClick={props.onFavourite} sx={{ padding: 0, ml: 2 }}>
+							<StarsIcon />
+						</IconButton>
+					</Tooltip>
+				)}
+				{props.onUnfavourite && (
+					<Tooltip title={t('unstar')} describeChild>
+						<IconButton size='small' onClick={props.onUnfavourite} sx={{ padding: 0, ml: 2 }}>
+							<ClearIcon />
+						</IconButton>
+					</Tooltip>
+				)}
+			</div>
+			<Box
+				flexGrow={1}
+				display='flex'
+				justifyContent='center'
+				alignItems='center'
+				sx={{
+					cursor: 'pointer',
+					':hover': {
+						textDecoration: 'underline',
+					},
+				}}
+				onClick={handleDiceRoll}>
 				<Typography
 					variant='subtitle1'
 					component='label'
 					htmlFor={`skill${props.id}`}
-					sx={{
-						cursor: 'pointer',
-						':hover': {
-							textDecoration: 'underline',
-						},
-					}}
-					onClick={handleDiceRoll}>
+					sx={{ cursor: 'pointer' }}>
 					{props.name}
 				</Typography>
 			</Box>

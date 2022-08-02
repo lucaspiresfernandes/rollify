@@ -7,6 +7,7 @@ import { startTransition, useContext, useState } from 'react';
 import { PlayerSkillField, PlayerSkillContainerProps, Searchbar } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
+import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import type { PlayerSkillClearChecksApiResponse } from '../../../pages/api/sheet/player/skill/clearchecks';
 import { handleDefaultApiResponse } from '../../../utils';
 import PartialBackdrop from '../../PartialBackdrop';
@@ -40,6 +41,18 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			.post<PlayerSkillClearChecksApiResponse>('/sheet/player/skill/clearchecks')
 			.then((res) => {
 				if (res.data.status === 'success') return setNotify((n) => !n);
+				handleDefaultApiResponse(res, log, t);
+			})
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+			.finally(() => setLoading(false));
+	};
+
+	const onUnfavourite = (id: number) => {
+		setLoading(true);
+		api
+			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id, favourite: false })
+			.then((res) => {
+				if (res.data.status === 'success') return props.onSkillUnfavourite(id);
 				handleDefaultApiResponse(res, log, t);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -92,7 +105,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 									skillDiceConfig={props.skillDiceConfig}
 									automaticMarking={props.automaticMarking}
 									notifyClearChecked={notify}
-									onDelete={() => props.onSkillUnfavourite(skill.id)}
+									onUnfavourite={() => onUnfavourite(skill.id)}
 								/>
 							</Grid>
 						);

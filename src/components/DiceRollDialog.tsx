@@ -197,13 +197,19 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 								justifyContent='center'
 								gap={3}
 								my={2}>
-								<Button variant='contained' onClick={() => setNum((n) => Math.max(1, n - 1))}>
+								<Button
+									variant='contained'
+									size='small'
+									onClick={() => setNum((n) => Math.max(1, n - 1))}>
 									-
 								</Button>
 								<Typography variant='h4' component='h2'>
 									{num}
 								</Typography>
-								<Button variant='contained' onClick={() => setNum((n) => Math.max(1, n + 1))}>
+								<Button
+									variant='contained'
+									size='small'
+									onClick={() => setNum((n) => Math.max(1, n + 1))}>
 									+
 								</Button>
 							</Box>

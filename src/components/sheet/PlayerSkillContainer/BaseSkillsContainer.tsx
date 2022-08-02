@@ -1,14 +1,11 @@
-import StarsIcon from '@mui/icons-material/Stars';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillField, PlayerSkillContainerProps, Searchbar } from '.';
-import { AddDataDialogContext, ApiContext, LoggerContext } from '../../../contexts';
+import { PlayerSkillContainerProps, PlayerSkillField, Searchbar } from '.';
+import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import type { PlayerSkillClearChecksApiResponse } from '../../../pages/api/sheet/player/skill/clearchecks';
@@ -36,7 +33,6 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
-	const addDataDialog = useContext(AddDataDialogContext);
 	const { t } = useI18n<Locale>();
 
 	const clearChecks = () => {
@@ -52,7 +48,6 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	};
 
 	const onSetFavourite = (id: number) => {
-		addDataDialog.closeDialog();
 		setLoading(true);
 		api
 			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id, favourite: true })
@@ -64,23 +59,8 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
-	const showFavouriteDialog = () => {
-		addDataDialog.openDialog(props.playerSkills, onSetFavourite);
-	};
-
 	return (
-		<SheetContainer
-			title={props.title}
-			display='flex'
-			flexDirection='column'
-			position='relative'
-			sideButton={
-				<Tooltip title={`${t('star')} ${t('skill')}`} describeChild>
-					<IconButton onClick={showFavouriteDialog}>
-						<StarsIcon />
-					</IconButton>
-				</Tooltip>
-			}>
+		<SheetContainer title={props.title} display='flex' flexDirection='column' position='relative'>
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
@@ -115,6 +95,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 									skillDiceConfig={props.skillDiceConfig}
 									automaticMarking={props.automaticMarking}
 									notifyClearChecked={notify}
+									onFavourite={() => onSetFavourite(skill.id)}
 								/>
 							</Grid>
 						);
