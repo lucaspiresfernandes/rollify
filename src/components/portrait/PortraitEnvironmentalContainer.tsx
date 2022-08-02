@@ -1,7 +1,9 @@
 import Fade from '@mui/material/Fade';
+import { useI18n } from 'next-rosetta';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Draggable, { DraggableEventHandler } from 'react-draggable';
 import type { SocketIO } from '../../hooks/useSocket';
+import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
 import {
@@ -171,6 +173,7 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	const [transform, setTransform] = useState({ x: 0, y: 0 });
 	const ref = useRef<HTMLDivElement>(null);
 	const nameRef = useRef<HTMLDivElement>(null);
+	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
 		setTransform(

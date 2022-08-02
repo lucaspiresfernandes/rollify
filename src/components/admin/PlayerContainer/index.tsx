@@ -93,6 +93,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			socket.off('playerAttributeChange');
 			socket.off('playerAttributeStatusChange');
 		};
+		
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
 	if (players.length === 0)
