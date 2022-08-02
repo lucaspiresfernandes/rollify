@@ -76,6 +76,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 				PlayerCurrency: { select: { value: true, Currency: true } },
 				PlayerItem: { select: { Item: true, currentDescription: true, quantity: true } },
 				PlayerSpell: { select: { Spell: true } },
+				SenderTrade: true,
+				ReceiverTrade: true,
 			},
 		}),
 		prisma.config.findUnique({ where: { name: 'dice' } }),

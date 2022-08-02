@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import type { Weapon } from '@prisma/client';
+import type { TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext } from 'react';
@@ -22,7 +22,6 @@ import type { Locale } from '../../../i18n';
 import type { PlayerWeaponApiResponse } from '../../../pages/api/sheet/player/weapon';
 import { handleDefaultApiResponse } from '../../../utils';
 import { resolveDices } from '../../../utils/dice';
-import type { TradeType } from '../../../utils/socket';
 
 type PlayerWeaponContainerProps = {
 	playerWeapons: PlayerCombatContainerProps['playerWeapons'];

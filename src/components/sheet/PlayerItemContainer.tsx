@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import type { Trade } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -27,7 +28,10 @@ import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { ItemSheetApiResponse } from '../../pages/api/sheet/item';
 import type { PlayerApiResponse } from '../../pages/api/sheet/player';
-import type { PlayerItemApiResponse } from '../../pages/api/sheet/player/item';
+import type {
+	PlayerGetItemApiResponse,
+	PlayerItemApiResponse,
+} from '../../pages/api/sheet/player/item';
 import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
 import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
 import { handleDefaultApiResponse } from '../../utils';
@@ -50,6 +54,8 @@ type PlayerItemContainerProps = {
 		quantity: number;
 		weight: number;
 	}[];
+	senderTrade: Trade | null;
+	receiverTrade: Trade | null;
 };
 
 const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
@@ -62,43 +68,75 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 
+	const openTradeRequest = async (trade: Trade) => {
+		const listRequest = (
+			await api.get<PlayerListApiResponse>('/sheet/player/list', {
+				params: { id: trade.sender_id },
+			})
+		).data;
+		const itemRequest = (
+			await api.get<PlayerGetItemApiResponse>('/sheet/player/item', {
+				params: { playerId: trade.sender_id, itemId: trade.sender_object_id },
+			})
+		).data;
+
+		const receiverItemName = playerItems.find((it) => it.id === trade.receiver_object_id)?.name;
+
+		let senderName = t('unknown');
+		if (listRequest.status === 'success' && listRequest.players.length > 0)
+			senderName = listRequest.players[0].name || senderName;
+
+		let senderItemName = t('unknown');
+		if (itemRequest.status === 'success' && itemRequest.item.length > 0)
+			senderItemName = itemRequest.item[0].name || senderItemName;
+
+		tradeDialog.openRequest({
+			from: senderName,
+			offer: senderItemName,
+			for: receiverItemName,
+			onResponse: async (accept) => {
+				tradeDialog.closeDialog();
+
+				const { data } = await api.post<TradeItemApiResponse>('/sheet/player/trade/item', {
+					tradeId: trade.id,
+					accept,
+				});
+
+				if (!accept) return;
+
+				if (data.status === 'failure')
+					return log({ severity: 'error', text: 'Trade Error: ' + data.reason });
+
+				const newItem = data.item as NonNullable<typeof data.item>;
+				if (trade.receiver_object_id) {
+					setPlayerItems((items) =>
+						items.map((item) => {
+							if (item.id === trade.receiver_object_id) return { ...newItem, ...newItem.Item };
+							return item;
+						})
+					);
+				} else setPlayerItems((items) => [...items, { ...newItem, ...newItem.Item }]);
+			},
+		});
+	};
+
 	useEffect(() => {
-		socket.on('playerTradeRequest', (type, trade) => {
-			if (type !== 'item') return;
+		if (props.senderTrade && props.senderTrade.type === 'item') {
+			log({ text: 'TODO: Trade in progress.' });
+			setLoading(true);
+		}
+		if (props.receiverTrade) openTradeRequest(props.receiverTrade);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.senderTrade, props.receiverTrade]);
 
-			const itemName = playerItems.find((it) => it.id === trade.receiver_object_id)?.name;
-
-			tradeDialog.openRequest({
-				from: trade.sender_id.toString(),
-				offer: trade.sender_object_id.toString(),
-				for: itemName,
-				onResponse: (accept) => {
-					tradeDialog.closeDialog();
-					api
-						.post<TradeItemApiResponse>('/sheet/player/trade/item', { tradeId: trade.id, accept })
-						.then((res) => {
-							if (!accept) return;
-
-							if (res.data.status === 'failure')
-								return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-
-							const newItem = res.data.item as NonNullable<typeof res.data.item>;
-							if (trade.receiver_object_id) {
-								setPlayerItems((items) =>
-									items.map((item) => {
-										if (item.id === trade.receiver_object_id)
-											return { ...newItem, ...newItem.Item };
-										return item;
-									})
-								);
-							} else setPlayerItems((items) => [...items, { ...newItem, ...newItem.Item }]);
-						});
-				},
-			});
+	useEffect(() => {
+		socket.on('playerTradeRequest', async (trade) => {
+			if (trade.type !== 'item') return;
+			openTradeRequest(trade);
 		});
 
-		socket.on('playerTradeResponse', (type, trade, accept, _tradeObject) => {
-			if (type !== 'item') return;
+		socket.on('playerTradeResponse', (trade, accept, _tradeObject) => {
+			if (trade.type !== 'item') return;
 
 			if (accept) {
 				const tradeObject = _tradeObject as ItemTradeObject | undefined;
@@ -125,7 +163,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			socket.off('playerTradeResponse');
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [socket, playerItems]);
+	}, [socket, playerItems, openTradeRequest]);
 
 	const onAddItem = (id: number) => {
 		addDataDialog.closeDialog();

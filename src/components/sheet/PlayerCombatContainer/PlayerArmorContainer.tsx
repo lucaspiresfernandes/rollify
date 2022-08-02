@@ -7,11 +7,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import type { Armor } from '@prisma/client';
+import type { Armor, TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import type { PlayerCombatContainerProps } from '.';
 import type { Locale } from '../../../i18n';
-import type { TradeType } from '../../../utils/socket';
 
 type PlayerArmorContainerProps = {
 	playerArmor: PlayerCombatContainerProps['playerArmor'];

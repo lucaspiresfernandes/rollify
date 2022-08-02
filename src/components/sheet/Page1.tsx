@@ -121,6 +121,9 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 
 	if (!socket) return <LoadingScreen />;
 
+	console.log('Sender:', props.player.SenderTrade);
+	console.log('Receiver:', props.player.ReceiverTrade);
+
 	return (
 		<Container sx={{ mt: 2 }}>
 			<Box textAlign='center'>
@@ -200,6 +203,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 												...weap.Weapon,
 											}))}
 											playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
+											senderTrade={props.player.SenderTrade}
+											receiverTrade={props.player.ReceiverTrade}
 										/>
 									</Grid>
 
@@ -216,6 +221,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 												...it.Item,
 											}))}
 											maxLoad={props.player.maxLoad}
+											senderTrade={props.player.SenderTrade}
+											receiverTrade={props.player.ReceiverTrade}
 										/>
 									</Grid>
 								</SocketContext.Provider>

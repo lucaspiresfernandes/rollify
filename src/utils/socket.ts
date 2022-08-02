@@ -15,8 +15,6 @@ import type { Server as SocketIOServer } from 'socket.io';
 import type { DiceRequest, DiceResponse } from './dice';
 import type { Environment } from './portrait';
 
-export type TradeType = 'weapon' | 'armor' | 'item';
-
 export type ArmorTradeObject = PlayerArmor & { Armor: Armor };
 
 export type WeaponTradeObject = PlayerWeapon & { Weapon: Weapon };
@@ -68,16 +66,8 @@ export interface ServerToClientEvents {
 	playerSpellRemove: (playerId: number, spellId: number) => void;
 	playerMaxLoadChange: (playerId: number, newLoad: number) => void;
 	playerSpellSlotsChange: (playerId: number, newSpellSlots: number) => void;
-	playerTradeRequest: (
-		type: TradeType,
-		trade: Trade,
-	) => void;
-	playerTradeResponse: (
-		type: TradeType,
-		trade: Trade,
-		accept: boolean,
-		object?: TradeObject
-	) => void;
+	playerTradeRequest: (trade: Trade) => void;
+	playerTradeResponse: (trade: Trade, accept: boolean, object?: TradeObject) => void;
 
 	//---------- Admin-triggered Events ----------
 	environmentChange: (newValue: Environment) => void;

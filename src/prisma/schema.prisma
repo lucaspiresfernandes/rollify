@@ -296,12 +296,13 @@ model PlayerAvatar {
 }
 
 model Trade {
-  id                 Int    @id @default(autoincrement())
-  Sender             Player @relation(name: "Sender", fields: [sender_id], references: [id])
-  sender_id          Int    @unique
+  id                 Int       @id @default(autoincrement())
+  type               TradeType
+  Sender             Player    @relation(name: "Sender", fields: [sender_id], references: [id])
+  sender_id          Int       @unique
   sender_object_id   Int
-  Receiver           Player @relation(name: "Receiver", fields: [receiver_id], references: [id])
-  receiver_id        Int    @unique
+  Receiver           Player    @relation(name: "Receiver", fields: [receiver_id], references: [id])
+  receiver_id        Int       @unique
   receiver_object_id Int?
 }
 
@@ -320,4 +321,10 @@ enum Role {
 enum PortraitAttribute {
   PRIMARY
   SECONDARY
+}
+
+enum TradeType {
+  weapon
+  item
+  armor
 }

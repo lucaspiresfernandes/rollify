@@ -128,6 +128,7 @@ const handlePut: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => 
 
 		const trade = await prisma.trade.create({
 			data: {
+				type: 'weapon',
 				sender_id: senderId,
 				sender_object_id: senderWeaponId,
 				receiver_id: receiverId,
@@ -139,7 +140,6 @@ const handlePut: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => 
 
 		res.socket.server.io.to(`player${receiverId}`).emit(
 			'playerTradeRequest',
-			'weapon',
 			trade
 			// trade.id,
 			// receiverWeaponId || null,
@@ -171,9 +171,7 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 		await prisma.trade.delete({ where: { id: tradeId } });
 
 		if (!req.body.accept) {
-			res.socket.server.io
-				.to(`player${trade.sender_id}`)
-				.emit('playerTradeResponse', 'weapon', trade, false);
+			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, false);
 			return res.json({ status: 'success', trade, weapon: null });
 		}
 
@@ -208,7 +206,7 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 
 			res.socket.server.io
 				.to(`player${trade.sender_id}`)
-				.emit('playerTradeResponse', 'weapon', trade, true, results[1]);
+				.emit('playerTradeResponse', trade, true, results[1]);
 
 			res.socket.server.io
 				.to('admin')
@@ -236,9 +234,7 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 
 			res.json({ status: 'success', trade, weapon });
 
-			res.socket.server.io
-				.to(`player${trade.sender_id}`)
-				.emit('playerTradeResponse', 'weapon', trade, true);
+			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, true);
 
 			res.socket.server.io
 				.to('admin')

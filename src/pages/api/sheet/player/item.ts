@@ -31,12 +31,13 @@ const handleGet: NextApiHandlerIO<PlayerGetItemApiResponse> = async (req, res) =
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const player_id = parseInt(req.query.playerId as string) || player.id;
+	const item_id = req.query.itemId ? parseInt(req.query.itemId as string) : undefined;
 
 	if (!player_id) return res.json({ status: 'failure', reason: 'invalid_player_id' });
 
 	const item = (
 		await prisma.playerItem.findMany({
-			where: { player_id: player_id },
+			where: { player_id, item_id },
 			select: { Item: true },
 		})
 	).map((e) => e.Item);

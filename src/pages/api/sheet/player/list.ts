@@ -14,11 +14,13 @@ const handler: NextApiHandlerIO<PlayerListApiResponse> = async (req, res) => {
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
+	const id = req.query.id ? parseInt(req.query.id as string) : undefined;
+
 	const players = await prisma.player.findMany({
-		where: { role: { not: 'ADMIN' }, id: { not: player.id } },
+		where: { role: { not: 'ADMIN' }, id: { not: player.id, equals: id } },
 		select: { id: true, name: true },
 	});
-	
+
 	res.json({ status: 'success', players });
 };
 

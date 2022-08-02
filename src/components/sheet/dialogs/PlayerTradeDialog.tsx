@@ -10,12 +10,12 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
+import type { TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import { handleDefaultApiResponse, TRADE_TIME_LIMIT } from '../../../utils';
-import type { TradeType } from '../../../utils/socket';
 import PartialBackdrop from '../../PartialBackdrop';
 
 export type PlayerTradeDialogProps = {
