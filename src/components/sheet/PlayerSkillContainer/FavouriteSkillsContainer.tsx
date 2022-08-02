@@ -79,6 +79,11 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 				flex={{ sm: '1 0' }}
 				height={{ xs: 330, sm: null }}
 				sx={{ overflowY: 'auto' }}>
+				{props.playerSkills.length === 0 && (
+					<Box textAlign='center' color='GrayText'>
+						TODO: Starred skills will show up here.
+					</Box>
+				)}
 				<Grid
 					container
 					justifyContent='center'
