@@ -6,6 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -60,6 +61,7 @@ type PlayerItemContainerProps = {
 
 const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
+	const [tradeId, setTradeId] = useState<number>();
 	const [playerItems, setPlayerItems] = useState(props.playerItems);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
@@ -104,8 +106,14 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 
 				if (!accept) return;
 
-				if (data.status === 'failure')
-					return log({ severity: 'error', text: 'Trade Error: ' + data.reason });
+				if (data.status === 'failure') {
+					switch (data.reason) {
+						case 'trade_does_not_exist':
+							return log({ text: 'TODO: Trade already canceled by the requester.' });
+						default:
+							return log({ severity: 'error', text: 'Trade Error: ' + data.reason });
+					}
+				}
 
 				const newItem = data.item as NonNullable<typeof data.item>;
 				if (trade.receiver_object_id) {
@@ -122,10 +130,9 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 
 	useEffect(() => {
 		if (props.senderTrade && props.senderTrade.type === 'item') {
-			log({ text: 'TODO: Trade in progress.' });
 			setLoading(true);
-		}
-		if (props.receiverTrade) openTradeRequest(props.receiverTrade);
+			setTradeId(props.senderTrade.id);
+		} else if (props.receiverTrade) openTradeRequest(props.receiverTrade);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.senderTrade, props.receiverTrade]);
 
@@ -156,6 +163,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
 			}
 			setLoading(false);
+			setTradeId(undefined);
 		});
 
 		return () => {
@@ -257,6 +265,24 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
 					return setLoading(false);
 				}
+				setTradeId(res.data.trade.id);
+			})
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			);
+	};
+
+	const onTradeCancel = () => {
+		if (!tradeId || !confirm(t('prompt.delete'))) return;
+
+		api
+			.delete<TradeItemApiResponse>('/sheet/player/trade/item', { data: { tradeId } })
+			.then((res) => {
+				if (res.data.status === 'failure') {
+					return;
+				}
+				setTradeId(undefined);
+				setLoading(false);
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -313,8 +339,13 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<PartialBackdrop open={loading}>
+			<PartialBackdrop open={loading} sx={{ flexDirection: 'column', gap: 3 }}>
 				<CircularProgress color='inherit' disableShrink />
+				{tradeId && (
+					<Button variant='contained' onClick={onTradeCancel}>
+						TODO: Cancel Trade
+					</Button>
+				)}
 			</PartialBackdrop>
 		</SheetContainer>
 	);

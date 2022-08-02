@@ -12,10 +12,10 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import type { TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
-import { handleDefaultApiResponse, TRADE_TIME_LIMIT } from '../../../utils';
+import { handleDefaultApiResponse } from '../../../utils';
 import PartialBackdrop from '../../PartialBackdrop';
 
 export type PlayerTradeDialogProps = {
@@ -42,30 +42,12 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 	const [partnerId, setPartnerId] = useState<number | ''>(props.partners[0]?.id || '');
 	const [partnerItems, setPartnerItems] = useState<{ id: number; name: string }[]>([]);
 	const [partnerItemId, setPartnerItemId] = useState(0);
-	const tradeTimeout = useRef<NodeJS.Timeout | null>(null);
 	const { t } = useI18n<Locale>();
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 
 	useEffect(() => {
-		if (tradeTimeout.current) clearTimeout(tradeTimeout.current);
-
-		if (props.open) {
-			const tradeRequest = props.tradeRequest;
-			if (tradeRequest) {
-				tradeTimeout.current = setTimeout(() => {
-					tradeRequest.onResponse(false);
-					log({ text: 'TODO: Trade rejected automatically.' });
-					tradeTimeout.current = null;
-				}, TRADE_TIME_LIMIT);
-			} else {
-				setPartnerId(props.partners[0]?.id || '');
-			}
-		}
-
-		return () => {
-			console.log('ayy');
-		};
+		if (props.open && !tradeRequest) setPartnerId(props.partners[0]?.id || '');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.open, props.partners, props.tradeRequest]);
 

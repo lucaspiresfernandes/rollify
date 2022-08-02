@@ -1,3 +1,4 @@
+import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -25,7 +26,7 @@ import type {
 	PlayerWeaponApiResponse,
 } from '../../../pages/api/sheet/player/weapon';
 import type { WeaponSheetApiResponse } from '../../../pages/api/sheet/weapon';
-import { handleDefaultApiResponse, TRADE_TIME_LIMIT } from '../../../utils';
+import { handleDefaultApiResponse } from '../../../utils';
 import type { ArmorTradeObject, WeaponTradeObject } from '../../../utils/socket';
 import PartialBackdrop from '../../PartialBackdrop';
 import SheetContainer from '../Section';
@@ -58,6 +59,7 @@ export type PlayerCombatContainerProps = {
 };
 
 const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
+	const [trade, setTrade] = useState<{ id: number; type: TradeType }>();
 	const [loading, setLoading] = useState(false);
 	const [playerWeapons, setPlayerWeapons] = useState(props.playerWeapons);
 	const [playerArmor, setPlayerArmor] = useState(props.playerArmor);
@@ -169,8 +171,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			props.senderTrade &&
 			(props.senderTrade.type === 'weapon' || props.senderTrade.type === 'armor')
 		) {
-			log({ text: 'TODO: Trade in progress.' });
 			setLoading(true);
+			setTrade(props.senderTrade);
 		}
 		if (props.receiverTrade) openTradeRequest(props.receiverTrade);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,6 +226,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
 			}
 			setLoading(false);
+			setTrade(undefined);
 		});
 
 		return () => {
@@ -357,15 +360,26 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure')
 					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+				setTrade(res.data.trade);
+			})
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			);
+	};
 
-				const tradeId = res.data.trade.id;
+	const onTradeCancel = () => {
+		if (!trade || !confirm(t('prompt.delete'))) return;
 
-				tradeTimeout.current = setTimeout(() => {
-					setLoading(false);
-					api.delete('/sheet/player/trade/item', { data: { tradeId } }).finally(() => {
-						alert(`TODO: A troca excedeu o tempo limite (${TRADE_TIME_LIMIT}ms) e foi cancelada.`);
-					});
-				}, TRADE_TIME_LIMIT);
+		api
+			.delete<TradeWeaponApiResponse | TradeArmorApiResponse>(`/sheet/player/trade/${trade.type}`, {
+				data: { tradeId: trade.id },
+			})
+			.then((res) => {
+				if (res.data.status === 'failure') {
+					return;
+				}
+				setTrade(undefined);
+				setLoading(false);
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -392,6 +406,11 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			}>
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
+				{trade && (
+					<Button variant='contained' onClick={onTradeCancel}>
+						TODO: Cancel Trade
+					</Button>
+				)}
 			</PartialBackdrop>
 			<PlayerWeaponContainer
 				playerWeapons={playerWeapons}
