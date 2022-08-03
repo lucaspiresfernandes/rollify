@@ -41,6 +41,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 						<TableCell padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.type')}</TableCell>
+						<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
 						<TableCell align='center' padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.range')}</TableCell>
@@ -136,6 +137,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				</TableCell>
 				<TableCell align='center'>{props.name}</TableCell>
 				<TableCell align='center'>{props.type}</TableCell>
+				<TableCell align='center'>{props.weight}</TableCell>
 				<TableCell align='center'>{props.damage}</TableCell>
 				<TableCell align='center' padding='none'>
 					{props.damage && (
