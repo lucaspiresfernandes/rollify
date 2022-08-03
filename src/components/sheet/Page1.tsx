@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import type { Trade } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,9 +25,8 @@ import AddDataDialog, { AddDataDialogProps } from './dialogs/AddDataDialog';
 import PlayerTradeDialog, { PlayerTradeDialogProps } from './dialogs/PlayerTradeDialog';
 import PlayerAttributeContainer from './PlayerAttributeContainer';
 import PlayerCharacteristicContainer from './PlayerCharacteristicContainer';
-import PlayerCombatContainer, { PlayerCombatContainerProps } from './PlayerCombatContainer';
 import PlayerInfoContainer from './PlayerInfoContainer';
-import PlayerItemContainer, { PlayerItemContainerProps } from './PlayerItemContainer';
+import PlayerLoadContainer from './PlayerLoadContainer';
 import PlayerSkillContainer from './PlayerSkillContainer';
 import PlayerSpellContainer from './PlayerSpellContainer';
 
@@ -37,6 +35,7 @@ const MemoPlayerCharacteristicContainer = memo(PlayerCharacteristicContainer, ()
 const MemoPlayerInfoContainer = memo(PlayerInfoContainer, () => true);
 const MemoPlayerSkillContainer = memo(PlayerSkillContainer, () => true);
 const MemoPlayerSpellContainer = memo(PlayerSpellContainer, () => true);
+const MemoPlayerLoadContainer = memo(PlayerLoadContainer, () => true);
 
 const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
 	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
@@ -237,63 +236,5 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 		</Container>
 	);
 };
-
-type CombatProps = Pick<PlayerCombatContainerProps, 'playerArmor' | 'playerWeapons'>;
-type ItemProps = Pick<PlayerItemContainerProps, 'playerItems' | 'playerCurrency'>;
-
-type PlayerLoadContainerProps = CombatProps &
-	ItemProps & {
-		senderTrade: Trade | null;
-		receiverTrade: Trade | null;
-		playerMaxLoad: number;
-	};
-
-const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
-	const [currentLoad, setCurrentLoad] = useState(() => {
-		const armorWeight = props.playerArmor.reduce((prev, cur) => prev + cur.weight, 0);
-		const weaponWeight = props.playerWeapons.reduce((prev, cur) => prev + cur.weight, 0);
-		const itemWeight = props.playerItems.reduce((prev, cur) => prev + cur.weight * cur.quantity, 0);
-		return armorWeight + weaponWeight + itemWeight;
-	});
-	const [maxLoad, setMaxLoad] = useState(props.playerMaxLoad);
-	const { t } = useI18n<Locale>();
-
-	console.log(`${currentLoad} / ${maxLoad}`);
-
-	return (
-		<>
-			<Grid item xs={12}>
-				<PlayerCombatContainer
-					title={t('sheet.playerCombatTitle')}
-					playerWeapons={props.playerWeapons}
-					playerArmor={props.playerArmor}
-					senderTrade={props.senderTrade}
-					receiverTrade={props.receiverTrade}
-					onEquipmentAdd={(eq) => setCurrentLoad((w) => w + eq.weight)}
-					onEquipmentRemove={(eq) => setCurrentLoad((w) => w - eq.weight)}
-				/>
-			</Grid>
-
-			<Grid item xs={12}>
-				<PlayerItemContainer
-					title={t('sheet.playerItemTitle')}
-					playerCurrency={props.playerCurrency}
-					playerItems={props.playerItems}
-					senderTrade={props.senderTrade}
-					receiverTrade={props.receiverTrade}
-					onItemAdd={(item) => setCurrentLoad((w) => w + item.weight * item.quantity)}
-					onItemRemove={(item) => setCurrentLoad((w) => w - item.weight * item.quantity)}
-					onItemChange={(oldItem, newItem) => {
-						setCurrentLoad(
-							(w) => w + (newItem.weight * newItem.quantity - oldItem.weight * oldItem.quantity)
-						);
-					}}
-				/>
-			</Grid>
-		</>
-	);
-};
-
-const MemoPlayerLoadContainer = memo(PlayerLoadContainer, () => true);
 
 export default PlayerSheetPage1;

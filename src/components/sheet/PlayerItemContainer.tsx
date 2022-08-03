@@ -220,13 +220,11 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				setPlayerItems((i) =>
-					i.filter((item) => {
-						const remove = item.id !== id;
-						if (remove) props.onItemRemove(item);
-						return remove;
-					})
-				);
+				const removedItem = playerItems.find((item) => item.id === id) as NonNullable<
+					typeof playerItems[number]
+				>;
+				props.onItemRemove(removedItem);
+				setPlayerItems((i) => i.filter((item) => item.id !== id));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -363,58 +361,6 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 		</SheetContainer>
 	);
 };
-
-// type PlayerLoadFieldProps = {
-// 	playerMaxLoad: number;
-// 	playerItems: PlayerItemContainerProps['playerItems'];
-// };
-
-// const PlayerLoadField: React.FC<PlayerLoadFieldProps> = (props) => {
-// 	const [playerMaxLoad, setPlayerMaxLoad, isMaxLoadClean] = useExtendedState(props.playerMaxLoad);
-// 	const playerCurrentLoad = useMemo(
-// 		() => props.playerItems.reduce((acc, item) => acc + item.weight * item.quantity, 0),
-// 		[props.playerItems]
-// 	);
-// 	const api = useContext(ApiContext);
-// 	const log = useContext(LoggerContext);
-// 	const { t } = useI18n<Locale>();
-
-// 	const onMaxLoadBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
-// 		if (isMaxLoadClean()) return;
-// 		api
-// 			.post<PlayerApiResponse>('/sheet/player', { maxLoad: playerMaxLoad })
-// 			.then((res) => handleDefaultApiResponse(res, log, t))
-// 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
-// 	};
-
-// 	const loadColor = playerCurrentLoad > playerMaxLoad ? 'red' : undefined;
-
-// 	return (
-// 		<Box
-// 			display='flex'
-// 			flexDirection='row'
-// 			alignItems='center'
-// 			justifyContent='center'
-// 			textAlign='center'
-// 			mt={1}>
-// 			<Typography variant='h6' component='span' mr={1}>
-// 				TODO: Player Load:
-// 			</Typography>
-// 			<Typography variant='body1' component='span' color={loadColor} mr={-0.5}>
-// 				{playerCurrentLoad} /
-// 			</Typography>
-// 			<TextField
-// 				variant='standard'
-// 				value={playerMaxLoad}
-// 				onChange={(ev) => setPlayerMaxLoad(parseInt(ev.target.value) || 0)}
-// 				onBlur={onMaxLoadBlur}
-// 				InputProps={{ sx: { color: loadColor } }}
-// 				inputProps={{ style: { textAlign: 'center' } }}
-// 				sx={{ width: '2em' }}
-// 			/>
-// 		</Box>
-// 	);
-// };
 
 type PlayerCurrencyFieldProps = {
 	id: number;
