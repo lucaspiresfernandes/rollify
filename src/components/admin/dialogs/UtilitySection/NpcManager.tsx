@@ -1,22 +1,21 @@
+import AddIcon from '@mui/icons-material/AddCircleOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
+import LaunchIcon from '@mui/icons-material/Launch';
+import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
-import LaunchIcon from '@mui/icons-material/Launch';
 import ListItemText from '@mui/material/ListItemText';
-import Tooltip from '@mui/material/Tooltip';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/AddCircleOutlined';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import { useI18n } from 'next-rosetta';
 import { Fragment, useState } from 'react';
+import type { Locale } from '../../../../i18n';
 import Section from '../../../sheet/Section';
 import GetPortraitDialog from '../GetPortraitDialog';
-import { useI18n } from 'next-rosetta';
-import type { Locale } from '../../../../i18n';
 
 type NpcManagerProps = {
 	basicNpcs: { id: number; name: string }[];
@@ -35,7 +34,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
-	const {t} = useI18n<Locale>();
+	const { t } = useI18n<Locale>();
 
 	const handleClick: React.MouseEventHandler<HTMLButtonElement> = (ev) =>
 		setAnchorEl(ev.currentTarget);
@@ -60,7 +59,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 			height='100%'
 			sideButton={
 				<>
-					<IconButton onClick={handleClick} aria-label='Add' >
+					<IconButton onClick={handleClick} aria-label='Add'>
 						<AddIcon />
 					</IconButton>
 					<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
@@ -75,11 +74,12 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 						<Fragment key={npc.id}>
 							<ListItem
 								secondaryAction={
-									<Tooltip title={t('delete')} describeChild>
-										<IconButton size='small' onClick={() => props.onRemoveBasicNpc(npc.id)}>
-											<DeleteIcon />
-										</IconButton>
-									</Tooltip>
+									<IconButton
+										size='small'
+										onClick={() => props.onRemoveBasicNpc(npc.id)}
+										title={t('delete')}>
+										<DeleteIcon />
+									</IconButton>
 								}
 								sx={{ pr: 8 }}>
 								<TextField
@@ -105,24 +105,26 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 							<ListItem
 								secondaryAction={
 									<>
-										<Tooltip title={t('access')} describeChild>
-											<IconButton size='small' href={`/sheet/npc/${npc.id}/1`} target='_blank'>
-												<LaunchIcon />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title={t('portrait')} describeChild>
-											<IconButton
-												size='small'
-												onClick={() => setPortraitDialogPlayerId(npc.id)}
-												sx={{ mx: 1 }}>
-												<VideoCameraFrontIcon />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title={t('delete')} describeChild>
-											<IconButton size='small' onClick={() => props.onRemoveComplexNpc(npc.id)}>
-												<DeleteIcon />
-											</IconButton>
-										</Tooltip>
+										<IconButton
+											size='small'
+											href={`/sheet/npc/${npc.id}/1`}
+											target='_blank'
+											title={t('access')}>
+											<LaunchIcon />
+										</IconButton>
+										<IconButton
+											size='small'
+											onClick={() => setPortraitDialogPlayerId(npc.id)}
+											sx={{ mx: 1 }}
+											title={t('portrait')}>
+											<VideoCameraFrontIcon />
+										</IconButton>
+										<IconButton
+											size='small'
+											onClick={() => props.onRemoveComplexNpc(npc.id)}
+											title={t('delete')}>
+											<DeleteIcon />
+										</IconButton>
 									</>
 								}>
 								<ListItemText>{npc.name}</ListItemText>

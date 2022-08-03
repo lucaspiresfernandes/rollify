@@ -5,25 +5,24 @@ import {
 	Over,
 	PointerSensor,
 	useSensor,
-	useSensors,
+	useSensors
 } from '@dnd-kit/core';
 import {
 	arrayMove,
 	SortableContext,
 	useSortable,
-	verticalListSortingStrategy,
+	verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useRef, useState } from 'react';
 import type { Locale } from '../../../../i18n';
@@ -68,11 +67,9 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 				sx={{ width: '3rem', mx: 1 }}
 				inputProps={{ style: { textAlign: 'center' } }}
 			/>
-			<Tooltip title={t('delete')} placement='right'>
-				<IconButton size='small' onClick={() => props.removeEntity()}>
-					<DeleteIcon />
-				</IconButton>
-			</Tooltip>
+			<IconButton size='small' onClick={() => props.removeEntity()} title={t('delete')}>
+				<DeleteIcon />
+			</IconButton>
 		</div>
 	);
 };

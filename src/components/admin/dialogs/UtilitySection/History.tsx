@@ -1,16 +1,15 @@
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import { useI18n } from 'next-rosetta';
 import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../../../contexts';
-import Section from '../../../sheet/Section';
-import { useI18n } from 'next-rosetta';
 import type { Locale } from '../../../../i18n';
+import Section from '../../../sheet/Section';
 
 const highlightStyle = { color: '#00a000', fontWeight: 'bold' };
 
@@ -85,16 +84,16 @@ const History: React.FC<HistoryProps> = (props) => {
 		}
 		componentDidMount.current = true;
 	}, [values]);
-	
+
 	return (
 		<Section
 			title='History'
 			sideButton={
-				<Tooltip title={t('erase')}>
-					<IconButton onClick={() => setValues((val) => (val.length === 0 ? val : []))}>
-						<BackspaceIcon />
-					</IconButton>
-				</Tooltip>
+				<IconButton
+					onClick={() => setValues((val) => (val.length === 0 ? val : []))}
+					title={t('erase')}>
+					<BackspaceIcon />
+				</IconButton>
 			}>
 			<Box height={250} sx={{ overflowY: 'auto' }} ref={wrapper}>
 				<List>

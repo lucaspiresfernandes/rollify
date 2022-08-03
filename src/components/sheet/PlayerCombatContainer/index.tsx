@@ -1,7 +1,6 @@
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import type { Armor, Trade, TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -10,20 +9,20 @@ import {
 	ApiContext,
 	LoggerContext,
 	SocketContext,
-	TradeDialogContext,
+	TradeDialogContext
 } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ArmorSheetApiResponse } from '../../../pages/api/sheet/armor';
 import type {
 	PlayerArmorApiResponse,
-	PlayerGetArmorApiResponse,
+	PlayerGetArmorApiResponse
 } from '../../../pages/api/sheet/player/armor';
 import type { PlayerListApiResponse } from '../../../pages/api/sheet/player/list';
 import type { TradeArmorApiResponse } from '../../../pages/api/sheet/player/trade/armor';
 import type { TradeWeaponApiResponse } from '../../../pages/api/sheet/player/trade/weapon';
 import type {
 	PlayerGetWeaponApiResponse,
-	PlayerWeaponApiResponse,
+	PlayerWeaponApiResponse
 } from '../../../pages/api/sheet/player/weapon';
 import type { WeaponSheetApiResponse } from '../../../pages/api/sheet/weapon';
 import { handleDefaultApiResponse } from '../../../utils';
@@ -394,16 +393,15 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			position='relative'
 			sideButton={
 				<>
-					<Tooltip title={`${t('add')} ${t('armor')}`} describeChild>
-						<IconButton onClick={loadAvailableArmor} sx={{ mr: 1 }}>
-							<ArmorIcon />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title={`${t('add')} ${t('weapon')}`} describeChild>
-						<IconButton onClick={loadAvailableWeapons}>
-							<WeaponIcon />
-						</IconButton>
-					</Tooltip>
+					<IconButton
+						onClick={loadAvailableArmor}
+						sx={{ mr: 1 }}
+						title={`${t('add')} ${t('armor')}`}>
+						<ArmorIcon />
+					</IconButton>
+					<IconButton onClick={loadAvailableWeapons} title={`${t('add')} ${t('weapon')}`}>
+						<WeaponIcon />
+					</IconButton>
 				</>
 			}>
 			<PartialBackdrop open={loading}>

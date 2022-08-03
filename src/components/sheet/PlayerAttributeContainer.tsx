@@ -8,7 +8,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
-import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { PortraitAttribute } from '@prisma/client';
@@ -315,33 +314,28 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				flexDirection='row'
 				alignItems='end'
 				justifyContent='space-between'
-				flexWrap='wrap'>
+				mb={0.5}>
 				<Typography variant='body1' component='label' id={`attributeBar${props.id}`}>
 					{t('sheet.attributePoints', { name: props.name })}
 				</Typography>
 				<div>
 					<IconButton
-						aria-label='subtract'
+						title='TODO: Subtract'
 						size='small'
-						onClick={(ev) => updateValue(-1, ev.ctrlKey)}>
+						onClick={(ev) => updateValue(-1, ev.ctrlKey)}
+						sx={{ mr: 1 }}>
 						<RemoveIcon />
 					</IconButton>
-					<IconButton
-						aria-label='add'
-						size='small'
-						onClick={(ev) => updateValue(1, ev.ctrlKey)}
-						sx={{ mr: 1 }}>
+					<IconButton title='TODO: Add' size='small' onClick={(ev) => updateValue(1, ev.ctrlKey)}>
 						<AddIcon />
 					</IconButton>
 				</div>
 			</Box>
 			<Box display='flex' flexDirection='row' alignItems='center'>
 				{props.visibilityEnabled && (
-					<Tooltip title={show ? t('hide') : t('show')} describeChild>
-						<IconButton onClick={onShowChange} size='small'>
-							{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
-						</IconButton>
-					</Tooltip>
+					<IconButton onClick={onShowChange} size='small' title={show ? t('hide') : t('show')}>
+						{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
+					</IconButton>
 				)}
 				<Box
 					flex='1 0'

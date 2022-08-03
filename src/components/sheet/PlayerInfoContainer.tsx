@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
 import { useI18n } from 'next-rosetta';
 import { useContext, useRef, useState } from 'react';
 import { ApiContext, LoggerContext } from '../../contexts';
@@ -90,11 +89,9 @@ const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 
 	return (
 		<Box sx={props.sx} display='flex' alignItems='end'>
-			<Tooltip title={show ? t('hide') : t('show')} describeChild>
-				<IconButton onClick={onShowChange} size='small'>
-					{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
-				</IconButton>
-			</Tooltip>
+			<IconButton onClick={onShowChange} size='small' title={show ? t('hide') : t('show')}>
+				{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
+			</IconButton>
 			<TextField
 				sx={{ ml: 1, flex: '1 0' }}
 				variant='standard'

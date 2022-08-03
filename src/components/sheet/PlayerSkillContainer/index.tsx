@@ -9,7 +9,6 @@ import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import { memo, useContext, useEffect, useRef, useState } from 'react';
@@ -242,18 +241,22 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					sx={{ padding: 0 }}
 				/>
 				{props.onFavourite && (
-					<Tooltip title={t('star')} describeChild>
-						<IconButton size='small' onClick={props.onFavourite} sx={{ padding: 0, ml: 2 }}>
-							<BookmarkAddIcon />
-						</IconButton>
-					</Tooltip>
+					<IconButton
+						size='small'
+						onClick={props.onFavourite}
+						sx={{ padding: 0, ml: 2 }}
+						title={t('star')}>
+						<BookmarkAddIcon />
+					</IconButton>
 				)}
 				{props.onUnfavourite && (
-					<Tooltip title={t('unstar')} describeChild>
-						<IconButton size='small' onClick={props.onUnfavourite} sx={{ padding: 0, ml: 2 }}>
-							<BookmarkRemoveIcon />
-						</IconButton>
-					</Tooltip>
+					<IconButton
+						size='small'
+						onClick={props.onUnfavourite}
+						sx={{ padding: 0, ml: 2 }}
+						title={t('unstar')}>
+						<BookmarkRemoveIcon />
+					</IconButton>
 				)}
 			</div>
 			<Box
