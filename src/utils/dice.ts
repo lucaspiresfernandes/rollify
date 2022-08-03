@@ -76,7 +76,8 @@ function resolveDice(dice: string): ResolvedDice {
 			)[0] as HTMLInputElement | undefined;
 
 			const value = utilElement.value.replace(/\s/g, '').toUpperCase();
-			const modifier = Number(utilElementModifier?.value || 0) || 0;
+			let modifier = 0;
+			if (utilElementModifier) modifier = parseInt(utilElementModifier.value) || 0;
 
 			const divider = parseInt(dice.split('/')[1]) || 1;
 			const split = value.split('D');

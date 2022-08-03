@@ -115,6 +115,11 @@ export interface Locale {
 
 			damageReduction: string;
 			penalty: string;
+
+			cost: string;
+			target: string;
+			castingTime: string;
+			duration: string;
 		};
 	};
 

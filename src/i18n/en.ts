@@ -117,6 +117,11 @@ export const table: Locale = {
 
 			damageReduction: 'Dam. Reduction',
 			penalty: 'Penalty',
+
+			castingTime: 'Casting Time',
+			cost: 'Cost',
+			duration: 'Duration',
+			target: 'Target',
 		},
 	},
 

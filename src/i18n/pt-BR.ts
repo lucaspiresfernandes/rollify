@@ -118,6 +118,11 @@ export const table: Locale = {
 
 			damageReduction: 'Redução de dano',
 			penalty: 'Penalidade',
+
+			castingTime: 'Tempo de Conjuração',
+			cost: 'Custo',
+			duration: 'Duração',
+			target: 'Alvo',
 		},
 	},
 

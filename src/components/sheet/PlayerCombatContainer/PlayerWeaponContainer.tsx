@@ -37,13 +37,14 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding='none'></TableCell>
-						<TableCell padding='none'></TableCell>
+						<TableCell padding='none' />
+						<TableCell padding='none' />
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.type')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
-						<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
-						<TableCell align='center' padding='none'></TableCell>
+						<TableCell align='center' padding='none'>
+							{t('sheet.table.damage')}
+						</TableCell>
 						<TableCell align='center'>{t('sheet.table.range')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.attacks')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.ammo')}</TableCell>
@@ -138,18 +139,27 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				<TableCell align='center'>{props.name}</TableCell>
 				<TableCell align='center'>{props.type}</TableCell>
 				<TableCell align='center'>{props.weight || '-'}</TableCell>
-				<TableCell align='center'>{props.damage}</TableCell>
 				<TableCell align='center' padding='none'>
-					{props.damage && (
-						<Image
-							src={dice20}
-							alt='Dice'
-							className='clickable'
-							onClick={handleDiceClick}
-							width={30}
-							height={30}
-						/>
-					)}
+					<Box
+						display='flex'
+						flexDirection='row'
+						justifyContent='center'
+						alignItems='center'
+						gap={1}>
+						<div>{props.damage}</div>
+						{props.damage !== '-' && (
+							<div>
+								<Image
+									src={dice20}
+									alt='Dice'
+									className='clickable'
+									onClick={handleDiceClick}
+									width={30}
+									height={30}
+								/>
+							</div>
+						)}
+					</Box>
 				</TableCell>
 				<TableCell align='center'>{props.range}</TableCell>
 				<TableCell align='center'>{props.attacks}</TableCell>
