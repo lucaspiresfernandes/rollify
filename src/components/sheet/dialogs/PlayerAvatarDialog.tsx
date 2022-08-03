@@ -147,9 +147,9 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 				</Grid>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onCancel}>Cancel</Button>
+				<Button onClick={onCancel}>{t('modal.cancel')}</Button>
 				<Button type='submit' form='playerAvatarDialogForm'>
-					Apply
+					{t('modal.apply')}
 				</Button>
 			</DialogActions>
 		</Dialog>

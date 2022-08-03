@@ -22,7 +22,7 @@ import { api } from '../utils/createApiClient';
 
 const languages = new Map<string, string>([
 	['en', 'English'],
-	['pt-BR', 'Português Brasileiro'],
+	['pt-BR', 'Português (Brasil)'],
 ]);
 
 const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode, toggleMode }) => {
@@ -141,14 +141,13 @@ const Navbar: React.FC<{ mode: PaletteMode; toggleMode: () => void }> = ({ mode,
 						)
 					) : (
 						<Select
-							notched
-							variant='outlined'
-							size='small'
+							variant='standard'
+							color='secondary'
 							value={router.locale}
 							onChange={onLocaleChange}
 							sx={{ color: 'inherit' }}>
 							{router.locales?.map((loc) => (
-								<MenuItem key={loc} value={loc} color='inherit'>
+								<MenuItem key={loc} value={loc}>
 									{languages.get(loc) || loc}
 								</MenuItem>
 							))}

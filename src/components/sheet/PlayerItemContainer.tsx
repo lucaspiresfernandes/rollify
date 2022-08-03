@@ -200,12 +200,10 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 		api
 			.get<ItemSheetApiResponse>('/sheet/item')
 			.then((res) => {
-				if (res.data.status === 'success') {
-					const items = res.data.item;
-					addDataDialog.openDialog(items, onAddItem);
-					return;
-				}
-				handleDefaultApiResponse(res, log, t);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				const items = res.data.item;
+				if (items.length === 0) return log({ text: 'TODO: No items.' });
+				addDataDialog.openDialog(items, onAddItem);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -513,11 +511,12 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 			<TableCell align='center'>
 				<TextField
 					multiline
-					maxRows={3}
+					maxRows={4}
 					size='small'
 					value={currentDescription}
 					onChange={(ev) => setCurrentDescription(ev.target.value)}
 					onBlur={descriptionBlur}
+					style={{ minWidth: '15em' }}
 					inputProps={{
 						'aria-label': 'Description',
 					}}

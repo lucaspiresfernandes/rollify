@@ -121,9 +121,6 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 
 	if (!socket) return <LoadingScreen />;
 
-	console.log('Sender:', props.player.SenderTrade);
-	console.log('Receiver:', props.player.ReceiverTrade);
-
 	return (
 		<Container sx={{ mt: 2 }}>
 			<Box textAlign='center'>

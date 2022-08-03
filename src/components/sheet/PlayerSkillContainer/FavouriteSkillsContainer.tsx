@@ -77,7 +77,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			<Box
 				position='relative'
 				flex={{ sm: '1 0' }}
-				height={{ xs: 330, sm: null }}
+				height={{ xs: 300, sm: null }}
 				sx={{ overflowY: 'auto' }}>
 				{props.playerSkills.length === 0 && (
 					<Box textAlign='center' color='GrayText'>
@@ -92,7 +92,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 					top={0}
 					left={0}
 					rowSpacing={4}
-					columnSpacing={1}
+					columnSpacing={2}
 					sx={{ overflowWrap: 'break-word' }}>
 					{props.playerSkills.map((skill) => {
 						return (

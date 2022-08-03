@@ -2,6 +2,7 @@ import type { Locale } from '.';
 
 export const table: Locale = {
 	locale: 'pt-BR',
+	localeName: 'Português (Brasil)',
 	title: 'Rollify',
 
 	search: 'Pesquisar',

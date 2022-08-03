@@ -146,6 +146,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 				<div>
 					<TextField
 						variant='standard'
+						margin='dense'
 						size='small'
 						name={`diceUtilMod${props.name.substring(0, 3).toUpperCase()}`}
 						autoComplete='off'
@@ -163,7 +164,6 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 			<div>
 				<TextField
 					variant='standard'
-					margin='dense'
 					id={`characteristic${props.id}`}
 					name={`diceUtil${props.name.substring(0, 3).toUpperCase()}`}
 					autoComplete='off'

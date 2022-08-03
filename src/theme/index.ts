@@ -16,14 +16,14 @@ export default function getTheme(mode: PaletteMode) {
 		// 	fontFamily: 'FantaisieArtistique',
 		// 	fontSize: 18,
 		// },
-		components: {
-			MuiAppBar: {
-				styleOverrides: {
-					colorPrimary: {
-						backgroundColor: mode === 'light' ? '#4D2E87' : undefined,
-					},
-				},
-			},
-		},
+		// components: {
+		// 	MuiAppBar: {
+		// 		styleOverrides: {
+		// 			colorPrimary: {
+		// 				backgroundColor: mode === 'light' ? '#4D2E87' : undefined,
+		// 			},
+		// 		},
+		// 	},
+		// },
 	});
 }

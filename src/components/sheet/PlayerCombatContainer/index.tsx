@@ -293,9 +293,10 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		api
 			.get<WeaponSheetApiResponse>('/sheet/weapon')
 			.then((res) => {
-				if (res.data.status === 'success')
-					return addDataDialog.openDialog(res.data.weapon, (id) => onAddEquipment(id, 'weapon'));
-				handleDefaultApiResponse(res, log, t);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				const weapons = res.data.weapon;
+				if (weapons.length === 0) return log({ text: 'TODO: No weapons.' });
+				return addDataDialog.openDialog(weapons, (id) => onAddEquipment(id, 'weapon'));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -306,9 +307,10 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		api
 			.get<ArmorSheetApiResponse>('/sheet/armor')
 			.then((res) => {
-				if (res.data.status === 'success')
-					return addDataDialog.openDialog(res.data.armor, (id) => onAddEquipment(id, 'armor'));
-				handleDefaultApiResponse(res, log, t);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				const armor = res.data.armor;
+				if (armor.length === 0) return log({ text: 'TODO: No armor.' });
+				return addDataDialog.openDialog(armor, (id) => onAddEquipment(id, 'armor'));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));

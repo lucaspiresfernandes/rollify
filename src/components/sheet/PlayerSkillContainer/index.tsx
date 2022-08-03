@@ -1,11 +1,12 @@
-import StarsIcon from '@mui/icons-material/Stars';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import ClearIcon from '@mui/icons-material/Clear';
-import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
-import InputBase from '@mui/material/InputBase';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
@@ -243,14 +244,14 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				{props.onFavourite && (
 					<Tooltip title={t('star')} describeChild>
 						<IconButton size='small' onClick={props.onFavourite} sx={{ padding: 0, ml: 2 }}>
-							<StarsIcon />
+							<BookmarkAddIcon />
 						</IconButton>
 					</Tooltip>
 				)}
 				{props.onUnfavourite && (
 					<Tooltip title={t('unstar')} describeChild>
 						<IconButton size='small' onClick={props.onUnfavourite} sx={{ padding: 0, ml: 2 }}>
-							<ClearIcon />
+							<BookmarkRemoveIcon />
 						</IconButton>
 					</Tooltip>
 				)}
@@ -279,6 +280,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				<div>
 					<TextField
 						variant='standard'
+						margin='dense'
 						size='small'
 						autoComplete='off'
 						value={modifier}
@@ -295,7 +297,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 			<div>
 				<TextField
 					variant='standard'
-					margin='dense'
 					id={`skill${props.id}`}
 					autoComplete='off'
 					value={value}

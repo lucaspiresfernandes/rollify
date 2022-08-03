@@ -3,8 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import NativeSelect from '@mui/material/NativeSelect';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import type { Locale } from '../../../i18n';
@@ -42,17 +41,17 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
 			<DialogContent>
 				<form id='playerAddDataDialogForm' onSubmit={onSubmit}>
-					<Select
+					<NativeSelect
 						fullWidth
 						value={value}
 						onChange={(ev) => setValue(Number(ev.target.value))}
 						disabled={props.data.length === 0}>
 						{props.data.map((data) => (
-							<MenuItem key={data.id} value={data.id}>
+							<option key={data.id} value={data.id}>
 								{data.name}
-							</MenuItem>
+							</option>
 						))}
-					</Select>
+					</NativeSelect>
 				</form>
 			</DialogContent>
 			<DialogActions>

@@ -180,6 +180,7 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 	return (
 		<TextField
 			variant='outlined'
+			size='small'
 			label={props.name}
 			fullWidth
 			value={value}

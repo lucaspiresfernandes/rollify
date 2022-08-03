@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
@@ -40,39 +40,31 @@ const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = 
 		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>{t('modal.title.attributeEditor')}</DialogTitle>
 			<DialogContent>
-				<Grid
-					container
-					component='form'
-					id='PlayerAttributeEditorDialogForm'
-					onSubmit={onSubmit}
-					spacing={3}
-					mt={0}>
-					<Grid item xs={12}>
+				<Box display='flex' flexDirection='column' gap={3} m={1}>
+					<div>
 						<TextField
-							fullWidth
 							type='number'
 							variant='standard'
 							label={t('modal.label.currentValue')}
 							value={value}
 							onChange={(ev) => setValue(ev.target.value)}
 						/>
-					</Grid>
-					<Grid item xs={12}>
+					</div>
+					<div>
 						<TextField
-							fullWidth
 							type='number'
 							variant='standard'
 							label={t('modal.label.maxValue')}
 							value={maxValue}
 							onChange={(ev) => setMaxValue(ev.target.value)}
 						/>
-					</Grid>
-				</Grid>
+					</div>
+				</Box>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={props.onClose}>Cancel</Button>
+				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>
 				<Button type='submit' form='PlayerAttributeEditorDialogForm'>
-					Apply
+					{t('modal.apply')}
 				</Button>
 			</DialogActions>
 		</Dialog>

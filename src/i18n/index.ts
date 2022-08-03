@@ -1,5 +1,6 @@
 export interface Locale {
 	locale: string;
+	localeName: string;
 	title: string;
 
 	search: string;
