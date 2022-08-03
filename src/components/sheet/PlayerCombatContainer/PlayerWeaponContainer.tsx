@@ -137,7 +137,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 					</IconButton>
 				</TableCell>
 				<TableCell align='center'>{props.name}</TableCell>
-				<TableCell align='center'>{props.type}</TableCell>
+				<TableCell align='center'>{props.type || '-'}</TableCell>
 				<TableCell align='center'>{props.weight || '-'}</TableCell>
 				<TableCell align='center' padding='none'>
 					<Box
@@ -146,23 +146,22 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 						justifyContent='center'
 						alignItems='center'
 						gap={1}>
-						<div>{props.damage}</div>
-						{props.damage !== '-' && (
-							<div>
-								<Image
-									src={dice20}
-									alt='Dice'
-									className='clickable'
-									onClick={handleDiceClick}
-									width={30}
-									height={30}
-								/>
-							</div>
+						<div>{props.damage || '-'}</div>
+						{props.damage && (
+							<Image
+								layout='fixed'
+								src={dice20}
+								alt='Dice'
+								className='clickable'
+								onClick={handleDiceClick}
+								width={30}
+								height={30}
+							/>
 						)}
 					</Box>
 				</TableCell>
-				<TableCell align='center'>{props.range}</TableCell>
-				<TableCell align='center'>{props.attacks}</TableCell>
+				<TableCell align='center'>{props.range || '-'}</TableCell>
+				<TableCell align='center'>{props.attacks || '-'}</TableCell>
 				<TableCell align='center'>
 					{props.ammo ? (
 						<Box display='flex' flexDirection='row' alignItems='center' justifyContent='center'>

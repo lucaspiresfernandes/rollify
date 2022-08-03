@@ -40,7 +40,14 @@ const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = 
 		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>{t('modal.title.attributeEditor')}</DialogTitle>
 			<DialogContent>
-				<Box display='flex' flexDirection='column' gap={3} m={1}>
+				<Box
+					id='playerAttributeEditorDialogForm'
+					component='form'
+					display='flex'
+					flexDirection='column'
+					gap={3}
+					m={1}
+					onSubmit={onSubmit}>
 					<div>
 						<TextField
 							type='number'
@@ -63,7 +70,7 @@ const PlayerAttributeEditorDialog: React.FC<PlayerAttributeEditorDialogProps> = 
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>
-				<Button type='submit' form='PlayerAttributeEditorDialogForm'>
+				<Button type='submit' form='playerAttributeEditorDialogForm'>
 					{t('modal.apply')}
 				</Button>
 			</DialogActions>

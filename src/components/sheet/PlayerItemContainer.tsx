@@ -21,14 +21,14 @@ import {
 	ApiContext,
 	LoggerContext,
 	SocketContext,
-	TradeDialogContext
+	TradeDialogContext,
 } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { ItemSheetApiResponse } from '../../pages/api/sheet/item';
 import type {
 	PlayerGetItemApiResponse,
-	PlayerItemApiResponse
+	PlayerItemApiResponse,
 } from '../../pages/api/sheet/player/item';
 import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
 import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
@@ -294,7 +294,13 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				</IconButton>
 			}>
 			{/* <PlayerLoadField playerItems={playerItems} playerMaxLoad={props.maxLoad} /> */}
-			<Grid container justifyContent='center' textAlign='center' mt={1.5} spacing={1}>
+			<Grid
+				container
+				justifyContent='center'
+				textAlign='center'
+				pt={2}
+				columnSpacing={1}
+				rowSpacing={3}>
 				{props.playerCurrency.map((cur) => (
 					<Grid item key={cur.id} xs={12} sm={6} md={4}>
 						<PlayerCurrencyField {...cur} />

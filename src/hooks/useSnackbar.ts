@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { SnackbarContainerProps } from '../components/SnackbarContainer';
 import type { LoggerProps } from '../contexts';
 
@@ -12,26 +12,28 @@ export default function useSnackbar(): [SnackbarContainerProps, SnackbarUpdate] 
 	});
 	const queuedLog = useRef<LoggerProps>();
 
-	const updateSnackbar: SnackbarUpdate = (props) => {
-		if (show) {
-			queuedLog.current = props;
-			return setShow(false);
-		}
-		setShow(true);
-		setLogger(props);
-	};
+	const updateSnackbar = useCallback<SnackbarUpdate>((props) => {
+		setShow((show) => {
+			if (show) {
+				queuedLog.current = props;
+				return false;
+			}
+			setLogger(props);
+			return true;
+		});
+	}, []);
 
-	function onSnackbarExited() {
+	const onSnackbarExited = useCallback(() => {
 		if (!queuedLog.current) return;
 		setLogger(queuedLog.current);
 		setShow(true);
 		queuedLog.current = undefined;
-	}
+	}, []);
 
-	function handleClose(_event: React.SyntheticEvent | Event, reason?: string) {
+	const handleClose = useCallback((_event: React.SyntheticEvent | Event, reason?: string) => {
 		if (reason === 'clickaway') return;
 		setShow(false);
-	}
+	}, []);
 
 	return [
 		{

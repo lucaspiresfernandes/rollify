@@ -60,7 +60,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	};
 
 	return (
-		<SheetContainer title={props.title} display='flex' flexDirection='column' position='relative'>
+		<SheetContainer title={props.title} display='flex' flexDirection='column'>
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
@@ -69,14 +69,14 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 				onClearChecks={clearChecks}
 			/>
 			<Divider sx={{ mb: 2 }} />
-			<Box height={300} sx={{ overflowY: 'auto' }}>
+			<Box height={360} sx={{ overflowY: 'auto' }}>
 				<Grid
 					container
 					justifyContent='center'
 					alignItems='stretch'
 					rowSpacing={4}
 					columnSpacing={2}
-					mb={2}
+					pb={2}
 					sx={{ overflowWrap: 'break-word' }}>
 					{props.playerSkills.map((skill) => {
 						return (

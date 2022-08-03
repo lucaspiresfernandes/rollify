@@ -2,30 +2,30 @@ import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
-import Box from '@mui/material/Box';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import dice20 from '../../../public/dice20.webp';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
+import Image from 'next/image';
 import { useContext, useState } from 'react';
+import dice20 from '../../../public/dice20.webp';
 import { AddDataDialogContext, ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerSpellApiResponse } from '../../pages/api/sheet/player/spell';
 import type { SpellSheetApiResponse } from '../../pages/api/sheet/spell';
 import { handleDefaultApiResponse } from '../../utils';
+import { resolveDices } from '../../utils/dice';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
-import Image from 'next/image';
-import { resolveDices } from '../../utils/dice';
 
 type PlayerSpellContainerProps = {
 	title: string;
@@ -159,8 +159,8 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 					</IconButton>
 				</TableCell>
 				<TableCell align='center'>{props.name}</TableCell>
-				<TableCell align='center'>{props.type}</TableCell>
-				<TableCell align='center'>{props.cost}</TableCell>
+				<TableCell align='center'>{props.type || '-'}</TableCell>
+				<TableCell align='center'>{props.cost || '-'}</TableCell>
 				<TableCell align='center'>
 					<Box
 						display='flex'
@@ -168,30 +168,29 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 						justifyContent='center'
 						alignItems='center'
 						gap={1}>
-						<div>{props.damage}</div>
-						{props.damage !== '-' && (
-							<div>
-								<Image
-									src={dice20}
-									alt='Dice'
-									className='clickable'
-									onClick={handleDiceClick}
-									width={30}
-									height={30}
-								/>
-							</div>
+						<div>{props.damage || '-'}</div>
+						{props.damage && (
+							<Image
+								layout='fixed'
+								src={dice20}
+								alt='Dice'
+								className='clickable'
+								onClick={handleDiceClick}
+								width={30}
+								height={30}
+							/>
 						)}
 					</Box>
 				</TableCell>
-				<TableCell align='center'>{props.target}</TableCell>
-				<TableCell align='center'>{props.range}</TableCell>
-				<TableCell align='center'>{props.castingTime}</TableCell>
-				<TableCell align='center'>{props.duration}</TableCell>
+				<TableCell align='center'>{props.target || '-'}</TableCell>
+				<TableCell align='center'>{props.range || '-'}</TableCell>
+				<TableCell align='center'>{props.castingTime || '-'}</TableCell>
+				<TableCell align='center'>{props.duration || '-'}</TableCell>
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
 					<Collapse in={open}>
-						<Typography variant='h5' component='div' mb={1} px={3}>
+						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
 							{props.description}
 						</Typography>
 					</Collapse>

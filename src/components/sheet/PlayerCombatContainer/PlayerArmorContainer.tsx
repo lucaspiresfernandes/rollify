@@ -58,10 +58,10 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 								</IconButton>
 							</TableCell>
 							<TableCell align='center'>{armor.name}</TableCell>
-							<TableCell align='center'>{armor.type}</TableCell>
+							<TableCell align='center'>{armor.type || '-'}</TableCell>
 							<TableCell align='center'>{armor.weight || '-'}</TableCell>
-							<TableCell align='center'>{armor.damageReduction}</TableCell>
-							<TableCell align='center'>{armor.penalty}</TableCell>
+							<TableCell align='center'>{armor.damageReduction || '-'}</TableCell>
+							<TableCell align='center'>{armor.penalty || '-'}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

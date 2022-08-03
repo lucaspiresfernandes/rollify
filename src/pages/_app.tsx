@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { I18nProvider } from 'next-rosetta';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import SnackbarContainer from '../components/SnackbarContainer';
@@ -39,25 +40,7 @@ export default function MyApp(props: MyAppProps) {
 		});
 	};
 
-	const theme = getTheme(mode);
-
-	// Test this in case rendering gets too slow.
-	// const Page = useMemo(() => <Component {...pageProps} />, [Component, pageProps]);
-
-	// const JSXNavbar = useMemo(() => {
-	// 	return (
-	// 		<Navbar
-	// 			mode={mode}
-	// 			toggleMode={() =>
-	// 				setMode((m) => {
-	// 					const newMode = m === 'light' ? 'dark' : 'light';
-	// 					localStorage.setItem('theme', newMode);
-	// 					return newMode;
-	// 				})
-	// 			}
-	// 		/>
-	// 	);
-	// }, [mode]);
+	const theme = useMemo(() => getTheme(mode), [mode]);
 
 	return (
 		<CacheProvider value={emotionCache}>
