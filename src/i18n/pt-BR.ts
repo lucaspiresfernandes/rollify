@@ -96,7 +96,7 @@ export const table: Locale = {
 		playerCharacteristicTitle: 'Características',
 		playerSkillTitle: 'Perícias',
 		playerCombatTitle: 'Combate',
-		playerItemTitle: 'Itens',
+		playerItemTitle: 'Itens & Moedas',
 		playerSpellTitle: 'Magias',
 		playerNotesTitle: 'Anotações',
 		playerExtraInfoTitle: 'Detalhes Pessoais (Extras)',
