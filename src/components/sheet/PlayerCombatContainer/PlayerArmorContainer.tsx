@@ -37,14 +37,32 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 				</TableHead>
 				<TableBody>
 					{props.playerArmor.map((armor) => (
-						<PlayerArmorField
-							key={armor.id}
-							{...armor}
-							onDelete={() => {
-								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteArmor(armor.id);
-							}}
-							onTrade={() => props.onTrade('armor', armor.id)}
-						/>
+						<TableRow key={armor.id}>
+							<TableCell align='center' padding='none'>
+								<IconButton
+									size='small'
+									onClick={() => {
+										if (confirm(t('prompt.delete', { name: 'item' })))
+											props.onDeleteArmor(armor.id);
+									}}
+									title={t('delete')}>
+									<DeleteIcon />
+								</IconButton>
+							</TableCell>
+							<TableCell align='center' padding='none'>
+								<IconButton
+									size='small'
+									onClick={() => props.onTrade('armor', armor.id)}
+									title={t('trade')}>
+									<HandshakeIcon />
+								</IconButton>
+							</TableCell>
+							<TableCell align='center'>{armor.name}</TableCell>
+							<TableCell align='center'>{armor.type}</TableCell>
+							<TableCell align='center'>{armor.weight || '-'}</TableCell>
+							<TableCell align='center'>{armor.damageReduction}</TableCell>
+							<TableCell align='center'>{armor.penalty}</TableCell>
+						</TableRow>
 					))}
 				</TableBody>
 			</Table>
@@ -58,27 +76,9 @@ type PlayerArmorFieldProps = { [T in keyof Armor]: Armor[T] } & {
 };
 
 const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
-	return (
-		<>
-			<TableRow>
-				<TableCell align='center' padding='none'>
-					<IconButton size='small' onClick={props.onDelete}>
-						<DeleteIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center' padding='none' onClick={props.onTrade}>
-					<IconButton size='small'>
-						<HandshakeIcon />
-					</IconButton>
-				</TableCell>
-				<TableCell align='center'>{props.name}</TableCell>
-				<TableCell align='center'>{props.type}</TableCell>
-				<TableCell align='center'>{props.weight}</TableCell>
-				<TableCell align='center'>{props.damageReduction}</TableCell>
-				<TableCell align='center'>{props.penalty}</TableCell>
-			</TableRow>
-		</>
-	);
+	const { t } = useI18n<Locale>();
+
+	return <></>;
 };
 
 export default PlayerArmorContainer;

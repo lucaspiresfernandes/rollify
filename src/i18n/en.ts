@@ -5,7 +5,7 @@ export const table: Locale = {
 	localeName: 'English',
 	title: 'Rollify',
 
-	search: 'Search',
+	search: 'Search...',
 	orientation: 'Orientation',
 	delete: 'Delete',
 	erase: 'Erase',
@@ -34,6 +34,7 @@ export const table: Locale = {
 	player: 'Player',
 	unknown: 'Unknown',
 	none: 'None',
+	trade: 'Trade',
 	offering: 'Offering',
 
 	quickAccess: 'Quick Access',

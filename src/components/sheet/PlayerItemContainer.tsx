@@ -1,12 +1,11 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -14,24 +13,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import type { Trade } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
 	AddDataDialogContext,
 	ApiContext,
 	LoggerContext,
 	SocketContext,
-	TradeDialogContext,
+	TradeDialogContext
 } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { ItemSheetApiResponse } from '../../pages/api/sheet/item';
-import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type {
 	PlayerGetItemApiResponse,
-	PlayerItemApiResponse,
+	PlayerItemApiResponse
 } from '../../pages/api/sheet/player/item';
 import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
 import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
@@ -296,8 +293,8 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					<AddIcon />
 				</IconButton>
 			}>
-			<PlayerLoadField playerItems={playerItems} playerMaxLoad={props.maxLoad} />
-			<Grid container justifyContent='center' textAlign='center' mt={1} spacing={1}>
+			{/* <PlayerLoadField playerItems={playerItems} playerMaxLoad={props.maxLoad} /> */}
+			<Grid container justifyContent='center' textAlign='center' mt={1.5} spacing={1}>
 				{props.playerCurrency.map((cur) => (
 					<Grid item key={cur.id} xs={12} sm={6} md={4}>
 						<PlayerCurrencyField {...cur} />
@@ -349,57 +346,57 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	);
 };
 
-type PlayerLoadFieldProps = {
-	playerMaxLoad: number;
-	playerItems: PlayerItemContainerProps['playerItems'];
-};
+// type PlayerLoadFieldProps = {
+// 	playerMaxLoad: number;
+// 	playerItems: PlayerItemContainerProps['playerItems'];
+// };
 
-const PlayerLoadField: React.FC<PlayerLoadFieldProps> = (props) => {
-	const [playerMaxLoad, setPlayerMaxLoad, isMaxLoadClean] = useExtendedState(props.playerMaxLoad);
-	const playerCurrentLoad = useMemo(
-		() => props.playerItems.reduce((acc, item) => acc + item.weight * item.quantity, 0),
-		[props.playerItems]
-	);
-	const api = useContext(ApiContext);
-	const log = useContext(LoggerContext);
-	const { t } = useI18n<Locale>();
+// const PlayerLoadField: React.FC<PlayerLoadFieldProps> = (props) => {
+// 	const [playerMaxLoad, setPlayerMaxLoad, isMaxLoadClean] = useExtendedState(props.playerMaxLoad);
+// 	const playerCurrentLoad = useMemo(
+// 		() => props.playerItems.reduce((acc, item) => acc + item.weight * item.quantity, 0),
+// 		[props.playerItems]
+// 	);
+// 	const api = useContext(ApiContext);
+// 	const log = useContext(LoggerContext);
+// 	const { t } = useI18n<Locale>();
 
-	const onMaxLoadBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
-		if (isMaxLoadClean()) return;
-		api
-			.post<PlayerApiResponse>('/sheet/player', { maxLoad: playerMaxLoad })
-			.then((res) => handleDefaultApiResponse(res, log, t))
-			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
-	};
+// 	const onMaxLoadBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+// 		if (isMaxLoadClean()) return;
+// 		api
+// 			.post<PlayerApiResponse>('/sheet/player', { maxLoad: playerMaxLoad })
+// 			.then((res) => handleDefaultApiResponse(res, log, t))
+// 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+// 	};
 
-	const loadColor = playerCurrentLoad > playerMaxLoad ? 'red' : undefined;
+// 	const loadColor = playerCurrentLoad > playerMaxLoad ? 'red' : undefined;
 
-	return (
-		<Box
-			display='flex'
-			flexDirection='row'
-			alignItems='center'
-			justifyContent='center'
-			textAlign='center'
-			mt={1}>
-			<Typography variant='h6' component='span' mr={1}>
-				TODO: Player Load:
-			</Typography>
-			<Typography variant='body1' component='span' color={loadColor} mr={-0.5}>
-				{playerCurrentLoad} /
-			</Typography>
-			<TextField
-				variant='standard'
-				value={playerMaxLoad}
-				onChange={(ev) => setPlayerMaxLoad(parseInt(ev.target.value) || 0)}
-				onBlur={onMaxLoadBlur}
-				InputProps={{ sx: { color: loadColor } }}
-				inputProps={{ style: { textAlign: 'center' } }}
-				sx={{ width: '2em' }}
-			/>
-		</Box>
-	);
-};
+// 	return (
+// 		<Box
+// 			display='flex'
+// 			flexDirection='row'
+// 			alignItems='center'
+// 			justifyContent='center'
+// 			textAlign='center'
+// 			mt={1}>
+// 			<Typography variant='h6' component='span' mr={1}>
+// 				TODO: Player Load:
+// 			</Typography>
+// 			<Typography variant='body1' component='span' color={loadColor} mr={-0.5}>
+// 				{playerCurrentLoad} /
+// 			</Typography>
+// 			<TextField
+// 				variant='standard'
+// 				value={playerMaxLoad}
+// 				onChange={(ev) => setPlayerMaxLoad(parseInt(ev.target.value) || 0)}
+// 				onBlur={onMaxLoadBlur}
+// 				InputProps={{ sx: { color: loadColor } }}
+// 				inputProps={{ style: { textAlign: 'center' } }}
+// 				sx={{ width: '2em' }}
+// 			/>
+// 		</Box>
+// 	);
+// };
 
 type PlayerCurrencyFieldProps = {
 	id: number;
@@ -498,12 +495,12 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 	return (
 		<TableRow>
 			<TableCell align='center' padding='none'>
-				<IconButton size='small' onClick={props.onDelete}>
+				<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
 					<DeleteIcon />
 				</IconButton>
 			</TableCell>
 			<TableCell align='center' padding='none'>
-				<IconButton size='small' onClick={props.onTrade}>
+				<IconButton size='small' onClick={props.onTrade} title={t('trade')}>
 					<HandshakeIcon />
 				</IconButton>
 			</TableCell>
@@ -522,7 +519,7 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 					}}
 				/>
 			</TableCell>
-			<TableCell align='center'>{props.weight}</TableCell>
+			<TableCell align='center'>{props.weight || '-'}</TableCell>
 			<TableCell align='center'>
 				<TextField
 					variant='standard'

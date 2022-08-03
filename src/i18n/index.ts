@@ -33,6 +33,7 @@ export interface Locale {
 	player: string;
 	unknown: string;
 	none: string;
+	trade: string;
 	offering: string;
 
 	nav: {

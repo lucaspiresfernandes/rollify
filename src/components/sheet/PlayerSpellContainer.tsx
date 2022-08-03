@@ -56,12 +56,10 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 		api
 			.get<SpellSheetApiResponse>('/sheet/spell')
 			.then((res) => {
-				if (res.data.status === 'success') {
-					const spells = res.data.spell;
-					addDataDialog.openDialog(spells, onAddSpell);
-					return;
-				}
-				handleDefaultApiResponse(res, log, t);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				const spells = res.data.spell;
+				if (spells.length === 0) return log({ text: 'TODO: No spells.' });
+				addDataDialog.openDialog(spells, onAddSpell);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));

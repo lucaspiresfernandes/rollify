@@ -80,7 +80,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	const handleDiceClick = () => {
-		if (props.ammo && currentAmmo === 0) return alert(t('prompt.noAmmo'));
+		if (props.ammo && !currentAmmo) return alert(t('prompt.noAmmo'));
 
 		const aux = resolveDices(props.damage);
 
@@ -126,18 +126,18 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 		<>
 			<TableRow>
 				<TableCell align='center' padding='none'>
-					<IconButton size='small' onClick={props.onDelete}>
+					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
 						<DeleteIcon />
 					</IconButton>
 				</TableCell>
-				<TableCell align='center' padding='none' onClick={props.onTrade}>
-					<IconButton size='small'>
+				<TableCell align='center' padding='none'>
+					<IconButton size='small' onClick={props.onTrade} title={t('trade')}>
 						<HandshakeIcon />
 					</IconButton>
 				</TableCell>
 				<TableCell align='center'>{props.name}</TableCell>
 				<TableCell align='center'>{props.type}</TableCell>
-				<TableCell align='center'>{props.weight}</TableCell>
+				<TableCell align='center'>{props.weight || '-'}</TableCell>
 				<TableCell align='center'>{props.damage}</TableCell>
 				<TableCell align='center' padding='none'>
 					{props.damage && (

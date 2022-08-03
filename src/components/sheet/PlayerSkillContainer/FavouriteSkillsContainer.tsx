@@ -76,9 +76,9 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			<Divider sx={{ mb: 2 }} />
 			<Box
 				position='relative'
-				flex={{ sm: '1 0' }}
+				flex={{ xs: null, sm: '1 0' }}
 				height={{ xs: 300, sm: null }}
-				sx={{ overflowY: 'auto' }}>
+				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
 				{props.playerSkills.length === 0 && (
 					<Box textAlign='center' color='GrayText'>
 						TODO: Starred skills will show up here.
