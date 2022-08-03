@@ -80,7 +80,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 	};
 
 	return (
-		<Stack spacing={3}>
+		<Stack spacing={1}>
 			<PlayerAvatarImage
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
 				playerAvatars={props.playerAvatars}

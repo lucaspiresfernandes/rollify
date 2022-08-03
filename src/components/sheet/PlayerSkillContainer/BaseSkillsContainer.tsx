@@ -1,7 +1,9 @@
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
 import { PlayerSkillContainerProps, PlayerSkillField, Searchbar } from '.';
@@ -64,10 +66,16 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<Searchbar
-				onSearchChange={(s) => startTransition(() => setSearch(s))}
-				onClearChecks={clearChecks}
-			/>
+			<Box display='flex' alignItems='center' gap={1} my={1}>
+				<Paper sx={{ p: 0.5, flex: '1 0' }}>
+					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
+				</Paper>
+				<div>
+					<Button size='small' variant='outlined' onClick={clearChecks}>
+						{t('sheet.clearMarkers')}
+					</Button>
+				</div>
+			</Box>
 			<Divider sx={{ mb: 2 }} />
 			<Box height={360} sx={{ overflowY: 'auto' }}>
 				<Grid

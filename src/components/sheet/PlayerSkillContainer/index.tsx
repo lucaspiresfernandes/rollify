@@ -2,12 +2,10 @@ import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import ClearIcon from '@mui/icons-material/Clear';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
@@ -326,7 +324,6 @@ export const PlayerSkillField = memo(UnderlyingPlayerSkillField, (prev, next) =>
 
 type SearchbarProps = {
 	onSearchChange: (search: string) => void;
-	onClearChecks: () => void;
 };
 
 export const Searchbar: React.FC<SearchbarProps> = (props) => {
@@ -339,9 +336,7 @@ export const Searchbar: React.FC<SearchbarProps> = (props) => {
 	}, [search]);
 
 	return (
-		<Box display='flex' alignItems='center' gap={1} my={1}>
-			<Paper sx={{ p: 0.5, flex: '1 0' }}>
-				<InputBase
+		<InputBase
 					fullWidth
 					placeholder={t('search')}
 					inputProps={{ 'aria-label': t('search') }}
@@ -355,13 +350,6 @@ export const Searchbar: React.FC<SearchbarProps> = (props) => {
 						) : undefined
 					}
 				/>
-			</Paper>
-			<div>
-				<Button size='small' variant='outlined' onClick={props.onClearChecks}>
-					{t('sheet.clearMarkers')}
-				</Button>
-			</div>
-		</Box>
 	);
 };
 

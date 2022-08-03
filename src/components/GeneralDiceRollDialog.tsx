@@ -1,4 +1,7 @@
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -108,19 +111,22 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 										/>
 									</Box>
 								</div>
-								<Box display='flex' alignItems='center'>
-									<Button
-										variant='contained'
+								<Box display='flex' alignItems='center' px={2}>
+									<IconButton
+										title='TODO: Subtract'
 										size='small'
 										onClick={() => updateDice(dice.roll, -1)}>
-										-
-									</Button>
+										<RemoveIcon />
+									</IconButton>
 									<Typography variant='body1' flexGrow={1}>
 										{dice.num}
 									</Typography>
-									<Button variant='contained' size='small' onClick={() => updateDice(dice.roll, 1)}>
-										+
-									</Button>
+									<IconButton
+										title='TODO: Add'
+										size='small'
+										onClick={() => updateDice(dice.roll, 1)}>
+										<AddIcon />
+									</IconButton>
 								</Box>
 							</Grid>
 						))}

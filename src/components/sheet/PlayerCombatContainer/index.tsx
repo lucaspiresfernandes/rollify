@@ -9,20 +9,20 @@ import {
 	ApiContext,
 	LoggerContext,
 	SocketContext,
-	TradeDialogContext
+	TradeDialogContext,
 } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ArmorSheetApiResponse } from '../../../pages/api/sheet/armor';
 import type {
 	PlayerArmorApiResponse,
-	PlayerGetArmorApiResponse
+	PlayerGetArmorApiResponse,
 } from '../../../pages/api/sheet/player/armor';
 import type { PlayerListApiResponse } from '../../../pages/api/sheet/player/list';
 import type { TradeArmorApiResponse } from '../../../pages/api/sheet/player/trade/armor';
 import type { TradeWeaponApiResponse } from '../../../pages/api/sheet/player/trade/weapon';
 import type {
 	PlayerGetWeaponApiResponse,
-	PlayerWeaponApiResponse
+	PlayerWeaponApiResponse,
 } from '../../../pages/api/sheet/player/weapon';
 import type { WeaponSheetApiResponse } from '../../../pages/api/sheet/weapon';
 import { handleDefaultApiResponse } from '../../../utils';
@@ -53,6 +53,10 @@ export type PlayerCombatContainerProps = {
 	title: string;
 	playerWeapons: ({ [T in keyof Weapon]: Weapon[T] } & { currentAmmo: number })[];
 	playerArmor: Armor[];
+
+	onEquipmentAdd: (equipment: Weapon | Armor) => void;
+	onEquipmentRemove: (equipment: Weapon | Armor) => void;
+
 	senderTrade: Trade | null;
 	receiverTrade: Trade | null;
 };
@@ -245,6 +249,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerWeapons((e) => e.filter((e) => e.id !== id));
+				props.onEquipmentRemove(res.data.weapon.Weapon);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -259,6 +264,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerArmor((a) => a.filter((e) => e.id !== id));
+				props.onEquipmentRemove(res.data.armor);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -271,17 +277,17 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 		api
 			.put<PlayerArmorApiResponse | PlayerWeaponApiResponse>('/sheet/player/' + type, { id })
 			.then((res) => {
-				if (res.data.status === 'success') {
-					if ('weapon' in res.data) {
-						const weapon = res.data.weapon;
-						setPlayerWeapons([...playerWeapons, { ...weapon, ...weapon.Weapon }]);
-					} else if ('armor' in res.data) {
-						const armor = res.data.armor;
-						setPlayerArmor([...playerArmor, { ...armor }]);
-					}
-					return;
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+
+				if ('weapon' in res.data) {
+					const weapon = res.data.weapon;
+					setPlayerWeapons([...playerWeapons, { ...weapon, ...weapon.Weapon }]);
+					props.onEquipmentAdd(weapon.Weapon);
+				} else if ('armor' in res.data) {
+					const armor = res.data.armor;
+					setPlayerArmor([...playerArmor, { ...armor }]);
+					props.onEquipmentAdd(armor);
 				}
-				handleDefaultApiResponse(res, log, t);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));

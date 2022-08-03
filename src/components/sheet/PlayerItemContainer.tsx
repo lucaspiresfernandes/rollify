@@ -37,9 +37,8 @@ import type { ItemTradeObject } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
 
-type PlayerItemContainerProps = {
+export type PlayerItemContainerProps = {
 	title: string;
-	maxLoad: number;
 	playerCurrency: {
 		id: number;
 		name: string;
@@ -52,6 +51,14 @@ type PlayerItemContainerProps = {
 		quantity: number;
 		weight: number;
 	}[];
+
+	onItemAdd: (item: PlayerItemContainerProps['playerItems'][number]) => void;
+	onItemRemove: (item: PlayerItemContainerProps['playerItems'][number]) => void;
+	onItemChange: (
+		oldItem: PlayerItemContainerProps['playerItems'][number],
+		newItem: PlayerItemContainerProps['playerItems'][number]
+	) => void;
+
 	senderTrade: Trade | null;
 	receiverTrade: Trade | null;
 };
@@ -176,17 +183,15 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 		api
 			.put<PlayerItemApiResponse>('/sheet/player/item', { id })
 			.then((res) => {
-				if (res.data.status === 'success') {
-					const item = res.data.item;
-					return setPlayerItems([
-						...playerItems,
-						{
-							...item,
-							...item.Item,
-						},
-					]);
-				}
-				handleDefaultApiResponse(res, log, t);
+				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+
+				const newItem = {
+					...res.data.item,
+					...res.data.item.Item,
+				};
+
+				props.onItemAdd(newItem);
+				setPlayerItems([...playerItems, newItem]);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -215,7 +220,13 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				setPlayerItems((i) => i.filter((item) => item.id !== id));
+				setPlayerItems((i) =>
+					i.filter((item) => {
+						const remove = item.id !== id;
+						if (remove) props.onItemRemove(item);
+						return remove;
+					})
+				);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -326,14 +337,15 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 								key={item.id}
 								{...item}
 								onDelete={() => onDeleteItem(item.id)}
-								onQuantityChange={(quantity) =>
+								onQuantityChange={(quantity) => {
+									props.onItemChange(item, { ...item, quantity });
 									setPlayerItems((items) =>
 										items.map((it) => {
 											if (it.id === item.id) return { ...it, quantity };
 											return it;
 										})
-									)
-								}
+									);
+								}}
 								onTrade={() => onTrade(item.id)}
 							/>
 						))}

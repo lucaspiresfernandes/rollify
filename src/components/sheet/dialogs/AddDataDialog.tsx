@@ -22,11 +22,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 	useEffect(() => {
 		if (props.open) setValue(props.data[0]?.id || '');
 	}, [props.open, props.data]);
-
-	const onDialogExited = () => {
-		setValue('');
-	};
-
+	
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
 		if (value === '') return;
@@ -37,7 +33,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 		<Dialog
 			open={props.open}
 			onClose={props.onClose}
-			TransitionProps={{ onExited: onDialogExited }}>
+			TransitionProps={{ onExited: () => setValue('') }}>
 			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
 			<DialogContent>
 				<form id='playerAddDataDialogForm' onSubmit={onSubmit}>
