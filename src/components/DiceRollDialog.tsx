@@ -51,6 +51,9 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 		}
 
 		if (diceResponse.length > 1) {
+			if (diceResponse[0].resultType)
+				descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
+
 			if (Array.isArray(props.dice)) {
 				const dices = diceResponse.map((d) => d.roll);
 				const sum = dices.reduce((a, b) => a + b, 0);
@@ -108,12 +111,6 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 		setNum(1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.dice]);
-
-	useEffect(() => {
-		if (diceResponse && (diceResponse.length > 1 || diceResponse[0].resultType))
-			descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [diceResponse]);
 
 	const roll = (diceRoll: DiceRoll) => {
 		setDescriptionFade(false);

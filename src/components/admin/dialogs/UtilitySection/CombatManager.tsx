@@ -5,13 +5,13 @@ import {
 	Over,
 	PointerSensor,
 	useSensor,
-	useSensors
+	useSensors,
 } from '@dnd-kit/core';
 import {
 	arrayMove,
 	SortableContext,
 	useSortable,
-	verticalListSortingStrategy
+	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
@@ -103,7 +103,6 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 		if (storage.round) setRound(storage.round);
 		if (storage.entities) setActiveEntities(storage.entities);
 		if (storage.pointer) setPointer(storage.pointer);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -136,7 +135,6 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 				})
 				.filter((activeEntity) => !deletedEntities.includes(activeEntity.id))
 		);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.entities]);
 
 	const handleDragEnd = (ev: DragEndEvent) => {

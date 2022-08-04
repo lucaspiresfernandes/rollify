@@ -53,6 +53,8 @@ export const table: Locale = {
 			panel: 'Painel',
 			editor: 'Editor',
 			configurations: 'Configurações',
+			mode: 'Modo',
+			language: 'Idioma',
 		},
 	},
 

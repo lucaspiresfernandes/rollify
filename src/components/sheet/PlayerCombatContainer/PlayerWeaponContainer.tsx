@@ -174,6 +174,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 							}}
 							inputProps={{
 								style: { textAlign: 'end' },
+								'aria-label': t('sheet.table.ammo'),
 							}}
 						/>
 					) : (

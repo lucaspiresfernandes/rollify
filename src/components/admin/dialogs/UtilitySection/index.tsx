@@ -39,17 +39,18 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 		setBasicNpcs(JSON.parse(localStorage.getItem('admin_npcs') || '[]') as NPC[]);
 
 		socket.on('playerNameChange', (playerId, value) => {
-			const npc = complexNpcs.find((npc) => npc.id === playerId);
-			if (!npc) return;
-			npc.name = value;
-			setComplexNpcs([...complexNpcs]);
+			setComplexNpcs((complexNpcs) =>
+				complexNpcs.map((npc) => {
+					if (npc.id === playerId) return { ...npc, name: value };
+					return npc;
+				})
+			);
 		});
 
 		return () => {
 			socket.off('playerNameChange');
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [socket]);
 
 	useEffect(() => {
 		if (componentDidMount.current) {

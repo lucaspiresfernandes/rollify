@@ -6,8 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { I18nProvider } from 'next-rosetta';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useMemo } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar';
 import SnackbarContainer from '../components/SnackbarContainer';
 import { LoggerContext } from '../contexts';
@@ -25,22 +24,21 @@ type MyAppProps = AppProps & {
 
 export default function MyApp(props: MyAppProps) {
 	const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-	const [mode, setMode] = useState<PaletteMode>('dark');
+	const [mode, setMode] = useState<PaletteMode | 'system'>('dark');
 	const [snackbarProps, updateSnackbar] = useSnackbar();
 
 	useEffect(() => {
 		setMode((localStorage.getItem('theme') || 'dark') as PaletteMode);
 	}, []);
 
-	const toggleMode = () => {
-		setMode((m) => {
-			const newMode = m === 'light' ? 'dark' : 'light';
-			localStorage.setItem('theme', newMode);
-			return newMode;
-		});
-	};
-
-	const theme = useMemo(() => getTheme(mode), [mode]);
+	const theme = useMemo(() => {
+		let newMode = mode;
+		if (newMode === 'system') {
+			if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) newMode = 'dark';
+			else newMode = 'light';
+		}
+		return getTheme(newMode);
+	}, [mode]);
 
 	return (
 		<CacheProvider value={emotionCache}>
@@ -57,7 +55,7 @@ export default function MyApp(props: MyAppProps) {
 				<CssBaseline />
 				<I18nProvider table={pageProps.table}>
 					<LoggerContext.Provider value={updateSnackbar}>
-						<Navbar mode={mode} toggleMode={toggleMode} />
+						<Navbar mode={mode} updateMode={setMode} />
 						<Component {...pageProps} />
 					</LoggerContext.Provider>
 					<SnackbarContainer {...snackbarProps} />

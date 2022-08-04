@@ -1,5 +1,11 @@
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
+import type { Locale } from '../../i18n';
 import type { InferSsrProps } from '../../utils/next';
 import prisma from '../../utils/prisma';
 import { withSessionSsr } from '../../utils/session';
@@ -12,8 +18,22 @@ const AdminEditorPage: NextPage<AdminEditorPageProps> = (props) => {
 			<Head>
 				<title>Editor - Rollify</title>
 			</Head>
-			<h1>Editor</h1>
+			<AdminEditor {...props} />
 		</>
+	);
+};
+
+const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
+	const { t } = useI18n<Locale>();
+
+	return (
+		<Container sx={{ my: 2 }}>
+			<Box textAlign='center'>
+				<Typography variant='h3' component='h1'>
+					{t('admin.editorTitle')}
+				</Typography>
+			</Box>
+		</Container>
 	);
 };
 
@@ -44,8 +64,12 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		prisma.currency.findMany(),
 	]);
 
+	const locale = ctx.locale || ctx.defaultLocale;
+	const { table = {} } = await import(`../../i18n/${locale}`);
+
 	return {
 		props: {
+			table,
 			info: results[0],
 			extraInfo: results[1],
 			attribute: results[2],

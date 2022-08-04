@@ -197,6 +197,7 @@ type PlayerSpellFieldProps = { [T in keyof Spell]: Spell[T] } & {
 
 const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 	const [open, setOpen] = useState(false);
+	const { t } = useI18n<Locale>();
 	const rollDice = useContext(DiceRollContext);
 
 	const handleDiceClick = () => {
@@ -209,14 +210,14 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 				<TableCell align='center' padding='none'>
 					<IconButton
-						title={open ? 'Collapse' : 'Expand'}
+						title={open ? 'TODO: Collapse' : 'TODO: Expand'}
 						size='small'
 						onClick={() => setOpen(!open)}>
 						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 					</IconButton>
 				</TableCell>
 				<TableCell align='center' padding='none'>
-					<IconButton size='small' onClick={props.onDelete}>
+					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
 						<DeleteIcon />
 					</IconButton>
 				</TableCell>

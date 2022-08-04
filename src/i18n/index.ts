@@ -51,6 +51,8 @@ export interface Locale {
 			panel: string;
 			editor: string;
 			configurations: string;
+			mode: string;
+			language: string;
 		};
 	};
 
