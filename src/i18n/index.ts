@@ -35,6 +35,7 @@ export interface Locale {
 	none: string;
 	trade: string;
 	offering: string;
+	load: string;
 
 	nav: {
 		language: string;

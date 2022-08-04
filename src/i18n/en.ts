@@ -36,6 +36,7 @@ export const table: Locale = {
 	none: 'None',
 	trade: 'Trade',
 	offering: 'Offering',
+	load: 'Current Load',
 
 	quickAccess: 'Quick Access',
 

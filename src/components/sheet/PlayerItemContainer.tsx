@@ -5,11 +5,13 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import Typography from '@mui/material/Typography';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
@@ -36,6 +38,7 @@ import { handleDefaultApiResponse } from '../../utils';
 import type { ItemTradeObject } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
+import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 
 export type PlayerItemContainerProps = {
 	title: string;
@@ -51,6 +54,9 @@ export type PlayerItemContainerProps = {
 		quantity: number;
 		weight: number;
 	}[];
+
+	playerCurrentLoad: number;
+	playerMaxLoad: number;
 
 	onItemAdd: (item: PlayerItemContainerProps['playerItems'][number]) => void;
 	onItemRemove: (item: PlayerItemContainerProps['playerItems'][number]) => void;
@@ -298,11 +304,16 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			title={props.title}
 			position='relative'
 			sideButton={
-				<IconButton aria-label='Add Item' onClick={loadAvailableItems}>
+				<IconButton onClick={loadAvailableItems} title='TODO: Add Item'>
 					<AddIcon />
 				</IconButton>
 			}>
-			{/* <PlayerLoadField playerItems={playerItems} playerMaxLoad={props.maxLoad} /> */}
+			<Box textAlign='center' mt={2} mb={1}>
+				<PlayerMaxLoadField
+					playerCurrentLoad={props.playerCurrentLoad}
+					playerMaxLoad={props.playerMaxLoad}
+				/>
+			</Box>
 			<Grid
 				container
 				justifyContent='center'
@@ -311,7 +322,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				columnSpacing={1}
 				rowSpacing={3}>
 				{props.playerCurrency.map((cur) => (
-					<Grid item key={cur.id} xs={12} sm={6} md={4}>
+					<Grid item key={cur.id} xs={6} md={4}>
 						<PlayerCurrencyField {...cur} />
 					</Grid>
 				))}
@@ -393,6 +404,49 @@ const PlayerCurrencyField: React.FC<PlayerCurrencyFieldProps> = (props) => {
 			value={value}
 			onChange={(ev) => setValue(ev.target.value)}
 			onBlur={onValueBlur}
+		/>
+	);
+};
+
+const PlayerMaxLoadField: React.FC<{
+	playerCurrentLoad: number;
+	playerMaxLoad: number;
+}> = (props) => {
+	const [maxLoad, setMaxLoad, isMaxLoadClean] = useExtendedState(props.playerMaxLoad);
+	const api = useContext(ApiContext);
+	const log = useContext(LoggerContext);
+	const { t } = useI18n<Locale>();
+
+	const onMaxLoadBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+		if (isMaxLoadClean()) return;
+		api
+			.post<PlayerApiResponse>('/sheet/player', { maxLoad })
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
+	const overload = props.playerCurrentLoad > maxLoad;
+
+	return (
+		<TextField
+			variant='outlined'
+			label={t('load')}
+			autoComplete='off'
+			color={overload ? 'error' : undefined}
+			focused={overload || undefined}
+			InputProps={{
+				startAdornment: (
+					<Typography variant='body1' color='GrayText'>
+						{props.playerCurrentLoad}/
+					</Typography>
+				),
+			}}
+			inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+			value={maxLoad}
+			onChange={(ev) => {
+				if (ev.target.validity.valid) setMaxLoad(parseInt(ev.target.value) || 0);
+			}}
+			onBlur={onMaxLoadBlur}
 		/>
 	);
 };
