@@ -36,6 +36,7 @@ export interface Locale {
 	trade: string;
 	offering: string;
 	load: string;
+	slots: string;
 
 	nav: {
 		language: string;
@@ -121,6 +122,7 @@ export interface Locale {
 			target: string;
 			castingTime: string;
 			duration: string;
+			slots: string;
 		};
 	};
 

@@ -37,6 +37,7 @@ export const table: Locale = {
 	trade: 'Trade',
 	offering: 'Offering',
 	load: 'Current Load',
+	slots: 'Available Slots',
 
 	quickAccess: 'Quick Access',
 
@@ -123,6 +124,7 @@ export const table: Locale = {
 			cost: 'Cost',
 			duration: 'Duration',
 			target: 'Target',
+			slots: 'Slots',
 		},
 	},
 

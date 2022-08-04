@@ -7,6 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
+import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -16,10 +18,12 @@ import Typography from '@mui/material/Typography';
 import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import dice20 from '../../../public/dice20.webp';
 import { AddDataDialogContext, ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
+import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
+import type { PlayerApiResponse } from '../../pages/api/sheet/player';
 import type { PlayerSpellApiResponse } from '../../pages/api/sheet/player/spell';
 import type { SpellSheetApiResponse } from '../../pages/api/sheet/spell';
 import { handleDefaultApiResponse } from '../../utils';
@@ -30,6 +34,7 @@ import SheetContainer from './Section';
 type PlayerSpellContainerProps = {
 	title: string;
 	playerSpells: Spell[];
+	playerMaxSlots: number;
 };
 
 const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
@@ -86,6 +91,11 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const playerCurrentSlots = useMemo(
+		() => playerSpells.reduce((prev, cur) => prev + cur.slots, 0),
+		[playerSpells]
+	);
+
 	return (
 		<SheetContainer
 			title={props.title}
@@ -95,6 +105,13 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 					<AddIcon />
 				</IconButton>
 			}>
+			<Box textAlign='center' mt={2} mb={1}>
+				<PlayerMaxSlotsField
+					playerCurrentSlots={playerCurrentSlots}
+					playerMaxSlots={props.playerMaxSlots}
+				/>
+			</Box>
+			<Divider sx={{ mt: 2, mb: 1 }} />
 			<TableContainer>
 				<Table>
 					<TableHead>
@@ -109,6 +126,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 							<TableCell align='center'>{t('sheet.table.range')}</TableCell>
 							<TableCell align='center'>{t('sheet.table.castingTime')}</TableCell>
 							<TableCell align='center'>{t('sheet.table.duration')}</TableCell>
+							<TableCell align='center'>{t('sheet.table.slots')}</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -126,6 +144,49 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 		</SheetContainer>
+	);
+};
+
+const PlayerMaxSlotsField: React.FC<{
+	playerCurrentSlots: number;
+	playerMaxSlots: number;
+}> = (props) => {
+	const [maxSlots, setMaxSlots, isMaxSlotsClean] = useExtendedState(props.playerMaxSlots);
+	const api = useContext(ApiContext);
+	const log = useContext(LoggerContext);
+	const { t } = useI18n<Locale>();
+
+	const onMaxSlotsBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+		if (isMaxSlotsClean()) return;
+		api
+			.post<PlayerApiResponse>('/sheet/player', { maxSlots })
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
+	const overload = props.playerCurrentSlots > maxSlots;
+
+	return (
+		<TextField
+			variant='outlined'
+			label={t('slots')}
+			autoComplete='off'
+			color={overload ? 'error' : undefined}
+			focused={overload || undefined}
+			InputProps={{
+				startAdornment: (
+					<Typography variant='body1' color='GrayText'>
+						{props.playerCurrentSlots}/
+					</Typography>
+				),
+			}}
+			inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+			value={maxSlots}
+			onChange={(ev) => {
+				if (ev.target.validity.valid) setMaxSlots(parseInt(ev.target.value) || 0);
+			}}
+			onBlur={onMaxSlotsBlur}
+		/>
 	);
 };
 
@@ -186,9 +247,10 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 				<TableCell align='center'>{props.range || '-'}</TableCell>
 				<TableCell align='center'>{props.castingTime || '-'}</TableCell>
 				<TableCell align='center'>{props.duration || '-'}</TableCell>
+				<TableCell align='center'>{props.slots || '-'}</TableCell>
 			</TableRow>
 			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 					<Collapse in={open}>
 						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
 							{props.description}

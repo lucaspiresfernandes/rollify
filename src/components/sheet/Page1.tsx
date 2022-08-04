@@ -216,6 +216,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 								<MemoPlayerSpellContainer
 									title={t('sheet.playerSpellTitle')}
 									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
+									playerMaxSlots={props.player.spellSlots}
 								/>
 							</Grid>
 						</AddDataDialogContext.Provider>
