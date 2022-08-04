@@ -11,7 +11,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
@@ -436,9 +436,9 @@ const PlayerMaxLoadField: React.FC<{
 			focused={overload || undefined}
 			InputProps={{
 				startAdornment: (
-					<Typography variant='body1' color='GrayText'>
-						{props.playerCurrentLoad}/
-					</Typography>
+					<InputAdornment
+						position='start'
+						sx={{ mr: 0 }}>{`${props.playerCurrentLoad}/`}</InputAdornment>
 				),
 			}}
 			inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}

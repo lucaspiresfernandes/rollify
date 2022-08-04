@@ -15,6 +15,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
 import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
@@ -175,9 +176,9 @@ const PlayerMaxSlotsField: React.FC<{
 			focused={overload || undefined}
 			InputProps={{
 				startAdornment: (
-					<Typography variant='body1' color='GrayText'>
-						{props.playerCurrentSlots}/
-					</Typography>
+					<InputAdornment
+						position='start'
+						sx={{ mr: 0 }}>{`${props.playerCurrentSlots}/`}</InputAdornment>
 				),
 			}}
 			inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}

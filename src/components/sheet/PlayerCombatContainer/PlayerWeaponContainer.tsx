@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
 import type { TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
@@ -169,9 +169,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 							sx={{ width: '3em' }}
 							InputProps={{
 								endAdornment: (
-									<Typography variant='body1' color='GrayText' lineHeight='inherit' pl={0.2}>
-										/{props.ammo}
-									</Typography>
+									<InputAdornment position='end' sx={{ ml: 0 }}>{`/${props.ammo}`}</InputAdornment>
 								),
 							}}
 							inputProps={{
