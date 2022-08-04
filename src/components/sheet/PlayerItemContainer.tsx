@@ -531,7 +531,7 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 					value={currentDescription}
 					onChange={(ev) => setCurrentDescription(ev.target.value)}
 					onBlur={descriptionBlur}
-					style={{ minWidth: '15em' }}
+					style={{ minWidth: '20em' }}
 					inputProps={{
 						'aria-label': 'Description',
 					}}

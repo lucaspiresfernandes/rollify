@@ -101,18 +101,15 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	};
 
 	const onAmmoChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
-		const aux = ev.target.value;
-		let newAmmo = parseInt(aux) || 0;
-		setCurrentAmmo(newAmmo);
+		if (ev.target.validity.valid) setCurrentAmmo(parseInt(ev.target.value) || 0);
 	};
 
 	const onAmmoBlur: React.FocusEventHandler<HTMLInputElement> = (ev) => {
-		if (isClean()) return;
 		let newAmmo = currentAmmo;
-
 		if (props.ammo && currentAmmo > props.ammo) newAmmo = props.ammo;
-
 		setCurrentAmmo(newAmmo);
+
+		if (isClean()) return;
 
 		api
 			.post<PlayerWeaponApiResponse>('/sheet/player/weapon', {
@@ -164,21 +161,23 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 				<TableCell align='center'>{props.attacks || '-'}</TableCell>
 				<TableCell align='center'>
 					{props.ammo ? (
-						<Box display='flex' flexDirection='row' alignItems='center' justifyContent='center'>
-							<TextField
-								variant='standard'
-								value={currentAmmo}
-								onChange={onAmmoChange}
-								onBlur={onAmmoBlur}
-								sx={{ width: '3em' }}
-								inputProps={{
-									style: { textAlign: 'center' },
-								}}
-							/>
-							<Typography variant='body1' component='span'>
-								/ {props.ammo}
-							</Typography>
-						</Box>
+						<TextField
+							variant='standard'
+							value={currentAmmo}
+							onChange={onAmmoChange}
+							onBlur={onAmmoBlur}
+							sx={{ width: '3em' }}
+							InputProps={{
+								endAdornment: (
+									<Typography variant='body1' color='GrayText' lineHeight='inherit' pl={0.2}>
+										/{props.ammo}
+									</Typography>
+								),
+							}}
+							inputProps={{
+								style: { textAlign: 'end' },
+							}}
+						/>
 					) : (
 						'-'
 					)}
