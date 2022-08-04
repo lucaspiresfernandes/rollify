@@ -334,10 +334,14 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.get<PlayerListApiResponse>('/sheet/player/list')
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
+				const players = res.data.players;
+
+				if (players.length === 0) return log({ text: 'TODO: No players.' });
+
 				tradeDialog.openDialog(
 					type,
 					equipment.id,
-					res.data.players,
+					players,
 					type === 'weapon' ? playerWeapons : playerArmor,
 					(partnerId, partnerItemId) => onTradeSubmit(type, equipment.id, partnerId, partnerItemId)
 				);

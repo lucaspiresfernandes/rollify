@@ -93,7 +93,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			socket.off('playerAttributeChange');
 			socket.off('playerAttributeStatusChange');
 		};
-		
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
@@ -177,6 +177,20 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 					PlayerCharacteristic: details.PlayerCharacteristic.map((char) => {
 						if (char.Characteristic.id !== charId) return char;
 						return { ...char, value, modifier };
+					}),
+				};
+			});
+		});
+
+		socket.on('playerCurrencyChange', (id, currId, value) => {
+			if (id !== props.id) return;
+			setDetails((details) => {
+				if (!details) return details;
+				return {
+					...details,
+					PlayerCurrency: details.PlayerCurrency.map((curr) => {
+						if (curr.Currency.id !== currId) return curr;
+						return { ...curr, value };
 					}),
 				};
 			});
@@ -305,6 +319,7 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 			socket.off('playerInfoChange');
 			socket.off('playerSpecChange');
 			socket.off('playerCharacteristicChange');
+			socket.off('playerCurrencyChange');
 			socket.off('playerSkillChange');
 			socket.off('playerItemAdd');
 			socket.off('playerItemRemove');

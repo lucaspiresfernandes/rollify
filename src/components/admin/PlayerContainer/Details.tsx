@@ -89,35 +89,49 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
 				</>
 			)}
 
+			<Divider sx={{ my: 2 }} />
+
+			<Typography variant='h5'>{t('sheet.playerItemTitle')}</Typography>
+			<Typography variant='body2' mb={2}>
+				{t('currentWeight')}:{' '}
+				<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
+					{load} / {details.maxLoad}
+				</span>
+			</Typography>
+
+			<Box
+				display='flex'
+				flexDirection='row'
+				gap={3}
+				flexWrap='wrap'
+				justifyContent='center'
+				mb={3}>
+				{details.PlayerCurrency.map((cur) => (
+					<div key={cur.Currency.id}>
+						<Typography variant='h6'>{cur.value || '0'}</Typography>
+						<Typography variant='caption'>{cur.Currency.name}</Typography>
+					</div>
+				))}
+			</Box>
+
 			{details.PlayerItem.length > 0 && (
-				<>
-					<Divider sx={{ my: 2 }} />
+				<Box display='flex' flexDirection='column' flexWrap='wrap' justifyContent='center'>
+					{details.PlayerItem.map((item) => {
+						const title =
+							item.currentDescription +
+							' ' +
+							`(${t('sheet.table.weight')}: ${item.Item.weight})` +
+							`(${t('sheet.table.quantity')}: ${item.quantity})`;
 
-					<Typography variant='h5'>{t('sheet.playerItemTitle')}</Typography>
-					<Typography variant='body2' mb={2}>
-						{t('currentWeight')}:{' '}
-						<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
-							{load} / {details.maxLoad}
-						</span>
-					</Typography>
-					<Box display='flex' flexDirection='column' flexWrap='wrap' justifyContent='center'>
-						{details.PlayerItem.map((item) => {
-							const title =
-								item.currentDescription +
-								' ' +
-								`(${t('sheet.table.weight')}: ${item.Item.weight})` +
-								`(${t('sheet.table.quantity')}: ${item.quantity})`;
-
-							return (
-								<Tooltip key={item.Item.id} title={title} placement='top'>
-									<Typography variant='h6' component='label'>
-										{item.Item.name}
-									</Typography>
-								</Tooltip>
-							);
-						})}
-					</Box>
-				</>
+						return (
+							<Tooltip key={item.Item.id} title={title} placement='top'>
+								<Typography variant='h6' component='label'>
+									{item.Item.name}
+								</Typography>
+							</Tooltip>
+						);
+					})}
+				</Box>
 			)}
 
 			{details.PlayerWeapon.length > 0 && details.PlayerWeapon.length > 0 && (

@@ -245,12 +245,12 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			.get<PlayerListApiResponse>('/sheet/player/list')
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				tradeDialog.openDialog(
-					'item',
-					item.id,
-					res.data.players,
-					playerItems,
-					(partnerId, partnerItemId) => onTradeSubmit(item.id, partnerId, partnerItemId)
+				const players = res.data.players;
+
+				if (players.length === 0) return log({ text: 'TODO: No players.' });
+
+				tradeDialog.openDialog('item', item.id, players, playerItems, (partnerId, partnerItemId) =>
+					onTradeSubmit(item.id, partnerId, partnerItemId)
 				);
 			})
 			.catch((err) =>
