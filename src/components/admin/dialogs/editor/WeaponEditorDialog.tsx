@@ -28,8 +28,10 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setWeapon(props.data);
-		else setWeapon(initialState);
+		if (props.open) {
+			if (props.data) setWeapon(props.data);
+			else setWeapon(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

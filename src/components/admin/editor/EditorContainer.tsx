@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { Searchbar } from '../../sheet/PlayerSkillContainer';
-import { startTransition, useState } from 'react';
+import { memo, startTransition, useState } from 'react';
 
 type EditorContainerProps = {
 	data: { id: number; name: string }[];
@@ -26,7 +26,7 @@ const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelet
 				</Paper>
 			</Box>
 			<Divider />
-			<Box height={255} mt={1} sx={{ overflowY: 'auto' }}>
+			<Box height={260} mt={1} sx={{ overflowY: 'auto' }}>
 				<Stack spacing={2} py={1}>
 					{data.map((d) => {
 						if (!d.name.toLowerCase().includes(search.toLowerCase())) return null;
@@ -67,4 +67,4 @@ const EditorField: React.FC<EditorFieldProps> = ({ name, onEdit, onDelete, ...pr
 	);
 };
 
-export default EditorContainer;
+export default memo(EditorContainer);

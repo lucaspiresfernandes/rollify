@@ -1,8 +1,6 @@
-export type EditorDialogOperation = 'create' | 'update';
-
 export type EditorDialogData<T> = {
 	data?: T;
-	operation: EditorDialogOperation;
+	operation: 'create' | 'update';
 };
 
 export type EditorDialogProps<T> = {

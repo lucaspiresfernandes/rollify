@@ -26,8 +26,10 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setArmor(props.data);
-		else setArmor(initialState);
+		if (props.open) {
+			if (props.data) setArmor(props.data);
+			else setArmor(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

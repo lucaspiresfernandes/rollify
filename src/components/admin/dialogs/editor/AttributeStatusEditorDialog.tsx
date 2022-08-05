@@ -26,7 +26,8 @@ const AttributeStatusEditorDialog: React.FC<Props> = (props) => {
 	useEffect(() => {
 		if (props.open) {
 			if (props.data) setAttributeStatus(props.data);
-		} else setAttributeStatus({ ...initialState, attribute_id: props.attribute[0].id });
+			else setAttributeStatus(initialState);
+		}
 	}, [props.data, props.open, props.attribute]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

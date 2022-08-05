@@ -24,8 +24,10 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setAttribute(props.data);
-		else setAttribute(initialState);
+		if (props.open) {
+			if (props.data) setAttribute(props.data);
+			else setAttribute(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

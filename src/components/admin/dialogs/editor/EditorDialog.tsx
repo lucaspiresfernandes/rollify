@@ -30,8 +30,10 @@ const EditorDialog: React.FC<EditorDialogProps<EditorDialogDataType>> = (props) 
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setData(props.data);
-		else setData(initialState);
+		if (props.open) {
+			if (props.data) setData(props.data);
+			else setData(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

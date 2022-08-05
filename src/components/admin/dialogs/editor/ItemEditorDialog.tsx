@@ -24,8 +24,10 @@ const ItemEditorDialog: React.FC<EditorDialogProps<Item>> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setItem(props.data);
-		else setItem(initialState);
+		if (props.open) {
+			if (props.data) setItem(props.data);
+			else setItem(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

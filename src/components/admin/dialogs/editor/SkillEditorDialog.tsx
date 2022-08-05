@@ -25,8 +25,10 @@ const SkillEditorDialog: React.FC<Props> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setSkill(props.data);
-		else setSkill(initialState);
+		if (props.open) {
+			if (props.data) setSkill(props.data);
+			else setSkill(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

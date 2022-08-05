@@ -31,8 +31,10 @@ const SpellEditorDialog: React.FC<EditorDialogProps<Spell>> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setSpell(props.data);
-		else setSpell(initialState);
+		if (props.open) {
+			if (props.data) setSpell(props.data);
+			else setSpell(initialState);
+		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
