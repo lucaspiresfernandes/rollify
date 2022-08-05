@@ -158,7 +158,12 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 
 	return (
 		<Box display='flex' gap={1} justifyContent='end' width={{ md: 300 }}>
-			<Drawer anchor='right' open={open} variant='temporary' onClose={() => setOpen(false)}>
+			<Drawer
+				keepMounted
+				anchor='right'
+				open={open}
+				variant='temporary'
+				onClose={() => setOpen(false)}>
 				<Box display='flex' justifyContent='space-between' alignItems='center ' p={2}>
 					<Typography variant='h6'>{t('nav.admin.configurations')}</Typography>
 					<IconButton size='medium' onClick={() => setOpen(false)}>

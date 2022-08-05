@@ -1,10 +1,11 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
+import InfoEditorContainer from '../../components/admin/editor/InfoEditorContainer';
 import type { Locale } from '../../i18n';
 import type { InferSsrProps } from '../../utils/next';
 import prisma from '../../utils/prisma';
@@ -33,6 +34,42 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 					{t('admin.editorTitle')}
 				</Typography>
 			</Box>
+
+			<Grid container spacing={2}>
+				<Grid item xs={12} md={6}>
+					<InfoEditorContainer title='Info' info={props.info} />
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Extra Info
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Attributes & Attribute Status
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Specs
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Characteristics
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Currency
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Skills and Specializations
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Weapons
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Armor
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Items
+				</Grid>
+				<Grid item xs={12} md={6}>
+					Spells
+				</Grid>
+			</Grid>
 		</Container>
 	);
 };
