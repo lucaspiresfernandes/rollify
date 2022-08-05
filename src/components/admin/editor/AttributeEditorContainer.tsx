@@ -20,7 +20,6 @@ import AttributeStatusEditorDialog from '../dialogs/editor/AttributeStatusEditor
 import EditorContainer from './EditorContainer';
 
 type AttributeEditorContainerProps = {
-	title: string;
 	attribute: Attribute[];
 	attributeStatus: AttributeStatus[];
 };
@@ -79,7 +78,7 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 		<>
 			<Grid item xs={12} md={6}>
 				<Section
-					title={props.title}
+					title='TODO: Attributes'
 					position='relative'
 					sideButton={
 						<IconButton
@@ -113,7 +112,6 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 			</Grid>
 			<Grid item xs={12} md={6}>
 				<AttributeStatusEditorContainer
-					title='Attribute Status'
 					attribute={attribute}
 					attributeStatus={props.attributeStatus}
 				/>
@@ -176,7 +174,7 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Attribute Status'
 			position='relative'
 			sideButton={
 				<IconButton

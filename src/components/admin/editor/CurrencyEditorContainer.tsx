@@ -17,7 +17,6 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type CurrencyEditorContainerProps = {
-	title: string;
 	currency: Currency[];
 };
 
@@ -70,7 +69,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Currency'
 			position='relative'
 			sideButton={
 				<IconButton

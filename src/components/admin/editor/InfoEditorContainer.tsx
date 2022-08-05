@@ -17,7 +17,6 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type InfoEditorContainerProps = {
-	title: string;
 	info: Info[];
 };
 
@@ -70,7 +69,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Info'
 			position='relative'
 			sideButton={
 				<IconButton

@@ -47,54 +47,46 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 
 			<Grid container mt={2} spacing={2} justifyContent='center'>
 				<Grid item xs={12} md={6}>
-					<InfoEditorContainer title='Info' info={props.info} />
+					<InfoEditorContainer info={props.info} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ExtraInfoEditorContainer title='Extra Info' extraInfo={props.extraInfo} />
+					<ExtraInfoEditorContainer extraInfo={props.extraInfo} />
 				</Grid>
 
 				<AttributeEditorContainer
-					title='Attribute'
 					attribute={props.attribute}
 					attributeStatus={props.attributeStatus}
 				/>
 
 				<Grid item xs={12} md={6}>
-					<SpecEditorContainer title='Specs' spec={props.spec} />
+					<SpecEditorContainer spec={props.spec} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<CharacteristicEditorContainer
-						title='Characteristics'
-						characteristic={props.characteristic}
-					/>
+					<CharacteristicEditorContainer characteristic={props.characteristic} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<CurrencyEditorContainer title='Currency' currency={props.currency} />
+					<CurrencyEditorContainer currency={props.currency} />
 				</Grid>
 
-				<SpecializationEditorContainer
-					title='Specialization'
-					specialization={props.specialization}
-					skill={props.skill}
-				/>
+				<SpecializationEditorContainer specialization={props.specialization} skill={props.skill} />
 
 				<Grid item xs={12} md={6}>
-					<WeaponEditorContainer title='Weapons' weapon={props.weapon} />
+					<WeaponEditorContainer weapon={props.weapon} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ArmorEditorContainer title='Armor' armor={props.armor} />
+					<ArmorEditorContainer armor={props.armor} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ItemEditorContainer title='Items' item={props.item} />
+					<ItemEditorContainer item={props.item} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<SpellEditorContainer title='Spell' spell={props.spell} />
+					<SpellEditorContainer spell={props.spell} />
 				</Grid>
 			</Grid>
 		</Container>

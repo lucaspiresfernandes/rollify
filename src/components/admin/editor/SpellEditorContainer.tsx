@@ -17,7 +17,6 @@ import SpellEditorDialog from '../dialogs/editor/SpellEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type SpellEditorContainerProps = {
-	title: string;
 	spell: Spell[];
 };
 
@@ -75,7 +74,7 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Spells'
 			position='relative'
 			sideButton={
 				<IconButton

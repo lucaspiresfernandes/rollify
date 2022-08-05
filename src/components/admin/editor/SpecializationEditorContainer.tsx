@@ -20,7 +20,6 @@ import SkillEditorDialog from '../dialogs/editor/SkillEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type SpecializationEditorContainerProps = {
-	title: string;
 	skill: (Skill & {
 		Specialization: {
 			name: string;
@@ -86,7 +85,7 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 		<>
 			<Grid item xs={12} md={6}>
 				<Section
-					title={props.title}
+					title='TODO: Specializations'
 					position='relative'
 					sideButton={
 						<IconButton
@@ -119,7 +118,7 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 				</Section>
 			</Grid>
 			<Grid item xs={12} md={6}>
-				<SkillEditorContainer title='Skill' skill={props.skill} specialization={specialization} />
+				<SkillEditorContainer skill={props.skill} specialization={specialization} />
 			</Grid>
 		</>
 	);
@@ -205,7 +204,7 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Skills'
 			position='relative'
 			sideButton={
 				<IconButton

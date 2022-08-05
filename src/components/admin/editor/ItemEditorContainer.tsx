@@ -17,7 +17,6 @@ import ItemEditorDialog from '../dialogs/editor/ItemEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type ItemEditorContainerProps = {
-	title: string;
 	item: Item[];
 };
 
@@ -75,7 +74,7 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Items'
 			position='relative'
 			sideButton={
 				<IconButton

@@ -17,7 +17,6 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type CharacteristicEditorContainerProps = {
-	title: string;
 	characteristic: Characteristic[];
 };
 
@@ -76,7 +75,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Characteristics'
 			position='relative'
 			sideButton={
 				<IconButton

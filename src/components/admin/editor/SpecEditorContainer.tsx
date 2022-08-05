@@ -17,7 +17,6 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type SpecEditorContainerProps = {
-	title: string;
 	spec: Spec[];
 };
 
@@ -70,7 +69,7 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={props.title}
+			title='TODO: Specs'
 			position='relative'
 			sideButton={
 				<IconButton
