@@ -1,13 +1,13 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Box, { BoxProps } from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { Searchbar } from '../../sheet/PlayerSkillContainer';
 import { memo, startTransition, useState } from 'react';
+import { Searchbar } from '../../sheet/PlayerSkillContainer';
 
 type EditorContainerProps = {
 	data: { id: number; name: string }[];
@@ -27,43 +27,24 @@ const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelet
 			</Box>
 			<Divider />
 			<Box height={260} mt={1} sx={{ overflowY: 'auto' }}>
-				<Stack spacing={2} py={1}>
+				<Stack spacing={2} py={1} pr={1}>
 					{data.map((d) => {
 						if (!d.name.toLowerCase().includes(search.toLowerCase())) return null;
 						return (
-							<EditorField
-								key={d.id}
-								display='flex'
-								gap={2}
-								name={d.name}
-								onEdit={() => onEdit(d.id)}
-								onDelete={() => onDelete(d.id)}
-							/>
+							<Box key={d.id} display='flex' gap={2}>
+								<Button variant='outlined' aria-label='delete' onClick={() => onDelete(d.id)}>
+									<DeleteIcon />
+								</Button>
+								<Button variant='outlined' aria-label='update' onClick={() => onEdit(d.id)}>
+									<EditIcon />
+								</Button>
+								<TextField variant='standard' fullWidth disabled value={d.name} />
+							</Box>
 						);
 					})}
 				</Stack>
 			</Box>
 		</>
-	);
-};
-
-type EditorFieldProps = BoxProps & {
-	name: string;
-	onEdit: () => void;
-	onDelete: () => void;
-};
-
-const EditorField: React.FC<EditorFieldProps> = ({ name, onEdit, onDelete, ...props }) => {
-	return (
-		<Box {...props}>
-			<Button variant='outlined' aria-label='delete' onClick={onDelete}>
-				<DeleteIcon />
-			</Button>
-			<Button variant='outlined' aria-label='update' onClick={onEdit}>
-				<EditIcon />
-			</Button>
-			<TextField variant='standard' fullWidth disabled value={name} />
-		</Box>
 	);
 };
 
