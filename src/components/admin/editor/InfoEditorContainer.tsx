@@ -13,7 +13,7 @@ import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
 import Section from '../../sheet/Section';
 import type { EditorDialogData } from '../dialogs/editor';
-import InfoEditorDialog from '../dialogs/InfoEditorDialog';
+import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type InfoEditorContainerProps = {
@@ -32,6 +32,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 	const onDialogSubmit = (data: Info) => {
 		setOpenDialog(false);
 		setLoading(true);
+
 		api('/sheet/info', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
 			.then((res: AxiosResponse<InfoSheetApiResponse>) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
@@ -87,16 +88,17 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 			<EditorContainer
 				data={info}
 				onEdit={(id) => {
-					setDialogData({ operation: 'edit', data: info.find((i) => i.id === id) });
+					setDialogData({ operation: 'update', data: info.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
 				onDelete={onDeleteInfo}
 			/>
-			<InfoEditorDialog
-				{...dialogData}
+			<EditorDialog
+				title='TODO: Add Info'
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}
+				data={dialogData.data}
 			/>
 		</Section>
 	);

@@ -5,49 +5,54 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import type { Info } from '@prisma/client';
+import type {
+	Characteristic,
+	Currency,
+	ExtraInfo,
+	Info,
+	Spec,
+	Specialization,
+} from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
-import type { Locale } from '../../../i18n';
-import type { EditorDialogProps } from './editor';
+import type { Locale } from '../../../../i18n';
+import type { EditorDialogProps } from '.';
 
-const initialState: Info = {
+type EditorDialogDataType = Info | Spec | Characteristic | Specialization | Currency | ExtraInfo;
+
+const initialState: EditorDialogDataType = {
 	id: 0,
 	name: '',
 };
 
-const InfoEditorDialog: React.FC<EditorDialogProps<Info>> = (props) => {
-	const [info, setInfo] = useState(initialState);
+const EditorDialog: React.FC<EditorDialogProps<EditorDialogDataType>> = (props) => {
+	const [data, setData] = useState(initialState);
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		if (props.open && props.data) setInfo(props.data);
+		if (props.open && props.data) setData(props.data);
+		else setData(initialState);
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
-		props.onSubmit(info);
+		props.onSubmit(data);
 	};
 
 	return (
-		<Dialog
-			open={props.open}
-			onClose={props.onClose}
-			TransitionProps={{ onExited: () => setInfo(initialState) }}
-			maxWidth='xs'
-			fullWidth>
-			<DialogTitle>TODO: edit</DialogTitle>
+		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
+			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
 				<form id='infoEditorDialogForm' onSubmit={onSubmit}>
-					<Box m={1}>
+					<Box pt={1}>
 						<TextField
 							required
 							autoFocus
 							fullWidth
 							label='Name'
-							value={info.name}
+							value={data.name}
 							onChange={(ev) => {
-								setInfo({ ...info, name: ev.target.value });
+								setData({ ...data, name: ev.target.value });
 							}}
 						/>
 					</Box>
@@ -63,4 +68,4 @@ const InfoEditorDialog: React.FC<EditorDialogProps<Info>> = (props) => {
 	);
 };
 
-export default InfoEditorDialog;
+export default EditorDialog;

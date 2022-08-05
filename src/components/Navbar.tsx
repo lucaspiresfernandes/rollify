@@ -180,19 +180,19 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 							startIcon={<LightModeIcon />}
 							variant={mode === 'light' ? 'contained' : undefined}
 							onClick={() => updateMode('light')}>
-							Claro
+							TODO: Claro
 						</Button>
 						<Button
 							startIcon={<SettingsBrightnessIcon />}
 							variant={mode === 'system' ? 'contained' : undefined}
 							onClick={() => updateMode('system')}>
-							Sistema
+							TODO: Sistema
 						</Button>
 						<Button
 							startIcon={<DarkModeIcon />}
 							variant={mode === 'dark' ? 'contained' : undefined}
 							onClick={() => updateMode('dark')}>
-							Escuro
+							TODO: Escuro
 						</Button>
 					</ButtonGroup>
 					<Typography variant='body2' mt={3} mb={1}>

@@ -5,7 +5,15 @@ import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
+import ArmorEditorContainer from '../../components/admin/editor/ArmorEditorContainer';
+import CharacteristicEditorContainer from '../../components/admin/editor/CharacteristicEditorContainer';
+import CurrencyEditorContainer from '../../components/admin/editor/CurrencyEditorContainer';
+import ExtraInfoEditorContainer from '../../components/admin/editor/ExtraInfoEditorContainer';
 import InfoEditorContainer from '../../components/admin/editor/InfoEditorContainer';
+import ItemEditorContainer from '../../components/admin/editor/ItemEditorContainer';
+import SpecEditorContainer from '../../components/admin/editor/SpecEditorContainer';
+import SpellEditorContainer from '../../components/admin/editor/SpellEditorContainer';
+import WeaponEditorContainer from '../../components/admin/editor/WeaponEditorContainer';
 import type { Locale } from '../../i18n';
 import type { InferSsrProps } from '../../utils/next';
 import prisma from '../../utils/prisma';
@@ -35,39 +43,42 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 				</Typography>
 			</Box>
 
-			<Grid container spacing={2}>
+			<Grid container mt={2} spacing={2} justifyContent='center'>
 				<Grid item xs={12} md={6}>
 					<InfoEditorContainer title='Info' info={props.info} />
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Extra Info
+					<ExtraInfoEditorContainer title='Extra Info' extraInfo={props.extraInfo} />
 				</Grid>
 				<Grid item xs={12} md={6}>
 					Attributes & Attribute Status
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Specs
+					<SpecEditorContainer title='Specs' spec={props.spec} />
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Characteristics
+					<CharacteristicEditorContainer
+						title='Characteristics'
+						characteristic={props.characteristic}
+					/>
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Currency
+					<CurrencyEditorContainer title='Currency' currency={props.currency} />
 				</Grid>
 				<Grid item xs={12} md={6}>
 					Skills and Specializations
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Weapons
+					<WeaponEditorContainer title='Weapons' weapon={props.weapon} />
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Armor
+					<ArmorEditorContainer title='Armor' armor={props.armor} />
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Items
+					<ItemEditorContainer title='Items' item={props.item} />
 				</Grid>
 				<Grid item xs={12} md={6}>
-					Spells
+					<SpellEditorContainer title='Spell' spell={props.spell} />
 				</Grid>
 			</Grid>
 		</Container>

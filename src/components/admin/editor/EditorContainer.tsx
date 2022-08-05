@@ -1,9 +1,13 @@
-import EditIcon from '@mui/icons-material/Edit';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Box, { BoxProps } from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import { FixedSizeList } from 'react-window';
+import { Searchbar } from '../../sheet/PlayerSkillContainer';
+import { startTransition, useState } from 'react';
 
 type EditorContainerProps = {
 	data: { id: number; name: string }[];
@@ -12,42 +16,53 @@ type EditorContainerProps = {
 };
 
 const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelete }) => {
-	const DataRow = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-		const item = data[index];
-		return (
-			<EditorRow
-				style={style}
-				name={item.name}
-				onDelete={() => onDelete(item.id)}
-				onEdit={() => onEdit(item.id)}
-			/>
-		);
-	};
+	const [search, setSearch] = useState('');
 
 	return (
-		<FixedSizeList height={300} width='100%' itemSize={48} itemCount={data.length}>
-			{DataRow}
-		</FixedSizeList>
+		<>
+			<Box mx={1} my={1}>
+				<Paper sx={{ p: 0.5, flex: '1 0' }}>
+					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
+				</Paper>
+			</Box>
+			<Divider />
+			<Box height={255} mt={1} sx={{ overflowY: 'auto' }}>
+				<Stack spacing={2} py={1}>
+					{data.map((d) => {
+						if (!d.name.toLowerCase().includes(search.toLowerCase())) return null;
+						return (
+							<EditorField
+								key={d.id}
+								display='flex'
+								gap={2}
+								name={d.name}
+								onEdit={() => onEdit(d.id)}
+								onDelete={() => onDelete(d.id)}
+							/>
+						);
+					})}
+				</Stack>
+			</Box>
+		</>
 	);
 };
 
-type EditorRowProps = {
+type EditorFieldProps = BoxProps & {
 	name: string;
 	onEdit: () => void;
 	onDelete: () => void;
-	style: React.CSSProperties;
 };
 
-const EditorRow: React.FC<EditorRowProps> = (props) => {
+const EditorField: React.FC<EditorFieldProps> = ({ name, onEdit, onDelete, ...props }) => {
 	return (
-		<Box style={props.style} display='flex' gap={2} py={1}>
-			<Button variant='outlined' size='small' onClick={props.onDelete}>
+		<Box {...props}>
+			<Button variant='outlined' aria-label='delete' onClick={onDelete}>
 				<DeleteIcon />
 			</Button>
-			<Button variant='outlined' size='small' onClick={props.onEdit}>
+			<Button variant='outlined' aria-label='update' onClick={onEdit}>
 				<EditIcon />
 			</Button>
-			<TextField variant='standard' fullWidth disabled value={props.name} />
+			<TextField variant='standard' fullWidth disabled value={name} />
 		</Box>
 	);
 };

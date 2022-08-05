@@ -1,13 +1,13 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import type { ExtraInfo } from '@prisma/client';
+import type { Currency } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
-import type { ExtraInfoSheetApiResponse } from '../../../pages/api/sheet/extrainfo';
+import type { CurrencySheetApiResponse } from '../../../pages/api/sheet/currency';
 import { handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
@@ -16,35 +16,33 @@ import type { EditorDialogData } from '../dialogs/editor';
 import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
-type ExtraInfoEditorContainerProps = {
+type CurrencyEditorContainerProps = {
 	title: string;
-	extraInfo: ExtraInfo[];
+	currency: Currency[];
 };
 
-const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props) => {
+const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
-	const [extraInfo, setExtraInfo] = useState(props.extraInfo);
-	const [dialogData, setDialogData] = useState<EditorDialogData<ExtraInfo>>({
-		operation: 'create',
-	});
+	const [currency, setCurrency] = useState(props.currency);
+	const [dialogData, setDialogData] = useState<EditorDialogData<Currency>>({ operation: 'create' });
 	const [openDialog, setOpenDialog] = useState(false);
 	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
 
-	const onDialogSubmit = (data: ExtraInfo) => {
+	const onDialogSubmit = (data: Currency) => {
 		setOpenDialog(false);
 		setLoading(true);
 
-		api('/sheet/extrainfo', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
-			.then((res: AxiosResponse<ExtraInfoSheetApiResponse>) => {
+		api('/sheet/currency', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
+			.then((res: AxiosResponse<CurrencySheetApiResponse>) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				const newInfo = res.data.extraInfo;
+				const newCurrency = res.data.currency;
 
-				if (dialogData.operation === 'create') return setExtraInfo((i) => [...i, newInfo]);
+				if (dialogData.operation === 'create') return setCurrency((i) => [...i, newCurrency]);
 
-				setExtraInfo((info) =>
-					info.map((i) => {
-						if (i.id === newInfo.id) return newInfo;
+				setCurrency((currency) =>
+					currency.map((i) => {
+						if (i.id === newCurrency.id) return newCurrency;
 						return i;
 					})
 				);
@@ -55,14 +53,14 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 			.finally(() => setLoading(false));
 	};
 
-	const onDeleteExtraInfo = (id: number) => {
+	const onDeleteCurrency = (id: number) => {
 		if (!confirm(t('prompt.delete'))) return;
 		setLoading(true);
 		api
-			.delete<ExtraInfoSheetApiResponse>('/sheet/extrainfo', { data: { id } })
+			.delete<CurrencySheetApiResponse>('/sheet/currency', { data: { id } })
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				setExtraInfo((info) => info.filter((i) => i.id !== id));
+				setCurrency((currency) => currency.filter((i) => i.id !== id));
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -80,7 +78,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Extra Info'>
+					title='TODO: Add Currency'>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -88,15 +86,15 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={extraInfo}
+				data={currency}
 				onEdit={(id) => {
-					setDialogData({ operation: 'update', data: extraInfo.find((i) => i.id === id) });
+					setDialogData({ operation: 'update', data: currency.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
-				onDelete={onDeleteExtraInfo}
+				onDelete={onDeleteCurrency}
 			/>
 			<EditorDialog
-				title='TODO: Add Extra Info'
+				title='TODO: Add Currency'
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}
@@ -106,4 +104,4 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 	);
 };
 
-export default ExtraInfoEditorContainer;
+export default CurrencyEditorContainer;

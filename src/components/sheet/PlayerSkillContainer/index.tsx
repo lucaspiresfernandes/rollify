@@ -337,19 +337,20 @@ export const Searchbar: React.FC<SearchbarProps> = (props) => {
 
 	return (
 		<InputBase
-					fullWidth
-					placeholder={t('search')}
-					inputProps={{ 'aria-label': t('search') }}
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-					endAdornment={
-						search ? (
-							<IconButton size='small' onClick={() => setSearch('')}>
-								<ClearIcon />
-							</IconButton>
-						) : undefined
-					}
-				/>
+			fullWidth
+			placeholder={t('search')}
+			inputProps={{ 'aria-label': t('search') }}
+			value={search}
+			onChange={(e) => setSearch(e.target.value)}
+			endAdornment={
+				<IconButton
+					size='small'
+					onClick={() => setSearch('')}
+					sx={{ visibility: search ? undefined : 'hidden' }}>
+					<ClearIcon />
+				</IconButton>
+			}
+		/>
 	);
 };
 

@@ -1,13 +1,13 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import type { ExtraInfo } from '@prisma/client';
+import type { Specialization } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
-import type { ExtraInfoSheetApiResponse } from '../../../pages/api/sheet/extrainfo';
+import type { SpecializationSheetApiResponse } from '../../../pages/api/sheet/specialization';
 import { handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
@@ -16,35 +16,39 @@ import type { EditorDialogData } from '../dialogs/editor';
 import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
-type ExtraInfoEditorContainerProps = {
+type SpecializationEditorContainerProps = {
 	title: string;
-	extraInfo: ExtraInfo[];
+	specialization: Specialization[];
 };
 
-const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props) => {
+const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
-	const [extraInfo, setExtraInfo] = useState(props.extraInfo);
-	const [dialogData, setDialogData] = useState<EditorDialogData<ExtraInfo>>({
+	const [specialization, setSpecialization] = useState(props.specialization);
+	const [dialogData, setDialogData] = useState<EditorDialogData<Specialization>>({
 		operation: 'create',
 	});
 	const [openDialog, setOpenDialog] = useState(false);
 	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
 
-	const onDialogSubmit = (data: ExtraInfo) => {
+	const onDialogSubmit = (data: Specialization) => {
 		setOpenDialog(false);
 		setLoading(true);
 
-		api('/sheet/extrainfo', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
-			.then((res: AxiosResponse<ExtraInfoSheetApiResponse>) => {
+		api('/sheet/specialization', {
+			method: dialogData.operation === 'create' ? 'PUT' : 'POST',
+			data,
+		})
+			.then((res: AxiosResponse<SpecializationSheetApiResponse>) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				const newInfo = res.data.extraInfo;
+				const newSpecialization = res.data.specialization;
 
-				if (dialogData.operation === 'create') return setExtraInfo((i) => [...i, newInfo]);
+				if (dialogData.operation === 'create')
+					return setSpecialization((i) => [...i, newSpecialization]);
 
-				setExtraInfo((info) =>
-					info.map((i) => {
-						if (i.id === newInfo.id) return newInfo;
+				setSpecialization((specialization) =>
+					specialization.map((i) => {
+						if (i.id === newSpecialization.id) return newSpecialization;
 						return i;
 					})
 				);
@@ -55,14 +59,14 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 			.finally(() => setLoading(false));
 	};
 
-	const onDeleteExtraInfo = (id: number) => {
+	const onDeleteSpecialization = (id: number) => {
 		if (!confirm(t('prompt.delete'))) return;
 		setLoading(true);
 		api
-			.delete<ExtraInfoSheetApiResponse>('/sheet/extrainfo', { data: { id } })
+			.delete<SpecializationSheetApiResponse>('/sheet/specialization', { data: { id } })
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				setExtraInfo((info) => info.filter((i) => i.id !== id));
+				setSpecialization((specialization) => specialization.filter((i) => i.id !== id));
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -80,7 +84,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Extra Info'>
+					title='TODO: Add Specialization'>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -88,15 +92,15 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={extraInfo}
+				data={specialization}
 				onEdit={(id) => {
-					setDialogData({ operation: 'update', data: extraInfo.find((i) => i.id === id) });
+					setDialogData({ operation: 'update', data: specialization.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
-				onDelete={onDeleteExtraInfo}
+				onDelete={onDeleteSpecialization}
 			/>
 			<EditorDialog
-				title='TODO: Add Extra Info'
+				title='TODO: Add Specialization'
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}
@@ -106,4 +110,4 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 	);
 };
 
-export default ExtraInfoEditorContainer;
+export default SpecializationEditorContainer;

@@ -1,10 +1,14 @@
+export type EditorDialogOperation = 'create' | 'update';
+
 export type EditorDialogData<T> = {
-	operation: 'edit' | 'create';
 	data?: T;
+	operation: EditorDialogOperation;
 };
 
-export type EditorDialogProps<T> = EditorDialogData<T> & {
-    open: boolean;
+export type EditorDialogProps<T> = {
+	title: string;
+	open: boolean;
 	onSubmit: (data: T) => void;
 	onClose: () => void;
+	data?: T;
 };

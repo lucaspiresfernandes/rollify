@@ -47,7 +47,9 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 	const api = useContext(ApiContext);
 
 	useEffect(() => {
-		if (props.open && !tradeRequest) setPartnerId(props.partners[0]?.id || '');
+		if (props.open) {
+			if (!tradeRequest) setPartnerId(props.partners[0]?.id || '');
+		} else setPartnerId('');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.open, props.partners, props.tradeRequest]);
 
@@ -94,7 +96,6 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 				if (tradeRequest) return;
 				props.onClose();
 			}}
-			TransitionProps={{ onExited: () => setPartnerId('') }}
 			PaperProps={{ sx: { position: 'relative' } }}
 			fullWidth>
 			<PartialBackdrop open={loading}>

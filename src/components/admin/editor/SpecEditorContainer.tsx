@@ -1,13 +1,13 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
-import type { ExtraInfo } from '@prisma/client';
+import type { Spec } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
-import type { ExtraInfoSheetApiResponse } from '../../../pages/api/sheet/extrainfo';
+import type { SpecSheetApiResponse } from '../../../pages/api/sheet/spec';
 import { handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
@@ -16,35 +16,33 @@ import type { EditorDialogData } from '../dialogs/editor';
 import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
-type ExtraInfoEditorContainerProps = {
+type SpecEditorContainerProps = {
 	title: string;
-	extraInfo: ExtraInfo[];
+	spec: Spec[];
 };
 
-const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props) => {
+const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
-	const [extraInfo, setExtraInfo] = useState(props.extraInfo);
-	const [dialogData, setDialogData] = useState<EditorDialogData<ExtraInfo>>({
-		operation: 'create',
-	});
+	const [spec, setSpec] = useState(props.spec);
+	const [dialogData, setDialogData] = useState<EditorDialogData<Spec>>({ operation: 'create' });
 	const [openDialog, setOpenDialog] = useState(false);
 	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
 
-	const onDialogSubmit = (data: ExtraInfo) => {
+	const onDialogSubmit = (data: Spec) => {
 		setOpenDialog(false);
 		setLoading(true);
 
-		api('/sheet/extrainfo', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
-			.then((res: AxiosResponse<ExtraInfoSheetApiResponse>) => {
+		api('/sheet/spec', { method: dialogData.operation === 'create' ? 'PUT' : 'POST', data })
+			.then((res: AxiosResponse<SpecSheetApiResponse>) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				const newInfo = res.data.extraInfo;
+				const newSpec = res.data.spec;
 
-				if (dialogData.operation === 'create') return setExtraInfo((i) => [...i, newInfo]);
+				if (dialogData.operation === 'create') return setSpec((i) => [...i, newSpec]);
 
-				setExtraInfo((info) =>
-					info.map((i) => {
-						if (i.id === newInfo.id) return newInfo;
+				setSpec((spec) =>
+					spec.map((i) => {
+						if (i.id === newSpec.id) return newSpec;
 						return i;
 					})
 				);
@@ -55,14 +53,14 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 			.finally(() => setLoading(false));
 	};
 
-	const onDeleteExtraInfo = (id: number) => {
+	const onDeleteSpec = (id: number) => {
 		if (!confirm(t('prompt.delete'))) return;
 		setLoading(true);
 		api
-			.delete<ExtraInfoSheetApiResponse>('/sheet/extrainfo', { data: { id } })
+			.delete<SpecSheetApiResponse>('/sheet/spec', { data: { id } })
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-				setExtraInfo((info) => info.filter((i) => i.id !== id));
+				setSpec((spec) => spec.filter((i) => i.id !== id));
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -80,7 +78,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Extra Info'>
+					title='TODO: Add Spec'>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -88,15 +86,15 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={extraInfo}
+				data={spec}
 				onEdit={(id) => {
-					setDialogData({ operation: 'update', data: extraInfo.find((i) => i.id === id) });
+					setDialogData({ operation: 'update', data: spec.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
-				onDelete={onDeleteExtraInfo}
+				onDelete={onDeleteSpec}
 			/>
 			<EditorDialog
-				title='TODO: Add Extra Info'
+				title='TODO: Add Spec'
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}
@@ -106,4 +104,4 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 	);
 };
 
-export default ExtraInfoEditorContainer;
+export default SpecEditorContainer;

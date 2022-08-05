@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dice10 from '../../public/dice10.webp';
 import dice12 from '../../public/dice12.webp';
 import dice20 from '../../public/dice20.webp';
@@ -67,6 +67,10 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 	]);
 	const { t } = useI18n<Locale>();
 
+	useEffect(() => {
+		setDices((dices) => dices.map((d) => ({ ...d, num: 0 })));
+	}, [props.open]);
+
 	const updateDice = (roll: number, coeff: number) => {
 		setDices((d) =>
 			d.map((dice) => {
@@ -90,12 +94,7 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 	return (
 		<>
 			{props.children}
-			<Dialog
-				open={props.open}
-				onClose={props.onClose}
-				TransitionProps={{
-					onExited: () => setDices((dices) => dices.map((d) => ({ ...d, num: 0 }))),
-				}}>
+			<Dialog open={props.open} onClose={props.onClose}>
 				<DialogTitle>{t('modal.title.generalDiceRoll')}</DialogTitle>
 				<DialogContent>
 					<Grid container spacing={4}>
