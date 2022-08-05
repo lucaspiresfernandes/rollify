@@ -45,20 +45,25 @@ const EditorDialog: React.FC<EditorDialogProps<EditorDialogDataType>> = (props) 
 		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
-				<form id='infoEditorDialogForm' onSubmit={onSubmit}>
-					<Box pt={1}>
-						<TextField
-							required
-							autoFocus
-							fullWidth
-							label='Name'
-							value={data.name}
-							onChange={(ev) => {
-								setData({ ...data, name: ev.target.value });
-							}}
-						/>
-					</Box>
-				</form>
+				<Box
+					id='infoEditorDialogForm'
+					component='form'
+					onSubmit={onSubmit}
+					display='flex'
+					flexDirection='column'
+					gap={2}
+					mt={1}>
+					<TextField
+						required
+						autoFocus
+						fullWidth
+						label='Name'
+						value={data.name}
+						onChange={(ev) => {
+							setData({ ...data, name: ev.target.value });
+						}}
+					/>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>

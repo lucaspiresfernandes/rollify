@@ -1,4 +1,4 @@
-import type { Attribute } from '@prisma/client';
+import type { Attribute, PortraitAttribute } from '@prisma/client';
 import type { NextApiHandler } from 'next';
 import type { NextApiResponseData } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
@@ -26,7 +26,7 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 		!req.body.name ||
 		!req.body.color ||
 		req.body.rollable === undefined ||
-		req.body.visibleToAdmin === undefined
+		req.body.portrait === undefined
 	)
 		return res.json({
 			status: 'failure',
@@ -37,11 +37,12 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 	const name = String(req.body.name);
 	const color = String(req.body.color);
 	const rollable = Boolean(req.body.rollable);
+	const portrait = req.body.portrait as PortraitAttribute | null;
 
 	try {
 		const attribute = await prisma.attribute.update({
 			where: { id },
-			data: { name, color, rollable },
+			data: { name, color, rollable, portrait },
 		});
 
 		res.json({ status: 'success', attribute });
@@ -60,7 +61,7 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 		!req.body.name ||
 		!req.body.color ||
 		req.body.rollable === undefined ||
-		req.body.visibleToAdmin === undefined
+		req.body.portrait === undefined
 	)
 		return res.json({
 			status: 'failure',

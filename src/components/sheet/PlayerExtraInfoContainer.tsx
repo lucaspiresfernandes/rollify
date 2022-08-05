@@ -57,9 +57,6 @@ const PlayerExtraInfoField: React.FC<PlayerExtraInfoFieldProps> = (props) => {
 			variant='outlined'
 			label={props.name}
 			minRows={3}
-			inputProps={{
-				'aria-label': 'Annotations',
-			}}
 			value={value}
 			onChange={(ev) => setValue(ev.target.value)}
 			onBlur={onValueBlur}

@@ -33,6 +33,8 @@ export interface Locale {
 	player: string;
 	unknown: string;
 	none: string;
+	primary: string;
+	secondary: string;
 	trade: string;
 	offering: string;
 	load: string;
@@ -125,6 +127,16 @@ export interface Locale {
 			castingTime: string;
 			duration: string;
 			slots: string;
+
+			rollable: string;
+			portrait: string;
+
+			attribute: string;
+
+			specialization: string;
+			startValue: string;
+
+			visible: string;
 		};
 	};
 

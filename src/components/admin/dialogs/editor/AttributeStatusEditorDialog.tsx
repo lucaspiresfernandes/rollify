@@ -2,10 +2,14 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import type { Attribute, AttributeStatus } from '@prisma/client';
+import MenuItem from '@mui/material/MenuItem';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import type { EditorDialogProps } from '.';
@@ -40,7 +44,7 @@ const AttributeStatusEditorDialog: React.FC<Props> = (props) => {
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
 				<form id='attributeStatusEditorDialogForm' onSubmit={onSubmit}>
-					<Box m={1}>
+					<Box display='flex' flexDirection='column' gap={2} mt={1}>
 						<TextField
 							required
 							autoFocus
@@ -51,6 +55,27 @@ const AttributeStatusEditorDialog: React.FC<Props> = (props) => {
 								setAttributeStatus({ ...attributeStatus, name: ev.target.value });
 							}}
 						/>
+						<FormControl required fullWidth>
+							<InputLabel id='attributeStatusAttributeLabel'>
+								{t('sheet.table.attribute')}
+							</InputLabel>
+							<Select
+								labelId='attributeStatusAttributeLabel'
+								label={t('sheet.table.attribute')}
+								value={attributeStatus.attribute_id}
+								onChange={(ev) =>
+									setAttributeStatus({
+										...attributeStatus,
+										attribute_id: ev.target.value as number,
+									})
+								}>
+								{props.attribute.map((attr) => (
+									<MenuItem key={attr.id} value={attr.id}>
+										{attr.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
 					</Box>
 				</form>
 			</DialogContent>

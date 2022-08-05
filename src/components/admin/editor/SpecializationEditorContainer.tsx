@@ -20,11 +20,7 @@ import SkillEditorDialog from '../dialogs/editor/SkillEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type SpecializationEditorContainerProps = {
-	skill: (Skill & {
-		Specialization: {
-			name: string;
-		} | null;
-	})[];
+	skill: Skill[];
 	specialization: Specialization[];
 };
 
@@ -194,12 +190,12 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 		() =>
 			skill
 				.map((sk) => {
-					if (sk.Specialization?.name)
-						return { ...sk, name: `${sk.Specialization.name} (${sk.name})` };
+					const specialization = props.specialization.find((i) => i.id === sk.specialization_id);
+					if (specialization) return { ...sk, name: `${specialization.name} (${sk.name})` };
 					return sk;
 				})
 				.sort((a, b) => a.name.localeCompare(b.name)),
-		[skill]
+		[skill, props.specialization]
 	);
 
 	return (

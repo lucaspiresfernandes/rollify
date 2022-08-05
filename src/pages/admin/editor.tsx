@@ -45,7 +45,7 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 				</Typography>
 			</Box>
 
-			<Grid container mt={2} spacing={2} justifyContent='center'>
+			<Grid container pt={2} spacing={5} justifyContent='center'>
 				<Grid item xs={12} md={6}>
 					<InfoEditorContainer info={props.info} />
 				</Grid>
@@ -67,10 +67,6 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 					<CharacteristicEditorContainer characteristic={props.characteristic} />
 				</Grid>
 
-				<Grid item xs={12} md={6}>
-					<CurrencyEditorContainer currency={props.currency} />
-				</Grid>
-
 				<SpecializationEditorContainer specialization={props.specialization} skill={props.skill} />
 
 				<Grid item xs={12} md={6}>
@@ -79,6 +75,10 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 
 				<Grid item xs={12} md={6}>
 					<ArmorEditorContainer armor={props.armor} />
+				</Grid>
+
+				<Grid item xs={12} md={6}>
+					<CurrencyEditorContainer currency={props.currency} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
@@ -113,9 +113,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		prisma.characteristic.findMany(),
 		prisma.weapon.findMany(),
 		prisma.armor.findMany(),
-		prisma.skill.findMany({
-			include: { Specialization: { select: { name: true } } },
-		}),
+		prisma.skill.findMany(),
 		prisma.item.findMany(),
 		prisma.specialization.findMany(),
 		prisma.spell.findMany(),

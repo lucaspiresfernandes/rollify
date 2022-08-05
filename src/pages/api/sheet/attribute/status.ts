@@ -21,7 +21,7 @@ const handlePost: NextApiHandler<AttributeStatusSheetApiResponse> = async (req, 
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.id || !req.body.name || !req.body.attributeId)
+	if (!req.body.id || !req.body.name || !req.body.attribute_id)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
@@ -29,7 +29,7 @@ const handlePost: NextApiHandler<AttributeStatusSheetApiResponse> = async (req, 
 
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
-	const attribute_id = Number(req.body.attributeId);
+	const attribute_id = Number(req.body.attribute_id);
 
 	try {
 		const attributeStatus = await prisma.attributeStatus.update({

@@ -207,7 +207,9 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 									onClick={() => {
 										if (router.locale === loc) return;
 										setOpen(false);
-										router.push(router.pathname, undefined, { locale: loc });
+										router
+											.push(router.pathname, undefined, { locale: loc })
+											.then(() => router.reload());
 									}}>
 									{languages.get(loc) || loc}
 								</ListItemButton>

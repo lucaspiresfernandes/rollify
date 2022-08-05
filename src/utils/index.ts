@@ -19,7 +19,7 @@ export function handleDefaultApiResponse<
 	T extends NextApiResponseData<'unauthorized' | 'invalid_body'>
 >(res: AxiosResponse<T>, log: LoggerContextType, t: RosettaExtended<Locale>['t']) {
 	if (res.data.status === 'success') return;
-
+	
 	switch (res.data.reason) {
 		case 'invalid_body':
 			return log({ severity: 'error', text: t('error.invalidBody') });

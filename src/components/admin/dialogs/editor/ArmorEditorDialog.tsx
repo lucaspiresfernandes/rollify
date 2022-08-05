@@ -1,5 +1,7 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,14 +13,14 @@ import { useEffect, useState } from 'react';
 import type { EditorDialogProps } from '.';
 import type { Locale } from '../../../../i18n';
 
-const initialState: Armor = {
+const initialState = {
 	id: 0,
 	name: '',
 	type: '',
-	weight: 0,
+	weight: '0',
 	damageReduction: '',
 	penalty: '',
-	visible: false,
+	visible: true,
 };
 
 const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
@@ -27,39 +29,82 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 
 	useEffect(() => {
 		if (props.open) {
-			if (props.data) setArmor(props.data);
+			if (props.data)
+				setArmor({
+					...props.data,
+					weight: props.data.weight.toString(),
+				});
 			else setArmor(initialState);
 		}
 	}, [props.data, props.open]);
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
-		props.onSubmit(armor);
+		props.onSubmit({
+			...armor,
+			weight: parseInt(armor.weight.replace(',', '.')),
+		});
 	};
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
-				<form id='armorEditorDialogForm' onSubmit={onSubmit}>
-					<Box m={1}>
+				<Box
+					component='form'
+					id='armorEditorDialogForm'
+					onSubmit={onSubmit}
+					display='flex'
+					flexDirection='column'
+					gap={2}
+					mt={1}>
+					<TextField
+						required
+						autoFocus
+						fullWidth
+						label={t('sheet.table.name')}
+						value={armor.name}
+						onChange={(ev) => setArmor({ ...armor, name: ev.target.value })}
+					/>
+					<Box display='flex' flexDirection='row' gap={2}>
+						<TextField
+							label={t('sheet.table.type')}
+							value={armor.type}
+							onChange={(ev) => setArmor({ ...armor, type: ev.target.value })}
+						/>
 						<TextField
 							required
-							autoFocus
-							fullWidth
-							label='Name'
-							value={armor.name}
+							label={t('sheet.table.weight')}
+							inputProps={{ inputMode: 'numeric', pattern: '[0-9,.]*' }}
+							value={armor.weight}
 							onChange={(ev) => {
-								setArmor({ ...armor, name: ev.target.value });
+								if (!ev.target.value || ev.target.validity.valid)
+									setArmor({ ...armor, weight: ev.target.value });
 							}}
 						/>
-						<p>type</p>
-						<p>weight</p>
-						<p>damageReduction</p>
-						<p>penalty</p>
-						<p>visible</p>
 					</Box>
-				</form>
+					<Box display='flex' flexDirection='row' gap={2}>
+						<TextField
+							label={t('sheet.table.damageReduction')}
+							value={armor.damageReduction}
+							onChange={(ev) => setArmor({ ...armor, damageReduction: ev.target.value })}
+						/>
+						<TextField
+							label={t('sheet.table.penalty')}
+							value={armor.penalty}
+							onChange={(ev) => setArmor({ ...armor, penalty: ev.target.value })}
+						/>
+					</Box>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={armor.visible}
+								onChange={(ev) => setArmor({ ...armor, visible: ev.target.checked })}
+							/>
+						}
+						label={t('sheet.table.visible')}
+					/>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>

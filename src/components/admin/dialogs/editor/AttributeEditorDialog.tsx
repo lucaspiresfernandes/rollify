@@ -1,21 +1,29 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import type { Attribute } from '@prisma/client';
+import type { Attribute, PortraitAttribute } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { EditorDialogProps } from '.';
 import type { Locale } from '../../../../i18n';
 
-const initialState: Attribute = {
+type PortraitValue = { name: string; value: PortraitAttribute | 'NONE' }[];
+
+const initialState = {
 	id: 0,
 	name: '',
 	color: '#ddaf0f',
-	portrait: null,
+	portrait: 'NONE',
 	rollable: false,
 };
 
@@ -25,14 +33,41 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 
 	useEffect(() => {
 		if (props.open) {
-			if (props.data) setAttribute(props.data);
+			if (props.data)
+				setAttribute({
+					...props.data,
+					color: `#${props.data.color}`,
+					portrait: props.data.portrait || 'NONE',
+				});
 			else setAttribute(initialState);
 		}
 	}, [props.data, props.open]);
 
+	const portraitValues: PortraitValue = useMemo(
+		() => [
+			{
+				name: t('none'),
+				value: 'NONE',
+			},
+			{
+				name: t('primary'),
+				value: 'PRIMARY',
+			},
+			{
+				name: t('secondary'),
+				value: 'SECONDARY',
+			},
+		],
+		[t]
+	);
+
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
-		props.onSubmit(attribute);
+		props.onSubmit({
+			...attribute,
+			color: attribute.color.substring(1),
+			portrait: attribute.portrait === 'NONE' ? null : (attribute.portrait as PortraitAttribute),
+		});
 	};
 
 	return (
@@ -40,28 +75,49 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
 				<form id='attributeEditorDialogForm' onSubmit={onSubmit}>
-					<Box m={1}>
+					<Box display='flex' flexDirection='column' gap={2} mt={1}>
 						<TextField
 							required
 							autoFocus
 							fullWidth
-							label='Name'
+							label={t('sheet.table.name')}
 							value={attribute.name}
-							onChange={(ev) => {
-								setAttribute({ ...attribute, name: ev.target.value });
-							}}
+							onChange={(ev) => setAttribute({ ...attribute, name: ev.target.value })}
 						/>
-						<TextField
-							required
-							fullWidth
-							label='Color'
-							value={attribute.color}
-							onChange={(ev) => {
-								setAttribute({ ...attribute, color: ev.target.value });
-							}}
+						<Box display='flex' flexDirection='row' gap={2}>
+							<TextField
+								required
+								fullWidth
+								label='Color'
+								value={attribute.color}
+								onChange={(ev) => {
+									setAttribute({ ...attribute, color: ev.target.value });
+								}}
+							/>
+							<FormControl required fullWidth>
+								<InputLabel id='attributePortrait'>{t('sheet.table.portrait')}</InputLabel>
+								<Select
+									labelId='attributePortrait'
+									label={t('sheet.table.portrait')}
+									value={attribute.portrait}
+									onChange={(ev) => setAttribute({ ...attribute, portrait: ev.target.value })}>
+									{portraitValues.map((portrait) => (
+										<MenuItem key={portrait.value} value={portrait.value}>
+											{portrait.name}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Box>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={attribute.rollable}
+									onChange={(ev) => setAttribute({ ...attribute, rollable: ev.target.checked })}
+								/>
+							}
+							label={t('sheet.table.rollable')}
 						/>
-						<p>Retrato</p>
-						<p>Rolavel</p>
 					</Box>
 				</form>
 			</DialogContent>

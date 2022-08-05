@@ -34,6 +34,8 @@ export const table: Locale = {
 	player: 'Player',
 	unknown: 'Unknown',
 	none: 'None',
+	primary: 'Primary',
+	secondary: 'Secondary',
 	trade: 'Trade',
 	offering: 'Offering',
 	load: 'Current Load',
@@ -127,6 +129,16 @@ export const table: Locale = {
 			duration: 'Duration',
 			target: 'Target',
 			slots: 'Slots',
+
+			rollable: 'Rollable',
+			portrait: 'Portrait',
+
+			attribute: 'Attribute',
+
+			specialization: 'Specialization',
+			startValue: 'Start Value',
+
+			visible: 'Visible',
 		},
 	},
 

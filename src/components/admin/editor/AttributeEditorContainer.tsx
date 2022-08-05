@@ -27,7 +27,6 @@ type AttributeEditorContainerProps = {
 const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [attribute, setAttribute] = useState(props.attribute);
-	const [attributeStatus, setAttributeStatus] = useState(props.attributeStatus);
 	const [dialogData, setDialogData] = useState<EditorDialogData<Attribute>>({
 		operation: 'create',
 	});
