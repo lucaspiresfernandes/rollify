@@ -72,10 +72,10 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 			lastDiceResult.current = result.roll;
 			setDiceResult(result.roll);
 
-			if (result.resultType) {
-				lastDiceDescription.current = result.resultType.description;
+			if (result.description) {
+				lastDiceDescription.current = result.description;
 				await sleep(750);
-				setDiceDescription(result.resultType.description);
+				setDiceDescription(result.description);
 			}
 			await sleep(1500);
 

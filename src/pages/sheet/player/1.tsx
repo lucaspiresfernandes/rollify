@@ -81,7 +81,6 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			},
 		}),
 		prisma.config.findUnique({ where: { name: 'dice' } }),
-		prisma.config.findUnique({ where: { name: 'enable_automatic_markers' } }),
 	]);
 
 	if (!results[0]) {
@@ -100,8 +99,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			player: results[0],
-			diceConfig: JSON.parse(results[1]?.value || 'null') as DiceConfig,
-			automaticMarking: results[2]?.value === 'true' ? true : false,
+			diceConfig: JSON.parse(results[1]?.value || 'null') as DiceConfig | null,
 			table,
 		},
 	};

@@ -1,5 +1,5 @@
 import { sleep } from '../../utils';
-import type { DiceRequest, DiceResponse } from '../../utils/dice';
+import { DiceConfig, DiceRequest, DiceResponse, getDiceResultDescription } from '../../utils/dice';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../utils/next';
 import prisma from '../../utils/prisma';
 import { withSessionApi } from '../../utils/session';
@@ -38,12 +38,13 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 	const playerId = npcId ? npcId : player.id;
 
 	try {
-		const successTypeEnabled =
+		const diceConfig = JSON.parse(
 			(
 				await prisma.config.findUnique({
-					where: { name: 'enable_success_types' },
+					where: { name: 'dice' },
 				})
-			)?.value === 'true';
+			)?.value || '{}'
+		) as DiceConfig;
 
 		if (!dices) {
 			return res.json({
@@ -83,17 +84,11 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 		} else {
 			results = new Array(dices.num);
 			const numDices = dices.num;
-			const roll = dices.roll;
+			const roll = diceConfig.baseDice;
 			const reference = dices.ref;
-			const branched = dices.branched;
 
-			if (!numDices || roll < 1) {
+			if (!numDices) {
 				res.json({ status: 'success', results: [{ roll }] });
-				return;
-			}
-
-			if (roll === 1) {
-				res.json({ status: 'success', results: [{ roll: numDices }] });
 				return;
 			}
 
@@ -102,81 +97,25 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 			for (let index = 0; index < data.length; index++) {
 				const result = data[index];
 				results[index] = { roll: result };
-				if (reference === undefined || !successTypeEnabled) continue;
-				results[index].resultType = resolveSuccessType(roll, reference, result, branched);
+				if (diceConfig.resolver)
+					results[index].description = getDiceResultDescription(
+						diceConfig.resolver,
+						reference,
+						result
+					);
 			}
 		}
 
 		res.json({ status: 'success', results });
 
-		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, dices);
-		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, dices);
+		const diceRequest = { ...dices, roll: diceConfig.baseDice };
+
+		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, diceRequest);
+		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, diceRequest);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
-
-function resolveSuccessType(
-	roll: number,
-	reference: number,
-	result: number,
-	branched?: boolean
-): DiceResponse['resultType'] {
-	let successType = { description: '', successWeight: 0 };
-
-	switch (roll) {
-		case 20:
-			if (result > 20 - Math.floor(reference * 0.2))
-				successType = {
-					description: 'Extremo',
-					successWeight: 2,
-				};
-			else if (result > 20 - Math.floor(reference * 0.5))
-				successType = {
-					description: 'Bom',
-					successWeight: 1,
-				};
-			else if (result > 20 - reference)
-				successType = {
-					description: 'Sucesso',
-					successWeight: 0,
-				};
-			else
-				successType = {
-					description: 'Fracasso',
-					successWeight: -1,
-				};
-			break;
-		case 100:
-			if (result <= Math.floor(reference * 0.2))
-				successType = {
-					description: 'Extremo',
-					successWeight: 2,
-				};
-			else if (result <= Math.floor(reference * 0.5))
-				successType = {
-					description: 'Bom',
-					successWeight: 1,
-				};
-			else if (result <= reference)
-				successType = {
-					description: 'Sucesso',
-					successWeight: 0,
-				};
-			else
-				successType = {
-					description: 'Fracasso',
-					successWeight: -1,
-				};
-			break;
-		default:
-			return;
-	}
-
-	if (!branched) successType.description = successType.successWeight >= 0 ? 'Sucesso' : 'Fracasso';
-
-	return successType;
-}
 
 export default withSessionApi(handler);

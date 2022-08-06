@@ -22,10 +22,9 @@ import type { PlayerAttributeStatusApiResponse } from '../../pages/api/sheet/pla
 import type { PlayerGetAvatarApiResponse } from '../../pages/api/sheet/player/avatar/[attrStatusID]';
 import styles from '../../styles/modules/PlayerAttributeContainer.module.css';
 import { clamp, getAvatarSize, handleDefaultApiResponse } from '../../utils';
-import type { DiceConfig } from '../../utils/dice';
 import GeneralDiceRollDialog, {
 	DEFAULT_ROLL,
-	GeneralDiceRollDialogSubmitHandler,
+	GeneralDiceRollDialogSubmitHandler
 } from '../GeneralDiceRollDialog';
 import PlayerAttributeEditorDialog from './dialogs/PlayerAttributeEditorDialog';
 import PlayerAvatarDialog from './dialogs/PlayerAvatarDialog';
@@ -64,7 +63,6 @@ type PlayerAttributeContainerProps = {
 			name: string;
 		} | null;
 	}[];
-	attributeDiceConfig: DiceConfig['attribute'];
 };
 
 const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props) => {
@@ -95,7 +93,6 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 						status={status}
 						onStatusChanged={onStatusChanged}
 						visibilityEnabled={attr.portrait != null}
-						attributeDiceConfig={props.attributeDiceConfig}
 					/>
 				);
 			})}
@@ -208,7 +205,6 @@ type PlayerAttributeFieldProps = {
 	}[];
 
 	onStatusChanged: (id: number, newValue: boolean) => void;
-	attributeDiceConfig: DiceConfig['attribute'];
 	visibilityEnabled: boolean;
 };
 
@@ -251,13 +247,9 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 	};
 
 	const handleDiceClick = (standalone: boolean) => {
-		const roll = props.attributeDiceConfig.value;
-		const branched = props.attributeDiceConfig.branched;
 		rollDice({
 			num: standalone ? 1 : undefined,
-			roll,
 			ref: value,
-			branched,
 		});
 	};
 

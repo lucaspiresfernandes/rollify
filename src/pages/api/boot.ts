@@ -1,5 +1,4 @@
 import type { NextApiHandler } from 'next';
-import type { DiceConfig } from '../../utils/dice';
 import type { NextApiResponseData } from '../../utils/next';
 import type { Presets } from '../../utils/presets';
 import prisma from '../../utils/prisma';
@@ -42,7 +41,9 @@ const handlePost: NextApiHandler<BootApiResponse> = async (req, res) => {
 
 	try {
 		await prisma.$transaction([
-			prisma.config.createMany({ data: getDefaultConfig() }),
+			prisma.config.createMany({
+				data: [{ id: 1, name: 'init', value: 'true' }, ...preset.config],
+			}),
 			prisma.info.createMany({ data: preset.info }),
 			prisma.extraInfo.createMany({ data: preset.extraInfo }),
 			prisma.attribute.createMany({ data: preset.attribute }),
@@ -67,56 +68,5 @@ const handlePost: NextApiHandler<BootApiResponse> = async (req, res) => {
 		res.json({ status: 'failure', reason: 'unknown_error' });
 	}
 };
-
-function getDefaultConfig() {
-	return [
-		{
-			id: 1,
-			name: 'init',
-			value: 'true',
-		},
-		{
-			id: 2,
-			name: 'environment',
-			value: 'idle',
-		},
-		{
-			id: 3,
-			name: 'admin_key',
-			value: '123456',
-		},
-		{
-			id: 4,
-			name: 'enable_success_types',
-			value: 'false',
-		},
-		{
-			id: 5,
-			name: 'portrait_font',
-			value: 'null',
-		},
-		{
-			id: 7,
-			name: 'dice',
-			value: JSON.stringify({
-				characteristic: {
-					value: 20,
-					branched: false,
-					enable_modifiers: false,
-				},
-				skill: {
-					value: 20,
-					branched: false,
-					enable_modifiers: false,
-					enable_automatic_markers: false,
-				},
-				attribute: {
-					value: 100,
-					branched: false,
-				},
-			} as DiceConfig),
-		},
-	];
-}
 
 export default handler;

@@ -43,18 +43,19 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	const result: DisplayDice | undefined = useMemo(() => {
 		if (!diceResponse) return;
 
+		if (diceResponse[0].description) {
+			descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
+		}
+
 		if (diceResponse.length === 1) {
 			return {
 				roll: diceResponse[0].roll,
-				description: diceResponse[0].resultType?.description,
+				description: diceResponse[0].description,
 			};
 		}
 
 		if (diceResponse.length > 1) {
-			if (diceResponse[0].resultType)
-				descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
-
-			if (Array.isArray(props.dice)) {
+			if (Array.isArray(diceRequest.dice)) {
 				const dices = diceResponse.map((d) => d.roll);
 				const sum = dices.reduce((a, b) => a + b, 0);
 				return {
@@ -62,34 +63,8 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 					description: dices.join(' + '),
 				};
 			} else {
-				type _Result = { description?: string; weight: number };
-				let max: _Result = { weight: Number.MIN_SAFE_INTEGER };
-				let min: _Result = { weight: Number.MAX_SAFE_INTEGER };
-
-				for (const result of diceResponse) {
-					if (result.resultType) {
-						if (result.resultType.successWeight > max.weight)
-							max = {
-								description: result.resultType.description,
-								weight: result.resultType.successWeight,
-							};
-
-						if (result.resultType.successWeight < min.weight)
-							min = {
-								description: result.resultType.description,
-								weight: result.resultType.successWeight,
-							};
-					}
-				}
-
 				const roll = diceResponse.map((d) => d.roll).join(' | ');
-				let description: string | undefined;
-
-				if (min.description && max.description) {
-					if (min.description === max.description) description = min.description;
-					else description = `${min.description} - ${max.description}`;
-				} else description = min.description || max.description;
-
+				const description = diceResponse.map((d) => d.description).join(' | ');
 				return { roll, description };
 			}
 		}

@@ -161,7 +161,6 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 									attributeStatus: avatar.AttributeStatus,
 									link: avatar.link,
 								}))}
-								attributeDiceConfig={props.diceConfig.attribute}
 							/>
 						</Grid>
 
@@ -172,7 +171,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 									...char,
 									...char.Characteristic,
 								}))}
-								characteristicDiceConfig={props.diceConfig.characteristic}
+								enableModifiers={props.diceConfig?.characteristic.enable_modifiers || false}
 							/>
 						</Grid>
 
@@ -183,8 +182,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 								...skill.Skill,
 								specializationName: skill.Skill.Specialization?.name || null,
 							}))}
-							automaticMarking={props.automaticMarking}
-							skillDiceConfig={props.diceConfig.skill}
+							enableModifiers={props.diceConfig?.skill.enable_modifiers || false}
 						/>
 
 						<AddDataDialogContext.Provider value={addDataProvider}>

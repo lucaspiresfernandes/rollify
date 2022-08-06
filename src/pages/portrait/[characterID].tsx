@@ -75,7 +75,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 			/>
 			<PortraitEnvironmentalContainer
 				attributes={props.attributes.map((attr) => ({ ...attr, ...attr.Attribute }))}
-				environment={props.environment}
+				environment={props.environment || 'idle'}
 				playerId={props.playerId}
 				playerName={props.playerName}
 				socket={props.socket}
@@ -214,12 +214,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			playerId,
-			environment: (results[1]?.value || 'idle') as Environment,
+			environment: results[1]?.value as Environment | undefined,
 			attributes,
 			sideAttribute,
 			attributeStatus: results[0].PlayerAttributeStatus,
 			playerName: { name: results[0].name, show: results[0].showName },
-			customFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig,
+			customFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
 			diceColor,
 			nameOrientation,
 			showDiceRoll,

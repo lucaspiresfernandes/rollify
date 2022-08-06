@@ -6,6 +6,7 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
 import UtilitySection from '../../components/admin/dialogs/UtilitySection';
+import EnvironmentField from '../../components/admin/EnvironmentField';
 import PlayerContainer from '../../components/admin/PlayerContainer';
 import LoadingScreen from '../../components/LoadingScreen';
 import PlayerNotesContainer from '../../components/sheet/PlayerNotesContainer';
@@ -13,6 +14,7 @@ import { SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { InferSsrProps } from '../../utils/next';
+import type { Environment } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
 import { withSessionSsr } from '../../utils/session';
 
@@ -41,6 +43,10 @@ const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 				<Typography variant='h3' component='h1'>
 					{t('admin.panelTitle')}
 				</Typography>
+			</Box>
+
+			<Box my={2}>
+				<EnvironmentField environment={props.environment || 'idle'} />
 			</Box>
 
 			<SocketContext.Provider value={socket}>
@@ -119,7 +125,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		props: {
 			players: results[0],
 			npcs: results[1],
-			environment: results[2],
+			environment: results[2]?.value as Environment | undefined,
 			annotations: results[3],
 			table,
 		},

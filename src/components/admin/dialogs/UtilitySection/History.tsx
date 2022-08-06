@@ -51,8 +51,7 @@ const History: React.FC<HistoryProps> = (props) => {
 
 			const results = diceResponse.map((res) => {
 				const roll = res.roll;
-				const description = res.resultType?.description;
-				if (description) return `${roll} (${description})`;
+				if (res.description) return `${roll} (${res.description})`;
 				return roll.toString();
 			});
 

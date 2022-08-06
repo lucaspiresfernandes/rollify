@@ -14,7 +14,14 @@
 		"skill": [],
 		"spec": [],
 		"specialization": [],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+			}
+		]
 	},
 	{
 		"preset_name": "Call of Cthulhu 7° Edição",
@@ -589,7 +596,14 @@
 			{ "id": 6, "name": "Pilotar" },
 			{ "id": 7, "name": "Sobrevivência" }
 		],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 100,\"resolver\": [{ \"operator\": \"equals\", \"result\": 100, \"description\": \"Desastre\" },{ \"operator\": \"equals\", \"result\": 1, \"description\": \"Crítico\" },{ \"operator\": \"greaterThan\", \"result\": \"{result}\", \"description\": \"Fracasso\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/5\", \"description\": \"Extremo\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/2\", \"description\": \"Bom\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}\", \"description\": \"Regular\" }],\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+			}
+		]
 	},
 	{
 		"preset_name": "Dungeons & Dragons (D&D) 5° Edição",
@@ -761,6 +775,13 @@
 		],
 		"spec": [{ "id": 1, "name": "Classe de Armadura" }],
 		"specialization": [],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": true },\"skill\": { \"enable_modifiers\": true }}"
+			}
+		]
 	}
 ]

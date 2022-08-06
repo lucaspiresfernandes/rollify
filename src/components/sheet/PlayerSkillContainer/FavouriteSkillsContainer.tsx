@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillContainerProps, PlayerSkillField, Searchbar } from '.';
+import { PlayerSkillField, Searchbar } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
@@ -24,8 +24,7 @@ type FavouriteSkillsContainerProps = {
 		value: number;
 		checked: boolean;
 	}[];
-	skillDiceConfig: PlayerSkillContainerProps['skillDiceConfig'];
-	automaticMarking: PlayerSkillContainerProps['automaticMarking'];
+	enableModifiers: boolean;
 	onSkillUnfavourite: (id: number) => void;
 };
 
@@ -116,8 +115,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 								textAlign='center'>
 								<PlayerSkillField
 									{...skill}
-									skillDiceConfig={props.skillDiceConfig}
-									automaticMarking={props.automaticMarking}
+									enableModifiers={props.enableModifiers}
 									notifyClearChecked={notify}
 									onUnfavourite={() => onUnfavourite(skill.id)}
 								/>

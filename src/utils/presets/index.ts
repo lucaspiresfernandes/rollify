@@ -3,6 +3,7 @@ import type {
 	Attribute,
 	AttributeStatus,
 	Characteristic,
+	Config,
 	Currency, ExtraInfo,
 	Info,
 	Item,
@@ -29,4 +30,5 @@ export type Presets = {
 	spec: Spec[];
 	specialization: Specialization[];
 	spell: Spell[];
+	config: Config[];
 }[];

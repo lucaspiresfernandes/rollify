@@ -8,7 +8,6 @@ import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import { handleDefaultApiResponse } from '../../utils';
-import type { DiceConfig } from '../../utils/dice';
 import SheetContainer from './Section';
 
 type PlayerCharacteristicContainerProps = {
@@ -19,7 +18,7 @@ type PlayerCharacteristicContainerProps = {
 		value: number;
 		modifier: number;
 	}[];
-	characteristicDiceConfig: DiceConfig['characteristic'];
+	enableModifiers: boolean;
 };
 
 const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps> = (props) => {
@@ -30,8 +29,7 @@ const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps
 					<Grid item key={char.id} md={4} xs={6}>
 						<PlayerCharacteristicField
 							{...char}
-							modifier={props.characteristicDiceConfig.enable_modifiers ? char.modifier : null}
-							characteristicDiceConfig={props.characteristicDiceConfig}
+							modifier={props.enableModifiers ? char.modifier : null}
 						/>
 					</Grid>
 				))}
@@ -45,7 +43,6 @@ type PlayerCharacteristicFieldProps = {
 	name: string;
 	value: number;
 	modifier: number | null;
-	characteristicDiceConfig: DiceConfig['characteristic'];
 };
 
 const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (props) => {
@@ -63,9 +60,6 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	const rollDice = useContext(DiceRollContext);
 
 	const handleDiceClick: React.MouseEventHandler<HTMLLabelElement> = (ev) => {
-		const roll = props.characteristicDiceConfig.value;
-		const branched = props.characteristicDiceConfig.branched;
-
 		let mod = 0;
 		if (modifier) mod = parseInt(modifier);
 
@@ -73,14 +67,15 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 		const standalone = ev.ctrlKey;
 
 		rollDice(
-			{ num: standalone ? 1 : undefined, roll, ref: Math.max(0, val + mod), branched },
-			(results) => {
-				if (!mod) return;
-				return results.map((res) => ({
-					roll: Math.max(1, res.roll + mod),
-					resultType: res.resultType,
-				}));
-			}
+			{ num: standalone ? 1 : undefined, ref: Math.max(0, val + mod) },
+			mod
+				? (results) => {
+						return results.map((res) => ({
+							roll: Math.max(1, res.roll + mod),
+							description: res.description,
+						}));
+				  }
+				: undefined
 		);
 	};
 

@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 			<Toolbar>
 				<Links />
 				<Box flexGrow={1}>
-					<div style={{ minWidth: 75, maxWidth: 200, margin: 'auto' }}>
+					<div style={{ minWidth: 75, maxWidth: 220, margin: 'auto' }}>
 						<Image src={whiteLogo} alt='LOGO' layout='responsive' priority />
 					</div>
 				</Box>

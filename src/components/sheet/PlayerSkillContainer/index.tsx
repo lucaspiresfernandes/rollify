@@ -15,7 +15,6 @@ import useExtendedState from '../../../hooks/useExtendedState';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
 import { handleDefaultApiResponse } from '../../../utils';
-import type { DiceConfig } from '../../../utils/dice';
 import BaseSkillsContainer from './BaseSkillsContainer';
 import FavouriteSkillsContainer from './FavouriteSkillsContainer';
 
@@ -30,8 +29,7 @@ export type PlayerSkillContainerProps = {
 		specializationName: string | null;
 		favourite: boolean;
 	}[];
-	skillDiceConfig: DiceConfig['skill'];
-	automaticMarking: boolean;
+	enableModifiers: boolean;
 };
 
 const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
@@ -87,8 +85,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 				<FavouriteSkillsContainer
 					title={`${props.title} (${t('quickAccess')})`}
 					playerSkills={favouriteSkills}
-					automaticMarking={props.automaticMarking}
-					skillDiceConfig={props.skillDiceConfig}
+					enableModifiers={props.enableModifiers}
 					onSkillUnfavourite={(id) => onSetFavourite(id, false)}
 				/>
 			</Grid>
@@ -97,8 +94,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 				<BaseSkillsContainer
 					title={props.title}
 					playerSkills={baseSkills}
-					automaticMarking={props.automaticMarking}
-					skillDiceConfig={props.skillDiceConfig}
+					enableModifiers={props.enableModifiers}
 					onSkillFavourite={(id) => onSetFavourite(id, true)}
 				/>
 			</Grid>
@@ -112,9 +108,8 @@ type PlayerSkillFieldProps = {
 	value: number;
 	modifier: number;
 	checked: boolean;
-	skillDiceConfig: DiceConfig['skill'];
-	automaticMarking: boolean;
 	notifyClearChecked: boolean;
+	enableModifiers: boolean;
 	onFavourite?: () => void;
 	onUnfavourite?: () => void;
 };
@@ -123,7 +118,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
 	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
-		if (!props.skillDiceConfig.enable_modifiers) return null;
+		if (!props.enableModifiers) return null;
 		const modifier = props.modifier;
 		let mod = modifier.toString();
 		if (modifier > -1) mod = `+${mod}`;
@@ -146,9 +141,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	}, [props.notifyClearChecked]);
 
 	const handleDiceRoll: React.MouseEventHandler<HTMLDivElement> = (ev) => {
-		const roll = props.skillDiceConfig.value;
-		const branched = props.skillDiceConfig.branched;
-
 		let mod = 0;
 		if (modifier) mod = parseInt(modifier);
 
@@ -156,26 +148,15 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		const standalone = ev.ctrlKey;
 
 		rollDice(
-			{ num: standalone ? 1 : undefined, roll, ref: Math.max(0, val + mod), branched },
-			(results) => {
-				const result = results[0];
-				if (props.automaticMarking && (result.resultType?.successWeight || -1) >= 0) {
-					setChecked(true);
-					api
-						.post('/sheet/player/skill', {
-							id: props.id,
-							checked: true,
-						})
-						.then((res) => handleDefaultApiResponse(res, log, t))
-						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
-				}
-
-				if (!mod) return;
-				return results.map((res) => ({
-					roll: Math.max(1, res.roll + mod),
-					resultType: res.resultType,
-				}));
-			}
+			{ num: standalone ? 1 : undefined, ref: Math.max(0, val + mod) },
+			mod
+				? (results) => {
+						return results.map((res) => ({
+							roll: Math.max(1, res.roll + mod),
+							description: res.description,
+						}));
+				  }
+				: undefined
 		);
 	};
 
@@ -316,7 +297,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 export const PlayerSkillField = memo(UnderlyingPlayerSkillField, (prev, next) => {
 	return (
 		prev.notifyClearChecked === next.notifyClearChecked &&
-		Object.is(prev.skillDiceConfig, next.skillDiceConfig) &&
 		prev.id === next.id &&
 		prev.name === next.name
 	);

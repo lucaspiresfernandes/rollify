@@ -14,7 +14,14 @@
 		"skill": [],
 		"spec": [],
 		"specialization": [],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+			}
+		]
 	},
 	{
 		"preset_name": "Call of Cthulhu 7th Edition",
@@ -563,7 +570,14 @@
 			{ "id": 6, "name": "Pilotar" },
 			{ "id": 7, "name": "Sobrevivência" }
 		],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 100,\"resolver\": [{ \"operator\": \"equals\", \"result\": 100, \"description\": \"Disaster\" },{ \"operator\": \"equals\", \"result\": 1, \"description\": \"Critical\" },{ \"operator\": \"greaterThan\", \"result\": \"{result}\", \"description\": \"Failure\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}\", \"description\": \"Regular\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/2\", \"description\": \"Hard\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/5\", \"description\": \"Extreme\" }],\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+			}
+		]
 	},
 	{
 		"preset_name": "Dungeons & Dragons (D&D) 5th Edition",
@@ -709,6 +723,13 @@
 		],
 		"spec": [],
 		"specialization": [],
-		"spell": []
+		"spell": [],
+		"config": [
+			{
+				"id": 2,
+				"name": "dice",
+				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": true },\"skill\": { \"enable_modifiers\": true }}"
+			}
+		]
 	}
 ]

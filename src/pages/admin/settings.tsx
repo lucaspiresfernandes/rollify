@@ -1,5 +1,9 @@
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
+import type { Locale } from '../../i18n';
 import type { DiceConfig } from '../../utils/dice';
 import type { InferSsrProps } from '../../utils/next';
 import type { PortraitFontConfig } from '../../utils/portrait';
@@ -19,6 +23,18 @@ const AdminSettingsPage: NextPage<AdminSettingsPageProps> = (props) => {
 	);
 };
 
+const AdminSettings: React.FC<AdminSettingsPageProps> = (props) => {
+	const { t } = useI18n<Locale>();
+
+	return (
+		<Container sx={{ my: 2 }}>
+			<Typography variant='h3' component='h1'>
+				{t('admin.configurationsTitle')}
+			</Typography>
+		</Container>
+	);
+};
+
 async function getSsp(ctx: GetServerSidePropsContext) {
 	const player = ctx.req.session.player;
 
@@ -33,36 +49,22 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 
 	const results = await prisma.$transaction([
 		prisma.config.findUnique({ where: { name: 'admin_key' }, select: { value: true } }),
-		prisma.config.findUnique({
-			where: { name: 'enable_success_types' },
-			select: { value: true },
-		}),
 		prisma.config.findUnique({ where: { name: 'dice' }, select: { value: true } }),
-		prisma.attribute.findMany({ where: { portrait: 'PRIMARY' } }),
-		prisma.attribute.findFirst({ where: { portrait: 'SECONDARY' } }),
-		prisma.attribute.findMany(),
-		prisma.config.findUnique({
-			where: { name: 'enable_automatic_markers' },
-			select: { value: true },
-		}),
 		prisma.config.findUnique({
 			where: { name: 'portrait_font' },
 			select: { value: true },
 		}),
 	]);
 
+	const locale = ctx.locale || ctx.defaultLocale;
+	const { table = {} } = await import(`../../i18n/${locale}`);
+
 	return {
 		props: {
-			adminKey: results[0]?.value || '',
-			enableSuccessTypes: results[1]?.value === 'true',
-			dice: JSON.parse(results[2]?.value || 'null') as DiceConfig,
-			portrait: {
-				attributes: results[3],
-				side_attribute: results[4],
-			},
-			attributes: results[5],
-			automaticMarking: results[6]?.value === 'true' ? true : false,
-			portraitFont: JSON.parse(results[7]?.value || 'null') as PortraitFontConfig,
+			table,
+			adminKey: results[0]?.value,
+			dice: JSON.parse(results[1]?.value || 'null') as DiceConfig | null,
+			portraitFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
 		},
 	};
 }

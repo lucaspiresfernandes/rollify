@@ -75,6 +75,7 @@ const GettingStarted: React.FC = () => {
 					return;
 				}
 
+				setBooting(false);
 				switch (data.reason) {
 					case 'already_booted':
 						return setError('O sistema do Rollify já foi inicializado.');
@@ -86,8 +87,10 @@ const GettingStarted: React.FC = () => {
 						return setError('Ocorreu um erro inesperado: ' + data.reason);
 				}
 			})
-			.catch((err) => setError('Ocorreu um erro inesperado: ' + err.message))
-			.finally(() => setBooting(false));
+			.catch((err) => {
+				setBooting(false);
+				setError('Ocorreu um erro inesperado: ' + err.message);
+			});
 	};
 
 	return (
