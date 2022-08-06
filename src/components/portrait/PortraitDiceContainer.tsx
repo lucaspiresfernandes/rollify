@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Fade from '@mui/material/Fade';
+import Zoom from '@mui/material/Zoom';
 import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { sleep } from '../../utils';
@@ -120,12 +121,14 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 	return (
 		<div className={styles.diceContainer}>
-			<video
-				muted
-				className={`popout${props.showDice ? ' show' : ''} ${styles.dice}`}
-				ref={diceVideo}>
-				<source src='/dice_animation.webm' />
-			</video>
+			<Zoom
+				in={props.showDice}
+				easing={{ enter: 'ease-out', exit: 'ease-in' }}
+				timeout={{ enter: 500, exit: 600 }}>
+				<video muted className={styles.dice} ref={diceVideo}>
+					<source src='/dice_animation.webm' />
+				</video>
+			</Zoom>
 			<Fade in={diceResult !== null}>
 				<div className={styles.result} ref={diceResultRef}>
 					{diceResult || lastDiceResult.current}
