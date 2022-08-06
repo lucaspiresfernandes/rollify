@@ -62,8 +62,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			table,
-			adminKey: results[0]?.value,
-			dice: JSON.parse(results[1]?.value || 'null') as DiceConfig,
+			adminKey: results[0]?.value || null,
+			dice: JSON.parse(results[1]?.value as string) as DiceConfig,
 			portraitFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
 		},
 	};

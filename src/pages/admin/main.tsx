@@ -45,7 +45,7 @@ const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 				</Typography>
 			</Box>
 
-			<Box my={2}>
+			<Box textAlign='center'>
 				<EnvironmentField environment={props.environment || 'idle'} />
 			</Box>
 
@@ -125,7 +125,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		props: {
 			players: results[0],
 			npcs: results[1],
-			environment: results[2]?.value as Environment | undefined,
+			environment: (results[2]?.value as Environment | undefined) || null,
 			annotations: results[3],
 			table,
 		},

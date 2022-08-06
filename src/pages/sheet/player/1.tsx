@@ -99,7 +99,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			player: results[0],
-			diceConfig: JSON.parse(results[1]?.value || 'null') as DiceConfig,
+			diceConfig: JSON.parse(results[1]?.value as string) as DiceConfig,
 			table,
 		},
 	};
