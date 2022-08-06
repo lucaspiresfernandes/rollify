@@ -128,6 +128,7 @@ export interface Locale {
 			duration: string;
 			slots: string;
 
+			color: string;
 			rollable: string;
 			portrait: string;
 

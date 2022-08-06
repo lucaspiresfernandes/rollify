@@ -160,7 +160,7 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 		if (!confirm(t('prompt.delete'))) return;
 		setLoading(true);
 		api
-			.delete<AttributeStatusSheetApiResponse>('/sheet/attribute', { data: { id } })
+			.delete<AttributeStatusSheetApiResponse>('/sheet/attribute/status', { data: { id } })
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setAttributeStatus((status) => status.filter((i) => i.id !== id));

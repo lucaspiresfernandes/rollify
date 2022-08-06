@@ -39,14 +39,14 @@ const handlePost: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => 
 	if (
 		!req.body.id ||
 		!req.body.name ||
-		!req.body.damage ||
-		!req.body.description ||
-		!req.body.cost ||
-		!req.body.type ||
-		!req.body.target ||
-		!req.body.castingTime ||
-		!req.body.range ||
-		!req.body.duration ||
+		req.body.damage === undefined ||
+		req.body.description === undefined ||
+		req.body.cost === undefined ||
+		req.body.type === undefined ||
+		req.body.target === undefined ||
+		req.body.castingTime === undefined ||
+		req.body.range === undefined ||
+		req.body.duration === undefined ||
 		req.body.slots === undefined ||
 		req.body.visible === undefined
 	) {
@@ -101,14 +101,14 @@ const handlePut: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
 
 	if (
 		!req.body.name ||
-		!req.body.damage ||
-		!req.body.description ||
-		!req.body.cost ||
-		!req.body.type ||
-		!req.body.target ||
-		!req.body.castingTime ||
-		!req.body.range ||
-		!req.body.duration ||
+		req.body.damage === undefined ||
+		req.body.description === undefined ||
+		req.body.cost === undefined ||
+		req.body.type === undefined ||
+		req.body.target === undefined ||
+		req.body.castingTime === undefined ||
+		req.body.range === undefined ||
+		req.body.duration === undefined ||
 		req.body.slots === undefined ||
 		req.body.visible === undefined
 	) {

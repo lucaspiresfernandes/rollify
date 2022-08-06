@@ -49,14 +49,14 @@ const handlePut: NextApiHandler<AttributeStatusSheetApiResponse> = async (req, r
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (!req.body.name || !req.body.attributeId)
+	if (!req.body.name || !req.body.attribute_id)
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
 		});
 
 	const name = String(req.body.name);
-	const attribute_id = Number(req.body.attributeId);
+	const attribute_id = Number(req.body.attribute_id);
 
 	try {
 		const players = await prisma.player.findMany({

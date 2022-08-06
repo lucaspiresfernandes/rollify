@@ -131,6 +131,7 @@ export const table: Locale = {
 			target: 'Alvo',
 			slots: 'Slots',
 
+			color: 'Cor',
 			rollable: 'Rolável',
 			portrait: 'Retrato',
 

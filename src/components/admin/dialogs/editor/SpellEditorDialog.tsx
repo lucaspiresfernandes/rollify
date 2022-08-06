@@ -25,7 +25,7 @@ const initialState: Spell = {
 	target: '',
 	range: '',
 	damage: '',
-	visible: false,
+	visible: true,
 };
 
 const SpellEditorDialog: React.FC<EditorDialogProps<Spell>> = (props) => {

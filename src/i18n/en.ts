@@ -130,6 +130,7 @@ export const table: Locale = {
 			target: 'Target',
 			slots: 'Slots',
 
+			color: 'Color',
 			rollable: 'Rollable',
 			portrait: 'Portrait',
 

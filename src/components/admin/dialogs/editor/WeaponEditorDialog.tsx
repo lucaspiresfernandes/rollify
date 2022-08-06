@@ -22,7 +22,7 @@ const initialState: Omit<Weapon, 'weight' | 'ammo'> & { weight: string; ammo: st
 	range: '',
 	weight: '0',
 	type: '',
-	visible: false,
+	visible: true,
 };
 
 const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
@@ -46,7 +46,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 		props.onSubmit({
 			...weapon,
 			weight: parseInt(weapon.weight) || 0,
-			ammo: weapon.ammo ? parseInt(weapon.ammo) : null,
+			ammo: weapon.ammo ? parseInt(weapon.ammo) || 0 : null,
 		});
 	};
 
@@ -108,12 +108,28 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 							value={weapon.range}
 							onChange={(ev) => setWeapon({ ...weapon, range: ev.target.value })}
 						/>
-						<TextField
-							label={t('sheet.table.ammo')}
-							value={weapon.ammo}
-							onChange={(ev) => setWeapon({ ...weapon, ammo: ev.target.value })}
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={weapon.ammo !== null}
+									onChange={() => setWeapon({ ...weapon, ammo: weapon.ammo === null ? '0' : null })}
+								/>
+							}
+							label='TODO: Has Ammo'
 						/>
 					</Box>
+					{weapon.ammo !== null && (
+						<TextField
+							required
+							label={t('sheet.table.ammo')}
+							inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+							value={weapon.ammo}
+							onChange={(ev) => {
+								if (!ev.target.value || ev.target.validity.valid)
+									setWeapon({ ...weapon, ammo: ev.target.value });
+							}}
+						/>
+					)}
 					<FormControlLabel
 						control={
 							<Checkbox

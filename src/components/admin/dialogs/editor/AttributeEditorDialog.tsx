@@ -74,52 +74,57 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
-				<form id='attributeEditorDialogForm' onSubmit={onSubmit}>
-					<Box display='flex' flexDirection='column' gap={2} mt={1}>
+				<Box
+					component='form'
+					id='attributeEditorDialogForm'
+					onSubmit={onSubmit}
+					display='flex'
+					flexDirection='column'
+					gap={2}
+					mt={1}>
+					<TextField
+						required
+						autoFocus
+						fullWidth
+						label={t('sheet.table.name')}
+						value={attribute.name}
+						onChange={(ev) => setAttribute({ ...attribute, name: ev.target.value })}
+					/>
+					<Box display='flex' flexDirection='row' gap={2}>
 						<TextField
 							required
-							autoFocus
 							fullWidth
-							label={t('sheet.table.name')}
-							value={attribute.name}
-							onChange={(ev) => setAttribute({ ...attribute, name: ev.target.value })}
+							label={t('sheet.table.color')}
+							value={attribute.color}
+							onChange={(ev) => {
+								setAttribute({ ...attribute, color: ev.target.value });
+							}}
 						/>
-						<Box display='flex' flexDirection='row' gap={2}>
-							<TextField
-								required
-								fullWidth
-								label='Color'
-								value={attribute.color}
-								onChange={(ev) => {
-									setAttribute({ ...attribute, color: ev.target.value });
-								}}
-							/>
-							<FormControl required fullWidth>
-								<InputLabel id='attributePortrait'>{t('sheet.table.portrait')}</InputLabel>
-								<Select
-									labelId='attributePortrait'
-									label={t('sheet.table.portrait')}
-									value={attribute.portrait}
-									onChange={(ev) => setAttribute({ ...attribute, portrait: ev.target.value })}>
-									{portraitValues.map((portrait) => (
-										<MenuItem key={portrait.value} value={portrait.value}>
-											{portrait.name}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-						</Box>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={attribute.rollable}
-									onChange={(ev) => setAttribute({ ...attribute, rollable: ev.target.checked })}
-								/>
-							}
-							label={t('sheet.table.rollable')}
-						/>
+						<FormControl required fullWidth>
+							<InputLabel id='attributePortrait'>{t('sheet.table.portrait')}</InputLabel>
+							<Select
+								labelId='attributePortrait'
+								label={t('sheet.table.portrait')}
+								value={attribute.portrait}
+								onChange={(ev) => setAttribute({ ...attribute, portrait: ev.target.value })}>
+								{portraitValues.map((portrait) => (
+									<MenuItem key={portrait.value} value={portrait.value}>
+										{portrait.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
 					</Box>
-				</form>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={attribute.rollable}
+								onChange={(ev) => setAttribute({ ...attribute, rollable: ev.target.checked })}
+							/>
+						}
+						label={t('sheet.table.rollable')}
+					/>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>

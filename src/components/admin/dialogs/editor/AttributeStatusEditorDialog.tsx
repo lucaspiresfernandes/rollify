@@ -29,8 +29,8 @@ const AttributeStatusEditorDialog: React.FC<Props> = (props) => {
 
 	useEffect(() => {
 		if (props.open) {
-			if (props.data) setAttributeStatus(props.data);
-			else setAttributeStatus(initialState);
+			if (props.data) setAttributeStatus({ ...props.data });
+			else setAttributeStatus({ ...initialState, attribute_id: props.attribute[0].id });
 		}
 	}, [props.data, props.open, props.attribute]);
 
@@ -43,41 +43,44 @@ const AttributeStatusEditorDialog: React.FC<Props> = (props) => {
 		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
-				<form id='attributeStatusEditorDialogForm' onSubmit={onSubmit}>
-					<Box display='flex' flexDirection='column' gap={2} mt={1}>
-						<TextField
-							required
-							autoFocus
-							fullWidth
-							label='Name'
-							value={attributeStatus.name}
-							onChange={(ev) => {
-								setAttributeStatus({ ...attributeStatus, name: ev.target.value });
-							}}
-						/>
-						<FormControl required fullWidth>
-							<InputLabel id='attributeStatusAttributeLabel'>
-								{t('sheet.table.attribute')}
-							</InputLabel>
-							<Select
-								labelId='attributeStatusAttributeLabel'
-								label={t('sheet.table.attribute')}
-								value={attributeStatus.attribute_id}
-								onChange={(ev) =>
-									setAttributeStatus({
-										...attributeStatus,
-										attribute_id: ev.target.value as number,
-									})
-								}>
-								{props.attribute.map((attr) => (
-									<MenuItem key={attr.id} value={attr.id}>
-										{attr.name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Box>
-				</form>
+				<Box
+					component='form'
+					id='attributeStatusEditorDialogForm'
+					onSubmit={onSubmit}
+					display='flex'
+					flexDirection='column'
+					gap={2}
+					mt={1}>
+					<TextField
+						required
+						autoFocus
+						fullWidth
+						label='Name'
+						value={attributeStatus.name}
+						onChange={(ev) => {
+							setAttributeStatus({ ...attributeStatus, name: ev.target.value });
+						}}
+					/>
+					<FormControl required fullWidth>
+						<InputLabel id='attributeStatusAttributeLabel'>{t('sheet.table.attribute')}</InputLabel>
+						<Select
+							labelId='attributeStatusAttributeLabel'
+							label={t('sheet.table.attribute')}
+							value={attributeStatus.attribute_id}
+							onChange={(ev) =>
+								setAttributeStatus({
+									...attributeStatus,
+									attribute_id: ev.target.value as number,
+								})
+							}>
+							{props.attribute.map((attr) => (
+								<MenuItem key={attr.id} value={attr.id}>
+									{attr.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>

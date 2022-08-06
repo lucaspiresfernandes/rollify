@@ -24,7 +24,7 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 	if (
 		!req.body.id ||
 		!req.body.name ||
-		!req.body.color ||
+		req.body.color === undefined ||
 		req.body.rollable === undefined ||
 		req.body.portrait === undefined
 	)
@@ -59,7 +59,7 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 
 	if (
 		!req.body.name ||
-		!req.body.color ||
+		req.body.color === undefined ||
 		req.body.rollable === undefined ||
 		req.body.portrait === undefined
 	)
@@ -71,6 +71,7 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 	const name = String(req.body.name);
 	const color = String(req.body.color);
 	const rollable = Boolean(req.body.rollable);
+	const portrait = req.body.portrait as PortraitAttribute | null;
 
 	try {
 		const players = await prisma.player.findMany({
@@ -83,6 +84,7 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 				name,
 				color,
 				rollable,
+				portrait,
 				PlayerAttribute: {
 					createMany: {
 						data: players.map(({ id: player_id }) => ({ player_id })),

@@ -39,7 +39,7 @@ const handlePost: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 	if (
 		!req.body.id ||
 		!req.body.name ||
-		!req.body.description ||
+		req.body.description === undefined ||
 		req.body.weight === undefined ||
 		req.body.visible === undefined
 	) {
@@ -75,7 +75,7 @@ const handlePut: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 
 	if (
 		!req.body.name ||
-		!req.body.description ||
+		req.body.description === undefined ||
 		req.body.weight === undefined ||
 		req.body.visible === undefined
 	) {

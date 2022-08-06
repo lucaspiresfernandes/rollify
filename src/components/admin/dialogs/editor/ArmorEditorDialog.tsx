@@ -42,7 +42,7 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 		e.preventDefault();
 		props.onSubmit({
 			...armor,
-			weight: parseInt(armor.weight.replace(',', '.')),
+			weight: parseInt(armor.weight.replace(',', '.')) || 0,
 		});
 	};
 
@@ -73,7 +73,6 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 							onChange={(ev) => setArmor({ ...armor, type: ev.target.value })}
 						/>
 						<TextField
-							required
 							label={t('sheet.table.weight')}
 							inputProps={{ inputMode: 'numeric', pattern: '[0-9,.]*' }}
 							value={armor.weight}

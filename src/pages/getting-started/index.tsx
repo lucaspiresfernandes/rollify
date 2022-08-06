@@ -61,7 +61,7 @@ const GettingStarted: React.FC = () => {
 		() => (presetsMap.get(router.locale || 'en') || preset_en) as Presets,
 		[router]
 	);
-	const {t} = useI18n<Locale>();
+	const { t } = useI18n<Locale>();
 
 	if (booting) return <LoadingScreen />;
 

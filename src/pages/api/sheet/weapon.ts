@@ -39,10 +39,11 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	if (
 		!req.body.id ||
 		!req.body.name ||
-		!req.body.type ||
-		!req.body.damage ||
-		!req.body.range ||
-		!req.body.attacks ||
+		req.body.weight === undefined ||
+		req.body.type === undefined ||
+		req.body.damage === undefined ||
+		req.body.range === undefined ||
+		req.body.attacks === undefined ||
 		req.body.ammo === undefined ||
 		req.body.visible === undefined
 	) {
@@ -55,6 +56,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const weight = Number(req.body.weight);
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
 	const attacks = String(req.body.attacks);
@@ -64,7 +66,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	try {
 		const weapon = await prisma.weapon.update({
 			where: { id },
-			data: { name, type, damage, range, attacks, ammo, visible },
+			data: { name, type, weight, damage, range, attacks, ammo, visible },
 		});
 
 		res.json({ status: 'success', weapon: [weapon] });

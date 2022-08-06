@@ -47,9 +47,7 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 		!req.body.id ||
 		!req.body.name ||
 		req.body.startValue === undefined ||
-		req.body.mandatory === undefined ||
-		req.body.specializationId === undefined ||
-		req.body.visibleToAdmin === undefined
+		req.body.specialization_id === undefined
 	) {
 		return res.json({
 			status: 'failure',
@@ -61,7 +59,7 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 	const name = String(req.body.name);
 	const startValue = Number(req.body.startValue);
 	const specialization_id =
-		req.body.specializationId === null ? null : Number(req.body.specializationId);
+		req.body.specialization_id === null ? null : Number(req.body.specialization_id);
 
 	try {
 		const skill = await prisma.skill.update({
@@ -85,9 +83,7 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 	if (
 		!req.body.name ||
 		req.body.startValue === undefined ||
-		req.body.mandatory === undefined ||
-		req.body.specializationId === undefined ||
-		req.body.visibleToAdmin === undefined
+		req.body.specialization_id === undefined
 	) {
 		return res.json({
 			status: 'failure',
@@ -98,7 +94,7 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 	const name = String(req.body.name);
 	const startValue = Number(req.body.startValue);
 	const specialization_id =
-		req.body.specializationId === null ? null : Number(req.body.specializationId);
+		req.body.specialization_id === null ? null : Number(req.body.specialization_id);
 
 	try {
 		const skill = await prisma.skill.create({
