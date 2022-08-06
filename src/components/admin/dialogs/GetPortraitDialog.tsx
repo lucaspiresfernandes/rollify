@@ -19,6 +19,7 @@ import { useI18n } from 'next-rosetta';
 import { useEffect, useRef, useState } from 'react';
 import type { Locale } from '../../../i18n';
 import { portraitEnvironmentOrientation } from '../../../utils/portrait';
+import ColorField from '../../ColorField';
 
 export type GetPortraitDialogProps = {
 	playerId: number;
@@ -59,13 +60,13 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 			<DialogTitle>{t('modal.title.playerPortrait')}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>{t('modal.label.portraitDescription')}</DialogContentText>
-				<Box display='flex' flexDirection='column' gap={3} mt={4}>
+				<Box display='flex' flexDirection='column' gap={2} mt={4}>
 					<div>
-						<TextField
+						<ColorField
 							fullWidth
 							label={t('modal.label.diceColor')}
-							value={diceColor}
-							onChange={(ev) => setDiceColor(ev.target.value)}
+							color={diceColor}
+							onColorChange={(ev) => setDiceColor(ev.hex)}
 						/>
 					</div>
 					<div>

@@ -16,6 +16,7 @@ import { useI18n } from 'next-rosetta';
 import { useEffect, useMemo, useState } from 'react';
 import type { EditorDialogProps } from '.';
 import type { Locale } from '../../../../i18n';
+import ColorField from '../../../ColorField';
 
 type PortraitValue = { name: string; value: PortraitAttribute | 'NONE' }[];
 
@@ -91,16 +92,14 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 						onChange={(ev) => setAttribute({ ...attribute, name: ev.target.value })}
 					/>
 					<Box display='flex' flexDirection='row' gap={2}>
-						<TextField
-							required
+						<ColorField
 							fullWidth
+							required
 							label={t('sheet.table.color')}
-							value={attribute.color}
-							onChange={(ev) => {
-								setAttribute({ ...attribute, color: ev.target.value });
-							}}
+							color={attribute.color}
+							onColorChange={(color) => setAttribute({ ...attribute, color: color.hex })}
 						/>
-						<FormControl required fullWidth>
+						<FormControl fullWidth required>
 							<InputLabel id='attributePortrait'>{t('sheet.table.portrait')}</InputLabel>
 							<Select
 								labelId='attributePortrait'
