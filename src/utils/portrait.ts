@@ -5,8 +5,6 @@ export type PortraitFontConfig = {
 
 export type Environment = 'idle' | 'combat';
 
-export const portraitEnvironmentOrientation = ['Esquerda', 'Direita'] as const;
-
 export function getAttributeStyle(color: string) {
 	return {
 		color: 'white',

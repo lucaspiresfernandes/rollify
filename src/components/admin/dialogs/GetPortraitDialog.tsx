@@ -7,18 +7,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import copyToClipboard from 'copy-to-clipboard';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useRef, useState } from 'react';
 import type { Locale } from '../../../i18n';
-import { portraitEnvironmentOrientation } from '../../../utils/portrait';
 import ColorField from '../../ColorField';
 
 export type GetPortraitDialogProps = {
@@ -27,11 +22,8 @@ export type GetPortraitDialogProps = {
 	onClose: () => void;
 };
 
-type Orientation = typeof portraitEnvironmentOrientation[number];
-
 const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const [diceColor, setDiceColor] = useState('#ddaf0f');
-	const [nameOrientation, setNameOrientation] = useState<Orientation>('Direita');
 	const [showDiceRoll, setShowDiceRoll] = useState(true);
 	const hostName = useRef('');
 	const { t } = useI18n<Locale>();
@@ -39,8 +31,7 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const portraitLink =
 		`${hostName.current}/portrait/${props.playerId}` +
 		`?dicecolor=${diceColor.substring(1)}` +
-		`&showdiceroll=${showDiceRoll}` +
-		`&orientation=${nameOrientation}`;
+		`&showdiceroll=${showDiceRoll}`;
 
 	useEffect(() => {
 		hostName.current = window.location.host;
@@ -79,23 +70,6 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 							}
 							label={t('modal.label.showDiceRoll')}
 						/>
-					</div>
-					<div>
-						<FormControl fullWidth>
-							<InputLabel id='portraitSelectLabel'>{t('orientation')}</InputLabel>
-							<Select
-								labelId='portraitSelectLabel'
-								id='portraitSelect'
-								label={t('orientation')}
-								value={nameOrientation}
-								onChange={(ev) => setNameOrientation(ev.target.value as Orientation)}>
-								{portraitEnvironmentOrientation.map((orientation) => (
-									<MenuItem key={orientation} value={orientation}>
-										{orientation}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
 					</div>
 					<div>
 						<TextField

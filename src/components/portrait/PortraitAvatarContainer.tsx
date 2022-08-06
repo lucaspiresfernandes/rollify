@@ -76,7 +76,7 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 	};
 
 	return (
-		<div>
+		<>
 			<img
 				src={oldSrc}
 				alt='Old Avatar'
@@ -93,7 +93,7 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 				onError={onImageLoadError}
 				className={showAvatar ? `${styles.avatar} ${styles.show}` : styles.avatar}
 			/>
-		</div>
+		</>
 	);
 };
 

@@ -7,10 +7,10 @@ import { clamp } from '../../utils';
 import { getAttributeStyle } from '../../utils/portrait';
 
 const bounds = {
-	bottom: 475,
-	left: 5,
-	top: 5,
-	right: 215,
+	bottom: 600,
+	left: -320,
+	top: 65,
+	right: 320,
 };
 
 type PortraitSideAttributeContainerProps = {
@@ -74,11 +74,13 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 
 	return (
 		<Draggable axis='both' onStop={onDragStop} position={position} bounds={bounds} nodeRef={ref}>
-			<div className={styles.sideContainer} style={{ ...attributeStyle }} ref={ref}>
-				<div className={styles.sideBackground}></div>
-				<label className={`${styles.sideContent} atributo-secundario ${sideAttribute.name}`}>
-					{sideAttribute.show ? sideAttribute.value : '?'}
-				</label>
+			<div className={styles.sideDraggable} style={{ ...attributeStyle }} ref={ref}>
+				<div className={styles.sideContainer}>
+					<div className={styles.sideBackground}></div>
+					<label className={`${styles.sideContent} atributo-secundario ${sideAttribute.name}`}>
+						{sideAttribute.show ? sideAttribute.value : '?'}
+					</label>
+				</div>
 			</div>
 		</Draggable>
 	);

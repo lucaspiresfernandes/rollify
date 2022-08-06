@@ -1,24 +1,23 @@
-.container {
-	position: relative;
-	width: 0px;
-}
-
 .editor {
 	position: absolute;
-	top: 610px;
+	transform: translateX(-50%);
+	left: 50%;
+	top: 100%;
+}
+
+.container {
+	position: relative;
+	text-align: center;
 }
 
 .oldAvatar {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	transform: translateX(-50%);
+	top: 0;
+	left: 50%;
 }
 
 .avatar {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-
 	opacity: 0;
 
 	transition: none;
@@ -32,11 +31,17 @@
 	transition: opacity 500ms linear;
 }
 
-.sideContainer {
+.sideDraggable {
 	position: absolute;
+	top: 0;
+	left: 50%;
+}
+
+.sideContainer {
+	transform: translate(-50%, -50%);
+
 	width: 200px;
 	height: 120px;
-	z-index: 100;
 }
 
 .sideContainer .sideBackground {
@@ -48,15 +53,22 @@
 
 .sideContainer .sideContent {
 	position: absolute;
-	top: 45%;
+	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	font-size: 68px;
 }
 
-.nameContainer {
+.nameDraggable {
 	position: absolute;
-	width: 100%;
+	top: 0;
+	left: 50%;
+}
+
+.nameContainer {
+	transform: translate(-50%, -50%);
+
+	width: 20em;
 }
 
 .nameContainer .name {
@@ -70,12 +82,18 @@
 	padding-right: 1.5rem;
 }
 
-.combat {
+.combatDraggable {
 	position: absolute;
-	width: 100%;
+
+	top: 0;
+	left: 50%;
 }
 
-.combat .attribute {
+.combatContainer {
+	transform: translate(-50%, -50%);
+}
+
+.combatContainer .attribute {
 	font-size: 108px;
 	font-style: italic;
 	max-width: 250px;
@@ -86,7 +104,11 @@
 
 .diceContainer {
 	position: absolute;
-	left: 30px;
+
+	transform: translate(-50%, -50%);
+
+	top: 250px;
+	left: 50%;
 }
 
 .dice {
@@ -99,7 +121,6 @@
 	left: 50%;
 
 	font-size: 114px;
-	color: white;
 
 	transform: translate(-50%, -50%);
 }
@@ -110,7 +131,6 @@
 	left: 50%;
 
 	font-size: 80px;
-	color: white;
 
 	transform: translate(-50%, -50%);
 }

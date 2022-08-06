@@ -4,7 +4,6 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '../../components/LoadingScreen';
-import type { PortraitAttributeStatus } from '../../components/portrait/PortraitAvatarContainer';
 import PortraitAvatarContainer from '../../components/portrait/PortraitAvatarContainer';
 import PortraitDiceContainer from '../../components/portrait/PortraitDiceContainer';
 import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEnvironmentalContainer';
@@ -14,11 +13,7 @@ import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import type { InferSsrProps } from '../../utils/next';
-import type {
-	Environment,
-	portraitEnvironmentOrientation,
-	PortraitFontConfig,
-} from '../../utils/portrait';
+import type { Environment, PortraitFontConfig } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
 
 type PageProps = InferSsrProps<typeof getServerSideProps>;
@@ -50,9 +45,6 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 	const [rotation, setRotation] = useState(0);
 	const { t } = useI18n<Locale>();
 
-	const divStyle: React.CSSProperties =
-		props.nameOrientation === 'Direita' ? { left: 20 } : { left: 800 };
-
 	useEffect(() => {
 		setRotation(parseInt(JSON.parse(localStorage.getItem('environment-rot') || 'null') || 0));
 	}, []);
@@ -63,28 +55,10 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 	};
 
 	return (
-		<>
-			<PortraitDiceRollContainer
-				playerId={props.playerId}
-				attributeStatus={props.attributeStatus}
-				sideAttribute={props.sideAttribute}
-				diceColor={props.diceColor}
-				showDiceRoll={props.showDiceRoll}
-				socket={props.socket}
-				nameOrientation={props.nameOrientation}
-			/>
-			<PortraitEnvironmentalContainer
-				attributes={props.attributes.map((attr) => ({ ...attr, ...attr.Attribute }))}
-				environment={props.environment || 'idle'}
-				playerId={props.playerId}
-				playerName={props.playerName}
-				socket={props.socket}
-				rotation={rotation}
-				debug={debug}
-				nameOrientation={props.nameOrientation}
-			/>
-			<div className={styles.editor} style={divStyle}>
-				<div style={{ display: 'inline-block', marginRight: 16 }}>
+		<div className={styles.container}>
+			<PortraitMainContainer {...props} rotation={rotation} debug={debug} />
+			<div className={styles.editor}>
+				<div style={{ marginBottom: 8 }}>
 					<Button
 						variant='contained'
 						title='Desativa o controle do ambiente pelo mestre.'
@@ -93,7 +67,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 					</Button>
 				</div>
 				{debug && (
-					<div style={{ display: 'inline-block', width: 360 }}>
+					<div style={{ width: 360 }}>
 						<Slider
 							min={0}
 							max={360}
@@ -105,36 +79,21 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 					</div>
 				)}
 			</div>
-		</>
+		</div>
 	);
 };
 
-type PortraitDiceRollContainerProps = {
-	playerId: number;
-	attributeStatus: PortraitAttributeStatus;
-	sideAttribute: {
-		Attribute: {
-			name: string;
-			id: number;
-			color: string;
-		};
-		value: number;
-		show: boolean;
-	} | null;
-	diceColor: string;
-	showDiceRoll: boolean;
+type PortraitDiceRollContainerProps = PageProps & {
 	socket: SocketIO;
-	nameOrientation: typeof portraitEnvironmentOrientation[number];
+	rotation: number;
+	debug: boolean;
 };
 
-const PortraitDiceRollContainer: React.FC<PortraitDiceRollContainerProps> = (props) => {
+const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) => {
 	const [showDice, setShowDice] = useState(false);
 
-	const divStyle: React.CSSProperties =
-		props.nameOrientation === 'Direita' ? { left: 0 } : { left: 800 };
-
 	return (
-		<div className={styles.container} style={divStyle}>
+		<>
 			<div className={`${showDice ? 'show ' : ''}shadow`}>
 				<PortraitAvatarContainer
 					playerId={props.playerId}
@@ -150,6 +109,15 @@ const PortraitDiceRollContainer: React.FC<PortraitDiceRollContainerProps> = (pro
 					}
 					socket={props.socket}
 				/>
+				<PortraitEnvironmentalContainer
+					attributes={props.attributes.map((attr) => ({ ...attr, ...attr.Attribute }))}
+					environment={props.environment || 'idle'}
+					playerId={props.playerId}
+					playerName={props.playerName}
+					socket={props.socket}
+					rotation={props.rotation}
+					debug={props.debug}
+				/>
 			</div>
 			<PortraitDiceContainer
 				playerId={props.playerId}
@@ -160,13 +128,11 @@ const PortraitDiceRollContainer: React.FC<PortraitDiceRollContainerProps> = (pro
 				onShowDice={() => setShowDice(true)}
 				onHideDice={() => setShowDice(false)}
 			/>
-		</div>
+		</>
 	);
 };
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-	const nameOrientation =
-		(ctx.query.orientation as typeof portraitEnvironmentOrientation[number]) || 'Direita';
 	const playerId = parseInt(ctx.query.characterID as string);
 	const diceColor = (ctx.query.dicecolor as string) || 'ddaf0f';
 	const showDiceRoll = (ctx.query.showdiceroll as string) === 'true';
@@ -221,7 +187,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 			playerName: { name: results[0].name, show: results[0].showName },
 			customFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
 			diceColor,
-			nameOrientation,
 			showDiceRoll,
 		},
 	};

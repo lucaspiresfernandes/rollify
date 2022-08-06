@@ -58,6 +58,7 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 		};
 
 		const showNextResult = async (result: DiceResponse) => {
+			console.log('ay');
 			showDiceRoll();
 			await sleep(750);
 			diceData.current = undefined;
@@ -116,11 +117,14 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 			props.socket.off('diceRoll');
 			props.socket.off('diceResult');
 		};
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const pointerEvents: React.CSSProperties['pointerEvents'] = props.showDice ? undefined : 'none';
+
 	return (
-		<div className={styles.diceContainer}>
+		<div className={styles.diceContainer} style={{ pointerEvents }}>
 			<Zoom
 				in={props.showDice}
 				easing={{ enter: 'ease-out', exit: 'ease-in' }}

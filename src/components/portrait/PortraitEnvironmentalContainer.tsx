@@ -6,17 +6,13 @@ import type { SocketIO } from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import {
-	Environment,
-	getAttributeStyle,
-	portraitEnvironmentOrientation,
-} from '../../utils/portrait';
+import { Environment, getAttributeStyle } from '../../utils/portrait';
 
 const bounds = {
-	top: 0,
-	bottom: 480,
-	left: 0,
-	right: 800,
+	bottom: 600,
+	left: -420,
+	top: 150,
+	right: 420,
 };
 
 type PortraitEnvironmentalContainerProps = {
@@ -27,7 +23,6 @@ type PortraitEnvironmentalContainerProps = {
 	playerId: number;
 	rotation: number;
 	debug: boolean;
-	nameOrientation: typeof portraitEnvironmentOrientation[number];
 };
 
 const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerProps> = (props) => {
@@ -40,11 +35,8 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 		};
 	}, [props.socket]);
 
-	let divStyle: React.CSSProperties =
-		props.nameOrientation === 'Direita' ? { textAlign: 'start' } : { textAlign: 'end' };
-
 	return (
-		<div className={styles.container} style={divStyle}>
+		<>
 			<PortraitAttributesContainer
 				environment={environment}
 				attributes={props.attributes}
@@ -61,7 +53,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 				debug={props.debug}
 				rotation={props.rotation}
 			/>
-		</div>
+		</>
 	);
 };
 
@@ -84,7 +76,6 @@ type PortraitAttributesContainerProps = {
 const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = (props) => {
 	const [attributes, setAttributes] = useState(props.attributes);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
-	const ref = useRef<HTMLDivElement>(null);
 	const attributesRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -133,24 +124,21 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 	return (
 		<Fade in={props.debug || props.environment === 'combat'}>
 			<div>
-				<Draggable
-					axis='both'
-					position={position}
-					bounds={bounds}
-					onStop={onDragStop}
-					nodeRef={ref}>
-					<div className={styles.combat} ref={ref}>
-						<div ref={attributesRef} style={{ display: 'inline-block' }}>
-							{attributes.map((attr) => (
-								<Fragment key={attr.id}>
-									<span
-										className={`${styles.attribute} atributo-primario ${attr.name}`}
-										style={getAttributeStyle(attr.color)}>
-										<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
-									</span>
-									<br />
-								</Fragment>
-							))}
+				<Draggable axis='both' position={position} bounds={bounds} onStop={onDragStop}>
+					<div className={styles.combatDraggable}>
+						<div className={styles.combatContainer}>
+							<div ref={attributesRef} style={{ display: 'inline-block' }}>
+								{attributes.map((attr) => (
+									<Fragment key={attr.id}>
+										<span
+											className={`${styles.attribute} atributo-primario ${attr.name}`}
+											style={getAttributeStyle(attr.color)}>
+											<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
+										</span>
+										<br />
+									</Fragment>
+								))}
+							</div>
 						</div>
 					</div>
 				</Draggable>
@@ -171,7 +159,6 @@ type PortraitNameContainerProps = {
 const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	const [playerName, setPlayerName] = useState(props.playerName);
 	const [transform, setTransform] = useState({ x: 0, y: 0 });
-	const ref = useRef<HTMLDivElement>(null);
 	const nameRef = useRef<HTMLDivElement>(null);
 	const { t } = useI18n<Locale>();
 
@@ -219,20 +206,19 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 		localStorage.setItem(`name-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
+	const alignment: React.CSSProperties['textAlign'] = transform.x > 150 ? 'start' : 'end';
+
 	return (
 		<Fade in={props.debug || props.environment === 'idle'}>
-			<div>
-				<Draggable
-					axis='both'
-					position={transform}
-					bounds={bounds}
-					onStop={onDragStop}
-					nodeRef={ref}>
-					<div ref={ref} className={styles.nameContainer}>
-						<div ref={nameRef} style={{ display: 'inline-block' }}>
-							<label className={styles.name}>
-								{playerName.show ? playerName.name || t('unknown') : '???'}
-							</label>
+			<div style={{ textAlign: alignment }}>
+				<Draggable axis='both' position={transform} bounds={bounds} onStop={onDragStop}>
+					<div className={styles.nameDraggable}>
+						<div className={styles.nameContainer}>
+							<div ref={nameRef} style={{ display: 'inline-block' }}>
+								<label className={styles.name}>
+									{playerName.show ? playerName.name || t('unknown') : '???'}
+								</label>
+							</div>
 						</div>
 					</div>
 				</Draggable>
