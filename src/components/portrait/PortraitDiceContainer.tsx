@@ -5,7 +5,11 @@ import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { sleep } from '../../utils';
 import type { DiceResponse } from '../../utils/dice';
-import { getAttributeStyle } from '../../utils/portrait';
+import { getShadowStyle } from '../../utils/portrait';
+
+const diceEnterTimeout = 750;
+const diceTimeout = 1500;
+const diceExitTimeout = 500;
 
 type PortraitDiceContainerProps = {
 	socket: SocketIO;
@@ -35,17 +39,9 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 	useEffect(() => {
 		if (!props.showDiceRoll) return;
 
-		const style = getAttributeStyle(props.color);
-
-		if (diceResultRef.current) {
-			diceResultRef.current.style.color = style.color;
-			diceResultRef.current.style.textShadow = style.textShadow;
-		}
-
-		if (diceDescriptionRef.current) {
-			diceDescriptionRef.current.style.color = style.color;
-			diceDescriptionRef.current.style.textShadow = style.textShadow;
-		}
+		const style = getShadowStyle(props.color);
+		if (diceResultRef.current) diceResultRef.current.style.textShadow = style.textShadow;
+		if (diceDescriptionRef.current) diceDescriptionRef.current.style.textShadow = style.textShadow;
 
 		const showDiceRoll = () => {
 			if (showDiceRef.current) return;
@@ -75,17 +71,21 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 			if (result.description) {
 				lastDiceDescription.current = result.description;
-				await sleep(750);
+				await sleep(500);
 				setDiceDescription(result.description);
 			}
-			await sleep(1500);
+
+			await sleep(diceTimeout);
 
 			setDiceResult(null);
 			setDiceDescription(null);
 
-			await sleep(250);
+			await sleep(100);
+
 			props.onHideDice();
-			await sleep(600);
+
+			await sleep(diceExitTimeout);
+
 			showDiceRef.current = false;
 
 			const next = diceQueue.current.shift();
@@ -127,7 +127,7 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 			<Zoom
 				in={props.showDice}
 				easing={{ enter: 'ease-out', exit: 'ease-in' }}
-				timeout={{ enter: 500, exit: 600 }}>
+				timeout={{ enter: diceEnterTimeout, exit: diceExitTimeout }}>
 				<video muted className={styles.dice} ref={diceVideo}>
 					<source src='/dice_animation.webm' />
 				</video>

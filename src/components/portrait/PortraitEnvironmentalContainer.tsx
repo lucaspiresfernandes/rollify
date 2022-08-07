@@ -6,7 +6,7 @@ import type { SocketIO } from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import { Environment, getAttributeStyle } from '../../utils/portrait';
+import { Environment, getShadowStyle } from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
@@ -128,7 +128,7 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 						<div className={styles.attributeContainer}>
 							<div ref={attributesRef}>
 								{attributes.map((attr) => (
-									<div key={attr.id} style={getAttributeStyle(attr.color)}>
+									<div key={attr.id} style={getShadowStyle(attr.color)}>
 										{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}
 									</div>
 								))}
@@ -198,10 +198,10 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 		localStorage.setItem(`name-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
-	const rect = nameRef.current?.getBoundingClientRect() as DOMRect;
+	const rectWidth = nameRef.current?.getBoundingClientRect().width || 0;
 
 	const alignment: React.CSSProperties['textAlign'] =
-		transform.x + rect.width / 2 > 150 ? 'start' : 'end';
+		transform.x + rectWidth / 2 > 150 ? 'start' : 'end';
 
 	const fullName = playerName.name || t('unknown');
 

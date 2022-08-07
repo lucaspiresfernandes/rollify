@@ -106,7 +106,7 @@ type PlayerAvatarImageProps = {
 };
 
 const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
-	const [src, setSrc] = useState('/avatar404.png');
+	const [src, setSrc] = useState('#');
 	const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
 	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);
 
@@ -124,6 +124,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 					setSrc(data.link);
 					return;
 				}
+				console.log(data.reason);
 				setSrc('/avatar404.png');
 			})
 			.catch(() => setSrc('/avatar404.png'));
@@ -149,7 +150,9 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 					alt='Character Avatar'
 					className='clickable'
 					style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
-					onError={() => setSrc('/avatar404.png')}
+					onError={() => {
+						if (src !== '#') setSrc('/avatar404.png');
+					}}
 					onClick={() => setAvatarDialogOpen(true)}
 				/>
 			</div>

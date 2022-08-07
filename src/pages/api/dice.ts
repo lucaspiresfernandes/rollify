@@ -21,7 +21,7 @@ function nextInt(min: number, max: number, n: number) {
 }
 
 async function getRandom(min: number, max: number, n: number) {
-	await sleep(nextInt(600, 1000, 1)[0]);
+	await sleep(nextInt(600, 1200, 1)[0]);
 	return nextInt(min, max, n);
 }
 

@@ -314,6 +314,22 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 			});
 		});
 
+		socket.on('playerMaxLoadChange', (id, maxLoad) => {
+			if (id !== props.id) return;
+			setDetails((details) => {
+				if (!details) return details;
+				return { ...details, maxLoad };
+			});
+		});
+
+		socket.on('playerSpellSlotsChange', (id, spellSlots) => {
+			if (id !== props.id) return;
+			setDetails((details) => {
+				if (!details) return details;
+				return { ...details, spellSlots };
+			});
+		});
+
 		return () => {
 			socket.off('playerInfoChange');
 			socket.off('playerSpecChange');
@@ -329,6 +345,8 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 			socket.off('playerArmorRemove');
 			socket.off('playerSpellAdd');
 			socket.off('playerSpellRemove');
+			socket.off('playerMaxLoadChange');
+			socket.off('playerSpellSlotsChange');
 		};
 	}, [socket, props.id]);
 
@@ -427,7 +445,7 @@ type PlayerAvatarFieldProps = {
 };
 
 const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
-	const [src, setSrc] = useState('/avatar404.png');
+	const [src, setSrc] = useState('#');
 	const previousStatusID = useRef(Number.MAX_SAFE_INTEGER);
 	const theme = useTheme();
 	const media = useMediaQuery(theme.breakpoints.up('sm'));
@@ -470,7 +488,9 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 					src={src}
 					alt='Character Avatar'
 					style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
-					onError={() => setSrc('/avatar404.png')}
+					onError={() => {
+						if (src !== '#') setSrc('/avatar404.png');
+					}}
 				/>
 			</Avatar>
 		</div>

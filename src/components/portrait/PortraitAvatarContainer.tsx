@@ -90,7 +90,9 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 				width={AVATAR_SIZE[0]}
 				height={AVATAR_SIZE[1]}
 				onLoad={onImageLoad}
-				onError={onImageLoadError}
+				onError={() => {
+					if (src !== '#') onImageLoadError();
+				}}
 				className={showAvatar ? `${styles.avatar} ${styles.show}` : styles.avatar}
 			/>
 		</>

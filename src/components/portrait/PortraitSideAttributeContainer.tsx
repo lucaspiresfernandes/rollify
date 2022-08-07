@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import { getAttributeStyle } from '../../utils/portrait';
+import { getShadowStyle } from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
@@ -57,7 +57,7 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 	}, [props.socket]);
 
 	const attributeStyle = useMemo(
-		() => getAttributeStyle(sideAttribute?.color || 'ffffff'),
+		() => getShadowStyle(sideAttribute?.color || 'ffffff'),
 		[sideAttribute]
 	);
 
