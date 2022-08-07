@@ -23,6 +23,7 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 
 	useEffect(() => {
 		document.body.style.backgroundColor = 'transparent';
+		document.body.style.color = 'white';
 
 		if (props.customFont) {
 			const font = new FontFace('Rollify Custom Font', `url(${props.customFont.data})`);

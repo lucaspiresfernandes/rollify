@@ -24,20 +24,14 @@ import styles from '../../styles/modules/PlayerAttributeContainer.module.css';
 import { clamp, getAvatarSize, handleDefaultApiResponse } from '../../utils';
 import GeneralDiceRollDialog, {
 	DEFAULT_ROLL,
-	GeneralDiceRollDialogSubmitHandler
+	GeneralDiceRollDialogSubmitHandler,
 } from '../GeneralDiceRollDialog';
 import PlayerAttributeEditorDialog from './dialogs/PlayerAttributeEditorDialog';
 import PlayerAvatarDialog from './dialogs/PlayerAvatarDialog';
 
-const AVATAR_SIZE = getAvatarSize(0.75);
+const AVATAR_SIZE = getAvatarSize(0.85);
 
 const BAR_HEIGHT = 35;
-
-const editorInitialValue = {
-	id: 0,
-	value: 0,
-	maxValue: 0,
-};
 
 type PlayerAttributeContainerProps = {
 	playerAttributes: {
@@ -148,14 +142,13 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	};
 
 	return (
-		<Box display='flex' alignItems='center' justifyContent='space-around' gap={2}>
+		<Box display='flex' alignItems='center' justifyContent='space-around' gap={3}>
 			<div>
-				<Image
+				<img
 					src={src}
 					alt='Character Avatar'
 					className='clickable'
-					width={AVATAR_SIZE[0]}
-					height={AVATAR_SIZE[1]}
+					style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
 					onError={() => setSrc('/avatar404.png')}
 					onClick={() => setAvatarDialogOpen(true)}
 				/>
@@ -164,17 +157,20 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 				open={generalDiceDialogOpen}
 				onClose={() => setGeneralDiceDialogOpen(false)}
 				onSubmit={onGeneralDiceDialogSubmit}>
-				<Image
-					src={dice20}
-					alt='D20'
-					className='clickable'
-					width={80}
-					height={80}
-					onClick={(ev) => {
-						if (ev.ctrlKey) return rollDice(DEFAULT_ROLL);
-						setGeneralDiceDialogOpen(true);
-					}}
-				/>
+				<div>
+					<Image
+						src={dice20}
+						alt='D20'
+						layout='fixed'
+						className='clickable'
+						width={80}
+						height={80}
+						onClick={(ev) => {
+							if (ev.ctrlKey) return rollDice(DEFAULT_ROLL);
+							setGeneralDiceDialogOpen(true);
+						}}
+					/>
+				</div>
 			</GeneralDiceRollDialog>
 			<PlayerAvatarDialog
 				playerAvatars={props.playerAvatars}

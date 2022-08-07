@@ -77,16 +77,16 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 
 	return (
 		<>
+			{/* eslint-disable-next-line jsx-a11y/alt-text */}
 			<img
 				src={oldSrc}
-				alt='Old Avatar'
 				width={AVATAR_SIZE[0]}
 				height={AVATAR_SIZE[1]}
 				className={styles.oldAvatar}
 			/>
+			{/* eslint-disable-next-line jsx-a11y/alt-text */}
 			<img
 				src={src}
-				alt='Avatar'
 				width={AVATAR_SIZE[0]}
 				height={AVATAR_SIZE[1]}
 				onLoad={onImageLoad}

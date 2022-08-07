@@ -74,7 +74,7 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 
 	return (
 		<Draggable axis='both' onStop={onDragStop} position={position} bounds={bounds} nodeRef={ref}>
-			<div className={styles.sideDraggable} style={{ ...attributeStyle }} ref={ref}>
+			<div className={styles.draggable} style={{ ...attributeStyle }} ref={ref}>
 				<div className={styles.sideContainer}>
 					<div className={styles.sideBackground}></div>
 					<label className={`${styles.sideContent} atributo-secundario ${sideAttribute.name}`}>

@@ -203,6 +203,7 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 						{router.locales?.map((loc) => (
 							<Fragment key={loc}>
 								<ListItemButton
+									divider
 									selected={router.locale === loc}
 									onClick={() => {
 										if (router.locale === loc) return;
@@ -213,7 +214,6 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 									}}>
 									{languages.get(loc) || loc}
 								</ListItemButton>
-								<Divider />
 							</Fragment>
 						))}
 					</List>

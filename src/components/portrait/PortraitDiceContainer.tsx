@@ -58,7 +58,6 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 		};
 
 		const showNextResult = async (result: DiceResponse) => {
-			console.log('ay');
 			showDiceRoll();
 			await sleep(750);
 			diceData.current = undefined;

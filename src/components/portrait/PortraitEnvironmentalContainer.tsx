@@ -10,9 +10,9 @@ import { Environment, getAttributeStyle } from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
-	left: -420,
-	top: 150,
-	right: 420,
+	left: -520,
+	top: 96,
+	right: 520,
 };
 
 type PortraitEnvironmentalContainerProps = {
@@ -107,9 +107,8 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 	}, [props.socket]);
 
 	useEffect(() => {
-		if (attributesRef.current) {
+		if (attributesRef.current)
 			attributesRef.current.style.transform = `rotate(${props.rotation}deg)`;
-		}
 	}, [props.rotation]);
 
 	const onDragStop: DraggableEventHandler = (_, data) => {
@@ -125,18 +124,13 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 		<Fade in={props.debug || props.environment === 'combat'}>
 			<div>
 				<Draggable axis='both' position={position} bounds={bounds} onStop={onDragStop}>
-					<div className={styles.combatDraggable}>
-						<div className={styles.combatContainer}>
-							<div ref={attributesRef} style={{ display: 'inline-block' }}>
+					<div className={styles.draggable}>
+						<div className={styles.attributeContainer}>
+							<div ref={attributesRef}>
 								{attributes.map((attr) => (
-									<Fragment key={attr.id}>
-										<span
-											className={`${styles.attribute} atributo-primario ${attr.name}`}
-											style={getAttributeStyle(attr.color)}>
-											<label>{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}</label>
-										</span>
-										<br />
-									</Fragment>
+									<div key={attr.id} style={getAttributeStyle(attr.color)}>
+										{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}
+									</div>
 								))}
 							</div>
 						</div>
@@ -192,9 +186,7 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	}, [props.socket]);
 
 	useEffect(() => {
-		if (nameRef.current) {
-			nameRef.current.style.transform = `rotate(${props.rotation}deg)`;
-		}
+		if (nameRef.current) nameRef.current.style.transform = `rotate(${props.rotation}deg)`;
 	}, [props.rotation]);
 
 	const onDragStop: DraggableEventHandler = (_ev, data) => {
@@ -206,18 +198,23 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 		localStorage.setItem(`name-pos-${props.playerId}`, JSON.stringify(pos));
 	};
 
-	const alignment: React.CSSProperties['textAlign'] = transform.x > 150 ? 'start' : 'end';
+	const rect = nameRef.current?.getBoundingClientRect() as DOMRect;
+
+	const alignment: React.CSSProperties['textAlign'] =
+		transform.x + rect.width / 2 > 150 ? 'start' : 'end';
+
+	const fullName = playerName.name || t('unknown');
 
 	return (
 		<Fade in={props.debug || props.environment === 'idle'}>
-			<div style={{ textAlign: alignment }}>
+			<div>
 				<Draggable axis='both' position={transform} bounds={bounds} onStop={onDragStop}>
-					<div className={styles.nameDraggable}>
+					<div className={styles.draggable}>
 						<div className={styles.nameContainer}>
-							<div ref={nameRef} style={{ display: 'inline-block' }}>
-								<label className={styles.name}>
-									{playerName.show ? playerName.name || t('unknown') : '???'}
-								</label>
+							<div ref={nameRef} style={{ textAlign: alignment }}>
+								{fullName.split(' ').map((name) => (
+									<div key={name}>{name}</div>
+								))}
 							</div>
 						</div>
 					</div>
