@@ -46,7 +46,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 		props.onSubmit({
 			...weapon,
 			weight: parseInt(weapon.weight) || 0,
-			ammo: weapon.ammo ? parseInt(weapon.ammo) || 0 : null,
+			ammo: weapon.ammo ? parseInt(weapon.ammo.replace(',', '.')) || 0 : null,
 		});
 	};
 

@@ -5,8 +5,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
@@ -37,6 +37,13 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 		hostName.current = window.location.host;
 	}, []);
 
+	useEffect(() => {
+		if (props.open) {
+			setDiceColor('#ddaf0f');
+			setShowDiceRoll(true);
+		}
+	}, [props.open]);
+
 	const copyLink = () => {
 		const copied = copyToClipboard(portraitLink);
 		if (copied) {
@@ -50,42 +57,36 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>{t('modal.title.playerPortrait')}</DialogTitle>
 			<DialogContent>
-				<DialogContentText>{t('modal.label.portraitDescription')}</DialogContentText>
-				<Box display='flex' flexDirection='column' gap={2} mt={4}>
-					<div>
-						<ColorField
-							fullWidth
-							label={t('modal.label.diceColor')}
-							color={diceColor}
-							onColorChange={(ev) => setDiceColor(ev.hex)}
-						/>
-					</div>
-					<div>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={showDiceRoll}
-									onChange={(ev) => setShowDiceRoll(ev.target.checked)}
-								/>
-							}
-							label={t('modal.label.showDiceRoll')}
-						/>
-					</div>
-					<div>
-						<TextField
-							fullWidth
-							label={t('modal.label.portraitLink')}
-							InputProps={{
-								endAdornment: (
-									<IconButton onClick={copyLink}>
-										<CopyIcon />
-									</IconButton>
-								),
-							}}
-							value={portraitLink}
-							disabled
-						/>
-					</div>
+				<Box display='flex' flexDirection='column' mt={1}>
+					<ColorField
+						fullWidth
+						label={t('modal.label.diceColor')}
+						color={diceColor}
+						onColorChange={(ev) => setDiceColor(ev.hex)}
+					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={showDiceRoll}
+								onChange={(ev) => setShowDiceRoll(ev.target.checked)}
+							/>
+						}
+						label={t('modal.label.showDiceRoll')}
+					/>
+					<Divider sx={{ my: 2 }} />
+					<TextField
+						fullWidth
+						label={t('modal.label.portraitLink')}
+						InputProps={{
+							endAdornment: (
+								<IconButton onClick={copyLink}>
+									<CopyIcon />
+								</IconButton>
+							),
+						}}
+						value={portraitLink}
+						disabled
+					/>
 				</Box>
 			</DialogContent>
 			<DialogActions>

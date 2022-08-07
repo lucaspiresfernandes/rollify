@@ -6,13 +6,12 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Collapse from '@mui/material/Collapse';
 import CircularProgress from '@mui/material/CircularProgress';
+import Collapse from '@mui/material/Collapse';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { LoggerContext, SocketContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
@@ -44,7 +43,7 @@ type PlayerContainerProps = {
 
 const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	const [players, setPlayers] = useState(props.players);
-	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>();
+	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>(0);
 	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 
@@ -118,8 +117,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			</Grid>
 			<GetPortraitDialog
 				open={Boolean(portraitDialogPlayerId)}
-				onClose={() => setPortraitDialogPlayerId(undefined)}
-				playerId={portraitDialogPlayerId || 0}
+				onClose={() => setPortraitDialogPlayerId(0)}
+				playerId={portraitDialogPlayerId}
 			/>
 		</>
 	);
@@ -467,11 +466,10 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 					height: AVATAR_SIZE[1],
 					backgroundColor: 'transparent',
 				}}>
-				<Image
+				<img
 					src={src}
 					alt='Character Avatar'
-					width={AVATAR_SIZE[0]}
-					height={AVATAR_SIZE[1]}
+					style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
 					onError={() => setSrc('/avatar404.png')}
 				/>
 			</Avatar>
