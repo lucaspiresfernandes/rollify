@@ -39,10 +39,15 @@ const handlePost: NextApiHandler<BootApiResponse> = async (req, res) => {
 
 	if (!preset) return res.json({ status: 'failure', reason: 'invalid_preset_id' });
 
+	const presetSettings = preset.config.map((con) => ({
+		...con,
+		value: typeof con.value === 'string' ? con.value : JSON.stringify(con.value),
+	}));
+
 	try {
 		await prisma.$transaction([
 			prisma.config.createMany({
-				data: [{ id: 1, name: 'init', value: 'true' }, ...preset.config],
+				data: [{ id: 1, name: 'init', value: 'true' }, ...presetSettings],
 			}),
 			prisma.info.createMany({ data: preset.info }),
 			prisma.extraInfo.createMany({ data: preset.extraInfo }),

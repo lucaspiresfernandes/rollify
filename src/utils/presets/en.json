@@ -19,7 +19,12 @@
 			{
 				"id": 2,
 				"name": "dice",
-				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+				"value": {
+					"baseDice": 20,
+					"resolver": null,
+					"characteristic": { "enable_modifiers": false },
+					"skill": { "enable_modifiers": false }
+				}
 			}
 		]
 	},
@@ -575,7 +580,19 @@
 			{
 				"id": 2,
 				"name": "dice",
-				"value": "{\"baseDice\": 100,\"resolver\": [{ \"operator\": \"equals\", \"result\": 100, \"description\": \"Disaster\" },{ \"operator\": \"equals\", \"result\": 1, \"description\": \"Critical\" },{ \"operator\": \"greaterThan\", \"result\": \"{result}\", \"description\": \"Failure\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}\", \"description\": \"Regular\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/2\", \"description\": \"Hard\" },{ \"operator\": \"lessThanOrEquals\", \"result\": \"{result}/5\", \"description\": \"Extreme\" }],\"characteristic\": { \"enable_modifiers\": false },\"skill\": { \"enable_modifiers\": false }}"
+				"value": {
+					"baseDice": 100,
+					"resolver": [
+						{ "operator": "equals", "result": 100, "description": "Disaster" },
+						{ "operator": "equals", "result": 1, "description": "Critical" },
+						{ "operator": "greaterThan", "result": "{result}", "description": "Failure" },
+						{ "operator": "lessThanOrEquals", "result": "{result}", "description": "Regular" },
+						{ "operator": "lessThanOrEquals", "result": "{result}/2", "description": "Hard" },
+						{ "operator": "lessThanOrEquals", "result": "{result}/5", "description": "Extreme" }
+					],
+					"characteristic": { "enable_modifiers": false },
+					"skill": { "enable_modifiers": false }
+				}
 			}
 		]
 	},
@@ -728,7 +745,12 @@
 			{
 				"id": 2,
 				"name": "dice",
-				"value": "{\"baseDice\": 20,\"resolver\": null,\"characteristic\": { \"enable_modifiers\": true },\"skill\": { \"enable_modifiers\": true }}"
+				"value": {
+					"baseDice": 20,
+					"resolver": null,
+					"characteristic": { "enable_modifiers": true },
+					"skill": { "enable_modifiers": true }
+				}
 			}
 		]
 	}

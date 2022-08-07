@@ -4,14 +4,15 @@ import type {
 	AttributeStatus,
 	Characteristic,
 	Config,
-	Currency, ExtraInfo,
+	Currency,
+	ExtraInfo,
 	Info,
 	Item,
 	Skill,
 	Spec,
 	Specialization,
 	Spell,
-	Weapon
+	Weapon,
 } from '@prisma/client';
 
 export type Presets = {
@@ -30,5 +31,13 @@ export type Presets = {
 	spec: Spec[];
 	specialization: Specialization[];
 	spell: Spell[];
-	config: Config[];
+	config: {
+		id: Config['id'];
+		name: Config['name'];
+		value:
+			| string
+			| {
+					[key: string]: any;
+			  };
+	}[];
 }[];
