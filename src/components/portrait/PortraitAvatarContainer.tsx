@@ -70,6 +70,7 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 	};
 
 	const onImageLoadError = () => {
+		if (src === '#') return;
 		setShowAvatar(true);
 		setSrc('/avatar404.png');
 		setTimeout(() => setOldSrc('/avatar404.png'), AVATAR_TRANSITION_DURATION);
@@ -90,9 +91,7 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 				width={AVATAR_SIZE[0]}
 				height={AVATAR_SIZE[1]}
 				onLoad={onImageLoad}
-				onError={() => {
-					if (src !== '#') onImageLoadError();
-				}}
+				onError={onImageLoadError}
 				className={showAvatar ? `${styles.avatar} ${styles.show}` : styles.avatar}
 			/>
 		</>
