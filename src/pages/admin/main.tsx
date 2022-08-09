@@ -13,6 +13,7 @@ import PlayerNotesContainer from '../../components/sheet/PlayerNotesContainer';
 import { SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
+import type { DiceConfig } from '../../utils/dice';
 import type { InferSsrProps } from '../../utils/next';
 import type { Environment } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
@@ -67,7 +68,7 @@ const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 
 				<Divider sx={{ my: 3 }} />
 
-				<UtilitySection npcs={props.npcs} players={props.players} />
+				<UtilitySection npcs={props.npcs} players={props.players} baseDice={props.baseDice} />
 			</SocketContext.Provider>
 
 			<PlayerNotesContainer
@@ -112,6 +113,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			select: { id: true, name: true },
 		}),
 		prisma.config.findUnique({ where: { name: 'environment' } }),
+		prisma.config.findUnique({ where: { name: 'dice' } }),
 		prisma.playerNote.findUnique({
 			where: { player_id: player.id },
 			select: { value: true },
@@ -126,7 +128,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			players: results[0],
 			npcs: results[1],
 			environment: (results[2]?.value as Environment | undefined) || null,
-			annotations: results[3],
+			baseDice: (JSON.parse(results[3]?.value as string) as DiceConfig).baseDice,
+			annotations: results[4],
 			table,
 		},
 	};

@@ -22,8 +22,8 @@ import type { PlayerAttributeStatusApiResponse } from '../../pages/api/sheet/pla
 import type { PlayerGetAvatarApiResponse } from '../../pages/api/sheet/player/avatar/[attrStatusID]';
 import styles from '../../styles/modules/PlayerAttributeContainer.module.css';
 import { clamp, getAvatarSize, handleDefaultApiResponse } from '../../utils';
+import type { DiceConfig } from '../../utils/dice';
 import GeneralDiceRollDialog, {
-	DEFAULT_ROLL,
 	GeneralDiceRollDialogSubmitHandler,
 } from '../GeneralDiceRollDialog';
 import PlayerAttributeEditorDialog from './dialogs/PlayerAttributeEditorDialog';
@@ -57,6 +57,7 @@ type PlayerAttributeContainerProps = {
 			name: string;
 		} | null;
 	}[];
+	baseDice: DiceConfig['baseDice'];
 };
 
 const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props) => {
@@ -76,6 +77,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 			<PlayerAvatarImage
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
 				playerAvatars={props.playerAvatars}
+				baseDice={props.baseDice}
 			/>
 			{props.playerAttributes.map((attr) => {
 				const status = playerAttributeStatus.filter((stat) => stat.attributeId === attr.id);
@@ -103,6 +105,7 @@ type PlayerAvatarImageProps = {
 			name: string;
 		} | null;
 	}[];
+	baseDice: DiceConfig['baseDice'];
 };
 
 const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
@@ -165,7 +168,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 						width={80}
 						height={80}
 						onClick={(ev) => {
-							if (ev.ctrlKey) return rollDice(DEFAULT_ROLL);
+							if (ev.ctrlKey) return rollDice([{ num: 1, roll: props.baseDice }]);
 							setGeneralDiceDialogOpen(true);
 						}}
 					/>

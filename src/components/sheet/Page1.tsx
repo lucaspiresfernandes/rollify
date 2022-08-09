@@ -161,6 +161,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 									attributeStatus: avatar.AttributeStatus,
 									link: avatar.link,
 								}))}
+								baseDice={props.diceConfig.baseDice}
 							/>
 						</Grid>
 

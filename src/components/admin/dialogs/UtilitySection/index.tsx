@@ -6,6 +6,7 @@ import type { Locale } from '../../../../i18n';
 import type { NpcApiResponse } from '../../../../pages/api/npc';
 import { handleDefaultApiResponse } from '../../../../utils';
 import { api } from '../../../../utils/createApiClient';
+import type { DiceConfig } from '../../../../utils/dice';
 import DiceRollDialog, { DiceRoll as DiceRollType } from '../../../DiceRollDialog';
 import CombatManager from './CombatManager';
 import DiceRoll from './DiceRoll';
@@ -24,6 +25,7 @@ type NPC = { id: number; name: string };
 type UtilitySectionProps = {
 	players: { id: number; name: string }[];
 	npcs: { id: number; name: string }[];
+	baseDice: DiceConfig['baseDice'];
 };
 
 const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
@@ -104,7 +106,7 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 		<Grid container spacing={2} my={2}>
 			<DiceRollContext.Provider value={onRollDice}>
 				<Grid item md={6} xs={12}>
-					<DiceRoll />
+					<DiceRoll baseDice={props.baseDice} />
 				</Grid>
 			</DiceRollContext.Provider>
 			<Grid item md={6} xs={12}>

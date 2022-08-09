@@ -21,8 +21,6 @@ import dice8 from '../../public/dice8.webp';
 import type { Locale } from '../i18n';
 import type { ResolvedDice } from '../utils/dice';
 
-export const DEFAULT_ROLL: ResolvedDice[] = [{ num: 1, roll: 20 }];
-
 export type GeneralDiceRollDialogSubmitHandler = (req: ResolvedDice[]) => void;
 
 type GeneralDiceRollDialogProps = {

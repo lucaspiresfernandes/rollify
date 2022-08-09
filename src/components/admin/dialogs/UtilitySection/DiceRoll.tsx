@@ -1,15 +1,15 @@
 import { useContext, useState } from 'react';
 import { DiceRollContext } from '../../../../contexts';
 import GeneralDiceRollDialog, {
-	DEFAULT_ROLL,
 	GeneralDiceRollDialogSubmitHandler,
 } from '../../../GeneralDiceRollDialog';
 import Section from '../../../sheet/Section';
 import dice20 from '../../../../../public/dice20.webp';
 import Image from 'next/image';
 import Box from '@mui/material/Box';
+import type { DiceConfig } from '../../../../utils/dice';
 
-const DiceRoll: React.FC = () => {
+const DiceRoll: React.FC<{ baseDice: DiceConfig['baseDice'] }> = (props) => {
 	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);
 	const rollDice = useContext(DiceRollContext);
 
@@ -20,7 +20,7 @@ const DiceRoll: React.FC = () => {
 
 	return (
 		<Section title='Dice Roll'>
-			<Box my={2} textAlign='center' >
+			<Box my={2} textAlign='center'>
 				<GeneralDiceRollDialog
 					open={generalDiceDialogOpen}
 					onClose={() => setGeneralDiceDialogOpen(false)}
@@ -32,7 +32,7 @@ const DiceRoll: React.FC = () => {
 						width={80}
 						height={80}
 						onClick={(ev) => {
-							if (ev.ctrlKey) return rollDice(DEFAULT_ROLL);
+							if (ev.ctrlKey) return rollDice([{ num: 1, roll: props.baseDice }]);
 							setGeneralDiceDialogOpen(true);
 						}}
 					/>
