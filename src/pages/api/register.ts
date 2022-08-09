@@ -17,7 +17,7 @@ async function validateAdminKey(key: string) {
 
 	const serverAdminKey = (await prisma.config.findUnique({ where: { name: 'admin_key' } }))?.value;
 
-	if (key === serverAdminKey) return true;
+	if (!serverAdminKey || key === serverAdminKey) return true;
 	return false;
 }
 

@@ -14,7 +14,7 @@ type GeneralSettingsProps = {
 const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [form, setForm] = useState({
-		adminKey: props.adminKey || '123456',
+		adminKey: props.adminKey || '',
 	});
 	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
