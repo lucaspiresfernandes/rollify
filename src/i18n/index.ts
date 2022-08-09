@@ -41,6 +41,7 @@ export interface Locale {
 	offering: string;
 	load: string;
 	slots: string;
+	clear: string;
 
 	operation: {
 		[T in RelationalOperator]: string;

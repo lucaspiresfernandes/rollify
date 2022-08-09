@@ -41,6 +41,7 @@ export const table: Locale = {
 	load: 'Current Load',
 	slots: 'Available Slots',
 	quickAccess: 'Quick Access',
+	clear: 'Clear',
 
 	operation: {
 		equals: 'Equals',

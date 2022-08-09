@@ -2,10 +2,6 @@ import type { NextApiHandlerIO, NextApiResponseData } from '../../../utils/next'
 import prisma from '../../../utils/prisma';
 import customBehaviours from './customBehaviours';
 
-//Available settings
-// - Dice
-// - Portrait
-
 export type ConfigResponse = NextApiResponseData<'invalid_name_or_value'>;
 
 const handler: NextApiHandlerIO<ConfigResponse> = async (req, res) => {

@@ -1,8 +1,8 @@
 export type PortraitConfig = {
-	customFont?: {
+	customFont: {
 		name: string;
 		data: string;
-	};
+	} | null;
 
 	typography: {
 		name: {
@@ -34,6 +34,37 @@ export type PortraitConfig = {
 			exitTimeout: number;
 		};
 	};
+};
+
+export const DEFAULT_PORTRAIT_CONFIG: PortraitConfig = {
+	customFont: null,
+	typography: {
+		attribute: {
+			fontSize: 108,
+			italic: true,
+		},
+		name: {
+			fontSize: 96,
+			italic: true,
+		},
+		dice: {
+			result: {
+				fontSize: 96,
+				italic: false,
+			},
+			description: {
+				fontSize: 72,
+				italic: false,
+			},
+		},
+	},
+	transitions: {
+		dice: {
+			enterTimeout: 750,
+			screenTimeout: 1500,
+			exitTimeout: 500,
+		},
+	},
 };
 
 export type Environment = 'idle' | 'combat';

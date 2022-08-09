@@ -6,7 +6,12 @@ import type { SocketIO } from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import { Environment, getShadowStyle, PortraitConfig } from '../../utils/portrait';
+import {
+	DEFAULT_PORTRAIT_CONFIG,
+	Environment,
+	getShadowStyle,
+	PortraitConfig,
+} from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
@@ -132,7 +137,9 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 						<div
 							className={styles.attributeContainer}
 							style={{
-								fontSize: props.attributeTypography?.fontSize || 108,
+								fontSize:
+									props.attributeTypography?.fontSize ||
+									DEFAULT_PORTRAIT_CONFIG.typography.attribute.fontSize,
 								fontStyle: props.attributeTypography?.italic ? 'italic' : undefined,
 							}}>
 							<div ref={attributesRef}>
@@ -223,7 +230,9 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 						<div
 							className={styles.nameContainer}
 							style={{
-								fontSize: props.nameTypography?.fontSize || 96,
+								fontSize:
+									props.nameTypography?.fontSize ||
+									DEFAULT_PORTRAIT_CONFIG.typography.name.fontSize,
 								fontStyle: props.nameTypography?.italic ? 'italic' : undefined,
 							}}>
 							<div ref={nameRef} style={{ textAlign: alignment }}>

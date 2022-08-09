@@ -127,8 +127,8 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					variant='body1'
 					component='label'
 					htmlFor={`characteristic${props.id}`}
+					className='clickable'
 					sx={{
-						cursor: 'pointer',
 						':hover': {
 							textDecoration: 'underline',
 						},

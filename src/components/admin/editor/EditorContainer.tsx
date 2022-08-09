@@ -21,7 +21,7 @@ const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelet
 	return (
 		<>
 			<Box mx={1} my={1}>
-				<Paper sx={{ p: 0.5, flex: '1 0' }}>
+				<Paper sx={{ p: 0.5}}>
 					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
 				</Paper>
 			</Box>

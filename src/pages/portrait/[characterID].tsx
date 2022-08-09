@@ -27,15 +27,20 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (props.portraitConfig) {
-			const font = new FontFace('Rollify Custom Font', `url(${props.portraitConfig.customFont})`);
-			font.load().then(() => {
-				document.fonts.add(font);
-				document.body.classList.add('custom-font');
-			});
-		} else {
-			document.body.style.fontFamily = 'FantaisieArtistique';
-		}
+		if (props.portraitConfig?.customFont) {
+			const font = new FontFace(
+				'Portrait Custom Font',
+				`url(${props.portraitConfig.customFont.data})`
+			);
+
+			font
+				.load()
+				.then((f) => {
+					document.fonts.add(f);
+					document.body.style.fontFamily = 'Portrait Custom Font';
+				})
+				.catch((err) => console.warn('Could not load custom font:', err));
+		} else document.body.style.fontFamily = 'FantaisieArtistique';
 	}, [props.portraitConfig]);
 
 	if (!socket) return null;

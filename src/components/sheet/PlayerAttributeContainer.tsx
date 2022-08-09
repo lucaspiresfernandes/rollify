@@ -328,7 +328,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					flex='1 0'
 					mx={1}
 					position='relative'
-					style={{ cursor: 'pointer' }}
+					className='clickable'
 					onClick={() => setAttrEditorOpen(true)}>
 					<LinearProgress
 						variant='determinate'

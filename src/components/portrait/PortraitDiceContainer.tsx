@@ -5,7 +5,7 @@ import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { sleep } from '../../utils';
 import type { DiceResponse } from '../../utils/dice';
-import { getShadowStyle, PortraitConfig } from '../../utils/portrait';
+import { DEFAULT_PORTRAIT_CONFIG, getShadowStyle, PortraitConfig } from '../../utils/portrait';
 
 type PortraitDiceContainerProps = {
 	socket: SocketIO;
@@ -34,7 +34,8 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 	const diceVideo = useRef<HTMLVideoElement>(null);
 
-	const exitTimeout = props.diceTransition?.exitTimeout || 500;
+	const exitTimeout =
+		props.diceTransition?.exitTimeout || DEFAULT_PORTRAIT_CONFIG.transitions.dice.exitTimeout;
 
 	useEffect(() => {
 		if (!props.showDiceRoll) return;
@@ -75,7 +76,10 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 				setDiceDescription(result.description);
 			}
 
-			await sleep(props.diceTransition?.screenTimeout || 1500);
+			await sleep(
+				props.diceTransition?.screenTimeout ||
+					DEFAULT_PORTRAIT_CONFIG.transitions.dice.screenTimeout
+			);
 
 			setDiceResult(null);
 			setDiceDescription(null);
@@ -126,7 +130,9 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 				in={props.showDice}
 				easing={{ enter: 'ease-out', exit: 'ease-in' }}
 				timeout={{
-					enter: props.diceTransition?.enterTimeout || 750,
+					enter:
+						props.diceTransition?.enterTimeout ||
+						DEFAULT_PORTRAIT_CONFIG.transitions.dice.enterTimeout,
 					exit: exitTimeout,
 				}}>
 				<video muted className={styles.dice} ref={diceVideo}>
@@ -138,7 +144,9 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 					className={styles.result}
 					ref={diceResultRef}
 					style={{
-						fontSize: props.diceTypography?.result.fontSize || 96,
+						fontSize:
+							props.diceTypography?.result.fontSize ||
+							DEFAULT_PORTRAIT_CONFIG.typography.dice.result.fontSize,
 						fontStyle: props.diceTypography?.result.italic ? 'italic' : undefined,
 					}}>
 					{diceResult || lastDiceResult.current}
@@ -149,7 +157,9 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 					className={styles.description}
 					ref={diceDescriptionRef}
 					style={{
-						fontSize: props.diceTypography?.description.fontSize || 72,
+						fontSize:
+							props.diceTypography?.description.fontSize ||
+							DEFAULT_PORTRAIT_CONFIG.typography.dice.description.fontSize,
 						fontStyle: props.diceTypography?.description.italic ? 'italic' : undefined,
 					}}>
 					{diceDescription || lastDiceDescription.current}

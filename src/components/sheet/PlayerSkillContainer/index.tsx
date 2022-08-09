@@ -243,8 +243,8 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				display='flex'
 				justifyContent='center'
 				alignItems='center'
+				className='clickable'
 				sx={{
-					cursor: 'pointer',
 					':hover': {
 						textDecoration: 'underline',
 					},
@@ -254,7 +254,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					variant='subtitle1'
 					component='label'
 					htmlFor={`skill${props.id}`}
-					sx={{ cursor: 'pointer' }}>
+					className='clickable'>
 					{props.name}
 				</Typography>
 			</Box>
