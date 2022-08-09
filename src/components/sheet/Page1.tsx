@@ -171,7 +171,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 									...char,
 									...char.Characteristic,
 								}))}
-								enableModifiers={props.diceConfig.characteristic.enable_modifiers}
+								enableModifiers={props.diceConfig.characteristic.enableModifiers}
 							/>
 						</Grid>
 
@@ -182,7 +182,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 								...skill.Skill,
 								specializationName: skill.Skill.Specialization?.name || null,
 							}))}
-							enableModifiers={props.diceConfig.skill.enable_modifiers}
+							enableModifiers={props.diceConfig.skill.enableModifiers}
 						/>
 
 						<AddDataDialogContext.Provider value={addDataProvider}>
