@@ -1,3 +1,5 @@
+import type { RelationalOperator } from '../utils/dice';
+
 export interface Locale {
 	locale: string;
 	localeName: string;
@@ -39,6 +41,10 @@ export interface Locale {
 	offering: string;
 	load: string;
 	slots: string;
+
+	operation: {
+		[T in RelationalOperator]: string;
+	};
 
 	nav: {
 		language: string;

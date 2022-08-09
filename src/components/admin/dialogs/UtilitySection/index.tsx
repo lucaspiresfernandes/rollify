@@ -19,7 +19,7 @@ const MemoNpcManager = memo(
 );
 const MemoHistory = memo(History, (prev, next) => prev.players === next.players);
 
-type NPC = { name: string; id: number; npc: boolean };
+type NPC = { id: number; name: string };
 
 type UtilitySectionProps = {
 	players: { id: number; name: string }[];
@@ -37,7 +37,9 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 
 	useEffect(() => {
 		setBasicNpcs(JSON.parse(localStorage.getItem('admin_npcs') || '[]') as NPC[]);
+	}, []);
 
+	useEffect(() => {
 		socket.on('playerNameChange', (playerId, value) => {
 			setComplexNpcs((complexNpcs) =>
 				complexNpcs.map((npc) => {
@@ -61,7 +63,7 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	}, [basicNpcs]);
 
 	const addBasicNPC = () => {
-		setBasicNpcs([...basicNpcs, { id: Date.now(), name: `NPC ${basicNpcs.length}`, npc: true }]);
+		setBasicNpcs([...basicNpcs, { id: Date.now(), name: `NPC ${basicNpcs.length}` }]);
 	};
 
 	const removeBasicNPC = (id: number) => {

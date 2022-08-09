@@ -33,7 +33,7 @@ const handler: NextApiHandlerIO<ConfigResponse> = async (req, res) => {
 		});
 
 		const behaviour = customBehaviours.get(name);
-		if (behaviour) await behaviour(res, value);
+		if (behaviour) await behaviour(res, req.body.value);
 
 		res.json({ status: 'success' });
 	} catch (err) {

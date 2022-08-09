@@ -13,7 +13,7 @@ import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import type { InferSsrProps } from '../../utils/next';
-import type { Environment, PortraitFontConfig } from '../../utils/portrait';
+import type { Environment, PortraitConfig } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
 
 type PageProps = InferSsrProps<typeof getServerSideProps>;
@@ -25,8 +25,8 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 		document.body.style.backgroundColor = 'transparent';
 		document.body.style.color = 'white';
 
-		if (props.customFont) {
-			const font = new FontFace('Rollify Custom Font', `url(${props.customFont.data})`);
+		if (props.portraitConfig) {
+			const font = new FontFace('Rollify Custom Font', `url(${props.portraitConfig.customFont})`);
 			font.load().then(() => {
 				document.fonts.add(font);
 				document.body.classList.add('custom-font');
@@ -34,7 +34,7 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 		} else {
 			document.body.style.fontFamily = 'FantaisieArtistique';
 		}
-	}, [props.customFont]);
+	}, [props.portraitConfig]);
 
 	if (!socket) return <LoadingScreen />;
 
@@ -160,7 +160,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 			},
 		}),
 		prisma.config.findUnique({ where: { name: 'environment' } }),
-		prisma.config.findUnique({ where: { name: 'portrait_font' } }),
+		prisma.config.findUnique({ where: { name: 'portrait' } }),
 	]);
 
 	if (!results[0] || results[0].role === 'ADMIN')
@@ -186,7 +186,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 			sideAttribute,
 			attributeStatus: results[0].PlayerAttributeStatus,
 			playerName: { name: results[0].name, show: results[0].showName },
-			customFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
+			portraitConfig: JSON.parse(results[2]?.value || 'null') as PortraitConfig | null,
 			diceColor,
 			showDiceRoll,
 		},

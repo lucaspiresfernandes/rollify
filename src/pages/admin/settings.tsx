@@ -9,13 +9,13 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
 import { useState } from 'react';
-import DiceSettings from '../../components/admin/DiceSettings';
-import GeneralSettings from '../../components/admin/GeneralSettings';
-import PortraitSettings from '../../components/admin/PortraitSettings';
+import DiceSettings from '../../components/admin/settings/DiceSettings';
+import GeneralSettings from '../../components/admin/settings/GeneralSettings';
+import PortraitSettings from '../../components/admin/settings/PortraitSettings';
 import type { Locale } from '../../i18n';
 import type { DiceConfig } from '../../utils/dice';
 import type { InferSsrProps } from '../../utils/next';
-import type { PortraitFontConfig } from '../../utils/portrait';
+import type { PortraitConfig } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
 import { withSessionSsr } from '../../utils/session';
 
@@ -52,7 +52,7 @@ const AdminSettings: React.FC<AdminSettingsPageProps> = (props) => {
 			<Container sx={{ my: 4 }}>
 				{tab === 0 && <GeneralSettings adminKey={props.adminKey} />}
 				{tab === 1 && <DiceSettings diceConfig={props.dice} />}
-				{tab === 2 && <PortraitSettings portraitConfig={props.portraitFont} />}
+				{tab === 2 && <PortraitSettings portraitConfig={props.portrait} />}
 			</Container>
 		</Box>
 	);
@@ -74,7 +74,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		prisma.config.findUnique({ where: { name: 'adminKey' }, select: { value: true } }),
 		prisma.config.findUnique({ where: { name: 'dice' }, select: { value: true } }),
 		prisma.config.findUnique({
-			where: { name: 'portrait_font' },
+			where: { name: 'portrait' },
 			select: { value: true },
 		}),
 	]);
@@ -87,7 +87,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			table,
 			adminKey: results[0]?.value || null,
 			dice: JSON.parse(results[1]?.value as string) as DiceConfig,
-			portraitFont: JSON.parse(results[2]?.value || 'null') as PortraitFontConfig | null,
+			portrait: JSON.parse(results[2]?.value || 'null') as PortraitConfig | null,
 		},
 	};
 }

@@ -30,8 +30,8 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 
 	const portraitLink =
 		`${hostName.current}/portrait/${props.playerId}` +
-		`?dicecolor=${diceColor.substring(1)}` +
-		`&showdiceroll=${showDiceRoll}`;
+		`&showdiceroll=${showDiceRoll}` +
+		`?dicecolor=${diceColor.substring(1)}`;
 
 	useEffect(() => {
 		hostName.current = window.location.host;
@@ -54,7 +54,7 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	};
 
 	return (
-		<Dialog open={props.open} onClose={props.onClose}>
+		<Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth='xs'>
 			<DialogTitle>{t('modal.title.playerPortrait')}</DialogTitle>
 			<DialogContent>
 				<Box display='flex' flexDirection='column' mt={1}>

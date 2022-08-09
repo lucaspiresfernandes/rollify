@@ -49,10 +49,7 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 					senderTrade={props.senderTrade}
 					receiverTrade={props.receiverTrade}
 					onItemAdd={(item) => setCurrentLoad((w) => w + item.weight * item.quantity)}
-					onItemRemove={(item) => {
-						console.log(item);
-						setCurrentLoad((w) => w - item.weight * item.quantity);
-					}}
+					onItemRemove={(item) => setCurrentLoad((w) => w - item.weight * item.quantity)}
 					onItemChange={(oldItem, newItem) => {
 						setCurrentLoad(
 							(w) => w + (newItem.weight * newItem.quantity - oldItem.weight * oldItem.quantity)

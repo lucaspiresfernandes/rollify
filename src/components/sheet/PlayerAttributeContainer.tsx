@@ -120,11 +120,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 		api
 			.post<PlayerGetAvatarApiResponse>(`/sheet/player/avatar/${statusId}`)
 			.then(({ data }) => {
-				if (data.status === 'success') {
-					setSrc(data.link);
-					return;
-				}
-				console.log(data.reason);
+				if (data.status === 'success') return setSrc(data.link);
 				setSrc('/avatar404.png');
 			})
 			.catch(() => setSrc('/avatar404.png'));

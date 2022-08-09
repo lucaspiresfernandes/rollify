@@ -40,8 +40,16 @@ export const table: Locale = {
 	offering: 'Oferecendo',
 	load: 'Carga Atual',
 	slots: 'Slots Disponíveis',
-
 	quickAccess: 'Acesso Rápido',
+
+	operation: {
+		equals: 'Igual a',
+		notEquals: 'Diferente de',
+		greaterThan: 'Maior que',
+		lessThan: 'Menor que',
+		greaterThanOrEquals: 'Maior ou igual a',
+		lessThanOrEquals: 'Menor ou igual a',
+	},
 
 	nav: {
 		language: 'Idioma',

@@ -128,7 +128,7 @@ const GettingStarted: React.FC = () => {
 						<Select
 							labelId='presetSelectLabel'
 							id='presetSelect'
-							label='Predefinição'
+							label='TODO: Predefinição'
 							value={selectedPresetId}
 							onChange={(ev) => {
 								const p = presets.find((p) => p.preset_id === ev.target.value) as Preset;

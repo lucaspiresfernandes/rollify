@@ -1,19 +1,14 @@
 export type PortraitConfig = {
-	customFont: {
+	customFont?: {
 		name: string;
 		data: string;
 	};
-	typography: {
+	typography?: {
 		italic: boolean;
 	};
-	dice: {
+	dice?: {
 		timeout: number;
 	};
-};
-
-export type PortraitFontConfig = {
-	name: string;
-	data: string;
 };
 
 export type Environment = 'idle' | 'combat';

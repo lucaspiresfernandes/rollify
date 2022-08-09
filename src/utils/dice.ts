@@ -15,7 +15,7 @@ const comparer = new Map<RelationalOperator, (a: number, b: number) => boolean>(
 	['lessThanOrEquals', (a, b) => a <= b],
 ]);
 
-type DiceResultResolver = {
+export type DiceResultResolver = {
 	operator: RelationalOperator;
 	result: string | number;
 	description: string;
@@ -24,8 +24,8 @@ type DiceResultResolver = {
 export type DiceConfig = {
 	baseDice: number;
 	resolver: DiceResultResolver | null;
-	characteristic: { enable_modifiers: boolean };
-	skill: { enable_modifiers: boolean };
+	characteristic: { enableModifiers: boolean };
+	skill: { enableModifiers: boolean };
 };
 
 export function getDiceResultDescription(

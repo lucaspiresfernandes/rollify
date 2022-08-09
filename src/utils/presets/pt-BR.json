@@ -22,8 +22,8 @@
 				"value": {
 					"baseDice": 20,
 					"resolver": null,
-					"characteristic": { "enable_modifiers": false },
-					"skill": { "enable_modifiers": false }
+					"characteristic": { "enableModifiers": false },
+					"skill": { "enableModifiers": false }
 				}
 			}
 		]
@@ -616,8 +616,8 @@
 						{ "operator": "lessThanOrEquals", "result": "{result}/2", "description": "Bom" },
 						{ "operator": "lessThanOrEquals", "result": "{result}", "description": "Regular" }
 					],
-					"characteristic": { "enable_modifiers": false },
-					"skill": { "enable_modifiers": false }
+					"characteristic": { "enableModifiers": false },
+					"skill": { "enableModifiers": false }
 				}
 			}
 		]
@@ -800,8 +800,8 @@
 				"value": {
 					"baseDice": 20,
 					"resolver": null,
-					"characteristic": { "enable_modifiers": true },
-					"skill": { "enable_modifiers": true }
+					"characteristic": { "enableModifiers": true },
+					"skill": { "enableModifiers": true }
 				}
 			}
 		]

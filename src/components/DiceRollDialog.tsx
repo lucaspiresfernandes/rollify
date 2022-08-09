@@ -76,16 +76,13 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 
 		setDiceResponse(null);
 
-		if (Array.isArray(props.dice)) return roll({ dice: props.dice, onResult: props.onResult });
-		if (props.dice.num) {
-			setNum(props.dice.num);
+		if (Array.isArray(props.dice) || props.dice.num)
 			return roll({ dice: props.dice, onResult: props.onResult });
-		}
 
 		setDiceRequest({ dice: null });
 		setNum(1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.dice]);
+	}, [props.dice, props.onResult]);
 
 	const roll = (diceRoll: DiceRoll) => {
 		setDescriptionFade(false);

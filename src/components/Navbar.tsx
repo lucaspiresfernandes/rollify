@@ -171,7 +171,7 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 					</IconButton>
 				</Box>
 				<Divider />
-				<Box px={2} mt={3}>
+				<Box p={3}>
 					<Typography variant='body2' mb={1}>
 						{t('nav.admin.mode')}
 					</Typography>

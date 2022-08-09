@@ -5,13 +5,14 @@ import {
 	Over,
 	PointerSensor,
 	useSensor,
-	useSensors,
+	useSensors
 } from '@dnd-kit/core';
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
 	arrayMove,
 	SortableContext,
 	useSortable,
-	verticalListSortingStrategy,
+	verticalListSortingStrategy
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
@@ -43,22 +44,26 @@ type Storage = {
 const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected: boolean }> = (
 	props
 ) => {
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-		id: props.entity.id,
-	});
+	const sortable = useSortable({ id: props.entity.id });
 
 	const style: React.CSSProperties = {
-		transform: CSS.Transform.toString(transform),
-		transition,
+		transform: CSS.Transform.toString(sortable.transform),
+		transition: sortable.transition,
 	};
 	const { t } = useI18n<Locale>();
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+		<div ref={sortable.setNodeRef} style={style}>
 			<Typography
+				{...sortable.attributes}
+				{...sortable.listeners}
 				variant='body1'
 				component='label'
-				sx={{ fontStyle: props.selected ? 'italic' : 'normal', userSelect: 'none' }}>
+				sx={{
+					':hover': {
+						cursor: 'grab',
+					},
+				}}>
 				{props.entity.name || t('unknown')}
 			</Typography>
 			<TextField
@@ -83,16 +88,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 	const [activeEntities, setActiveEntities] = useState<Entity[]>([]);
 	const [pointer, setPointer] = useState(0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const sensors = useSensors(
-		useSensor(PointerSensor, {
-			activationConstraint: {
-				distance: {
-					x: 0,
-					y: 1,
-				},
-			},
-		})
-	);
+	const sensors = useSensors(useSensor(PointerSensor));
 	const { t } = useI18n<Locale>();
 	const componentDidMount = useRef(false);
 
@@ -107,6 +103,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 
 	useEffect(() => {
 		if (componentDidMount.current) {
+			console.log('set local storage');
 			return localStorage.setItem(
 				'admin_combat',
 				JSON.stringify({
@@ -119,23 +116,23 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 		componentDidMount.current = true;
 	}, [round, activeEntities, pointer]);
 
-	useEffect(() => {
-		const deletedEntities: number[] = [];
-		setActiveEntities((activeEntities) =>
-			activeEntities
-				.map((activeEntity) => {
-					const entity = props.entities.find((e) => e.id === activeEntity.id);
-					if (entity) {
-						if (entity.name === activeEntity.name) return activeEntity;
-						return { id: activeEntity.id, name: entity.name };
-					} else {
-						deletedEntities.push(activeEntity.id);
-						return activeEntity;
-					}
-				})
-				.filter((activeEntity) => !deletedEntities.includes(activeEntity.id))
-		);
-	}, [props.entities]);
+	// useEffect(() => {
+	// 	const deletedEntities: number[] = [];
+	// 	setActiveEntities((activeEntities) =>
+	// 		activeEntities
+	// 			.map((activeEntity) => {
+	// 				const entity = props.entities.find((e) => e.id === activeEntity.id);
+	// 				if (entity) {
+	// 					if (entity.name === activeEntity.name) return activeEntity;
+	// 					return { id: activeEntity.id, name: entity.name };
+	// 				} else {
+	// 					deletedEntities.push(activeEntity.id);
+	// 					return activeEntity;
+	// 				}
+	// 			})
+	// 			.filter((activeEntity) => !deletedEntities.includes(activeEntity.id))
+	// 	);
+	// }, [props.entities]);
 
 	const handleDragEnd = (ev: DragEndEvent) => {
 		const over = ev.over as Over | null;
@@ -242,9 +239,13 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 				/>
 			</Box>
 			<Box minHeight={100} maxHeight={200} my={2} sx={{ overflowY: 'auto' }}>
-				<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+				<DndContext
+					sensors={sensors}
+					collisionDetection={closestCenter}
+					onDragEnd={handleDragEnd}
+					modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
 					<SortableContext items={activeEntities} strategy={verticalListSortingStrategy}>
-						<Box display='flex' flexDirection='column' textAlign='center' gap={1}>
+						<Box display='flex' flexDirection='column' textAlign='center' p={1} gap={1}>
 							{activeEntities.map((ent, index) => (
 								<CombatItem
 									key={ent.id}

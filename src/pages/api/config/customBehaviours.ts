@@ -12,14 +12,14 @@ const onEnvironmentChange: CustomBehaviourHandler<Environment> = (res, value) =>
 	res.socket.server.io.emit('environmentChange', value);
 
 const onDiceChange: CustomBehaviourHandler<DiceConfig> = async (_, value) => {
-	if (!value.characteristic.enable_modifiers) {
+	if (!value.characteristic.enableModifiers) {
 		await prisma.playerCharacteristic.updateMany({
 			where: { modifier: { not: 0 } },
 			data: { modifier: 0 },
 		});
 	}
 
-	if (!value.skill.enable_modifiers) {
+	if (!value.skill.enableModifiers) {
 		await prisma.playerSkill.updateMany({
 			where: { modifier: { not: 0 } },
 			data: { modifier: 0 },
