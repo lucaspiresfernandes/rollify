@@ -1,9 +1,9 @@
+import { useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
-import LoadingScreen from '../../components/LoadingScreen';
 import PortraitAvatarContainer from '../../components/portrait/PortraitAvatarContainer';
 import PortraitDiceContainer from '../../components/portrait/PortraitDiceContainer';
 import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEnvironmentalContainer';
@@ -24,7 +24,9 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 	useEffect(() => {
 		document.body.style.backgroundColor = 'transparent';
 		document.body.style.color = 'white';
+	}, []);
 
+	useEffect(() => {
 		if (props.portraitConfig) {
 			const font = new FontFace('Rollify Custom Font', `url(${props.portraitConfig.customFont})`);
 			font.load().then(() => {
@@ -36,9 +38,12 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 		}
 	}, [props.portraitConfig]);
 
-	if (!socket) return <LoadingScreen />;
-
-	return <CharacterPortrait {...props} socket={socket} />;
+	if (!socket) return null;
+	return (
+		<div className={styles.container}>
+			<CharacterPortrait {...props} socket={socket} />
+		</div>
+	);
 };
 
 const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) => {
@@ -56,7 +61,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 	};
 
 	return (
-		<div className={styles.container}>
+		<>
 			<PortraitMainContainer {...props} rotation={rotation} debug={debug} />
 			<div className={styles.editor}>
 				<div style={{ marginBottom: 8 }}>
@@ -80,7 +85,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 					</div>
 				)}
 			</div>
-		</div>
+		</>
 	);
 };
 
@@ -92,10 +97,24 @@ type PortraitDiceRollContainerProps = PageProps & {
 
 const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) => {
 	const [showDice, setShowDice] = useState(false);
+	const theme = useTheme();
+
+	const showDuration = props.portraitConfig?.transitions.dice.enterTimeout || 750;
+	const hideDuration = props.portraitConfig?.transitions.dice.exitTimeout || 500;
+
+	const transition = theme.transitions.create('filter', {
+		duration: showDice ? showDuration : hideDuration,
+		easing: showDice ? 'ease-out' : 'ease-in',
+	});
+
+	const style: React.CSSProperties = {
+		filter: `brightness(${showDice ? '25%' : '100%'})`,
+		transition,
+	};
 
 	return (
 		<>
-			<div className={`${showDice ? 'show ' : ''}shadow`}>
+			<div style={style}>
 				<PortraitAvatarContainer
 					playerId={props.playerId}
 					attributeStatus={props.attributeStatus}
@@ -118,6 +137,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 					socket={props.socket}
 					rotation={props.rotation}
 					debug={props.debug}
+					typography={props.portraitConfig?.typography}
 				/>
 			</div>
 			<PortraitDiceContainer
@@ -128,6 +148,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 				showDice={showDice}
 				onShowDice={() => setShowDice(true)}
 				onHideDice={() => setShowDice(false)}
+				diceTransition={props.portraitConfig?.transitions.dice}
 			/>
 		</>
 	);
@@ -178,10 +199,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 	const sideAttribute =
 		results[0].PlayerAttributes.find((attr) => attr.Attribute.portrait === 'SECONDARY') || null;
 
+	const locale = ctx.locale || ctx.defaultLocale;
+	const { table = {} } = await import(`../../i18n/${locale}`);
+
 	return {
 		props: {
+			table,
 			playerId,
-			environment: results[1]?.value as Environment | undefined,
+			environment: (results[1]?.value || null) as Environment | null,
 			attributes,
 			sideAttribute,
 			attributeStatus: results[0].PlayerAttributeStatus,

@@ -223,6 +223,7 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 				onSubmit={onDialogSubmit}
 				specialization={props.specialization}
 				data={dialogData.data}
+				operation={dialogData.operation}
 			/>
 		</Section>
 	);

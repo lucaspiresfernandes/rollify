@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField';
 import type { Skill, Specialization } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
-import type { EditorDialogProps } from '.';
+import type { EditorDialogData, EditorDialogProps } from '.';
 import type { Locale } from '../../../../i18n';
 
 const initialState = {
@@ -22,7 +22,10 @@ const initialState = {
 	startValue: '1',
 };
 
-type Props = EditorDialogProps<Skill> & { specialization: Specialization[] };
+type Props = EditorDialogProps<Skill> & {
+	specialization: Specialization[];
+	operation: EditorDialogData<Skill>['operation'];
+};
 
 const SkillEditorDialog: React.FC<Props> = (props) => {
 	const [skill, setSkill] = useState(initialState);
@@ -88,16 +91,18 @@ const SkillEditorDialog: React.FC<Props> = (props) => {
 							))}
 						</Select>
 					</FormControl>
-					<TextField
-						required
-						label={t('sheet.table.startValue')}
-						inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
-						value={skill.startValue}
-						onChange={(ev) => {
-							if (!ev.target.value || ev.target.validity.valid)
-								setSkill({ ...skill, startValue: ev.target.value });
-						}}
-					/>
+					{props.operation === 'create' && (
+						<TextField
+							required
+							label={t('sheet.table.startValue')}
+							inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
+							value={skill.startValue}
+							onChange={(ev) => {
+								if (!ev.target.value || ev.target.validity.valid)
+									setSkill({ ...skill, startValue: ev.target.value });
+							}}
+						/>
+					)}
 				</Box>
 			</DialogContent>
 			<DialogActions>

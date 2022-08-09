@@ -1,12 +1,12 @@
 import Fade from '@mui/material/Fade';
 import { useI18n } from 'next-rosetta';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Draggable, { DraggableEventHandler } from 'react-draggable';
 import type { SocketIO } from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import { Environment, getShadowStyle } from '../../utils/portrait';
+import { Environment, getShadowStyle, PortraitConfig } from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
@@ -23,6 +23,7 @@ type PortraitEnvironmentalContainerProps = {
 	playerId: number;
 	rotation: number;
 	debug: boolean;
+	typography?: Pick<PortraitConfig['typography'], 'attribute' | 'name'>;
 };
 
 const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerProps> = (props) => {
@@ -44,6 +45,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 				socket={props.socket}
 				debug={props.debug}
 				rotation={props.rotation}
+				attributeTypography={props.typography?.attribute}
 			/>
 			<PortraitNameContainer
 				environment={environment}
@@ -52,6 +54,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 				socket={props.socket}
 				debug={props.debug}
 				rotation={props.rotation}
+				nameTypography={props.typography?.name}
 			/>
 		</>
 	);
@@ -71,6 +74,7 @@ type PortraitAttributesContainerProps = {
 	playerId: number;
 	debug: boolean;
 	rotation: number;
+	attributeTypography?: PortraitConfig['typography']['attribute'];
 };
 
 const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = (props) => {
@@ -125,7 +129,12 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 			<div>
 				<Draggable axis='both' position={position} bounds={bounds} onStop={onDragStop}>
 					<div className={styles.draggable}>
-						<div className={styles.attributeContainer}>
+						<div
+							className={styles.attributeContainer}
+							style={{
+								fontSize: props.attributeTypography?.fontSize || 108,
+								fontStyle: props.attributeTypography?.italic ? 'italic' : undefined,
+							}}>
 							<div ref={attributesRef}>
 								{attributes.map((attr) => (
 									<div key={attr.id} style={getShadowStyle(attr.color)}>
@@ -148,6 +157,7 @@ type PortraitNameContainerProps = {
 	playerId: number;
 	debug: boolean;
 	rotation: number;
+	nameTypography?: PortraitConfig['typography']['name'];
 };
 
 const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
@@ -210,7 +220,12 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 			<div>
 				<Draggable axis='both' position={transform} bounds={bounds} onStop={onDragStop}>
 					<div className={styles.draggable}>
-						<div className={styles.nameContainer}>
+						<div
+							className={styles.nameContainer}
+							style={{
+								fontSize: props.nameTypography?.fontSize || 96,
+								fontStyle: props.nameTypography?.italic ? 'italic' : undefined,
+							}}>
 							<div ref={nameRef} style={{ textAlign: alignment }}>
 								{fullName.split(' ').map((name) => (
 									<div key={name}>{name}</div>

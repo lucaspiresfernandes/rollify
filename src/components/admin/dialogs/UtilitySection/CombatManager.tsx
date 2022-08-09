@@ -5,14 +5,14 @@ import {
 	Over,
 	PointerSensor,
 	useSensor,
-	useSensors
+	useSensors,
 } from '@dnd-kit/core';
 import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
 	arrayMove,
 	SortableContext,
 	useSortable,
-	verticalListSortingStrategy
+	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
@@ -103,7 +103,6 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 
 	useEffect(() => {
 		if (componentDidMount.current) {
-			console.log('set local storage');
 			return localStorage.setItem(
 				'admin_combat',
 				JSON.stringify({
@@ -116,6 +115,9 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 		componentDidMount.current = true;
 	}, [round, activeEntities, pointer]);
 
+	// TODO: on the first render, this function is called twice, once with an empty array and once with the actual array.
+	// Find a way to fix it.
+	
 	// useEffect(() => {
 	// 	const deletedEntities: number[] = [];
 	// 	setActiveEntities((activeEntities) =>

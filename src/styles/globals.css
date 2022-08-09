@@ -28,12 +28,3 @@
 .custom-font {
 	font-family: 'Rollify Custom Font' !important;
 }
-
-.shadow {
-	transition: filter 0.25s ease;
-}
-
-.shadow.show {
-	filter: brightness(25%);
-	transition: filter 0.5s ease-out;
-}

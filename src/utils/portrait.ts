@@ -3,11 +3,36 @@ export type PortraitConfig = {
 		name: string;
 		data: string;
 	};
-	typography?: {
-		italic: boolean;
+
+	typography: {
+		name: {
+			fontSize: number;
+			italic: boolean;
+		};
+
+		attribute: {
+			fontSize: number;
+			italic: boolean;
+		};
+
+		dice: {
+			result: {
+				fontSize: number;
+				italic: boolean;
+			};
+			description: {
+				fontSize: number;
+				italic: boolean;
+			};
+		};
 	};
-	dice?: {
-		timeout: number;
+
+	transitions: {
+		dice: {
+			enterTimeout: number;
+			screenTimeout: number;
+			exitTimeout: number;
+		};
 	};
 };
 

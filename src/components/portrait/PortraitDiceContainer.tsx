@@ -5,11 +5,7 @@ import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { sleep } from '../../utils';
 import type { DiceResponse } from '../../utils/dice';
-import { getShadowStyle } from '../../utils/portrait';
-
-const diceEnterTimeout = 750;
-const diceTimeout = 1500;
-const diceExitTimeout = 500;
+import { getShadowStyle, PortraitConfig } from '../../utils/portrait';
 
 type PortraitDiceContainerProps = {
 	socket: SocketIO;
@@ -19,6 +15,8 @@ type PortraitDiceContainerProps = {
 	onHideDice: () => void;
 	color: string;
 	showDiceRoll: boolean;
+	diceTypography?: PortraitConfig['typography']['dice'];
+	diceTransition?: PortraitConfig['transitions']['dice'];
 };
 
 const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
@@ -35,6 +33,8 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 	const lastDiceDescription = useRef('');
 
 	const diceVideo = useRef<HTMLVideoElement>(null);
+
+	const exitTimeout = props.diceTransition?.exitTimeout || 500;
 
 	useEffect(() => {
 		if (!props.showDiceRoll) return;
@@ -75,7 +75,7 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 				setDiceDescription(result.description);
 			}
 
-			await sleep(diceTimeout);
+			await sleep(props.diceTransition?.screenTimeout || 1500);
 
 			setDiceResult(null);
 			setDiceDescription(null);
@@ -84,7 +84,7 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 			props.onHideDice();
 
-			await sleep(diceExitTimeout);
+			await sleep(exitTimeout);
 
 			showDiceRef.current = false;
 
@@ -120,25 +120,38 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const pointerEvents: React.CSSProperties['pointerEvents'] = props.showDice ? undefined : 'none';
-
 	return (
-		<div className={styles.diceContainer} style={{ pointerEvents }}>
+		<div className={styles.diceContainer}>
 			<Zoom
 				in={props.showDice}
 				easing={{ enter: 'ease-out', exit: 'ease-in' }}
-				timeout={{ enter: diceEnterTimeout, exit: diceExitTimeout }}>
+				timeout={{
+					enter: props.diceTransition?.enterTimeout || 750,
+					exit: exitTimeout,
+				}}>
 				<video muted className={styles.dice} ref={diceVideo}>
 					<source src='/dice_animation.webm' />
 				</video>
 			</Zoom>
 			<Fade in={diceResult !== null}>
-				<div className={styles.result} ref={diceResultRef}>
+				<div
+					className={styles.result}
+					ref={diceResultRef}
+					style={{
+						fontSize: props.diceTypography?.result.fontSize || 96,
+						fontStyle: props.diceTypography?.result.italic ? 'italic' : undefined,
+					}}>
 					{diceResult || lastDiceResult.current}
 				</div>
 			</Fade>
 			<Fade in={diceDescription !== null}>
-				<div className={styles.description} ref={diceDescriptionRef}>
+				<div
+					className={styles.description}
+					ref={diceDescriptionRef}
+					style={{
+						fontSize: props.diceTypography?.description.fontSize || 72,
+						fontStyle: props.diceTypography?.description.italic ? 'italic' : undefined,
+					}}>
 					{diceDescription || lastDiceDescription.current}
 				</div>
 			</Fade>
