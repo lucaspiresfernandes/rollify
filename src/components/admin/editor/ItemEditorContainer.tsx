@@ -74,7 +74,7 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Items'
+			title={t('admin.editor.item')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -82,7 +82,7 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Item'>
+					title={`${t('add')} ${t('admin.editor.item')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -98,7 +98,9 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 				onDelete={onDeleteItem}
 			/>
 			<ItemEditorDialog
-				title='TODO: Add Item'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.item'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

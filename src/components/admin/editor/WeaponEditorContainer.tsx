@@ -74,7 +74,7 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Weapons'
+			title={t('admin.editor.weapon')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -82,7 +82,7 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Weapon'>
+					title={`${t('add')} ${t('admin.editor.weapon')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -98,7 +98,9 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 				onDelete={onDeleteWeapon}
 			/>
 			<WeaponEditorDialog
-				title='TODO: Add Weapon'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.weapon'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

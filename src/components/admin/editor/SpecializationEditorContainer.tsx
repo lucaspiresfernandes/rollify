@@ -81,7 +81,7 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 		<>
 			<Grid item xs={12} md={6}>
 				<Section
-					title='TODO: Specializations'
+					title={t('admin.editor.specialization')}
 					position='relative'
 					sideButton={
 						<IconButton
@@ -89,7 +89,7 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 								setDialogData({ operation: 'create' });
 								setOpenDialog(true);
 							}}
-							title='TODO: Add Specialization'>
+							title={`${t('add')} ${t('admin.editor.specialization')}`}>
 							<AddIcon />
 						</IconButton>
 					}>
@@ -105,7 +105,9 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 						onDelete={onDeleteSpecialization}
 					/>
 					<EditorDialog
-						title='TODO: Add Skill'
+						title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+							'admin.editor.specialization'
+						)}`}
 						open={openDialog}
 						onClose={() => setOpenDialog(false)}
 						onSubmit={onDialogSubmit}
@@ -200,7 +202,7 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 
 	return (
 		<Section
-			title='TODO: Skills'
+			title={t('admin.editor.skill')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -208,7 +210,7 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Skill'>
+					title={`${t('add')} ${t('admin.editor.skill')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -217,7 +219,9 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 			</PartialBackdrop>
 			<EditorContainer data={skillList} onEdit={onEditSkill} onDelete={onDeleteSkill} />
 			<SkillEditorDialog
-				title='TODO: Add Skill'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.skill'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

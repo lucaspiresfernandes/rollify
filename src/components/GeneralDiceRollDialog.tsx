@@ -110,7 +110,7 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 								</div>
 								<Box display='flex' alignItems='center' px={2}>
 									<IconButton
-										title='TODO: Subtract'
+										title={t('subtract')}
 										size='small'
 										onClick={() => updateDice(dice.roll, -1)}>
 										<RemoveIcon />
@@ -119,7 +119,7 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 										{dice.num}
 									</Typography>
 									<IconButton
-										title='TODO: Add'
+										title={t('add')}
 										size='small'
 										onClick={() => updateDice(dice.roll, 1)}>
 										<AddIcon />

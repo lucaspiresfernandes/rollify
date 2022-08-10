@@ -69,7 +69,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Info'
+			title={t('admin.editor.info')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -77,7 +77,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Info'>
+					title={`${t('add')} ${t('admin.editor.info')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -93,7 +93,9 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 				onDelete={onDeleteInfo}
 			/>
 			<EditorDialog
-				title='TODO: Add Info'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.info'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

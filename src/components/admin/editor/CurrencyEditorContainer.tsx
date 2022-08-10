@@ -69,7 +69,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 
 	return (
 		<Section
-			title='TODO: Currency'
+			title={t('admin.editor.currency')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -77,7 +77,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Currency'>
+					title={`${t('add')} ${t('admin.editor.currency')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -93,7 +93,9 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 				onDelete={onDeleteCurrency}
 			/>
 			<EditorDialog
-				title='TODO: Add Currency'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.currency'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

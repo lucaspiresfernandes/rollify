@@ -77,7 +77,7 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 		<>
 			<Grid item xs={12} md={6}>
 				<Section
-					title='TODO: Attributes'
+					title={t('admin.editor.attribute')}
 					position='relative'
 					sideButton={
 						<IconButton
@@ -85,7 +85,7 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 								setDialogData({ operation: 'create' });
 								setOpenDialog(true);
 							}}
-							title='TODO: Add Attribute'>
+							title={`${t('add')} ${t('admin.editor.attribute')}`}>
 							<AddIcon />
 						</IconButton>
 					}>
@@ -101,7 +101,9 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 						onDelete={onDeleteAttribute}
 					/>
 					<AttributeEditorDialog
-						title='TODO: Add Attribute'
+						title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+							'admin.editor.attribute'
+						)}`}
 						open={openDialog}
 						onClose={() => setOpenDialog(false)}
 						onSubmit={onDialogSubmit}
@@ -173,7 +175,7 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 
 	return (
 		<Section
-			title='TODO: Attribute Status'
+			title={t('admin.editor.attributeStatus')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -181,7 +183,7 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Attribute'>
+					title={`${t('add')} ${t('admin.editor.attributeStatus')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -197,7 +199,9 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 				onDelete={onDeleteAttribute}
 			/>
 			<AttributeStatusEditorDialog
-				title='TODO: Add Attribute'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.attributeStatus'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

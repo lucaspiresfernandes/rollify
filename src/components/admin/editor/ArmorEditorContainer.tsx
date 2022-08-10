@@ -74,7 +74,7 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Armor'
+			title={t('admin.editor.armor')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -82,7 +82,7 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Armor'>
+					title={`${t('add')} ${t('admin.editor.armor')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -98,7 +98,9 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 				onDelete={onDeleteArmor}
 			/>
 			<ArmorEditorDialog
-				title='TODO: Add Armor'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.armor'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

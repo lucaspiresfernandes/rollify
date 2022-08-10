@@ -69,7 +69,7 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Specs'
+			title={t('admin.editor.spec')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -77,7 +77,7 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Spec'>
+					title={`${t('add')} ${t('admin.editor.spec')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -93,7 +93,7 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 				onDelete={onDeleteSpec}
 			/>
 			<EditorDialog
-				title='TODO: Add Spec'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t('admin.editor.spec')}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

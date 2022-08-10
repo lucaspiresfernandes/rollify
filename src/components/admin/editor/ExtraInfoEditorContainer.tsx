@@ -71,7 +71,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 
 	return (
 		<Section
-			title='TODO: Extra Info'
+			title={t('admin.editor.extraInfo')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -79,7 +79,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Extra Info'>
+					title={`${t('add')} ${t('admin.editor.extraInfo')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -95,7 +95,9 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 				onDelete={onDeleteExtraInfo}
 			/>
 			<EditorDialog
-				title='TODO: Add Extra Info'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.extraInfo'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

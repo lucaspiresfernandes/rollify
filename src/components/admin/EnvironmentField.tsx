@@ -32,7 +32,7 @@ const EnvironmentField: React.FC<EnvironmentFieldProps> = (props) => {
 	return (
 		<FormControlLabel
 			control={<Checkbox checked={environment === 'combat'} onChange={onCheckboxChange} />}
-			label='TODO: Combat Environment'
+			label={t('admin.enableCombatEnvironment')}
 		/>
 	);
 };

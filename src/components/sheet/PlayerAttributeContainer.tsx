@@ -310,13 +310,13 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				</Typography>
 				<div>
 					<IconButton
-						title='TODO: Subtract'
+						title={t('subtract')}
 						size='small'
 						onClick={(ev) => updateValue(-1, ev.ctrlKey)}
 						sx={{ mr: 1 }}>
 						<RemoveIcon />
 					</IconButton>
-					<IconButton title='TODO: Add' size='small' onClick={(ev) => updateValue(1, ev.ctrlKey)}>
+					<IconButton title={t('add')} size='small' onClick={(ev) => updateValue(1, ev.ctrlKey)}>
 						<AddIcon />
 					</IconButton>
 				</div>

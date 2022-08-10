@@ -418,7 +418,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 				{trade && (
 					<Button variant='contained' onClick={onTradeCancel}>
-						TODO: Cancel Trade
+						{`${t('cancel')} ${t('trade')}`}
 					</Button>
 				)}
 			</PartialBackdrop>

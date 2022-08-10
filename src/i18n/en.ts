@@ -2,7 +2,6 @@ import type { Locale } from '.';
 
 export const table: Locale = {
 	locale: 'en',
-	localeName: 'English',
 	title: 'Rollify',
 
 	search: 'Search...',
@@ -26,6 +25,7 @@ export const table: Locale = {
 	armor: 'Armor',
 	weapon: 'Weapon',
 	add: 'Add',
+	subtract: 'Subtract',
 	star: 'Star',
 	unstar: 'Unstar',
 	skill: 'Skill',
@@ -42,6 +42,13 @@ export const table: Locale = {
 	slots: 'Available Slots',
 	quickAccess: 'Quick Access',
 	clear: 'Clear',
+	update: 'Update',
+
+	theme: {
+		light: 'Light',
+		system: 'System',
+		dark: 'Dark',
+	},
 
 	operation: {
 		equals: 'Equals',
@@ -156,6 +163,25 @@ export const table: Locale = {
 		panelTitle: "GM's Panel",
 		editorTitle: "GM's Editor",
 		configurationsTitle: 'Settings',
+
+		enableCombatEnvironment: 'Enable combat environment',
+
+		editor: {
+			armor: 'Armor',
+			weapon: 'Weapon',
+			skill: 'Skill',
+			spell: 'Spell',
+			item: 'Item',
+			currency: 'Currency',
+			attribute: 'Attribute',
+			attributeStatus: 'Character Status',
+			characteristic: 'Characteristic',
+			extraInfo: 'Extra Info',
+			info: 'Info',
+			specialization: 'Specialization',
+			spec: 'Spec',
+			hasAmmo: 'Has ammo?',
+		},
 
 		info: {
 			noPlayers: 'All registered players will be listed here.',

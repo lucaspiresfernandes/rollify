@@ -74,7 +74,7 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title='TODO: Spells'
+			title={t('admin.editor.spell')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -82,7 +82,7 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Spell'>
+					title={`${t('add')} ${t('admin.editor.spell')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -98,7 +98,9 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 				onDelete={onDeleteSpell}
 			/>
 			<SpellEditorDialog
-				title='TODO: Add Spell'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.spell'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

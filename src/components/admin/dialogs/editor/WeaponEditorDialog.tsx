@@ -115,7 +115,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 									onChange={() => setWeapon({ ...weapon, ammo: weapon.ammo === null ? '0' : null })}
 								/>
 							}
-							label='TODO: Has Ammo'
+							label={t('admin.editor.hasAmmo')}
 						/>
 					</Box>
 					{weapon.ammo !== null && (

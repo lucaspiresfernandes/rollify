@@ -2,7 +2,6 @@ import type { RelationalOperator } from '../utils/dice';
 
 export interface Locale {
 	locale: string;
-	localeName: string;
 	title: string;
 
 	search: string;
@@ -26,6 +25,7 @@ export interface Locale {
 	disable: string;
 	armor: string;
 	weapon: string;
+	subtract: string;
 	add: string;
 	star: string;
 	unstar: string;
@@ -42,6 +42,13 @@ export interface Locale {
 	load: string;
 	slots: string;
 	clear: string;
+	update: string;
+
+	theme: {
+		light: string;
+		system: string;
+		dark: string;
+	};
 
 	operation: {
 		[T in RelationalOperator]: string;
@@ -152,6 +159,25 @@ export interface Locale {
 		panelTitle: string;
 		editorTitle: string;
 		configurationsTitle: string;
+
+		enableCombatEnvironment: string;
+
+		editor: {
+			weapon: string;
+			armor: string;
+			attribute: string;
+			attributeStatus: string;
+			characteristic: string;
+			currency: string;
+			info: string;
+			extraInfo: string;
+			item: string;
+			skill: string;
+			spell: string;
+			spec: string;
+			specialization: string;
+			hasAmmo: string;
+		};
 
 		info: {
 			noPlayers: string;

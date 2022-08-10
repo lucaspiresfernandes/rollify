@@ -365,7 +365,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 				{tradeId && (
 					<Button variant='contained' onClick={onTradeCancel}>
-						TODO: Cancel Trade
+						{`${t('cancel')} ${t('trade')}`}
 					</Button>
 				)}
 			</PartialBackdrop>

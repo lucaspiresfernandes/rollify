@@ -75,7 +75,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 
 	return (
 		<Section
-			title='TODO: Characteristics'
+			title={t('admin.editor.characteristic')}
 			position='relative'
 			sideButton={
 				<IconButton
@@ -83,7 +83,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 						setDialogData({ operation: 'create' });
 						setOpenDialog(true);
 					}}
-					title='TODO: Add Characteristic'>
+					title={`${t('add')} ${t('admin.editor.characteristic')}`}>
 					<AddIcon />
 				</IconButton>
 			}>
@@ -99,7 +99,9 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 				onDelete={onDeleteCharacteristic}
 			/>
 			<EditorDialog
-				title='TODO: Add Characteristic'
+				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
+					'admin.editor.characteristic'
+				)}`}
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
 				onSubmit={onDialogSubmit}

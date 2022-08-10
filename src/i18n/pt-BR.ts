@@ -2,7 +2,6 @@ import type { Locale } from '.';
 
 export const table: Locale = {
 	locale: 'pt-BR',
-	localeName: 'Português (Brasil)',
 	title: 'Rollify',
 
 	search: 'Buscar...',
@@ -26,6 +25,7 @@ export const table: Locale = {
 	weapon: 'Arma',
 	armor: 'Armadura',
 	add: 'Adicionar',
+	subtract: 'Subtrair',
 	star: 'Favoritar',
 	unstar: 'Desfavoritar',
 	skill: 'Perícia',
@@ -42,6 +42,13 @@ export const table: Locale = {
 	slots: 'Slots Disponíveis',
 	quickAccess: 'Acesso Rápido',
 	clear: 'Limpar',
+	update: 'Atualizar',
+
+	theme: {
+		light: 'Claro',
+		system: 'Sistema',
+		dark: 'Escuro',
+	},
 
 	operation: {
 		equals: 'Igual a',
@@ -157,6 +164,25 @@ export const table: Locale = {
 		panelTitle: 'Painel do Mestre',
 		editorTitle: 'Editor',
 		configurationsTitle: 'Configurações',
+
+		enableCombatEnvironment: 'Habilitar ambiente de combate',
+
+		editor: {
+			armor: 'Armadura',
+			weapon: 'Arma',
+			attribute: 'Atributo',
+			attributeStatus: 'Status de Personagem',
+			characteristic: 'Característica',
+			skill: 'Perícia',
+			spell: 'Magia',
+			item: 'Item',
+			currency: 'Moeda',
+			extraInfo: 'Detalhes Pessoais (Extras)',
+			info: 'Detalhes Pessoais',
+			specialization: 'Especialização',
+			spec: 'Especificação de Personagem',
+			hasAmmo: 'Possui munição',
+		},
 
 		info: {
 			noPlayers: 'Todos os jogadores cadastrados aparecerão aqui.',
