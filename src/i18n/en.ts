@@ -43,6 +43,18 @@ export const table: Locale = {
 	quickAccess: 'Quick Access',
 	clear: 'Clear',
 	update: 'Update',
+	expand: 'Expand',
+	collapse: 'Collapse',
+	accept: 'Accept',
+	reject: 'Reject',
+	preset: 'Preset',
+	for: 'For',
+	to: 'To',
+	name: 'Name',
+
+	placeholder: {
+		noFavouriteSkills: 'Your favourite skills will be displayed here.',
+	},
 
 	theme: {
 		light: 'Light',
@@ -220,5 +232,20 @@ export const table: Locale = {
 		addNpcName: 'Enter the NPC name:',
 		removeNpc: 'Are you sure you want to remove this NPC?',
 		noAmmo: 'You do not have enough ammo.',
+
+		tradeRequest: {
+			offeredYou: 'offered you',
+			inExchangeFor: 'in exchange for',
+			accept: 'Do you wish to accept this offer?',
+		},
+		tradeAccepted: 'The trade was accepted.',
+		tradeRejected: 'The trade was rejected.',
+		tradeCanceled: 'Trade has already been canceled.',
+
+		invalidAvatar: 'Avatar "{{name}}" is invalid.',
+
+		noItemsFound: 'No items found.',
+
+		noPlayersFound: 'No players found.',
 	},
 };

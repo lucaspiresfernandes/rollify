@@ -43,6 +43,18 @@ export interface Locale {
 	slots: string;
 	clear: string;
 	update: string;
+	expand: string;
+	collapse: string;
+	accept: string;
+	reject: string;
+	preset: string;
+	for: string;
+	to: string;
+	name: string;
+
+	placeholder: {
+		noFavouriteSkills: string;
+	};
 
 	theme: {
 		light: string;
@@ -216,5 +228,20 @@ export interface Locale {
 		addNpcName: string;
 		removeNpc: string;
 		noAmmo: string;
+
+		tradeRequest: {
+			offeredYou: string;
+			inExchangeFor: string;
+			accept: string;
+		};
+		tradeCanceled: string;
+		tradeAccepted: string;
+		tradeRejected: string;
+
+		invalidAvatar: string;
+
+		noItemsFound: string;
+
+		noPlayersFound: string;
 	};
 }

@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import { useI18n } from 'next-rosetta';
-import { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { memo, startTransition, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { DiceRollContext, DiceRollEvent, LoggerContext, SocketContext } from '../../../../contexts';
 import type { Locale } from '../../../../i18n';
 import type { NpcApiResponse } from '../../../../pages/api/npc';
@@ -118,20 +118,24 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 					complexNpcs={complexNpcs}
 					onAddBasicNpc={addBasicNPC}
 					onRemoveBasicNpc={removeBasicNPC}
-					onChangeBasicNpc={(ev, id) => {
-						setBasicNpcs((npcs) =>
-							npcs.map((npc) => {
-								if (npc.id === id) return { ...npc, name: ev.target.value };
-								return npc;
-							})
-						);
-					}}
+					onChangeBasicNpc={(ev, id) =>
+						startTransition(() =>
+							setBasicNpcs((npcs) =>
+								npcs.map((npc) => {
+									if (npc.id === id) return { ...npc, name: ev.target.value };
+									return npc;
+								})
+							)
+						)
+					}
 					onAddComplexNpc={addComplexNPC}
 					onRemoveComplexNpc={removeComplexNPC}
 				/>
 			</Grid>
 			<Grid item md={6} xs={12}>
-				<MemoCombatManager entities={[...props.players, ...basicNpcs, ...complexNpcs]} />
+				{componentDidMount.current && (
+					<MemoCombatManager entities={[...props.players, ...basicNpcs, ...complexNpcs]} />
+				)}
 			</Grid>
 			<DiceRollDialog onClose={() => setDiceRoll({ dice: null })} {...diceRoll} />
 		</Grid>

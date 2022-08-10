@@ -124,11 +124,11 @@ const GettingStarted: React.FC = () => {
 						TODO: Para começar, selecione uma predefinição de ficha abaixo:
 					</Typography>
 					<FormControl fullWidth sx={{ mb: 3 }}>
-						<InputLabel id='presetSelectLabel'>TODO: Predefinição</InputLabel>
+						<InputLabel id='presetSelectLabel'>{t('preset')}</InputLabel>
 						<Select
 							labelId='presetSelectLabel'
 							id='presetSelect'
-							label='TODO: Predefinição'
+							label={t('preset')}
 							value={selectedPresetId}
 							onChange={(ev) => {
 								const p = presets.find((p) => p.preset_id === ev.target.value) as Preset;

@@ -101,7 +101,7 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<DialogTitle>TODO: Trade</DialogTitle>
+			<DialogTitle>{t('trade')}</DialogTitle>
 			<DialogContent>
 				<Box
 					component='form'
@@ -114,9 +114,11 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 					{tradeRequest ? (
 						<>
 							<Typography variant='h5' textAlign='center'>
-								TODO: {tradeRequest.from} offered you {tradeRequest.offer}
-								{tradeRequest.for ? ` in exchange of ${tradeRequest.for}.` : '.'} Do you wish to
-								accept this offer?
+								{tradeRequest.from} {t('prompt.tradeRequest.offeredYou')} {tradeRequest.offer}
+								{tradeRequest.for
+									? ` ${t('prompt.tradeRequest.inExchangeFor')} ${tradeRequest.for}.`
+									: '.'}{' '}
+								{t('prompt.tradeRequest.accept')}
 							</Typography>
 						</>
 					) : (
@@ -126,7 +128,7 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 							</Typography>
 
 							<FormControl fullWidth>
-								<InputLabel id='portraitSelectLabel'>To</InputLabel>
+								<InputLabel id='portraitSelectLabel'>{t('to')}</InputLabel>
 								<Select
 									fullWidth
 									value={partnerId}
@@ -142,7 +144,7 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 							</FormControl>
 
 							<FormControl fullWidth>
-								<InputLabel id='portraitSelectLabel'>Trade for</InputLabel>
+								<InputLabel id='portraitSelectLabel'>{`${t('trade')} ${t('for')}`}</InputLabel>
 								<Select
 									fullWidth
 									value={partnerItemId}
@@ -163,12 +165,12 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 			<DialogActions>
 				{tradeRequest ? (
 					<>
-						<Button onClick={() => tradeRequest.onResponse(false)}>TODO: Reject</Button>
+						<Button onClick={() => tradeRequest.onResponse(false)}>{t('reject')}</Button>
 						<Button
 							type='submit'
 							form='playerTradeDialogForm'
 							onClick={() => tradeRequest.onResponse(true)}>
-							TODO: Accept
+							{t('accept')}
 						</Button>
 					</>
 				) : (

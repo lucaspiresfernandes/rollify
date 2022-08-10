@@ -224,9 +224,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				} else {
 					setPlayerArmor((armor) => armor.filter((arm) => arm.id !== trade.sender_object_id));
 				}
-				log({ severity: 'success', text: 'TODO: Trade accepted.' });
+				log({ severity: 'success', text: t('prompt.tradeAccepted') });
 			} else {
-				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
+				log({ severity: 'warning', text: t('prompt.tradeRejected') });
 			}
 			setLoading(false);
 			setTrade(undefined);
@@ -300,7 +300,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const weapons = res.data.weapon;
-				if (weapons.length === 0) return log({ text: 'TODO: No weapons.' });
+				if (weapons.length === 0) return log({ text: t('prompt.noItemsFound') });
 				return addDataDialog.openDialog(weapons, (id) => onAddEquipment(id, 'weapon'));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -314,7 +314,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const armor = res.data.armor;
-				if (armor.length === 0) return log({ text: 'TODO: No armor.' });
+				if (armor.length === 0) return log({ text: t('prompt.noItemsFound') });
 				return addDataDialog.openDialog(armor, (id) => onAddEquipment(id, 'armor'));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -336,7 +336,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const players = res.data.players;
 
-				if (players.length === 0) return log({ text: 'TODO: No players.' });
+				if (players.length === 0) return log({ text: t('prompt.noPlayersFound') });
 
 				tradeDialog.openDialog(
 					type,

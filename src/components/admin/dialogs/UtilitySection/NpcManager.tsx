@@ -85,7 +85,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 								<TextField
 									variant='standard'
 									label='Name'
-									value={npc.name}
+									defaultValue={npc.name}
 									onChange={(ev) => props.onChangeBasicNpc(ev, npc.id)}
 									sx={{ flex: '1', pr: 4 }}
 								/>

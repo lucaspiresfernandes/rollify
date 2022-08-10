@@ -119,7 +119,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				if (data.status === 'failure') {
 					switch (data.reason) {
 						case 'trade_does_not_exist':
-							return log({ text: 'TODO: Trade already canceled by the requester.' });
+							return log({ text: t('prompt.tradeCanceled') });
 						default:
 							return log({ severity: 'error', text: 'Trade Error: ' + data.reason });
 					}
@@ -168,9 +168,9 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				} else {
 					setPlayerItems((items) => items.filter((item) => item.id !== trade.sender_object_id));
 				}
-				log({ severity: 'success', text: 'TODO: Trade accepted.' });
+				log({ severity: 'success', text: t('prompt.tradeAccepted') });
 			} else {
-				log({ severity: 'warning', text: 'TODO: Trade rejected.' });
+				log({ severity: 'warning', text: t('prompt.tradeRejected') });
 			}
 			setLoading(false);
 			setTradeId(undefined);
@@ -210,7 +210,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const items = res.data.item;
-				if (items.length === 0) return log({ text: 'TODO: No items.' });
+				if (items.length === 0) return log({ text: t('prompt.noItemsFound') });
 				addDataDialog.openDialog(items, onAddItem);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -247,7 +247,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const players = res.data.players;
 
-				if (players.length === 0) return log({ text: 'TODO: No players.' });
+				if (players.length === 0) return log({ text: t('prompt.noPlayersFound') });
 
 				tradeDialog.openDialog('item', item.id, players, playerItems, (partnerId, partnerItemId) =>
 					onTradeSubmit(item.id, partnerId, partnerItemId)
@@ -304,7 +304,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			title={props.title}
 			position='relative'
 			sideButton={
-				<IconButton onClick={loadAvailableItems} title='TODO: Add Item'>
+				<IconButton onClick={loadAvailableItems} title={`${t('add')} ${t('admin.editor.item')}`}>
 					<AddIcon />
 				</IconButton>
 			}>

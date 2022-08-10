@@ -88,7 +88,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
 				{props.playerSkills.length === 0 && (
 					<Box textAlign='center' color='GrayText'>
-						TODO: Starred skills will show up here.
+						{t('placeholder.noFavouriteSkills')}
 					</Box>
 				)}
 				<Grid

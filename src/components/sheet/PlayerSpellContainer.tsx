@@ -70,7 +70,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const spells = res.data.spell;
-				if (spells.length === 0) return log({ text: 'TODO: No spells.' });
+				if (spells.length === 0) return log({ text: t('prompt.noItemsFound') });
 				addDataDialog.openDialog(spells, onAddSpell);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -210,7 +210,7 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 				<TableCell align='center' padding='none'>
 					<IconButton
-						title={open ? 'TODO: Collapse' : 'TODO: Expand'}
+						title={open ? t('collapse') : t('expand')}
 						size='small'
 						onClick={() => setOpen(!open)}>
 						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}

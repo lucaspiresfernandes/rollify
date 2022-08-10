@@ -1,18 +1,17 @@
-import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
-import Link from 'next/link';
 import { ApiContext, LoggerContext } from '../../../contexts';
+import type { Locale } from '../../../i18n';
 import type { PlayerPostAvatarApiResponse } from '../../../pages/api/sheet/player/avatar';
 import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
-import type { Locale } from '../../../i18n';
-import { useI18n } from 'next-rosetta';
 
 const AVATAR_SIZE = getAvatarSize(1);
 
@@ -92,7 +91,8 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 
 		for (const avatar of avatars) {
 			if (!avatar.link) continue;
-			if (!isValidHttpUrl(avatar.link)) return alert(`TODO: Avatar (${avatar.name}) inválido.`);
+			if (!isValidHttpUrl(avatar.link))
+				return alert(t('prompt.invalidAvatar', { name: avatar.name }));
 		}
 
 		api
@@ -118,13 +118,6 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 						{AVATAR_SIZE[0]}x{AVATAR_SIZE[1]}
 					</b>{' '}
 					(ou no aspecto de 7:10) e em formato <b>PNG</b>.
-				</DialogContentText>
-				<DialogContentText>
-					TODO: Apenas são aceitos links de imagens upadas no site{' '}
-					<Link href='https://imgur.com/' target='_blank'>
-						Imgur
-					</Link>{' '}
-					ou no Discord.
 				</DialogContentText>
 				<Grid
 					container

@@ -117,24 +117,24 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 
 	// TODO: on the first render, this function is called twice, once with an empty array and once with the actual array.
 	// Find a way to fix it.
-	
-	// useEffect(() => {
-	// 	const deletedEntities: number[] = [];
-	// 	setActiveEntities((activeEntities) =>
-	// 		activeEntities
-	// 			.map((activeEntity) => {
-	// 				const entity = props.entities.find((e) => e.id === activeEntity.id);
-	// 				if (entity) {
-	// 					if (entity.name === activeEntity.name) return activeEntity;
-	// 					return { id: activeEntity.id, name: entity.name };
-	// 				} else {
-	// 					deletedEntities.push(activeEntity.id);
-	// 					return activeEntity;
-	// 				}
-	// 			})
-	// 			.filter((activeEntity) => !deletedEntities.includes(activeEntity.id))
-	// 	);
-	// }, [props.entities]);
+
+	useEffect(() => {
+		const deletedEntities: number[] = [];
+		setActiveEntities((activeEntities) =>
+			activeEntities
+				.map((activeEntity) => {
+					const entity = props.entities.find((e) => e.id === activeEntity.id);
+					if (entity) {
+						if (entity.name === activeEntity.name) return activeEntity;
+						return { id: activeEntity.id, name: entity.name };
+					} else {
+						deletedEntities.push(activeEntity.id);
+						return activeEntity;
+					}
+				})
+				.filter((activeEntity) => !deletedEntities.includes(activeEntity.id))
+		);
+	}, [props.entities]);
 
 	const handleDragEnd = (ev: DragEndEvent) => {
 		const over = ev.over as Over | null;

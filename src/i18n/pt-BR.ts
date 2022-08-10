@@ -43,6 +43,18 @@ export const table: Locale = {
 	quickAccess: 'Acesso Rápido',
 	clear: 'Limpar',
 	update: 'Atualizar',
+	expand: 'Expandir',
+	collapse: 'Recolher',
+	accept: 'Aceitar',
+	reject: 'Rejeitar',
+	preset: 'Predefinição',
+	for: 'Por',
+	to: 'Para',
+	name: 'Nome',
+
+	placeholder: {
+		noFavouriteSkills: 'Suas perícias favoritadas aparecerão aqui.',
+	},
 
 	theme: {
 		light: 'Claro',
@@ -222,5 +234,20 @@ export const table: Locale = {
 		addNpcName: 'Digite o nome do NPC.',
 		removeNpc: 'Tem certeza que deseja remover esse NPC?',
 		noAmmo: 'Você não possui munição o suficiente.',
+
+		tradeRequest: {
+			offeredYou: 'te ofereceu',
+			inExchangeFor: 'em troca de',
+			accept: 'Você deseja aceitar essa oferta?',
+		},
+		tradeAccepted: 'A oferta foi aceita.',
+		tradeRejected: 'A oferta foi recusada.',
+		tradeCanceled: 'A oferta já foi cancelada.',
+
+		invalidAvatar: 'O avatar "{{name}}" é inválido.',
+
+		noItemsFound: 'Nenhum item encontrado.',
+
+		noPlayersFound: 'Nenhum jogador encontrado.',
 	},
 };

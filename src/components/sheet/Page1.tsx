@@ -131,8 +131,10 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 					<Grid item xs={12} sm={6}>
 						<MemoPlayerInfoContainer
 							title={t('sheet.playerInfoTitle')}
-							playerName={props.player.name}
-							playerNameShow={props.player.showName}
+							playerName={{
+								value: props.player.name,
+								show: props.player.showName,
+							}}
 							playerInfo={props.player.PlayerInfo.map((info) => ({
 								...info,
 								...info.Info,
