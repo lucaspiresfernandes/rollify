@@ -124,9 +124,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>
 			<div>
 				<Typography
-					variant='body1'
-					component='label'
-					htmlFor={`characteristic${props.id}`}
+					variant='subtitle1'
 					className='clickable'
 					sx={{
 						':hover': {
@@ -167,6 +165,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					onBlur={onValueBlur}
 					inputProps={{
 						style: { textAlign: 'center' },
+						'aria-label': props.name,
 					}}
 					style={{ width: '5rem' }}
 				/>

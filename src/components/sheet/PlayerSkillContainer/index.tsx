@@ -250,11 +250,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					},
 				}}
 				onClick={handleDiceRoll}>
-				<Typography
-					variant='subtitle1'
-					component='label'
-					htmlFor={`skill${props.id}`}
-					className='clickable'>
+				<Typography variant='subtitle1' className='clickable'>
 					{props.name}
 				</Typography>
 			</Box>
@@ -286,6 +282,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					onBlur={onValueBlur}
 					inputProps={{
 						style: { textAlign: 'center' },
+						'aria-label': props.name,
 					}}
 					style={{ width: '5rem' }}
 				/>
