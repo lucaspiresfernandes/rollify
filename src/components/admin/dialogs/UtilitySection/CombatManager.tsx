@@ -20,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -54,27 +55,29 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 
 	return (
 		<div ref={sortable.setNodeRef} style={style}>
-			<Typography
-				{...sortable.attributes}
-				{...sortable.listeners}
-				variant='body1'
-				component='label'
-				sx={{
-					':hover': {
-						cursor: 'grab',
-					},
-				}}>
-				{props.entity.name || t('unknown')}
-			</Typography>
-			<TextField
-				variant='standard'
-				defaultValue='0'
-				sx={{ width: '3rem', mx: 1 }}
-				inputProps={{ style: { textAlign: 'center' } }}
-			/>
-			<IconButton size='small' onClick={() => props.removeEntity()} title={t('delete')}>
-				<DeleteIcon />
-			</IconButton>
+			<Paper elevation={props.selected ? 4 : 0} sx={{ m: 0.5, p: 0.5, transition: 'none' }}>
+				<Typography
+					{...sortable.attributes}
+					{...sortable.listeners}
+					variant='body1'
+					component='label'
+					sx={{
+						':hover': {
+							cursor: 'grab',
+						},
+					}}>
+					{props.entity.name || t('unknown')}
+				</Typography>
+				<TextField
+					variant='standard'
+					defaultValue='0'
+					sx={{ width: '3rem', mx: 1 }}
+					inputProps={{ style: { textAlign: 'center' } }}
+				/>
+				<IconButton size='small' onClick={() => props.removeEntity()} title={t('delete')}>
+					<DeleteIcon />
+				</IconButton>
+			</Paper>
 		</div>
 	);
 };
@@ -89,6 +92,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 	const [pointer, setPointer] = useState(0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const sensors = useSensors(useSensor(PointerSensor));
+	const listRef = useRef<HTMLDivElement>(null);
 	const { t } = useI18n<Locale>();
 	const componentDidMount = useRef(false);
 
@@ -115,8 +119,13 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 		componentDidMount.current = true;
 	}, [round, activeEntities, pointer]);
 
-	// TODO: on the first render, this function is called twice, once with an empty array and once with the actual array.
-	// Find a way to fix it.
+	useEffect(() => {
+		if (!listRef.current) return;
+		listRef.current.scrollTo({
+			top: (listRef.current.scrollHeight * pointer) / activeEntities.length,
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pointer]);
 
 	useEffect(() => {
 		const deletedEntities: number[] = [];
@@ -167,8 +176,10 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 
 		if (coeff > 0) {
 			if (currentIndex === 0 && pointer === activeEntities.length - 1) setRound(round + 1);
-		} else if (currentIndex === activeEntities.length - 1 && pointer === 0 && round > 1)
+		} else if (currentIndex === activeEntities.length - 1 && pointer === 0) {
+			if (round === 1) return;
 			setRound(round - 1);
+		}
 
 		setPointer(currentIndex);
 	};
@@ -240,14 +251,14 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					onChange={roundUpdate}
 				/>
 			</Box>
-			<Box minHeight={100} maxHeight={200} my={2} sx={{ overflowY: 'auto' }}>
+			<Box minHeight={100} maxHeight={200} my={2} sx={{ overflowY: 'auto' }} ref={listRef}>
 				<DndContext
 					sensors={sensors}
 					collisionDetection={closestCenter}
 					onDragEnd={handleDragEnd}
 					modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
 					<SortableContext items={activeEntities} strategy={verticalListSortingStrategy}>
-						<Box display='flex' flexDirection='column' textAlign='center' p={1} gap={1}>
+						<Box display='flex' flexDirection='column' textAlign='center' p={1}>
 							{activeEntities.map((ent, index) => (
 								<CombatItem
 									key={ent.id}

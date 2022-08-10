@@ -65,7 +65,7 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	}, [basicNpcs]);
 
 	const addBasicNPC = () => {
-		setBasicNpcs([...basicNpcs, { id: Date.now(), name: `NPC ${basicNpcs.length}` }]);
+		setBasicNpcs([...basicNpcs, { id: Date.now(), name: `NPC ${basicNpcs.length + 1}` }]);
 	};
 
 	const removeBasicNPC = (id: number) => {

@@ -70,7 +70,7 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 			}>
 			<Box position='relative' flex={{ md: '1 0' }} height={{ xs: 250 }} sx={{ overflowY: 'auto' }}>
 				<List sx={{ position: 'absolute', left: 0, top: 0, width: '100%' }}>
-					{props.basicNpcs.map((npc, index) => (
+					{props.basicNpcs.map((npc) => (
 						<Fragment key={npc.id}>
 							<ListItem
 								secondaryAction={
