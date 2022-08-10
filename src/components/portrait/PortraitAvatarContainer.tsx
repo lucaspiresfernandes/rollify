@@ -41,7 +41,9 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 			.then(({ data }) => {
 				if (data.status === 'failure') return setSrc('/avatar404.png');
 				if (data.link === src.split('?')[0]) return setShowAvatar(true);
-				setSrc(`${data.link}?v=${Date.now()}`);
+				const link = new URL(data.link);
+				link.searchParams.append('v', String(Date.now()));
+				setSrc(link.toString());
 			})
 			.catch(() => setSrc('/avatar404.png'));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
