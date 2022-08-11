@@ -55,7 +55,17 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 
 	return (
 		<div ref={sortable.setNodeRef} style={style}>
-			<Paper elevation={props.selected ? 4 : 0} sx={{ m: 0.5, p: 0.5, transition: 'none' }}>
+			<Paper
+				elevation={props.selected ? 4 : 0}
+				sx={{
+					m: 0.5,
+					p: 0.5,
+					transition: 'none',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					position: 'relative',
+				}}>
 				<Typography
 					{...sortable.attributes}
 					{...sortable.listeners}
@@ -74,9 +84,11 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 					sx={{ width: '3rem', mx: 1 }}
 					inputProps={{ style: { textAlign: 'center' } }}
 				/>
-				<IconButton size='small' onClick={() => props.removeEntity()} title={t('delete')}>
-					<DeleteIcon />
-				</IconButton>
+				<Box position='absolute' right={5}>
+					<IconButton size='small' onClick={() => props.removeEntity()} title={t('delete')}>
+						<DeleteIcon />
+					</IconButton>
+				</Box>
 			</Paper>
 		</div>
 	);
@@ -258,7 +270,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 					onDragEnd={handleDragEnd}
 					modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
 					<SortableContext items={activeEntities} strategy={verticalListSortingStrategy}>
-						<Box display='flex' flexDirection='column' textAlign='center' p={1}>
+						<Box textAlign='center' p={1}>
 							{activeEntities.map((ent, index) => (
 								<CombatItem
 									key={ent.id}
