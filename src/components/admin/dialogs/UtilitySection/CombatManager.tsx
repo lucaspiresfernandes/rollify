@@ -80,8 +80,8 @@ const CombatItem: React.FC<{ entity: Entity; removeEntity: () => void; selected:
 				</Typography>
 				<TextField
 					variant='standard'
-					defaultValue='0'
-					sx={{ width: '3rem', mx: 1 }}
+					defaultValue='Ini.'
+					sx={{ width: '4rem', mx: 1 }}
 					inputProps={{ style: { textAlign: 'center' } }}
 				/>
 				<Box position='absolute' right={5}>
