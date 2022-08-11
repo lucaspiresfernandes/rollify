@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -95,9 +96,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			<Typography variant='h5'>TODO: Typography</Typography>
 			<div>
 				<TextField
-					label='TODO: Dice Result Font Size (in pixels)'
+					label='TODO: Dice Result Font Size'
+					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
-					fullWidth
+					sx={{ mr: 3 }}
 					value={form.typography.dice.result.fontSize}
 					onChange={(ev) => {
 						if (ev.target.validity.valid)
@@ -144,9 +146,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Dice Description Font Size (in pixels)'
+					label='TODO: Dice Description Font Size'
+					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
-					fullWidth
+					sx={{ mr: 3 }}
 					value={form.typography.dice.description.fontSize}
 					onChange={(ev) => {
 						if (ev.target.validity.valid)
@@ -193,9 +196,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Attribute Font Size (in pixels)'
+					label='TODO: Attribute Font Size'
+					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
-					fullWidth
+					sx={{ mr: 3 }}
 					value={form.typography.attribute.fontSize}
 					onChange={(ev) => {
 						if (ev.target.validity.valid)
@@ -236,9 +240,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Name Font Size (in pixels)'
+					label='TODO: Name Font Size'
+					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
-					fullWidth
+					sx={{ mr: 3 }}
 					value={form.typography.name.fontSize}
 					onChange={(ev) => {
 						if (ev.target.validity.valid)
@@ -281,7 +286,8 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			<Typography variant='h5'>TODO: Transitions</Typography>
 			<Box display='flex' flexDirection='row' gap={3}>
 				<TextField
-					label='TODO: Dice Enter Timeout (in milliseconds)'
+					label='TODO: Dice Enter Timeout'
+					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.enterTimeout}
 					onChange={(ev) => {
@@ -299,7 +305,8 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<TextField
-					label='TODO: Dice Screen Time (in milliseconds)'
+					label='TODO: Dice Screen Time'
+					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.screenTimeout}
 					onChange={(ev) => {
@@ -317,7 +324,8 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<TextField
-					label='TODO: Dice Exit Timeout (in milliseconds)'
+					label='TODO: Dice Exit Timeout'
+					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.exitTimeout}
 					onChange={(ev) => {
