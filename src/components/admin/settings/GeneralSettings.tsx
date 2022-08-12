@@ -37,6 +37,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	//TODO: Add visibility to the admin key field
 	return (
 		<SettingsContainer loading={loading} onApply={onApplyChanges} gap={3}>
 			<TextField

@@ -85,6 +85,9 @@ export function resolveDices(dices: string) {
 }
 
 function resolveDice(dice: string): ResolvedDice {
+	//TODO: Add another regex that matches only the modifier. E.g.: MOD(FOR)
+	// Like:
+	// const regex = dice.match(/MOD([A-Z][A-Z][A-Z])/);
 	const regexResult = dice.match(/[A-Z][A-Z][A-Z]/);
 
 	if (regexResult) {

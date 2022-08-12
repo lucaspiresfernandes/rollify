@@ -1,5 +1,8 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,8 +10,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 import type { Armor, TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
+import { useState } from 'react';
 import type { PlayerCombatContainerProps } from '.';
 import type { Locale } from '../../../i18n';
 
@@ -37,32 +42,12 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 				</TableHead>
 				<TableBody>
 					{props.playerArmor.map((armor) => (
-						<TableRow key={armor.id}>
-							<TableCell align='center' padding='none'>
-								<IconButton
-									size='small'
-									onClick={() => {
-										if (confirm(t('prompt.delete', { name: 'item' })))
-											props.onDeleteArmor(armor.id);
-									}}
-									title={t('delete')}>
-									<DeleteIcon />
-								</IconButton>
-							</TableCell>
-							<TableCell align='center' padding='none'>
-								<IconButton
-									size='small'
-									onClick={() => props.onTrade('armor', armor.id)}
-									title={t('trade')}>
-									<HandshakeIcon />
-								</IconButton>
-							</TableCell>
-							<TableCell align='center'>{armor.name}</TableCell>
-							<TableCell align='center'>{armor.type || '-'}</TableCell>
-							<TableCell align='center'>{armor.weight || '-'}</TableCell>
-							<TableCell align='center'>{armor.damageReduction || '-'}</TableCell>
-							<TableCell align='center'>{armor.penalty || '-'}</TableCell>
-						</TableRow>
+						<PlayerArmorField
+							key={armor.id}
+							{...armor}
+							onDelete={() => props.onDeleteArmor(armor.id)}
+							onTrade={() => props.onTrade('armor', armor.id)}
+						/>
 					))}
 				</TableBody>
 			</Table>
@@ -76,9 +61,52 @@ type PlayerArmorFieldProps = { [T in keyof Armor]: Armor[T] } & {
 };
 
 const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
+	const [open, setOpen] = useState(false);
 	const { t } = useI18n<Locale>();
 
-	return <></>;
+	return (
+		<>
+			<TableRow>
+				<TableCell align='center' padding='none'>
+					<IconButton
+						title={open ? t('collapse') : t('expand')}
+						size='small'
+						onClick={() => setOpen(!open)}>
+						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+					</IconButton>
+				</TableCell>
+				<TableCell align='center' padding='none'>
+					<IconButton
+						size='small'
+						onClick={() => {
+							if (confirm(t('prompt.delete'))) props.onDelete();
+						}}
+						title={t('delete')}>
+						<DeleteIcon />
+					</IconButton>
+				</TableCell>
+				<TableCell align='center' padding='none'>
+					<IconButton size='small' onClick={props.onTrade} title={t('trade')}>
+						<HandshakeIcon />
+					</IconButton>
+				</TableCell>
+				<TableCell align='center'>{props.name}</TableCell>
+				<TableCell align='center'>{props.type || '-'}</TableCell>
+				<TableCell align='center'>{props.weight || '-'}</TableCell>
+				<TableCell align='center'>{props.damageReduction || '-'}</TableCell>
+				<TableCell align='center'>{props.penalty || '-'}</TableCell>
+			</TableRow>
+			<TableRow>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+					<Collapse in={open}>
+						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
+							{props.description}
+						</Typography>
+					</Collapse>
+				</TableCell>
+			</TableRow>
+		</>
+	);
 };
 
 export default PlayerArmorContainer;

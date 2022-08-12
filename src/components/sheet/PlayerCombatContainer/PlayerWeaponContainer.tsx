@@ -1,7 +1,11 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,11 +13,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
+import Typography from '@mui/material/Typography';
 import type { TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import type { PlayerCombatContainerProps } from '.';
 import dice20 from '../../../../public/dice20.webp';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../../contexts';
@@ -37,6 +41,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 			<Table>
 				<TableHead>
 					<TableRow>
+						<TableCell padding='none' />
 						<TableCell padding='none' />
 						<TableCell padding='none' />
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
@@ -74,6 +79,7 @@ type PlayerWeaponFieldProps = { [T in keyof Weapon]: Weapon[T] } & {
 };
 
 const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
+	const [open, setOpen] = useState(false);
 	const [currentAmmo, setCurrentAmmo, isClean] = useExtendedState(props.currentAmmo);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
@@ -123,6 +129,14 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	return (
 		<>
 			<TableRow>
+				<TableCell align='center' padding='none'>
+					<IconButton
+						title={open ? t('collapse') : t('expand')}
+						size='small'
+						onClick={() => setOpen(!open)}>
+						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+					</IconButton>
+				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
 						<DeleteIcon />
@@ -180,6 +194,15 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 					) : (
 						'-'
 					)}
+				</TableCell>
+			</TableRow>
+			<TableRow>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+					<Collapse in={open}>
+						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
+							{props.description}
+						</Typography>
+					</Collapse>
 				</TableCell>
 			</TableRow>
 		</>

@@ -34,7 +34,7 @@ const ItemEditorDialog: React.FC<EditorDialogProps<Item>> = (props) => {
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
-		props.onSubmit({ ...item, weight: parseInt(item.weight.replace(',', '.')) || 0 });
+		props.onSubmit({ ...item, weight: parseFloat(item.weight.replace(',', '.')) || 0 });
 	};
 
 	return (

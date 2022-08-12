@@ -17,6 +17,7 @@ const initialState = {
 	id: 0,
 	name: '',
 	type: '',
+	description: '',
 	weight: '0',
 	damageReduction: '',
 	penalty: '',
@@ -42,7 +43,7 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 		e.preventDefault();
 		props.onSubmit({
 			...armor,
-			weight: parseInt(armor.weight.replace(',', '.')) || 0,
+			weight: parseFloat(armor.weight.replace(',', '.')) || 0,
 		});
 	};
 
@@ -65,6 +66,16 @@ const ArmorEditorDialog: React.FC<EditorDialogProps<Armor>> = (props) => {
 						label={t('sheet.table.name')}
 						value={armor.name}
 						onChange={(ev) => setArmor({ ...armor, name: ev.target.value })}
+					/>
+					<TextField
+						fullWidth
+						multiline
+						variant='outlined'
+						label={t('sheet.table.description')}
+						minRows={2}
+						maxRows={5}
+						value={armor.description}
+						onChange={(ev) => setArmor({ ...armor, description: ev.target.value })}
 					/>
 					<Box display='flex' flexDirection='row' gap={2}>
 						<TextField

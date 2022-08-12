@@ -45,6 +45,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 		req.body.range === undefined ||
 		req.body.attacks === undefined ||
 		req.body.ammo === undefined ||
+		req.body.description === undefined ||
 		req.body.visible === undefined
 	) {
 		return res.json({
@@ -56,6 +57,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const description = String(req.body.description);
 	const weight = Number(req.body.weight);
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
@@ -66,7 +68,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	try {
 		const weapon = await prisma.weapon.update({
 			where: { id },
-			data: { name, type, weight, damage, range, attacks, ammo, visible },
+			data: { name, type, description, weight, damage, range, attacks, ammo, visible },
 		});
 
 		res.json({ status: 'success', weapon: [weapon] });
@@ -83,10 +85,11 @@ const handlePut: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => 
 
 	if (
 		!req.body.name ||
-		!req.body.type ||
-		!req.body.damage ||
-		!req.body.range ||
-		!req.body.attacks ||
+		req.body.type === undefined ||
+		req.body.damage === undefined ||
+		req.body.range === undefined ||
+		req.body.attacks === undefined ||
+		req.body.description === undefined ||
 		req.body.weight === undefined ||
 		req.body.ammo === undefined ||
 		req.body.visible === undefined
@@ -99,6 +102,7 @@ const handlePut: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => 
 
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const description = String(req.body.description);
 	const weight = Number(req.body.weight);
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
@@ -106,27 +110,18 @@ const handlePut: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => 
 	const ammo = req.body.ammo === null ? null : Number(req.body.ammo);
 	const visible = Boolean(req.body.visible);
 
-	const players = await prisma.player.findMany({
-		where: { role: { in: ['PLAYER', 'NPC'] } },
-		select: { id: true },
-	});
-
 	try {
 		const weapon = await prisma.weapon.create({
 			data: {
 				name,
 				weight,
+				description,
 				ammo,
 				attacks,
 				damage,
 				range,
 				type,
 				visible,
-				PlayerWeapon: {
-					createMany: {
-						data: players.map(({ id: player_id }) => ({ player_id })),
-					},
-				},
 			},
 		});
 

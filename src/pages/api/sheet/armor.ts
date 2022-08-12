@@ -39,9 +39,10 @@ const handlePost: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => 
 	if (
 		!req.body.id ||
 		!req.body.name ||
-		!req.body.type ||
-		!req.body.damageReduction ||
-		!req.body.penalty ||
+		req.body.type === undefined ||
+		req.body.damageReduction === undefined ||
+		req.body.penalty === undefined ||
+		req.body.description === undefined ||
 		req.body.weight === undefined ||
 		req.body.visible === undefined
 	) {
@@ -54,6 +55,7 @@ const handlePost: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => 
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const description = String(req.body.description);
 	const weight = Number(req.body.weight);
 	const damageReduction = String(req.body.damageReduction);
 	const penalty = String(req.body.penalty);
@@ -62,7 +64,7 @@ const handlePost: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => 
 	try {
 		const armor = await prisma.armor.update({
 			where: { id },
-			data: { name, weight, damageReduction, penalty, type, visible },
+			data: { name, weight, description, damageReduction, penalty, type, visible },
 		});
 
 		res.json({ status: 'success', armor: [armor] });
@@ -79,9 +81,10 @@ const handlePut: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => {
 
 	if (
 		!req.body.name ||
-		!req.body.type ||
-		!req.body.damageReduction ||
-		!req.body.penalty ||
+		req.body.type === undefined ||
+		req.body.damageReduction === undefined ||
+		req.body.penalty === undefined ||
+		req.body.description === undefined ||
 		req.body.weight === undefined ||
 		req.body.visible === undefined
 	) {
@@ -93,30 +96,22 @@ const handlePut: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => {
 
 	const name = String(req.body.name);
 	const type = String(req.body.type);
+	const description = String(req.body.description);
 	const weight = Number(req.body.weight);
 	const damageReduction = String(req.body.damageReduction);
 	const penalty = String(req.body.penalty);
 	const visible = Boolean(req.body.visible);
-
-	const players = await prisma.player.findMany({
-		where: { role: { in: ['PLAYER', 'NPC'] } },
-		select: { id: true },
-	});
 
 	try {
 		const armor = await prisma.armor.create({
 			data: {
 				name,
 				weight,
+				description,
 				damageReduction,
 				penalty,
 				type,
 				visible,
-				PlayerArmor: {
-					createMany: {
-						data: players.map(({ id: player_id }) => ({ player_id })),
-					},
-				},
 			},
 		});
 

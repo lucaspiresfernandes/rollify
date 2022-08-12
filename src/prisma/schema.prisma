@@ -94,6 +94,7 @@ model Weapon {
   id           Int            @id @default(autoincrement())
   name         String
   type         String
+  description  String
   weight       Float
   damage       String
   range        String
@@ -107,6 +108,7 @@ model Armor {
   id              Int           @id @default(autoincrement())
   name            String
   type            String
+  description     String
   weight          Float
   damageReduction String
   penalty         String

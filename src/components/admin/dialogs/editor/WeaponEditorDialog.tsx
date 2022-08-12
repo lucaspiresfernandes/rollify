@@ -16,12 +16,13 @@ import type { Locale } from '../../../../i18n';
 const initialState: Omit<Weapon, 'weight' | 'ammo'> & { weight: string; ammo: string | null } = {
 	id: 0,
 	name: '',
+	type: '',
+	description: '',
+	weight: '0',
 	ammo: null,
 	damage: '',
 	attacks: '',
 	range: '',
-	weight: '0',
-	type: '',
 	visible: true,
 };
 
@@ -45,8 +46,8 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 		e.preventDefault();
 		props.onSubmit({
 			...weapon,
-			weight: parseInt(weapon.weight) || 0,
-			ammo: weapon.ammo ? parseInt(weapon.ammo.replace(',', '.')) || 0 : null,
+			weight: parseFloat(weapon.weight.replace(',', '.')) || 0,
+			ammo: weapon.ammo ? parseInt(weapon.ammo) || 0 : null,
 		});
 	};
 
@@ -71,6 +72,16 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 						onChange={(ev) => {
 							setWeapon({ ...weapon, name: ev.target.value });
 						}}
+					/>
+					<TextField
+						fullWidth
+						multiline
+						variant='outlined'
+						label={t('sheet.table.description')}
+						minRows={2}
+						maxRows={5}
+						value={weapon.description}
+						onChange={(ev) => setWeapon({ ...weapon, description: ev.target.value })}
 					/>
 					<Box display='flex' flexDirection='row' gap={2}>
 						<TextField
