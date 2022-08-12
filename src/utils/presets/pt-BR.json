@@ -80,6 +80,7 @@
 				"id": 1,
 				"name": "Desarmado",
 				"type": "Comum",
+				"description": "",
 				"weight": 0,
 				"damage": "1d3+DAN",
 				"range": "Toque",

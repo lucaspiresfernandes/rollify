@@ -128,7 +128,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 
 	return (
 		<>
-			<TableRow>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 				<TableCell align='center' padding='none'>
 					<IconButton
 						title={open ? t('collapse') : t('expand')}
@@ -199,7 +199,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 					<Collapse in={open}>
-						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
+						<Typography variant='body1' component='div' mb={1} px={3}>
 							{props.description}
 						</Typography>
 					</Collapse>

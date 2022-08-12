@@ -66,7 +66,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 
 	return (
 		<>
-			<TableRow>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 				<TableCell align='center' padding='none'>
 					<IconButton
 						title={open ? t('collapse') : t('expand')}
@@ -99,7 +99,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 					<Collapse in={open}>
-						<Typography variant='body1' component='div' mt={-1} mb={1} px={3}>
+						<Typography variant='body1' component='div' mb={1} px={3}>
 							{props.description}
 						</Typography>
 					</Collapse>
