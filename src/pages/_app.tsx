@@ -8,6 +8,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import SnackbarContainer from '../components/SnackbarContainer';
 import { LoggerContext } from '../contexts';
 import useSnackbar from '../hooks/useSnackbar';
@@ -57,6 +58,7 @@ export default function MyApp(props: MyAppProps) {
 					<LoggerContext.Provider value={updateSnackbar}>
 						<Navbar mode={mode} updateMode={setMode} />
 						<Component {...pageProps} />
+						<ScrollToTopButton />
 					</LoggerContext.Provider>
 					<SnackbarContainer {...snackbarProps} />
 				</I18nProvider>
