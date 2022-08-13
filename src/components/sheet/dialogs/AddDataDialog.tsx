@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import NativeSelect from '@mui/material/NativeSelect';
 import { useI18n } from 'next-rosetta';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Locale } from '../../../i18n';
 
 export type AddDataDialogProps = {
@@ -29,6 +29,11 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 		props.onSubmit(value);
 	};
 
+	const dataList = useMemo(
+		() => props.data.sort((a, b) => a.name.localeCompare(b.name)),
+		[props.data]
+	);
+
 	return (
 		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
@@ -39,7 +44,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 						value={value}
 						onChange={(ev) => setValue(Number(ev.target.value))}
 						disabled={props.data.length === 0}>
-						{props.data.map((data) => (
+						{dataList.map((data) => (
 							<option key={data.id} value={data.id}>
 								{data.name}
 							</option>
