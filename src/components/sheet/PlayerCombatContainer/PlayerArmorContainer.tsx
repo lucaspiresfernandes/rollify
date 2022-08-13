@@ -66,14 +66,17 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 
 	return (
 		<>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+			<TableRow
+				sx={{ '& > *': { borderBottom: props.description ? 'unset !important' : undefined } }}>
 				<TableCell align='center' padding='none'>
-					<IconButton
-						title={open ? t('collapse') : t('expand')}
-						size='small'
-						onClick={() => setOpen(!open)}>
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
+					{props.description && (
+						<IconButton
+							title={open ? t('collapse') : t('expand')}
+							size='small'
+							onClick={() => setOpen(!open)}>
+							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+						</IconButton>
+					)}
 				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton
@@ -96,15 +99,17 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 				<TableCell align='center'>{props.damageReduction || '-'}</TableCell>
 				<TableCell align='center'>{props.penalty || '-'}</TableCell>
 			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-					<Collapse in={open}>
-						<Typography variant='body1' component='div' mb={1} px={3}>
-							{props.description}
-						</Typography>
-					</Collapse>
-				</TableCell>
-			</TableRow>
+			{props.description && (
+				<TableRow>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+						<Collapse in={open}>
+							<Typography variant='body1' component='div' mb={1} px={3}>
+								{props.description}
+							</Typography>
+						</Collapse>
+					</TableCell>
+				</TableRow>
+			)}
 		</>
 	);
 };

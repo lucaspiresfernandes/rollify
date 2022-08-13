@@ -207,14 +207,17 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 
 	return (
 		<>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+			<TableRow
+				sx={{ '& > *': { borderBottom: props.description ? 'unset !important' : undefined } }}>
 				<TableCell align='center' padding='none'>
-					<IconButton
-						title={open ? t('collapse') : t('expand')}
-						size='small'
-						onClick={() => setOpen(!open)}>
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
+					{props.description && (
+						<IconButton
+							title={open ? t('collapse') : t('expand')}
+							size='small'
+							onClick={() => setOpen(!open)}>
+							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+						</IconButton>
+					)}
 				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
@@ -251,15 +254,17 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 				<TableCell align='center'>{props.duration || '-'}</TableCell>
 				<TableCell align='center'>{props.slots || '-'}</TableCell>
 			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-					<Collapse in={open}>
-						<Typography variant='body1' component='div' mb={1} px={3}>
-							{props.description}
-						</Typography>
-					</Collapse>
-				</TableCell>
-			</TableRow>
+			{props.description && (
+				<TableRow>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+						<Collapse in={open} unmountOnExit>
+							<Typography variant='body1' component='div' mb={1} px={3}>
+								{props.description}
+							</Typography>
+						</Collapse>
+					</TableCell>
+				</TableRow>
+			)}
 		</>
 	);
 };

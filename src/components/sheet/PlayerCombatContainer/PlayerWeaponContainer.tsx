@@ -128,7 +128,8 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 
 	return (
 		<>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+			<TableRow
+				sx={{ '& > *': { borderBottom: props.description ? 'unset !important' : undefined } }}>
 				<TableCell align='center' padding='none'>
 					{props.description && (
 						<IconButton
