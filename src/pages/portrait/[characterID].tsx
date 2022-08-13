@@ -176,6 +176,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 					select: {
 						value: true,
 						maxValue: true,
+						extraValue: true,
 						show: true,
 						Attribute: { select: { id: true, name: true, color: true, portrait: true } },
 					},

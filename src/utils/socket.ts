@@ -34,6 +34,7 @@ export interface ServerToClientEvents {
 		attributeId: number,
 		value: number,
 		maxValue: number,
+		extraValue: number,
 		show: boolean
 	) => void;
 	playerSpecChange: (playerId: number, specId: number, value: string) => void;

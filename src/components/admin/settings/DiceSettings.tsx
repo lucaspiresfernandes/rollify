@@ -274,7 +274,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 				label='TODO: Activate resolvers'
 				control={
 					<Checkbox
-						defaultChecked={Boolean(form.resolver)}
+						defaultChecked={Boolean(form.enableResolver)}
 						onChange={(ev) =>
 							startTransition(() => setForm((f) => ({ ...f, enableResolver: ev.target.checked })))
 						}

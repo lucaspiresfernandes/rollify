@@ -27,7 +27,7 @@ const handler: NextApiHandlerIO<PlayerAttributeApiResponse> = async (req, res) =
 		const char = await prisma.playerAttribute.update({
 			data: { value, maxValue, extraValue, show },
 			where: { player_id_attribute_id: { player_id, attribute_id } },
-			select: { value: true, maxValue: true, show: true },
+			select: { value: true, maxValue: true, extraValue: true, show: true },
 		});
 
 		res.json({ status: 'success' });
@@ -35,7 +35,15 @@ const handler: NextApiHandlerIO<PlayerAttributeApiResponse> = async (req, res) =
 		res.socket.server.io
 			.to('admin')
 			.to(`portrait${player_id}`)
-			.emit('playerAttributeChange', player_id, attribute_id, char.value, char.maxValue, char.show);
+			.emit(
+				'playerAttributeChange',
+				player_id,
+				attribute_id,
+				char.value,
+				char.maxValue,
+				char.extraValue,
+				char.show
+			);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

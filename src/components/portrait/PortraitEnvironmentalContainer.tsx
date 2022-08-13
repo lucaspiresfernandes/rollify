@@ -73,6 +73,7 @@ type PortraitAttributesContainerProps = {
 		name: string;
 		color: string;
 		value: number;
+		extraValue: number;
 		maxValue: number;
 		show: boolean;
 	}[];
@@ -99,15 +100,18 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 	}, [props.playerId]);
 
 	useEffect(() => {
-		props.socket.on('playerAttributeChange', (playerId, attributeId, value, maxValue, show) => {
-			if (playerId !== props.playerId) return;
-			setAttributes((attributes) =>
-				attributes.map((attr) => {
-					if (attr.id === attributeId) return { ...attr, value, maxValue, show };
-					return attr;
-				})
-			);
-		});
+		props.socket.on(
+			'playerAttributeChange',
+			(playerId, attributeId, value, maxValue, extraValue, show) => {
+				if (playerId !== props.playerId) return;
+				setAttributes((attributes) =>
+					attributes.map((attr) => {
+						if (attr.id === attributeId) return { ...attr, value, maxValue, extraValue, show };
+						return attr;
+					})
+				);
+			}
+		);
 
 		return () => {
 			props.socket.off('playerAttributeChange');
@@ -145,7 +149,13 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 							<div ref={attributesRef}>
 								{attributes.map((attr) => (
 									<div key={attr.id} style={getShadowStyle(attr.color)}>
-										{attr.show ? `${attr.value}/${attr.maxValue}` : '?/?'}
+										{attr.show ? (
+											<>
+												{attr.value + attr.extraValue}/{attr.maxValue}
+											</>
+										) : (
+											'?/?'
+										)}
 									</div>
 								))}
 							</div>

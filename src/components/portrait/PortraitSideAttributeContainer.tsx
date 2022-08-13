@@ -21,6 +21,7 @@ type PortraitSideAttributeContainerProps = {
 		name: string;
 		color: string;
 		value: number;
+		extraValue: number;
 		show: boolean;
 	} | null;
 };
@@ -42,13 +43,16 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 	}, [props.playerId]);
 
 	useEffect(() => {
-		props.socket.on('playerAttributeChange', (playerId, attributeId, value, _, show) => {
-			if (playerId !== props.playerId) return;
-			setSideAttribute((attr) => {
-				if (attr === null || attributeId !== attr.id) return attr;
-				return { ...attr, value, show };
-			});
-		});
+		props.socket.on(
+			'playerAttributeChange',
+			(playerId, attributeId, value, _, extraValue, show) => {
+				if (playerId !== props.playerId) return;
+				setSideAttribute((attr) => {
+					if (attr === null || attributeId !== attr.id) return attr;
+					return { ...attr, value, extraValue, show };
+				});
+			}
+		);
 
 		return () => {
 			props.socket.off('playerAttributeChange');
@@ -78,7 +82,7 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 				<div className={styles.sideContainer}>
 					<div className={styles.sideBackground}></div>
 					<label className={`${styles.sideContent} atributo-secundario ${sideAttribute.name}`}>
-						{sideAttribute.show ? sideAttribute.value : '?'}
+						{sideAttribute.show ? sideAttribute.value + sideAttribute.extraValue : '?'}
 					</label>
 				</div>
 			</div>
