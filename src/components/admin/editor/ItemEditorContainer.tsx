@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import type { Item } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ItemSheetApiResponse } from '../../../pages/api/sheet/item';
@@ -72,6 +72,8 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const itemList = useMemo(() => item.sort((a, b) => a.name.localeCompare(b.name)), [item]);
+
 	return (
 		<Section
 			title={t('admin.editor.item')}
@@ -90,7 +92,7 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={item}
+				data={itemList}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: item.find((i) => i.id === id) });
 					setOpenDialog(true);

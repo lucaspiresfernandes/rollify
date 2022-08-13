@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import type { Armor, Trade, TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	AddDataDialogContext,
 	ApiContext,
@@ -397,6 +397,16 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			);
 	};
 
+	const weaponList = useMemo(
+		() => playerWeapons.sort((a, b) => a.name.localeCompare(b.name)),
+		[playerWeapons]
+	);
+
+	const armorList = useMemo(
+		() => playerArmor.sort((a, b) => a.name.localeCompare(b.name)),
+		[playerArmor]
+	);
+
 	return (
 		<SheetContainer
 			title={props.title}
@@ -423,12 +433,12 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				)}
 			</PartialBackdrop>
 			<PlayerWeaponContainer
-				playerWeapons={playerWeapons}
+				playerWeapons={weaponList}
 				onDeleteWeapon={onDeleteWeapon}
 				onTrade={onTrade}
 			/>
 			<PlayerArmorContainer
-				playerArmor={playerArmor}
+				playerArmor={armorList}
 				onDeleteArmor={onDeleteArmor}
 				onTrade={onTrade}
 			/>

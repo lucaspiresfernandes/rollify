@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import type { Weapon } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { WeaponSheetApiResponse } from '../../../pages/api/sheet/weapon';
@@ -72,6 +72,8 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const weaponList = useMemo(() => weapon.sort((a, b) => a.name.localeCompare(b.name)), [weapon]);
+
 	return (
 		<Section
 			title={t('admin.editor.weapon')}
@@ -90,7 +92,7 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={weapon}
+				data={weaponList}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: weapon.find((i) => i.id === id) });
 					setOpenDialog(true);

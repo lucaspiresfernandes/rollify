@@ -18,8 +18,6 @@ type EditorContainerProps = {
 const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelete }) => {
 	const [search, setSearch] = useState('');
 
-	const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
-
 	return (
 		<>
 			<Box mx={1} my={1}>
@@ -28,9 +26,9 @@ const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onDelet
 				</Paper>
 			</Box>
 			<Divider />
-			<Box height={260} mt={1} sx={{ overflowY: 'auto' }}>
+			<Box height={315} mt={1} sx={{ overflowY: 'auto' }}>
 				<Stack spacing={2} py={1} pr={1}>
-					{sortedData.map((d) => {
+					{data.map((d) => {
 						if (!d.name.toLowerCase().includes(search.toLowerCase())) return null;
 						return (
 							<Box key={d.id} display='flex' gap={2}>

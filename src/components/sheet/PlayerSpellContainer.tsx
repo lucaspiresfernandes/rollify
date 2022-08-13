@@ -41,7 +41,6 @@ type PlayerSpellContainerProps = {
 const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [playerSpells, setPlayerSpells] = useState(props.playerSpells);
-
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataDialogContext);
@@ -92,8 +91,11 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
-	const playerCurrentSlots = useMemo(
-		() => playerSpells.reduce((prev, cur) => prev + cur.slots, 0),
+	const memoSpell = useMemo(
+		() => ({
+			spells: playerSpells.sort((a, b) => a.name.localeCompare(b.name)),
+			currentSlots: playerSpells.reduce((prev, cur) => prev + cur.slots, 0),
+		}),
 		[playerSpells]
 	);
 
@@ -108,7 +110,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			}>
 			<Box textAlign='center' mt={2} mb={1}>
 				<PlayerMaxSlotsField
-					playerCurrentSlots={playerCurrentSlots}
+					playerCurrentSlots={memoSpell.currentSlots}
 					playerMaxSlots={props.playerMaxSlots}
 				/>
 			</Box>
@@ -131,7 +133,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{playerSpells.map((spell) => (
+						{memoSpell.spells.map((spell) => (
 							<PlayerSpellField
 								key={spell.id}
 								{...spell}

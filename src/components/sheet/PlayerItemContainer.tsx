@@ -17,7 +17,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import type { Trade } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
 	AddDataDialogContext,
 	ApiContext,
@@ -299,6 +299,11 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			);
 	};
 
+	const itemList = useMemo(
+		() => playerItems.sort((a, b) => a.name.localeCompare(b.name)),
+		[playerItems]
+	);
+
 	return (
 		<SheetContainer
 			title={props.title}
@@ -341,7 +346,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{playerItems.map((item) => (
+						{itemList.map((item) => (
 							<PlayerItemField
 								key={item.id}
 								{...item}

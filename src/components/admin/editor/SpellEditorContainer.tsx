@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import type { Spell } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { SpellSheetApiResponse } from '../../../pages/api/sheet/spell';
@@ -72,6 +72,8 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const spellList = useMemo(() => spell.sort((a, b) => a.name.localeCompare(b.name)), [spell]);
+
 	return (
 		<Section
 			title={t('admin.editor.spell')}
@@ -90,7 +92,7 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={spell}
+				data={spellList}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: spell.find((i) => i.id === id) });
 					setOpenDialog(true);

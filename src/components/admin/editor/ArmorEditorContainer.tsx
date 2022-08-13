@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import type { Armor } from '@prisma/client';
 import type { AxiosResponse } from 'axios';
 import { useI18n } from 'next-rosetta';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ArmorSheetApiResponse } from '../../../pages/api/sheet/armor';
@@ -72,6 +72,8 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
+	const armorList = useMemo(() => armor.sort((a, b) => a.name.localeCompare(b.name)), [armor]);
+
 	return (
 		<Section
 			title={t('admin.editor.armor')}
@@ -90,7 +92,7 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
 			<EditorContainer
-				data={armor}
+				data={armorList}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: armor.find((i) => i.id === id) });
 					setOpenDialog(true);
