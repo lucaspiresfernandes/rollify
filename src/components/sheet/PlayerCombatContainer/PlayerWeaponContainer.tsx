@@ -130,12 +130,14 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 		<>
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 				<TableCell align='center' padding='none'>
-					<IconButton
-						title={open ? t('collapse') : t('expand')}
-						size='small'
-						onClick={() => setOpen(!open)}>
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
+					{props.description && (
+						<IconButton
+							title={open ? t('collapse') : t('expand')}
+							size='small'
+							onClick={() => setOpen(!open)}>
+							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+						</IconButton>
+					)}
 				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
@@ -196,15 +198,17 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 					)}
 				</TableCell>
 			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-					<Collapse in={open}>
-						<Typography variant='body1' component='div' mb={1} px={3}>
-							{props.description}
-						</Typography>
-					</Collapse>
-				</TableCell>
-			</TableRow>
+			{props.description && (
+				<TableRow>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+						<Collapse in={open}>
+							<Typography variant='body1' component='div' mb={1} px={3}>
+								{props.description}
+							</Typography>
+						</Collapse>
+					</TableCell>
+				</TableRow>
+			)}
 		</>
 	);
 };

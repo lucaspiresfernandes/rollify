@@ -85,37 +85,41 @@ export function resolveDices(dices: string) {
 }
 
 function resolveDice(dice: string): ResolvedDice {
-	//TODO: Add another regex that matches only the modifier. E.g.: MOD(FOR)
-	// Like:
-	// const regex = dice.match(/MOD([A-Z][A-Z][A-Z])/);
-	const regexResult = dice.match(/[A-Z][A-Z][A-Z]/);
+	const utilMatch = dice.match(/[A-Z][A-Z][A-Z]/);
+	const utilModMatch = dice.match(/MOD\([A-Z][A-Z][A-Z]\)/);
 
-	if (regexResult) {
-		const utilName = regexResult[0];
+	if (utilMatch || utilModMatch) {
+		let utilName = '';
+		if (utilModMatch) utilName = `diceUtilMod${utilModMatch[0].replace(/MOD\(|\)/g, '')}`;
+		else if (utilMatch) utilName = `diceUtil${utilMatch[0]}`;
 
 		const utilElement = (
-			document.getElementsByName(`diceUtil${utilName}`) as NodeListOf<HTMLInputElement>
+			document.getElementsByName(utilName) as NodeListOf<HTMLInputElement>
 		)[0] as HTMLInputElement | undefined;
 
 		if (utilElement) {
-			const utilElementModifier = (
-				document.getElementsByName(`diceUtilMod${utilName}`) as NodeListOf<HTMLInputElement>
-			)[0] as HTMLInputElement | undefined;
+			const utilElementModifier: HTMLInputElement | undefined = utilMatch
+				? (
+						document.getElementsByName(`diceUtilMod${utilMatch[0]}`) as NodeListOf<HTMLInputElement>
+				  )[0]
+				: undefined;
 
-			const value = utilElement.value.replace(/\s/g, '').toUpperCase();
+			const value = resolveDice(utilElement.value.replace(/\s/g, '').toUpperCase());
+
 			let modifier = 0;
 			if (utilElementModifier) modifier = parseInt(utilElementModifier.value) || 0;
 
 			const divider = parseInt(dice.split('/')[1]) || 1;
-			const split = value.split('D');
 
-			if (split.length === 1)
-				dice = Math.floor((parseInt(split[0]) + modifier) / divider).toString();
-			else dice = `${split[0]}D${Math.floor((parseInt(split[1]) + modifier) / divider)}`;
+			return {
+				num: value.num,
+				roll: Math.floor((value.roll + modifier) / divider),
+			};
 		}
 	}
 
 	const split = dice.split('D');
+
 	if (split.length === 1) return { num: 0, roll: parseInt(dice) || 0 };
 	return { num: parseInt(split[0]) || 0, roll: parseInt(split[1]) || 0 };
 }

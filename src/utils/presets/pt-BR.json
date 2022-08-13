@@ -85,7 +85,7 @@
 				"damage": "1d3+DAN",
 				"range": "Toque",
 				"attacks": "1",
-				"ammo": null,
+				"ammo": 0,
 				"visible": true
 			}
 		],

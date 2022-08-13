@@ -62,7 +62,7 @@ const handlePost: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) =>
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
 	const attacks = String(req.body.attacks);
-	const ammo = req.body.ammo === null ? null : Number(req.body.ammo);
+	const ammo = Number(req.body.ammo);
 	const visible = Boolean(req.body.visible);
 
 	try {
@@ -107,7 +107,7 @@ const handlePut: NextApiHandlerIO<WeaponSheetApiResponse> = async (req, res) => 
 	const damage = String(req.body.damage);
 	const range = String(req.body.range);
 	const attacks = String(req.body.attacks);
-	const ammo = req.body.ammo === null ? null : Number(req.body.ammo);
+	const ammo = Number(req.body.ammo);
 	const visible = Boolean(req.body.visible);
 
 	try {

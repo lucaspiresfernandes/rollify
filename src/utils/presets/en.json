@@ -73,7 +73,7 @@
 				"damage": "1d3+BON",
 				"range": "Touch",
 				"attacks": "1",
-				"ammo": null,
+				"ammo": 0,
 				"visible": true
 			}
 		],

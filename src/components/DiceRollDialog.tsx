@@ -43,16 +43,17 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	const result: DisplayDice | undefined = useMemo(() => {
 		if (!diceResponse) return;
 
-		if (diceResponse[0].description) {
-			descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
-		}
-
 		if (diceResponse.length === 1) {
+			if (diceResponse[0].description)
+				descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
+
 			return {
 				roll: diceResponse[0].roll,
 				description: diceResponse[0].description,
 			};
 		}
+
+		descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
 
 		if (diceResponse.length > 1) {
 			if (Array.isArray(diceRequest.dice)) {

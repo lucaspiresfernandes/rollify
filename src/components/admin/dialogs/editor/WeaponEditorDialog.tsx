@@ -13,13 +13,13 @@ import { useEffect, useState } from 'react';
 import type { EditorDialogProps } from '.';
 import type { Locale } from '../../../../i18n';
 
-const initialState: Omit<Weapon, 'weight' | 'ammo'> & { weight: string; ammo: string | null } = {
+const initialState: Omit<Weapon, 'weight' | 'ammo'> & { weight: string; ammo: string } = {
 	id: 0,
 	name: '',
 	type: '',
 	description: '',
 	weight: '0',
-	ammo: null,
+	ammo: '',
 	damage: '',
 	attacks: '',
 	range: '',
@@ -36,7 +36,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 				setWeapon({
 					...props.data,
 					weight: props.data.weight.toString(),
-					ammo: props.data.ammo?.toString() || null,
+					ammo: props.data.ammo ? props.data.ammo.toString() : '',
 				});
 			else setWeapon(initialState);
 		}
@@ -47,7 +47,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 		props.onSubmit({
 			...weapon,
 			weight: parseFloat(weapon.weight.replace(',', '.')) || 0,
-			ammo: weapon.ammo ? parseInt(weapon.ammo) || 0 : null,
+			ammo: parseInt(weapon.ammo) || 0,
 		});
 	};
 
@@ -66,7 +66,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 					<TextField
 						required
 						autoFocus
-						fullWidth
+						autoComplete='off'
 						label='Name'
 						value={weapon.name}
 						onChange={(ev) => {
@@ -74,7 +74,6 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 						}}
 					/>
 					<TextField
-						fullWidth
 						multiline
 						variant='outlined'
 						label={t('sheet.table.description')}
@@ -86,6 +85,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 					<Box display='flex' flexDirection='row' gap={2}>
 						<TextField
 							label={t('sheet.table.type')}
+							autoComplete='off'
 							value={weapon.type}
 							onChange={(ev) => setWeapon({ ...weapon, type: ev.target.value })}
 						/>
@@ -119,19 +119,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 							value={weapon.range}
 							onChange={(ev) => setWeapon({ ...weapon, range: ev.target.value })}
 						/>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={weapon.ammo !== null}
-									onChange={() => setWeapon({ ...weapon, ammo: weapon.ammo === null ? '0' : null })}
-								/>
-							}
-							label={t('admin.editor.hasAmmo')}
-						/>
-					</Box>
-					{weapon.ammo !== null && (
 						<TextField
-							required
 							label={t('sheet.table.ammo')}
 							inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
 							value={weapon.ammo}
@@ -140,7 +128,7 @@ const WeaponEditorDialog: React.FC<EditorDialogProps<Weapon>> = (props) => {
 									setWeapon({ ...weapon, ammo: ev.target.value });
 							}}
 						/>
-					)}
+					</Box>
 					<FormControlLabel
 						control={
 							<Checkbox

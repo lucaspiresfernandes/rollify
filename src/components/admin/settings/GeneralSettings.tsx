@@ -1,7 +1,11 @@
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
 import SettingsContainer from '.';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ConfigResponse } from '../../../pages/api/config';
@@ -15,6 +19,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [form, setForm] = useState({
 		adminKey: props.adminKey || '',
+		adminKeyVisible: false,
 	});
 	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
@@ -37,16 +42,26 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
-	//TODO: Add visibility to the admin key field
 	return (
 		<SettingsContainer loading={loading} onApply={onApplyChanges} gap={3}>
 			<TextField
+				type={form.adminKeyVisible ? 'text' : 'password'}
 				label='TODO: Admin Key'
 				helperText='TODO: The admin key is used to create a new admin account.'
 				defaultValue={form.adminKey}
 				onChange={(ev) =>
 					startTransition(() => setForm((f) => ({ ...f, adminKey: ev.target.value })))
 				}
+				InputProps={{
+					endAdornment: (
+						<InputAdornment position='end'>
+							<IconButton
+								onClick={() => setForm((f) => ({ ...f, adminKeyVisible: !f.adminKeyVisible }))}>
+								{form.adminKeyVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+							</IconButton>
+						</InputAdornment>
+					),
+				}}
 			/>
 		</SettingsContainer>
 	);

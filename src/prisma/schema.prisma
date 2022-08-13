@@ -99,7 +99,7 @@ model Weapon {
   damage       String
   range        String
   attacks      String
-  ammo         Int?
+  ammo         Int
   visible      Boolean
   PlayerWeapon PlayerWeapon[]
 }
