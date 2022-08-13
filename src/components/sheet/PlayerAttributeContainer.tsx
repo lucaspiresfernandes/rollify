@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Box from '@mui/material/Box';
@@ -8,6 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
+import Zoom from '@mui/material/Zoom';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { PortraitAttribute } from '@prisma/client';
@@ -39,6 +41,7 @@ type PlayerAttributeContainerProps = {
 		name: string;
 		value: number;
 		maxValue: number;
+		extraValue: number;
 		show: boolean;
 		color: string;
 		rollable: boolean;
@@ -192,6 +195,7 @@ type PlayerAttributeFieldProps = {
 	name: string;
 	value: number;
 	maxValue: number;
+	extraValue: number;
 	show: boolean;
 	color: string;
 	rollable: boolean;
@@ -211,10 +215,12 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 	const [show, setShow] = useState(props.show);
 	const [value, setValue] = useState(props.value);
 	const [maxValue, setMaxValue] = useState(props.maxValue);
+	const [extraValue, setExtraValue] = useState(props.extraValue);
 	const barRef = useRef<HTMLDivElement>(null);
-	const timeout = useRef<{ timeout?: NodeJS.Timeout; lastValue: number }>({
+	const valueTimeout = useRef<{ timeout?: NodeJS.Timeout; lastValue: number }>({
 		lastValue: value,
 	});
+	const extraValueTimeout = useRef<NodeJS.Timeout | null>(null);
 	const rollDice = useContext(DiceRollContext);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
@@ -227,18 +233,20 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 	}, [barRef, props.color]);
 
 	useEffect(() => {
-		if (timeout.current.timeout) clearTimeout(timeout.current.timeout);
+		if (valueTimeout.current.timeout) clearTimeout(valueTimeout.current.timeout);
 	}, [maxValue]);
 
-	const onEditorSubmit = (newValue: number, newMaxValue: number) => {
+	const onEditorSubmit = (newValue: number, newMaxValue: number, newExtraValue: number) => {
 		setAttrEditorOpen(false);
 		setValue(newValue);
 		setMaxValue(newMaxValue);
+		setExtraValue(newExtraValue);
 		api
 			.post<PlayerAttributeApiResponse>('/sheet/player/attribute', {
 				id: props.id,
 				value: newValue,
 				maxValue: newMaxValue,
+				extraValue: newExtraValue,
 			})
 			.then((res) => handleDefaultApiResponse(res, log, t))
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
@@ -263,27 +271,19 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
-	const updateValue = (coeff: number, multiply: boolean) => {
-		let newVal: number = value;
-		if (multiply) {
-			coeff *= 5;
-			if (coeff > 0) {
-				if (value <= maxValue) newVal = clamp(value + coeff, 0, maxValue);
-			} else newVal = Math.max(0, value + coeff);
-		} else {
-			newVal = Math.max(0, value + coeff);
-		}
+	const updateValue = (coeff: number) => {
+		const newVal = clamp(value + coeff, 0, maxValue);
 
 		if (value === newVal) return;
 
 		setValue(newVal);
 
-		if (timeout.current.timeout) {
-			clearTimeout(timeout.current.timeout);
-			if (timeout.current.lastValue === newVal) return;
+		if (valueTimeout.current.timeout) {
+			clearTimeout(valueTimeout.current.timeout);
+			if (valueTimeout.current.lastValue === newVal) return;
 		}
 
-		timeout.current.timeout = setTimeout(
+		valueTimeout.current.timeout = setTimeout(
 			() =>
 				api
 					.post<PlayerAttributeApiResponse>('/sheet/player/attribute', {
@@ -292,7 +292,27 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					})
 					.then((res) => handleDefaultApiResponse(res, log, t))
 					.catch(() => log({ severity: 'error', text: t('error.unknown') }))
-					.finally(() => (timeout.current.lastValue = newVal)),
+					.finally(() => (valueTimeout.current.lastValue = newVal)),
+			750
+		);
+	};
+
+	const subtractExtraValue = (coeff: number) => {
+		const newVal = Math.max(0, extraValue + coeff);
+
+		setExtraValue(newVal);
+
+		if (extraValueTimeout.current) clearTimeout(extraValueTimeout.current);
+
+		extraValueTimeout.current = setTimeout(
+			() =>
+				api
+					.post<PlayerAttributeApiResponse>('/sheet/player/attribute', {
+						id: props.id,
+						extraValue: newVal,
+					})
+					.then((res) => handleDefaultApiResponse(res, log, t))
+					.catch(() => log({ severity: 'error', text: t('error.unknown') })),
 			750
 		);
 	};
@@ -309,14 +329,26 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					{t('sheet.attributePoints', { name: props.name })}
 				</Typography>
 				<div>
+					<Zoom in={Boolean(extraValue)} unmountOnExit>
+						<IconButton
+							title={`${t('subtract')} extra`}
+							size='small'
+							onClick={(ev) => subtractExtraValue(ev.ctrlKey ? -5 : -1)}
+							sx={{ mr: 2 }}>
+							<RemoveCircleIcon />
+						</IconButton>
+					</Zoom>
 					<IconButton
 						title={t('subtract')}
 						size='small'
-						onClick={(ev) => updateValue(-1, ev.ctrlKey)}
+						onClick={(ev) => updateValue(ev.ctrlKey ? -5 : -1)}
 						sx={{ mr: 1 }}>
 						<RemoveIcon />
 					</IconButton>
-					<IconButton title={t('add')} size='small' onClick={(ev) => updateValue(1, ev.ctrlKey)}>
+					<IconButton
+						title={t('add')}
+						size='small'
+						onClick={(ev) => updateValue(ev.ctrlKey ? 5 : 1)}>
 						<AddIcon />
 					</IconButton>
 				</div>
@@ -337,7 +369,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 						variant='determinate'
 						aria-label={t('sheet.attributePoints', { name: props.name })}
 						aria-labelledby={`attributeBar${props.id}`}
-						value={Math.min((value / maxValue || 0) * 100, 100)}
+						value={Math.min(((value + extraValue) / maxValue || 0) * 100, 100)}
 						ref={barRef}
 						style={{
 							height: BAR_HEIGHT,
@@ -346,14 +378,8 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 						}}
 					/>
 					<div className={styles.labelContainer}>
-						{value > maxValue ? (
-							<b>
-								<i>{value}</i>
-							</b>
-						) : (
-							value
-						)}
-						/{maxValue}
+						{value}
+						<b>{extraValue ? `+${extraValue}` : ''}</b>/{maxValue}
 					</div>
 				</Box>
 				{props.rollable && (
@@ -381,7 +407,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 			</div>
 			<PlayerAttributeEditorDialog
 				open={attrEditorOpen}
-				startValue={{ value, maxValue }}
+				startValue={{ value, maxValue, extraValue }}
 				onClose={() => setAttrEditorOpen(false)}
 				onSubmit={onEditorSubmit}
 			/>

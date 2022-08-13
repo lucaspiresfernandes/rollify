@@ -217,6 +217,7 @@ export const table: Locale = {
 			showDiceRoll: 'Show Dice Roll',
 			currentValue: 'Current Value',
 			maxValue: 'Max Value',
+			extraValue: 'Extra Value',
 		},
 		close: 'Close',
 		cancel: 'Cancel',

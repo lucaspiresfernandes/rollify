@@ -218,6 +218,7 @@ export const table: Locale = {
 			showDiceRoll: 'Mostrar Rolagem de dados',
 			currentValue: 'Valor Atual',
 			maxValue: 'Valor Máximo',
+			extraValue: 'Valor Extra',
 		},
 		close: 'Fechar',
 		cancel: 'Cancelar',

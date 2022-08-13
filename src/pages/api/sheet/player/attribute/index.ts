@@ -18,13 +18,14 @@ const handler: NextApiHandlerIO<PlayerAttributeApiResponse> = async (req, res) =
 	const attribute_id = Number(req.body.id);
 	const value = req.body.value === undefined ? undefined : Number(req.body.value);
 	const maxValue = req.body.maxValue === undefined ? undefined : Number(req.body.maxValue);
+	const extraValue = req.body.extraValue === undefined ? undefined : Number(req.body.extraValue);
 	const show = req.body.show === undefined ? undefined : Boolean(req.body.show);
 
 	const player_id = npcId || player.id;
 
 	try {
 		const char = await prisma.playerAttribute.update({
-			data: { value, maxValue, show },
+			data: { value, maxValue, extraValue, show },
 			where: { player_id_attribute_id: { player_id, attribute_id } },
 			select: { value: true, maxValue: true, show: true },
 		});

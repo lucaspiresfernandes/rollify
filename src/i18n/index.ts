@@ -213,6 +213,7 @@ export interface Locale {
 			portraitLink: string;
 			currentValue: string;
 			maxValue: string;
+			extraValue: string;
 		};
 		close: string;
 		cancel: string;

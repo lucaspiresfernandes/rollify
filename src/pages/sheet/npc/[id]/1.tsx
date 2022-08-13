@@ -46,7 +46,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 				PlayerInfo: { select: { Info: true, value: true } },
 				PlayerAvatar: { select: { AttributeStatus: true, link: true } },
 				PlayerAttributes: {
-					select: { Attribute: true, value: true, maxValue: true, show: true },
+					select: { Attribute: true, value: true, maxValue: true, extraValue: true, show: true },
 				},
 				PlayerAttributeStatus: { select: { AttributeStatus: true, value: true } },
 				PlayerSpec: { select: { Spec: true, value: true } },
