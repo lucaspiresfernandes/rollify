@@ -22,13 +22,13 @@ const ScrollToTopButton: React.FC = () => {
 	if (router.pathname.includes('/portrait')) return null;
 
 	return (
-		<Box position='fixed' bottom={24} right={20}>
+		<Box position='fixed' bottom={19} right={15}>
 			<Zoom in={visible}>
 				<Fab
 					size='small'
 					color='primary'
 					aria-label='Back to top'
-					onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+					onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}>
 					<KeyboardArrowUpIcon />
 				</Fab>
 			</Zoom>
