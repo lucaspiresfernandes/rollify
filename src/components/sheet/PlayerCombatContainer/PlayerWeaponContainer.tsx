@@ -183,14 +183,13 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 							value={currentAmmo}
 							onChange={onAmmoChange}
 							onBlur={onAmmoBlur}
-							sx={{ width: '3em' }}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment position='end' sx={{ ml: 0 }}>{`/${props.ammo}`}</InputAdornment>
 								),
 							}}
 							inputProps={{
-								style: { textAlign: 'end' },
+								style: { textAlign: 'end', width: '3em' },
 								'aria-label': t('sheet.table.ammo'),
 							}}
 						/>
