@@ -243,14 +243,9 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				display='flex'
 				justifyContent='center'
 				alignItems='center'
-				className='clickable'
-				sx={{
-					':hover': {
-						textDecoration: 'underline',
-					},
-				}}
+				className='clickable decoration'
 				onClick={handleDiceRoll}>
-				<Typography variant='subtitle1' className='clickable'>
+				<Typography component='h3' variant='subtitle1'>
 					{props.name}
 				</Typography>
 			</Box>

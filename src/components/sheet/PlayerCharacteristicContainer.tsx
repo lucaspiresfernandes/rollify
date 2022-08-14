@@ -59,7 +59,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	const { t } = useI18n<Locale>();
 	const rollDice = useContext(DiceRollContext);
 
-	const handleDiceClick: React.MouseEventHandler<HTMLLabelElement> = (ev) => {
+	const handleDiceClick: React.MouseEventHandler<HTMLDivElement> = (ev) => {
 		let mod = 0;
 		if (modifier) mod = parseInt(modifier);
 
@@ -122,16 +122,8 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>
-			<div>
-				<Typography
-					variant='subtitle1'
-					className='clickable'
-					sx={{
-						':hover': {
-							textDecoration: 'underline',
-						},
-					}}
-					onClick={handleDiceClick}>
+			<div className='clickable decoration' onClick={handleDiceClick}>
+				<Typography component='h3' variant='subtitle1'>
 					{props.name}
 				</Typography>
 			</div>

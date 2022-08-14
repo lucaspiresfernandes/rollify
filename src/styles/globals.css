@@ -24,3 +24,7 @@
 .clickable {
 	cursor: pointer;
 }
+
+.clickable.decoration:hover {
+	text-decoration: underline;
+}

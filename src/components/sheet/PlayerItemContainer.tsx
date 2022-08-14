@@ -327,7 +327,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				columnSpacing={1}
 				rowSpacing={3}>
 				{props.playerCurrency.map((cur) => (
-					<Grid item key={cur.id} xs={6} md={4}>
+					<Grid item key={cur.id} xs={6} md={4} lg={3}>
 						<PlayerCurrencyField {...cur} />
 					</Grid>
 				))}

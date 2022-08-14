@@ -23,7 +23,7 @@ const ScrollToTopButton: React.FC = () => {
 
 	return (
 		<Box position='fixed' bottom={19} right={15}>
-			<Zoom in={visible}>
+			<Zoom in={visible} unmountOnExit>
 				<Fab
 					size='small'
 					color='primary'

@@ -87,7 +87,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 				height={{ xs: 360, sm: null }}
 				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
 				{props.playerSkills.length === 0 && (
-					<Box textAlign='center' color='GrayText'>
+					<Box textAlign='center'>
 						{t('placeholder.noFavouriteSkills')}
 					</Box>
 				)}

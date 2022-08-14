@@ -148,7 +148,7 @@ const GettingStarted: React.FC = () => {
 
 export const getStaticProps: GetStaticProps<I18nProps<Locale>> = async (ctx) => {
 	const locale = ctx.locale || ctx.defaultLocale;
-	const { table = {} } = await import(`../../i18n/${locale}`);
+	const { table = {} } = await import(`../i18n/${locale}`);
 	return { props: { table } };
 };
 
