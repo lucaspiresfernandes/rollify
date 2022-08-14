@@ -39,10 +39,6 @@ type NavbarProps = {
 };
 
 const Navbar: React.FC<NavbarProps> = (props) => {
-	const router = useRouter();
-
-	if (router.pathname.includes('/portrait')) return null;
-
 	return (
 		<AppBar position='static'>
 			<Toolbar>

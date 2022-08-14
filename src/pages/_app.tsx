@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { I18nProvider } from 'next-rosetta';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar';
 import ScrollToTopButton from '../components/ScrollToTopButton';
@@ -27,6 +28,7 @@ export default function MyApp(props: MyAppProps) {
 	const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 	const [mode, setMode] = useState<PaletteMode | 'system'>('dark');
 	const [snackbarProps, updateSnackbar] = useSnackbar();
+	const router = useRouter();
 
 	useEffect(() => {
 		setMode((localStorage.getItem('theme') || 'dark') as PaletteMode);
@@ -40,6 +42,8 @@ export default function MyApp(props: MyAppProps) {
 		}
 		return getTheme(newMode);
 	}, [mode]);
+
+	const onPortrait = useMemo(() => router.pathname.includes('/portrait'), [router.pathname]);
 
 	return (
 		<CacheProvider value={emotionCache}>
@@ -56,9 +60,9 @@ export default function MyApp(props: MyAppProps) {
 				<CssBaseline />
 				<I18nProvider table={pageProps.table}>
 					<LoggerContext.Provider value={updateSnackbar}>
-						<Navbar mode={mode} updateMode={setMode} />
+						{!onPortrait && <Navbar mode={mode} updateMode={setMode} />}
 						<Component {...pageProps} />
-						<ScrollToTopButton />
+						{!onPortrait && <ScrollToTopButton />}
 					</LoggerContext.Provider>
 					<SnackbarContainer {...snackbarProps} />
 				</I18nProvider>

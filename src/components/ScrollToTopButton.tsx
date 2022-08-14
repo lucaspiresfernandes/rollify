@@ -1,37 +1,32 @@
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Zoom from '@mui/material/Zoom';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
+import Fade from '@mui/material/Fade';
 import { startTransition, useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 
 const ScrollToTopButton: React.FC = () => {
 	const [visible, setVisible] = useState(false);
-	const router = useRouter();
 
 	const scrollEvent = useCallback(() => startTransition(() => setVisible(window.scrollY > 0)), []);
 
 	useEffect(() => {
-		if (router.pathname.includes('/portrait')) return;
 		document.addEventListener('scroll', scrollEvent);
 		return () => {
 			document.removeEventListener('scroll', scrollEvent);
 		};
-	}, [router, scrollEvent]);
-
-	if (router.pathname.includes('/portrait')) return null;
+	}, [scrollEvent]);
 
 	return (
 		<Box position='fixed' bottom={19} right={15}>
-			<Zoom in={visible} unmountOnExit>
+			<Fade in={visible}>
 				<Fab
 					size='small'
 					color='primary'
 					aria-label='Back to top'
-					onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}>
+					onClick={() => window.scrollTo(0, 0)}>
 					<KeyboardArrowUpIcon />
 				</Fab>
-			</Zoom>
+			</Fade>
 		</Box>
 	);
 };
