@@ -98,10 +98,20 @@ export const table: Locale = {
 			password_mismatch: 'Senhas não conferem',
 			invalid_email: 'Email inválido',
 		},
+		boot: {
+			title: 'Erro de inicialização',
+			helper: 'Por favor, tente novamente mais tarde.',
+		},
+		updateFailed: 'Falha ao atualizar',
 		invalidBody:
 			'Não foi possível atualizar as informações do personagem. Se esse erro persistir, entre em contato com o desenvolvedor.',
 		unauthorized: 'Não foi possível atualizar as informações do personagem. Tente relogar.',
 		playerDetailsFetchFailed: 'Falha ao carregar os detalhes do jogador.',
+	},
+
+	boot: {
+		title: 'Bem-vindo ao Rollify',
+		selectPreset: 'Selecione uma predefinição',
 	},
 
 	login: {
@@ -219,6 +229,7 @@ export const table: Locale = {
 			currentValue: 'Valor Atual',
 			maxValue: 'Valor Máximo',
 			extraValue: 'Valor Extra',
+			avatarRules: 'Regras do Avatar',
 		},
 		close: 'Fechar',
 		cancel: 'Cancelar',
@@ -235,6 +246,7 @@ export const table: Locale = {
 		addNpcName: 'Digite o nome do NPC.',
 		removeNpc: 'Tem certeza que deseja remover esse NPC?',
 		noAmmo: 'Você não possui munição o suficiente.',
+		diceSelect: 'Selecione o dado a rolar:',
 
 		tradeRequest: {
 			offeredYou: 'te ofereceu',
@@ -250,5 +262,43 @@ export const table: Locale = {
 		noItemsFound: 'Nenhum item encontrado.',
 
 		noPlayersFound: 'Nenhum jogador encontrado.',
+	},
+
+	settings: {
+		general: {
+			adminKey: 'Chave do Mestre',
+			adminKeyDescription: 'A chave do mestre é usada para criar uma nova conta de mestre.',
+		},
+		dice: {
+			addResolver: 'Adicionar Resolver',
+			baseDice: 'Dados Base',
+			baseDiceDescription: 'Dados base para rolar.',
+			enableCharacteristicModifiers: 'Habilitar Modificadores de Característica',
+			enableResolvers: 'Habilitar Resolvers',
+			enableSkillModifiers: 'Habilitar Modificadores de Perícia',
+			resolver: {
+				when: 'Quando',
+				then: 'Então',
+			},
+			resolverRules: 'Regras do Resolver',
+		},
+		portrait: {
+			attributeFontItalic: 'Atributo em Itálico',
+			attributeFontSize: 'Tamanho do Atributo',
+			currentFont: 'Fonte Atual',
+			customFont: 'Fonte Personalizada',
+			diceDescriptionFontItalic: 'Descrição do Dado em Itálico',
+			diceDescriptionFontSize: 'Tamanho da Descrição do Dado',
+			diceEnterTimeout: 'Tempo para entrar no Dice',
+			diceExitTimeout: 'Tempo para sair do Dice',
+			diceResultFontItalic: 'Resultado do Dado em Itálico',
+			diceResultFontSize: 'Tamanho do Resultado do Dado',
+			diceScreenTime: 'Tempo de Exibição do Dice',
+			nameFontItalic: 'Nome em Itálico',
+			nameFontSize: 'Tamanho do Nome',
+			transitions: 'Transições',
+			typography: 'Tipografia',
+			uploadFont: 'Carregar Fonte',
+		},
 	},
 };

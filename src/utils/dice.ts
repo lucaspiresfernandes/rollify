@@ -1,3 +1,6 @@
+import type { RosettaExtended } from 'next-rosetta';
+import type { Locale } from '../i18n';
+
 export type RelationalOperator =
 	| 'equals'
 	| 'notEquals'
@@ -56,15 +59,14 @@ export type DiceResponse = {
 	description?: string;
 };
 
-export function resolveDices(dices: string) {
+export function resolveDices(dices: string, t: RosettaExtended<Locale>['t']) {
 	let formattedDiceString = dices.replace(/\s/g, '').toUpperCase();
 
 	const options = formattedDiceString.split('|');
 
 	if (options.length > 1) {
 		const selected = prompt(
-			'TODO: Escolha dentre as seguintes opções de rolagem:\n' +
-				options.map((opt, i) => `${i + 1}: ${opt}`).join('\n')
+			t('prompt.diceSelect') + '\n' + options.map((opt, i) => `${i + 1}: ${opt}`).join('\n')
 		);
 
 		if (!selected) return;

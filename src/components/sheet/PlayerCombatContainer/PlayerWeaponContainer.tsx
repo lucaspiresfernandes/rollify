@@ -61,7 +61,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 							key={weapon.id}
 							{...weapon}
 							onDelete={() => {
-								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteWeapon(weapon.id);
+								if (confirm(t('prompt.delete'))) props.onDeleteWeapon(weapon.id);
 							}}
 							onTrade={() => props.onTrade('weapon', weapon.id)}
 						/>
@@ -89,7 +89,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	const handleDiceClick = () => {
 		if (props.ammo && !currentAmmo) return alert(t('prompt.noAmmo'));
 
-		const aux = resolveDices(props.damage);
+		const aux = resolveDices(props.damage, t);
 
 		if (!aux) return;
 

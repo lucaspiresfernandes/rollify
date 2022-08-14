@@ -94,10 +94,20 @@ export interface Locale {
 			password_mismatch: string;
 			invalid_email: string;
 		};
+		boot: {
+			title: string;
+			helper: string;
+		};
 		unauthorized: string;
 		invalidBody: string;
+		updateFailed: string;
 		playerDetailsFetchFailed: string;
 	};
+
+	boot: {
+		title: string;
+		selectPreset: string;
+	}
 
 	login: {
 		title: string;
@@ -206,6 +216,7 @@ export interface Locale {
 			avatarEditor: string;
 		};
 		label: {
+			avatarRules: string;
 			numberOfDices: string;
 			portraitDescription: string;
 			diceColor: string;
@@ -229,6 +240,7 @@ export interface Locale {
 		addNpcName: string;
 		removeNpc: string;
 		noAmmo: string;
+		diceSelect: string;
 
 		tradeRequest: {
 			offeredYou: string;
@@ -244,5 +256,43 @@ export interface Locale {
 		noItemsFound: string;
 
 		noPlayersFound: string;
+	};
+
+	settings: {
+		general: {
+			adminKey: string;
+			adminKeyDescription: string;
+		};
+		dice: {
+			baseDice: string;
+			baseDiceDescription: string;
+			enableResolvers: string;
+			addResolver: string;
+			resolver: {
+				when: string;
+				then: string;
+			};
+			resolverRules: string;
+			enableCharacteristicModifiers: string;
+			enableSkillModifiers: string;
+		};
+		portrait: {
+			customFont: string;
+			currentFont: string;
+			uploadFont: string;
+			typography: string;
+			diceResultFontSize: string;
+			diceResultFontItalic: string;
+			diceDescriptionFontSize: string;
+			diceDescriptionFontItalic: string;
+			nameFontSize: string;
+			nameFontItalic: string;
+			attributeFontSize: string;
+			attributeFontItalic: string;
+			transitions: string;
+			diceEnterTimeout: string;
+			diceScreenTime: string;
+			diceExitTimeout: string;
+		};
 	};
 }

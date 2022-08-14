@@ -59,8 +59,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure')
-					return log({ severity: 'error', text: 'TODO: Could not update setting.' });
-				log({ severity: 'success', text: 'TODO: Settings updated.' });
+					return log({ severity: 'error', text: t('error.updateFailed') });
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -70,13 +69,13 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 
 	return (
 		<SettingsContainer loading={loading} onApply={onApplyChanges} gap={3}>
-			<Typography variant='h5'>TODO: Custom Font</Typography>
+			<Typography variant='h5'>{t('settings.portrait.customFont')}</Typography>
 			<Box textAlign='center'>
 				<Typography variant='body2' mb={1}>
-					TODO: Current Font: {form.customFont?.name || t('none')}
+					{t('settings.portrait.currentFont')} {form.customFont?.name || t('none')}
 				</Typography>
 				<Button variant='contained' component='label'>
-					Upload File
+					{t('settings.portrait.uploadFont')}
 					<input
 						type='file'
 						id='portraitCustomFont'
@@ -93,10 +92,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 				</Button>
 			</Box>
 			<Divider flexItem light />
-			<Typography variant='h5'>TODO: Typography</Typography>
+			<Typography variant='h5'>{t('settings.portrait.typography')}</Typography>
 			<div>
 				<TextField
-					label='TODO: Dice Result Font Size'
+					label={t('settings.portrait.diceResultFontSize')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
 					sx={{ mr: 3 }}
@@ -119,7 +118,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<FormControlLabel
-					label='TODO: Dice Result Font Italic'
+					label={t('settings.portrait.diceResultFontItalic')}
 					control={
 						<Checkbox
 							defaultChecked={form.typography.dice.result.italic}
@@ -146,7 +145,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Dice Description Font Size'
+					label={t('settings.portrait.diceDescriptionFontSize')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
 					sx={{ mr: 3 }}
@@ -169,7 +168,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<FormControlLabel
-					label='TODO: Dice Description Font Italic'
+					label={t('settings.portrait.diceDescriptionFontItalic')}
 					control={
 						<Checkbox
 							defaultChecked={form.typography.dice.description.italic}
@@ -196,7 +195,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Attribute Font Size'
+					label={t('settings.portrait.attributeFontSize')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
 					sx={{ mr: 3 }}
@@ -216,7 +215,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<FormControlLabel
-					label='TODO: Attribute Font Italic'
+					label={t('settings.portrait.attributeFontItalic')}
 					control={
 						<Checkbox
 							defaultChecked={form.typography.attribute.italic}
@@ -240,7 +239,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 			</div>
 			<div>
 				<TextField
-					label='TODO: Name Font Size'
+					label={t('settings.portrait.nameFontSize')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>px</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,3}' }}
 					sx={{ mr: 3 }}
@@ -260,7 +259,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<FormControlLabel
-					label='TODO: Name Font Italic'
+					label={t('settings.portrait.nameFontItalic')}
 					control={
 						<Checkbox
 							defaultChecked={form.typography.name.italic}
@@ -283,10 +282,10 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 				/>
 			</div>
 			<Divider flexItem light />
-			<Typography variant='h5'>TODO: Transitions</Typography>
+			<Typography variant='h5'>{t('settings.portrait.transitions')}</Typography>
 			<Box display='flex' flexDirection='row' gap={3}>
 				<TextField
-					label='TODO: Dice Enter Timeout'
+					label={t('settings.portrait.diceEnterTimeout')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.enterTimeout}
@@ -305,7 +304,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<TextField
-					label='TODO: Dice Screen Time'
+					label={t('settings.portrait.diceScreenTime')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.screenTimeout}
@@ -324,7 +323,7 @@ const PortraitSettings: React.FC<PortraitSettingsProps> = (props) => {
 					}}
 				/>
 				<TextField
-					label='TODO: Dice Exit Timeout'
+					label={t('settings.portrait.diceExitTimeout')}
 					InputProps={{ endAdornment: <InputAdornment position='end'>ms</InputAdornment> }}
 					inputProps={{ inputMode: 'numeric', pattern: '[0-9]{0,4}' }}
 					value={form.transitions.dice.exitTimeout}

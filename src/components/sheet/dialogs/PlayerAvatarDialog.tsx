@@ -113,11 +113,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 			<DialogTitle>{t('modal.title.avatarEditor')}</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
-					TODO: É recomendado que as imagens estejam no tamanho de{' '}
-					<b>
-						{AVATAR_SIZE[0]}x{AVATAR_SIZE[1]}
-					</b>{' '}
-					(ou no aspecto de 7:10) e em formato <b>PNG</b>.
+					{t('modal.label.avatarRules', { width: AVATAR_SIZE[0], height: AVATAR_SIZE[1] })}
 				</DialogContentText>
 				<Grid
 					container

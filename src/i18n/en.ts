@@ -98,9 +98,19 @@ export const table: Locale = {
 			password_mismatch: 'Passwords do not match',
 			invalid_email: 'Invalid email',
 		},
+		boot: {
+			title: 'Error',
+			helper: 'Please contact the administrator.',
+		},
+		updateFailed: 'Update failed. Please try again later.',
 		invalidBody: 'Unable to update character information. Try again later.',
 		unauthorized: 'Unable to update character information. Try to relogin.',
 		playerDetailsFetchFailed: 'Failed to fetch player details.',
+	},
+
+	boot: {
+		title: 'Welcome to Rollify!',
+		selectPreset: 'Select a preset',
 	},
 
 	login: {
@@ -218,6 +228,7 @@ export const table: Locale = {
 			currentValue: 'Current Value',
 			maxValue: 'Max Value',
 			extraValue: 'Extra Value',
+			avatarRules: 'Avatar Rules',
 		},
 		close: 'Close',
 		cancel: 'Cancel',
@@ -233,6 +244,7 @@ export const table: Locale = {
 		addNpcName: 'Enter the NPC name:',
 		removeNpc: 'Are you sure you want to remove this NPC?',
 		noAmmo: 'You do not have enough ammo.',
+		diceSelect: 'Select dice to roll:',
 
 		tradeRequest: {
 			offeredYou: 'offered you',
@@ -248,5 +260,43 @@ export const table: Locale = {
 		noItemsFound: 'No items found.',
 
 		noPlayersFound: 'No players found.',
+	},
+
+	settings: {
+		general: {
+			adminKey: 'GM key',
+			adminKeyDescription: 'The GM key is used to create a new admin account.',
+		},
+		dice: {
+			addResolver: 'Add resolver',
+			baseDice: 'Base dice',
+			baseDiceDescription: 'The base dice are used to roll the dice.',
+			enableCharacteristicModifiers: 'Enable characteristic modifiers',
+			enableResolvers: 'Enable resolvers',
+			enableSkillModifiers: 'Enable skill modifiers',
+			resolver: {
+				when: 'When',
+				then: 'Then',
+			},
+			resolverRules: 'Resolver Rules',
+		},
+		portrait: {
+			attributeFontItalic: 'Attribute font italic',
+			attributeFontSize: 'Attribute font size',
+			currentFont: 'Current font',
+			customFont: 'Custom font',
+			diceDescriptionFontItalic: 'Dice description font italic',
+			diceDescriptionFontSize: 'Dice description font size',
+			diceEnterTimeout: 'Dice enter timeout',
+			diceExitTimeout: 'Dice exit timeout',
+			diceResultFontItalic: 'Dice result font italic',
+			diceResultFontSize: 'Dice result font size',
+			diceScreenTime: 'Dice screen time',
+			nameFontItalic: 'Name font italic',
+			nameFontSize: 'Name font size',
+			transitions: 'Transitions',
+			typography: 'Typography',
+			uploadFont: 'Upload font',
+		},
 	},
 };

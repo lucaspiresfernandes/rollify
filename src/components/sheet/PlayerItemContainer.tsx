@@ -218,7 +218,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	const onDeleteItem = async (id: number) => {
-		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
+		if (!confirm(t('prompt.delete'))) return;
 		setLoading(true);
 		api
 			.delete<PlayerItemApiResponse>('/sheet/player/item', {

@@ -80,109 +80,6 @@ const DICES = [
 	},
 ] as const;
 
-type ResolverFieldProps = {
-	[T in keyof DiceResultResolver[number]]: DiceResultResolver[number][T];
-} & {
-	id: number;
-	onChange: (resolver: DiceResultResolver[number]) => void;
-	onDelete: () => void;
-};
-
-const ResolverField: React.FC<ResolverFieldProps> = (props) => {
-	const sortable = useSortable({
-		id: props.id,
-	});
-	const { t } = useI18n<Locale>();
-
-	const style: React.CSSProperties = {
-		transform: CSS.Transform.toString(sortable.transform),
-		transition: sortable.transition,
-	};
-
-	return (
-		<>
-			<Box
-				display='flex'
-				flexDirection='row'
-				alignItems='center'
-				gap={1}
-				ref={sortable.setNodeRef}
-				style={style}
-				p={1}>
-				<ReorderIcon
-					{...sortable.attributes}
-					{...sortable.listeners}
-					sx={{
-						':hover': {
-							cursor: 'grab',
-						},
-					}}
-				/>
-				<IconButton onClick={props.onDelete}>
-					<DeleteIcon />
-				</IconButton>
-				TODO: When result is
-				<Select
-					size='small'
-					variant='standard'
-					value={props.operator}
-					onChange={(ev) =>
-						props.onChange({
-							description: props.description,
-							operator: ev.target.value as RelationalOperator,
-							result: props.result,
-						})
-					}>
-					{OPERATIONS.map((op) => (
-						<MenuItem key={op} value={op}>
-							{t(`operation.${op}`)}
-						</MenuItem>
-					))}
-				</Select>
-				<TextField
-					variant='standard'
-					size='small'
-					defaultValue={props.result}
-					onChange={(ev) =>
-						props.onChange({
-							description: props.description,
-							operator: props.operator,
-							result: ev.target.value,
-						})
-					}
-					sx={{ maxWidth: '7em' }}
-					inputProps={{
-						style: {
-							textAlign: 'center',
-						},
-					}}
-				/>
-				TODO: , then description is{' '}
-				<TextField
-					variant='standard'
-					size='small'
-					defaultValue={props.description}
-					onChange={(ev) =>
-						props.onChange({
-							result: props.result,
-							operator: props.operator,
-							description: ev.target.value,
-						})
-					}
-					sx={{ maxWidth: '7em' }}
-					inputProps={{
-						style: {
-							textAlign: 'center',
-						},
-					}}
-				/>
-				.
-			</Box>
-			<Divider />
-		</>
-	);
-};
-
 type DiceSettingsProps = {
 	diceConfig: DiceConfig;
 };
@@ -238,8 +135,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure')
-					return log({ severity: 'error', text: 'TODO: Could not update setting.' });
-				log({ severity: 'success', text: 'TODO: Settings updated.' });
+					return log({ severity: 'error', text: t('error.updateFailed') });
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -250,10 +146,10 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 	return (
 		<SettingsContainer loading={loading} onApply={onApplyChanges} gap={3}>
 			<FormControl>
-				<InputLabel id='baseDiceLabel'>TODO: Base Dice</InputLabel>
+				<InputLabel id='baseDiceLabel'>{t('settings.dice.baseDice')}</InputLabel>
 				<Select
 					labelId='baseDiceLabel'
-					label='TODO: Base Dice'
+					label={t('settings.dice.baseDice')}
 					defaultValue={form.baseDice}
 					onChange={(ev) =>
 						startTransition(() => setForm((f) => ({ ...f, baseDice: ev.target.value as number })))
@@ -264,14 +160,12 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 						</MenuItem>
 					))}
 				</Select>
-				<FormHelperText>
-					TODO: The base dice is the dice rolled to all characteristics, skills and attributes.
-				</FormHelperText>
+				<FormHelperText>{t('settings.dice.baseDiceDescription')}</FormHelperText>
 			</FormControl>
 			<Divider flexItem light />
 
 			<FormControlLabel
-				label='TODO: Activate resolvers'
+				label={t('settings.dice.enableResolvers')}
 				control={
 					<Checkbox
 						defaultChecked={Boolean(form.enableResolver)}
@@ -285,12 +179,9 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 			{form.enableResolver && (
 				<>
 					<Button variant='contained' onClick={addResolver} sx={{ mt: -2, alignSelf: 'end' }}>
-						TODO: Add New Resolver
+						{t('settings.dice.addResolver')}
 					</Button>
-					<Typography variant='body2'>
-						TODO: You can use the syntax &quot;{'{result}'}&quot; to refer to the result of the dice
-						roll.
-					</Typography>
+					<Typography variant='body2'>{t('settings.dice.resolverRules')}</Typography>
 					<div>
 						<DndContext
 							sensors={sensors}
@@ -335,7 +226,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 			<div>
 				<div>
 					<FormControlLabel
-						label='TODO: Activate characteristic modifiers'
+						label={t('settings.dice.enableCharacteristicModifiers')}
 						control={
 							<Checkbox
 								defaultChecked={form.characteristic.enableModifiers}
@@ -353,7 +244,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 				</div>
 				<div>
 					<FormControlLabel
-						label='TODO: Activate skill modifiers'
+						label={t('settings.dice.enableSkillModifiers')}
 						control={
 							<Checkbox
 								defaultChecked={form.skill.enableModifiers}
@@ -368,6 +259,109 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 				</div>
 			</div>
 		</SettingsContainer>
+	);
+};
+
+type ResolverFieldProps = {
+	[T in keyof DiceResultResolver[number]]: DiceResultResolver[number][T];
+} & {
+	id: number;
+	onChange: (resolver: DiceResultResolver[number]) => void;
+	onDelete: () => void;
+};
+
+const ResolverField: React.FC<ResolverFieldProps> = (props) => {
+	const sortable = useSortable({
+		id: props.id,
+	});
+	const { t } = useI18n<Locale>();
+
+	const style: React.CSSProperties = {
+		transform: CSS.Transform.toString(sortable.transform),
+		transition: sortable.transition,
+	};
+
+	return (
+		<>
+			<Box
+				display='flex'
+				flexDirection='row'
+				alignItems='center'
+				gap={1}
+				ref={sortable.setNodeRef}
+				style={style}
+				p={1}>
+				<ReorderIcon
+					{...sortable.attributes}
+					{...sortable.listeners}
+					sx={{
+						':hover': {
+							cursor: 'grab',
+						},
+					}}
+				/>
+				<IconButton onClick={props.onDelete}>
+					<DeleteIcon />
+				</IconButton>
+				{t('settings.dice.resolver.when')}
+				<Select
+					size='small'
+					variant='standard'
+					value={props.operator}
+					onChange={(ev) =>
+						props.onChange({
+							description: props.description,
+							operator: ev.target.value as RelationalOperator,
+							result: props.result,
+						})
+					}>
+					{OPERATIONS.map((op) => (
+						<MenuItem key={op} value={op}>
+							{t(`operation.${op}`)}
+						</MenuItem>
+					))}
+				</Select>
+				<TextField
+					variant='standard'
+					size='small'
+					defaultValue={props.result}
+					onChange={(ev) =>
+						props.onChange({
+							description: props.description,
+							operator: props.operator,
+							result: ev.target.value,
+						})
+					}
+					sx={{ maxWidth: '7em' }}
+					inputProps={{
+						style: {
+							textAlign: 'center',
+						},
+					}}
+				/>
+				{t('settings.dice.resolver.then')}
+				<TextField
+					variant='standard'
+					size='small'
+					defaultValue={props.description}
+					onChange={(ev) =>
+						props.onChange({
+							result: props.result,
+							operator: props.operator,
+							description: ev.target.value,
+						})
+					}
+					sx={{ maxWidth: '7em' }}
+					inputProps={{
+						style: {
+							textAlign: 'center',
+						},
+					}}
+				/>
+				.
+			</Box>
+			<Divider />
+		</>
 	);
 };
 

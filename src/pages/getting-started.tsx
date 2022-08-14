@@ -10,15 +10,15 @@ import { I18nProps, useI18n } from 'next-rosetta';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import LoadingScreen from '../../components/LoadingScreen';
-import useBoot from '../../hooks/useBoot';
-import useSession from '../../hooks/useSession';
-import type { Locale } from '../../i18n';
-import { api } from '../../utils/createApiClient';
-import type { Presets } from '../../utils/presets';
-import preset_en from '../../utils/presets/en.json';
-import preset_pt from '../../utils/presets/pt-BR.json';
-import type { BootApiResponse } from '../api/boot';
+import LoadingScreen from '../components/LoadingScreen';
+import useBoot from '../hooks/useBoot';
+import useSession from '../hooks/useSession';
+import type { Locale } from '../i18n';
+import { api } from '../utils/createApiClient';
+import type { Presets } from '../utils/presets';
+import preset_en from '../utils/presets/en.json';
+import preset_pt from '../utils/presets/pt-BR.json';
+import type { BootApiResponse } from './api/boot';
 
 type Preset = Presets[number];
 const presetsMap = new Map<string, Presets>([
@@ -63,6 +63,10 @@ const GettingStarted: React.FC = () => {
 	);
 	const { t } = useI18n<Locale>();
 
+	useEffect(() => {
+		if (router.query.error) setError(router.query.reason as string);
+	}, [router.query.error, router.query.reason]);
+
 	if (booting) return <LoadingScreen />;
 
 	const boot = () => {
@@ -98,30 +102,22 @@ const GettingStarted: React.FC = () => {
 			{error ? (
 				<>
 					<Typography variant='h3' component='h1' gutterBottom color='Highlight'>
-						TODO: Ocorreu um erro ao inicializar o Rollify.
+						{t('error.boot.title')}
 					</Typography>
 					<Typography variant='h4' component='h2' gutterBottom>
 						{error}
 					</Typography>
 					<Typography variant='body1' gutterBottom>
-						TODO: Confira se o banco de dados está corretamente vinculado na Heroku e faça o
-						redeploy. Caso esse erro persista, contate o(a) administrador(a) do Rollify no{' '}
-						<a
-							href='https://github.com/alyssapiresfernandescefet/openrpg/issues'
-							target='_blank'
-							rel='noreferrer'>
-							GitHub
-						</a>
-						.
+						{t('error.boot.helper')}
 					</Typography>
 				</>
 			) : (
 				<>
 					<Typography variant='h3' component='h1' gutterBottom>
-						TODO: Seja bem-vindo ao Rollify!
+						{'boot.title'}
 					</Typography>
 					<Typography variant='h5' component='h2' gutterBottom>
-						TODO: Para começar, selecione uma predefinição de ficha abaixo:
+						{'boot.selectPreset'}
 					</Typography>
 					<FormControl fullWidth sx={{ mb: 3 }}>
 						<InputLabel id='presetSelectLabel'>{t('preset')}</InputLabel>

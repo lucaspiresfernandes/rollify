@@ -33,8 +33,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 			})
 			.then((res) => {
 				if (res.data.status === 'failure')
-					return log({ severity: 'error', text: 'TODO: Could not update setting.' });
-				log({ severity: 'success', text: 'TODO: Settings updated.' });
+					return log({ severity: 'error', text: t('error.updateFailed') });
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -46,8 +45,8 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = (props) => {
 		<SettingsContainer loading={loading} onApply={onApplyChanges} gap={3}>
 			<TextField
 				type={form.adminKeyVisible ? 'text' : 'password'}
-				label='TODO: Admin Key'
-				helperText='TODO: The admin key is used to create a new admin account.'
+				label={t('settings.general.adminKey')}
+				helperText={t('settings.general.adminKeyDescription')}
 				defaultValue={form.adminKey}
 				onChange={(ev) =>
 					startTransition(() => setForm((f) => ({ ...f, adminKey: ev.target.value })))
