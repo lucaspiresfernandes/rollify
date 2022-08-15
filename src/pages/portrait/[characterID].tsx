@@ -43,7 +43,6 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 		} else document.body.style.fontFamily = 'FantaisieArtistique';
 	}, [props.portraitConfig]);
 
-	if (!socket) return null;
 	return (
 		<div className={styles.container}>
 			<CharacterPortrait {...props} socket={socket} />
@@ -51,7 +50,7 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 	);
 };
 
-const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) => {
+const CharacterPortrait: React.FC<PageProps & { socket: SocketIO | null }> = (props) => {
 	const [debug, setDebug] = useState(false);
 	const [rotation, setRotation] = useState(0);
 	const { t } = useI18n<Locale>();
@@ -95,7 +94,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO }> = (props) =>
 };
 
 type PortraitDiceRollContainerProps = PageProps & {
-	socket: SocketIO;
+	socket: SocketIO | null;
 	rotation: number;
 	debug: boolean;
 };

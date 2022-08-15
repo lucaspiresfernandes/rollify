@@ -15,7 +15,7 @@ const bounds = {
 
 type PortraitSideAttributeContainerProps = {
 	playerId: number;
-	socket: SocketIO;
+	socket: SocketIO | null;
 	sideAttribute: {
 		id: number;
 		name: string;
@@ -43,22 +43,21 @@ const PortraitSideAttributeContainer: React.FC<PortraitSideAttributeContainerPro
 	}, [props.playerId]);
 
 	useEffect(() => {
-		props.socket.on(
-			'playerAttributeChange',
-			(playerId, attributeId, value, _, extraValue, show) => {
-				if (playerId !== props.playerId) return;
-				setSideAttribute((attr) => {
-					if (attr === null || attributeId !== attr.id) return attr;
-					return { ...attr, value, extraValue, show };
-				});
-			}
-		);
+		const socket = props.socket;
+		if (!socket) return;
+
+		socket.on('playerAttributeChange', (playerId, attributeId, value, _, extraValue, show) => {
+			if (playerId !== props.playerId) return;
+			setSideAttribute((attr) => {
+				if (attr === null || attributeId !== attr.id) return attr;
+				return { ...attr, value, extraValue, show };
+			});
+		});
 
 		return () => {
-			props.socket.off('playerAttributeChange');
+			socket.off('playerAttributeChange');
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.socket]);
+	}, [props.socket, props.playerId]);
 
 	const attributeStyle = useMemo(
 		() => getShadowStyle(sideAttribute?.color || 'ffffff'),

@@ -21,7 +21,7 @@ const bounds = {
 };
 
 type PortraitEnvironmentalContainerProps = {
-	socket: SocketIO;
+	socket: SocketIO | null;
 	environment: Environment;
 	attributes: PortraitAttributesContainerProps['attributes'];
 	playerName: PortraitNameContainerProps['playerName'];
@@ -35,9 +35,12 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 	const [environment, setEnvironment] = useState(props.environment);
 
 	useEffect(() => {
-		props.socket.on('environmentChange', (newValue) => setEnvironment(newValue));
+		const socket = props.socket;
+		if (!socket) return;
+
+		socket.on('environmentChange', (newValue) => setEnvironment(newValue));
 		return () => {
-			props.socket.off('environmentChange');
+			socket.off('environmentChange');
 		};
 	}, [props.socket]);
 
@@ -66,7 +69,7 @@ const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerPro
 };
 
 type PortraitAttributesContainerProps = {
-	socket: SocketIO;
+	socket: SocketIO | null;
 	environment: Environment;
 	attributes: {
 		id: number;
@@ -100,7 +103,10 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 	}, [props.playerId]);
 
 	useEffect(() => {
-		props.socket.on(
+		const socket = props.socket;
+		if (!socket) return;
+
+		socket.on(
 			'playerAttributeChange',
 			(playerId, attributeId, value, maxValue, extraValue, show) => {
 				if (playerId !== props.playerId) return;
@@ -114,10 +120,9 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 		);
 
 		return () => {
-			props.socket.off('playerAttributeChange');
+			socket.off('playerAttributeChange');
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.socket]);
+	}, [props.socket, props.playerId]);
 
 	useEffect(() => {
 		if (attributesRef.current)
@@ -168,7 +173,7 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 };
 
 type PortraitNameContainerProps = {
-	socket: SocketIO;
+	socket: SocketIO | null;
 	environment: Environment;
 	playerName: { name: string; show: boolean };
 	playerId: number;
@@ -195,22 +200,24 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 	}, [props.playerId]);
 
 	useEffect(() => {
-		props.socket.on('playerNameChange', (playerId, name) => {
+		const socket = props.socket;
+		if (!socket) return;
+
+		socket.on('playerNameChange', (playerId, name) => {
 			if (playerId !== props.playerId) return;
 			setPlayerName((pn) => ({ ...pn, name }));
 		});
 
-		props.socket.on('playerNameShowChange', (playerId, show) => {
+		socket.on('playerNameShowChange', (playerId, show) => {
 			if (playerId !== props.playerId) return;
 			setPlayerName((pn) => ({ ...pn, show }));
 		});
 
 		return () => {
-			props.socket.off('playerNameChange');
+			socket.off('playerNameChange');
+			socket.off('playerNameShowChange');
 		};
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.socket]);
+	}, [props.socket, props.playerId]);
 
 	useEffect(() => {
 		if (nameRef.current) nameRef.current.style.transform = `rotate(${props.rotation}deg)`;

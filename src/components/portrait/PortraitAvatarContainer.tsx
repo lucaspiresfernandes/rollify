@@ -17,7 +17,7 @@ export type PortraitAttributeStatus = {
 type PortraitAvatarContainerProps = {
 	attributeStatus: PortraitAttributeStatus;
 	playerId: number;
-	socket: SocketIO;
+	socket: SocketIO | null;
 };
 
 const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) => {
@@ -39,18 +39,21 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 				params: { playerID: props.playerId },
 			})
 			.then(({ data }) => {
-				if (data.status === 'failure') return setSrc('/avatar404.png');
+				if (data.status === 'failure') return setSrc('/avatar404.webp');
 				if (data.link === src.split('?')[0]) return setShowAvatar(true);
 				const link = new URL(data.link);
 				link.searchParams.append('v', String(Date.now()));
 				setSrc(link.toString());
 			})
-			.catch(() => setSrc('/avatar404.png'));
+			.catch(() => setSrc('/avatar404.webp'));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [attributeStatus, props.playerId]);
 
 	useEffect(() => {
-		props.socket.on('playerAttributeStatusChange', (playerId, id, value) => {
+		const socket = props.socket;
+		if (!socket) return;
+
+		socket.on('playerAttributeStatusChange', (playerId, id, value) => {
 			if (playerId !== props.playerId) return;
 			setAttributeStatus((status) =>
 				status.map((stat) => {
@@ -61,10 +64,9 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 		});
 
 		return () => {
-			props.socket.off('playerAttributeStatusChange');
+			socket.off('playerAttributeStatusChange');
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.socket]);
+	}, [props.socket, props.playerId]);
 
 	const onImageLoad = () => {
 		setShowAvatar(true);
@@ -74,8 +76,8 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 	const onImageLoadError = () => {
 		if (src === '#') return;
 		setShowAvatar(true);
-		setSrc('/avatar404.png');
-		setTimeout(() => setOldSrc('/avatar404.png'), AVATAR_TRANSITION_DURATION);
+		setSrc('/avatar404.webp');
+		setTimeout(() => setOldSrc('/avatar404.webp'), AVATAR_TRANSITION_DURATION);
 	};
 
 	return (

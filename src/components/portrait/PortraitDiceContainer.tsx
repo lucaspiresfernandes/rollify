@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Fade from '@mui/material/Fade';
 import Zoom from '@mui/material/Zoom';
 import type { SocketIO } from '../../hooks/useSocket';
@@ -8,7 +8,7 @@ import type { DiceResponse } from '../../utils/dice';
 import { DEFAULT_PORTRAIT_CONFIG, getShadowStyle, PortraitConfig } from '../../utils/portrait';
 
 type PortraitDiceContainerProps = {
-	socket: SocketIO;
+	socket: SocketIO | null;
 	playerId: number;
 	showDice: boolean;
 	onShowDice: () => void;
@@ -34,15 +34,20 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 	const diceVideo = useRef<HTMLVideoElement>(null);
 
-	const exitTimeout =
-		props.diceTransition?.exitTimeout || DEFAULT_PORTRAIT_CONFIG.transitions.dice.exitTimeout;
+	const exitTimeout = useMemo(
+		() => props.diceTransition?.exitTimeout || DEFAULT_PORTRAIT_CONFIG.transitions.dice.exitTimeout,
+		[props.diceTransition]
+	);
 
 	useEffect(() => {
-		if (!props.showDiceRoll) return;
-
 		const style = getShadowStyle(props.color);
 		if (diceResultRef.current) diceResultRef.current.style.textShadow = style.textShadow;
 		if (diceDescriptionRef.current) diceDescriptionRef.current.style.textShadow = style.textShadow;
+	}, [props.color]);
+
+	useEffect(() => {
+		const socket = props.socket;
+		if (!socket || !props.showDiceRoll) return;
 
 		const showDiceRoll = () => {
 			if (showDiceRef.current) return;
@@ -97,8 +102,8 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 			else diceData.current = undefined;
 		};
 
-		props.socket.on('diceRoll', showDiceRoll);
-		props.socket.on('diceResult', (playerId, results, dices) => {
+		socket.on('diceRoll', showDiceRoll);
+		socket.on('diceResult', (playerId, results, dices) => {
 			if (playerId !== props.playerId) return;
 
 			if (results.length === 1) return onDiceResult(results[0]);
@@ -117,12 +122,12 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 		});
 
 		return () => {
-			props.socket.off('diceRoll');
-			props.socket.off('diceResult');
+			socket.off('diceRoll');
+			socket.off('diceResult');
 		};
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [props.socket, props.showDiceRoll]);
 
 	return (
 		<div className={styles.diceContainer}>

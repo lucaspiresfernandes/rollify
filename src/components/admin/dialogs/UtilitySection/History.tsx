@@ -28,6 +28,10 @@ const History: React.FC<HistoryProps> = (props) => {
 
 	useEffect(() => {
 		setValues(JSON.parse(localStorage.getItem('admin_dice_history') || '[]') as Dice[]);
+	}, []);
+
+	useEffect(() => {
+		if (!socket) return;
 
 		socket.on('diceResult', (id, diceResponse, diceRequest) => {
 			let dices: string[];
@@ -72,7 +76,7 @@ const History: React.FC<HistoryProps> = (props) => {
 			socket.off('diceResult');
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [socket]);
 
 	useEffect(() => {
 		if (wrapper.current) wrapper.current.scrollTo({ top: 0, behavior: 'auto' });

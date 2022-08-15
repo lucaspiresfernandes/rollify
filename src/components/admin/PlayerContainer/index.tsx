@@ -48,6 +48,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
+		if (!socket) return;
+
 		socket.on('playerNameChange', (id, name) => {
 			setPlayers((p) =>
 				p.map((player) => {
@@ -139,6 +141,8 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
+		if (!socket) return;
+
 		socket.on('playerInfoChange', (id, infoId, value) => {
 			if (id !== props.id) return;
 			setDetails((details) => {
@@ -471,9 +475,9 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 					setSrc(data.link);
 					return;
 				}
-				setSrc('/avatar404.png');
+				setSrc('/avatar404.webp');
 			})
-			.catch(() => setSrc('/avatar404.png'));
+			.catch(() => setSrc('/avatar404.webp'));
 	}, [props]);
 
 	return (
@@ -489,7 +493,7 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 					alt='Character Avatar'
 					style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
 					onError={() => {
-						if (src !== '#') setSrc('/avatar404.png');
+						if (src !== '#') setSrc('/avatar404.webp');
 					}}
 				/>
 			</Avatar>

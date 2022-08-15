@@ -182,6 +182,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	}, [props.senderTrade, props.receiverTrade]);
 
 	useEffect(() => {
+		if (!socket) return;
+
 		socket.on('playerTradeRequest', openTradeRequest);
 
 		socket.on('playerTradeResponse', (trade, accept, _tradeObject) => {
@@ -379,7 +381,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	};
 
 	const onTradeCancel = () => {
-		if (!trade || !confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!trade || !confirm(t('prompt.delete', { name: 'item' }))) return;
 
 		api
 			.delete<TradeWeaponApiResponse | TradeArmorApiResponse>(`/sheet/player/trade/${trade.type}`, {

@@ -8,7 +8,6 @@ import Head from 'next/head';
 import UtilitySection from '../../components/admin/dialogs/UtilitySection';
 import EnvironmentField from '../../components/admin/EnvironmentField';
 import PlayerContainer from '../../components/admin/PlayerContainer';
-import LoadingScreen from '../../components/LoadingScreen';
 import PlayerNotesContainer from '../../components/sheet/PlayerNotesContainer';
 import { SocketContext } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
@@ -35,8 +34,6 @@ const AdminMainPage: NextPage<AdminPanelPageProps> = (props) => {
 const AdminMain: React.FC<AdminPanelPageProps> = (props) => {
 	const { t } = useI18n<Locale>();
 	const socket = useSocket('admin');
-
-	if (!socket) return <LoadingScreen />;
 
 	return (
 		<Container sx={{ my: 2 }}>

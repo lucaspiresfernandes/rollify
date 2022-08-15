@@ -1,12 +1,10 @@
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import dynamic from 'next/dynamic';
 import Router from 'next/router';
-import { memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	AddDataContextType,
 	AddDataDialogContext,
@@ -22,37 +20,21 @@ import type { Locale } from '../../i18n';
 import type { SheetFirstPageProps } from '../../pages/sheet/player/1';
 import createApiClient from '../../utils/createApiClient';
 import DiceRollDialog, { DiceRoll } from '../DiceRollDialog';
-import LoadingScreen from '../LoadingScreen';
 import AddDataDialog, { AddDataDialogProps } from './dialogs/AddDataDialog';
 import PlayerTradeDialog, { PlayerTradeDialogProps } from './dialogs/PlayerTradeDialog';
 import PlayerAttributeContainer from './PlayerAttributeContainer';
+import PlayerCharacteristicContainer from './PlayerCharacteristicContainer';
 import PlayerInfoContainer from './PlayerInfoContainer';
-
-const DynamicPlayerLoadContainer = dynamic(() => import('./PlayerLoadContainer'), {
-	suspense: true,
-});
-
-const DynamicPlayerSpellContainer = dynamic(() => import('./PlayerSpellContainer'), {
-	suspense: true,
-});
-
-const DynamicPlayerCharacteristicContainer = dynamic(
-	() => import('./PlayerCharacteristicContainer'),
-	{
-		suspense: true,
-	}
-);
-
-const DynamicPlayerSkillContainer = dynamic(() => import('./PlayerSkillContainer'), {
-	suspense: true,
-});
+import PlayerLoadContainer from './PlayerLoadContainer';
+import PlayerSkillContainer from './PlayerSkillContainer';
+import PlayerSpellContainer from './PlayerSpellContainer';
 
 const MemoPlayerInfoContainer = memo(PlayerInfoContainer, () => true);
 const MemoPlayerAttributeContainer = memo(PlayerAttributeContainer, () => true);
-const MemoPlayerCharacteristicContainer = memo(DynamicPlayerCharacteristicContainer, () => true);
-const MemoPlayerSkillContainer = memo(DynamicPlayerSkillContainer, () => true);
-const MemoPlayerSpellContainer = memo(DynamicPlayerSpellContainer, () => true);
-const MemoPlayerLoadContainer = memo(DynamicPlayerLoadContainer, () => true);
+const MemoPlayerCharacteristicContainer = memo(PlayerCharacteristicContainer, () => true);
+const MemoPlayerSkillContainer = memo(PlayerSkillContainer, () => true);
+const MemoPlayerSpellContainer = memo(PlayerSpellContainer, () => true);
+const MemoPlayerLoadContainer = memo(PlayerLoadContainer, () => true);
 
 const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
 	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
@@ -134,8 +116,6 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 		[]
 	);
 
-	if (!socket) return <LoadingScreen />;
-
 	return (
 		<Container sx={{ mt: 2 }}>
 			<Box textAlign='center'>
@@ -185,93 +165,57 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 						</Grid>
 
 						<Grid item xs={12} sm={6}>
-							<Suspense fallback={<Skeleton height={300} />}>
-								<MemoPlayerCharacteristicContainer
-									title={t('sheet.playerCharacteristicTitle')}
-									playerCharacteristics={props.player.PlayerCharacteristic.map((char) => ({
-										...char,
-										...char.Characteristic,
-									}))}
-									enableModifiers={props.diceConfig.characteristic.enableModifiers}
-								/>
-							</Suspense>
+							<MemoPlayerCharacteristicContainer
+								title={t('sheet.playerCharacteristicTitle')}
+								playerCharacteristics={props.player.PlayerCharacteristic.map((char) => ({
+									...char,
+									...char.Characteristic,
+								}))}
+								enableModifiers={props.diceConfig.characteristic.enableModifiers}
+							/>
 						</Grid>
 
-						<Suspense
-							fallback={
-								<>
-									<Grid item xs={12} sm={6}>
-										<Skeleton height={300} />
-									</Grid>
-									<Grid item xs={12}>
-										<Skeleton height={300} />
-									</Grid>
-								</>
-							}>
-							<MemoPlayerSkillContainer
-								title={t('sheet.playerSkillTitle')}
-								playerSkills={props.player.PlayerSkill.map((skill) => ({
-									...skill,
-									...skill.Skill,
-									specializationName: skill.Skill.Specialization?.name || null,
-								}))}
-								enableModifiers={props.diceConfig.skill.enableModifiers}
-							/>
-						</Suspense>
+						<MemoPlayerSkillContainer
+							title={t('sheet.playerSkillTitle')}
+							playerSkills={props.player.PlayerSkill.map((skill) => ({
+								...skill,
+								...skill.Skill,
+								specializationName: skill.Skill.Specialization?.name || null,
+							}))}
+							enableModifiers={props.diceConfig.skill.enableModifiers}
+						/>
 
 						<AddDataDialogContext.Provider value={addDataProvider}>
 							<TradeDialogContext.Provider value={tradeProvider}>
 								<SocketContext.Provider value={socket}>
-									<Suspense
-										fallback={
-											<>
-												<Grid item xs={12}>
-													<Skeleton height={300} />
-												</Grid>
-												<Grid item xs={12}>
-													<Skeleton height={300} />
-												</Grid>
-												<Grid item xs={12}>
-													<Skeleton height={300} />
-												</Grid>
-											</>
-										}>
-										<MemoPlayerLoadContainer
-											playerMaxLoad={props.player.maxLoad}
-											playerWeapons={props.player.PlayerWeapon.map((weap) => ({
-												...weap,
-												...weap.Weapon,
-											}))}
-											playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
-											playerCurrency={props.player.PlayerCurrency.map((cur) => ({
-												id: cur.Currency.id,
-												name: cur.Currency.name,
-												value: cur.value,
-											}))}
-											playerItems={props.player.PlayerItem.map((it) => ({
-												...it,
-												...it.Item,
-											}))}
-											senderTrade={props.player.SenderTrade}
-											receiverTrade={props.player.ReceiverTrade}
-										/>
-									</Suspense>
+									<MemoPlayerLoadContainer
+										playerMaxLoad={props.player.maxLoad}
+										playerWeapons={props.player.PlayerWeapon.map((weap) => ({
+											...weap,
+											...weap.Weapon,
+										}))}
+										playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
+										playerCurrency={props.player.PlayerCurrency.map((cur) => ({
+											id: cur.Currency.id,
+											name: cur.Currency.name,
+											value: cur.value,
+										}))}
+										playerItems={props.player.PlayerItem.map((it) => ({
+											...it,
+											...it.Item,
+										}))}
+										senderTrade={props.player.SenderTrade}
+										receiverTrade={props.player.ReceiverTrade}
+									/>
 								</SocketContext.Provider>
 							</TradeDialogContext.Provider>
 
 							<Grid item xs={12}>
-								<Suspense
-									fallback={
-										<Grid item xs={12}>
-											<Skeleton height={300} />
-										</Grid>
-									}>
-									<MemoPlayerSpellContainer
-										title={t('sheet.playerSpellTitle')}
-										playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
-										playerMaxSlots={props.player.spellSlots}
-									/>
-								</Suspense>
+								<MemoPlayerSpellContainer
+									title={t('sheet.playerSpellTitle')}
+									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
+									playerMaxSlots={props.player.spellSlots}
+								/>
 							</Grid>
 						</AddDataDialogContext.Provider>
 					</DiceRollContext.Provider>

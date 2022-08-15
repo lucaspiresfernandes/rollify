@@ -42,6 +42,8 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
+		if (!socket) return;
+
 		socket.on('playerNameChange', (playerId, value) => {
 			setComplexNpcs((complexNpcs) =>
 				complexNpcs.map((npc) => {

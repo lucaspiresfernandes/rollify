@@ -10,7 +10,6 @@ import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import type { SheetSecondPageProps } from '../../pages/sheet/player/2';
 import createApiClient from '../../utils/createApiClient';
-import LoadingScreen from '../LoadingScreen';
 import PlayerExtraInfoContainer from './PlayerExtraInfoContainer';
 import PlayerNotesContainer from './PlayerNotesContainer';
 
@@ -39,8 +38,6 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc?: boolean }> = (
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
-
-	if (!socket) return <LoadingScreen />;
 
 	return (
 		<SocketContext.Provider value={socket}>

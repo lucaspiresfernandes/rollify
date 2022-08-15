@@ -147,6 +147,8 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	}, [props.senderTrade, props.receiverTrade]);
 
 	useEffect(() => {
+		if (!socket) return;
+
 		socket.on('playerTradeRequest', async (trade) => {
 			if (trade.type !== 'item') return;
 			openTradeRequest(trade);

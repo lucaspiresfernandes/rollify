@@ -36,7 +36,7 @@ export type DiceRollEvent = (
 ) => void;
 
 export const LoggerContext = createContext<LoggerContextType>(() => {});
-export const SocketContext = createContext<SocketIO>(undefined as any);
+export const SocketContext = createContext<SocketIO | null>(undefined as any);
 export const ApiContext = createContext<AxiosInstance>(api);
 export const AddDataDialogContext = createContext<AddDataContextType>({
 	openDialog: () => {},
