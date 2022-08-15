@@ -77,7 +77,7 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 	};
 
 	const onDeleteSpell = async (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<PlayerSpellApiResponse>('/sheet/player/spell', {

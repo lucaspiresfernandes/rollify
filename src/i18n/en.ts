@@ -53,7 +53,7 @@ export const table: Locale = {
 	name: 'Name',
 
 	placeholder: {
-		noFavouriteSkills: 'Your favourite skills will be displayed here.',
+		noFavouriteSkills: 'Your favourite skills will appear here.',
 	},
 
 	theme: {
@@ -136,7 +136,7 @@ export const table: Locale = {
 		playerTitle: 'Character Sheet',
 		npcTitle: 'NPC Sheet',
 		playerInfoTitle: 'Personal Details',
-		playerCharacteristicTitle: 'Characteristics',
+		playerCharacteristicTitle: 'Abilities',
 		playerSkillTitle: 'Skills',
 		playerCombatTitle: 'Combat',
 		playerItemTitle: 'Items & Currency',
@@ -197,7 +197,7 @@ export const table: Locale = {
 			currency: 'Currency',
 			attribute: 'Attribute',
 			attributeStatus: 'Character Status',
-			characteristic: 'Characteristic',
+			characteristic: 'Ability',
 			extraInfo: 'Extra Info',
 			info: 'Info',
 			specialization: 'Specialization',
@@ -242,7 +242,6 @@ export const table: Locale = {
 		linkCopied: 'Link copied to clipboard.',
 		linkCopyFailed: 'Failed to copy link. Please, manually copy it.',
 		addNpcName: 'Enter the NPC name:',
-		removeNpc: 'Are you sure you want to remove this NPC?',
 		noAmmo: 'You do not have enough ammo.',
 		diceSelect: 'Select dice to roll:',
 
@@ -270,15 +269,16 @@ export const table: Locale = {
 		dice: {
 			addResolver: 'Add resolver',
 			baseDice: 'Base dice',
-			baseDiceDescription: 'The base dice are used to roll the dice.',
-			enableCharacteristicModifiers: 'Enable characteristic modifiers',
+			baseDiceDescription:
+				'The base dice is the main dice used to roll abilities, attributes and skills.',
+			enableCharacteristicModifiers: 'Enable ability modifiers',
 			enableResolvers: 'Enable resolvers',
 			enableSkillModifiers: 'Enable skill modifiers',
 			resolver: {
 				when: 'When',
 				then: 'Then',
 			},
-			resolverRules: 'Resolver Rules',
+			resolverRules: 'You can use the syntax "{result}" to refer to the result of the dice roll.',
 		},
 		portrait: {
 			attributeFontItalic: 'Attribute font italic',

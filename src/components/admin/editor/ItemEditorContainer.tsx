@@ -58,7 +58,7 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 	};
 
 	const onDeleteItem = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<ItemSheetApiResponse>('/sheet/item', { data: { id } })

@@ -59,7 +59,7 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 	};
 
 	const onDeleteAttribute = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<AttributeSheetApiResponse>('/sheet/attribute', { data: { id } })
@@ -159,7 +159,7 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 	};
 
 	const onDeleteAttribute = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<AttributeStatusSheetApiResponse>('/sheet/attribute/status', { data: { id } })

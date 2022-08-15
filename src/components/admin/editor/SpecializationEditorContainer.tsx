@@ -63,7 +63,7 @@ const SpecializationEditorContainer: React.FC<SpecializationEditorContainerProps
 	};
 
 	const onDeleteSpecialization = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<SpecializationSheetApiResponse>('/sheet/specialization', { data: { id } })
@@ -172,7 +172,7 @@ const SkillEditorContainer: React.FC<SpecializationEditorContainerProps> = (prop
 
 	const onDeleteSkill = useCallback(
 		(id: number) => {
-			if (!confirm(t('prompt.delete'))) return;
+			if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 			setLoading(true);
 			api
 				.delete<SkillSheetApiResponse>('/sheet/skill', { data: { id } })

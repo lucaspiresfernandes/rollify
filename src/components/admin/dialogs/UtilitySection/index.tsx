@@ -86,7 +86,7 @@ const UtilitySection: React.FC<UtilitySectionProps> = (props) => {
 	};
 
 	const removeComplexNPC = (id: number) => {
-		if (!confirm(t('prompt.removeNpc'))) return;
+		if (!confirm(t('prompt.delete', { name: 'NPC' }))) return;
 		api
 			.delete<NpcApiResponse>('/npc', { data: { id } })
 			.then((res) => {

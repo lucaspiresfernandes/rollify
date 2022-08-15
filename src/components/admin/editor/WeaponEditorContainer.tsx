@@ -58,7 +58,7 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 	};
 
 	const onDeleteWeapon = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<WeaponSheetApiResponse>('/sheet/weapon', { data: { id } })

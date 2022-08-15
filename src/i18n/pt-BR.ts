@@ -137,7 +137,7 @@ export const table: Locale = {
 		playerTitle: 'Ficha de Personagem',
 		npcTitle: 'Ficha de NPC',
 		playerInfoTitle: 'Detalhes Pessoais',
-		playerCharacteristicTitle: 'Características',
+		playerCharacteristicTitle: 'Habilidades',
 		playerSkillTitle: 'Perícias',
 		playerCombatTitle: 'Combate',
 		playerItemTitle: 'Itens & Moedas',
@@ -194,7 +194,7 @@ export const table: Locale = {
 			weapon: 'Arma',
 			attribute: 'Atributo',
 			attributeStatus: 'Status de Personagem',
-			characteristic: 'Característica',
+			characteristic: 'Habilidade',
 			skill: 'Perícia',
 			spell: 'Magia',
 			item: 'Item',
@@ -244,7 +244,6 @@ export const table: Locale = {
 		linkCopyFailed:
 			'O link não pôde ser copiado para sua área de transferência. Por favor, copie o link manualmente.',
 		addNpcName: 'Digite o nome do NPC.',
-		removeNpc: 'Tem certeza que deseja remover esse NPC?',
 		noAmmo: 'Você não possui munição o suficiente.',
 		diceSelect: 'Selecione o dado a rolar:',
 
@@ -272,15 +271,17 @@ export const table: Locale = {
 		dice: {
 			addResolver: 'Adicionar Resolver',
 			baseDice: 'Dados Base',
-			baseDiceDescription: 'Dados base para rolar.',
-			enableCharacteristicModifiers: 'Habilitar Modificadores de Característica',
-			enableResolvers: 'Habilitar Resolvers',
+			baseDiceDescription:
+				'O dado base é o dado principal usado para rolar habilidades, atributos e perícias.',
+			enableCharacteristicModifiers: 'Habilitar Modificadores de Habilidade',
+			enableResolvers: 'Habilitar Determinadores',
 			enableSkillModifiers: 'Habilitar Modificadores de Perícia',
 			resolver: {
 				when: 'Quando',
 				then: 'Então',
 			},
-			resolverRules: 'Regras do Resolver',
+			resolverRules:
+				'Você pode usar a sintaxe "{resultado}" para referenciar o resultado da rolagem.',
 		},
 		portrait: {
 			attributeFontItalic: 'Atributo em Itálico',

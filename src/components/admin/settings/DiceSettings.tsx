@@ -206,7 +206,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 											)
 										}
 										onDelete={() => {
-											if (!confirm(t('prompt.delete'))) return;
+											if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 											startTransition(() =>
 												setForm((f) => ({
 													...f,

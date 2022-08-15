@@ -61,7 +61,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 							key={weapon.id}
 							{...weapon}
 							onDelete={() => {
-								if (confirm(t('prompt.delete'))) props.onDeleteWeapon(weapon.id);
+								if (confirm(t('prompt.delete', {name: 'item'}))) props.onDeleteWeapon(weapon.id);
 							}}
 							onTrade={() => props.onTrade('weapon', weapon.id)}
 						/>

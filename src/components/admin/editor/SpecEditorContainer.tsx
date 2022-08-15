@@ -53,7 +53,7 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 	};
 
 	const onDeleteSpec = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<SpecSheetApiResponse>('/sheet/spec', { data: { id } })

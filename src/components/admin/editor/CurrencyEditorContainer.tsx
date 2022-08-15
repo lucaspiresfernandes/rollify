@@ -53,7 +53,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 	};
 
 	const onDeleteCurrency = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<CurrencySheetApiResponse>('/sheet/currency', { data: { id } })

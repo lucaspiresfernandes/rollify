@@ -379,7 +379,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	};
 
 	const onTradeCancel = () => {
-		if (!trade || !confirm(t('prompt.delete'))) return;
+		if (!trade || !confirm(t('prompt.delete', {name: 'item'}))) return;
 
 		api
 			.delete<TradeWeaponApiResponse | TradeArmorApiResponse>(`/sheet/player/trade/${trade.type}`, {

@@ -238,7 +238,6 @@ export interface Locale {
 		linkCopied: string;
 		linkCopyFailed: string;
 		addNpcName: string;
-		removeNpc: string;
 		noAmmo: string;
 		diceSelect: string;
 

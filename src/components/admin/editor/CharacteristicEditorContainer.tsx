@@ -59,7 +59,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 	};
 
 	const onDeleteCharacteristic = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<CharacteristicSheetApiResponse>('/sheet/characteristic', { data: { id } })

@@ -58,7 +58,7 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 	};
 
 	const onDeleteSpell = (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<SpellSheetApiResponse>('/sheet/spell', { data: { id } })

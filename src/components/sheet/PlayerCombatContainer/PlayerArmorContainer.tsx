@@ -82,7 +82,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 					<IconButton
 						size='small'
 						onClick={() => {
-							if (confirm(t('prompt.delete'))) props.onDelete();
+							if (confirm(t('prompt.delete', {name: 'item'}))) props.onDelete();
 						}}
 						title={t('delete')}>
 						<DeleteIcon />

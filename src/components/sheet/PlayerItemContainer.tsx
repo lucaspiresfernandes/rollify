@@ -218,7 +218,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	const onDeleteItem = async (id: number) => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<PlayerItemApiResponse>('/sheet/player/item', {
@@ -283,7 +283,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	const onTradeCancel = () => {
-		if (!tradeId || !confirm(t('prompt.delete'))) return;
+		if (!tradeId || !confirm(t('prompt.delete', {name: 'item'}))) return;
 
 		api
 			.delete<TradeItemApiResponse>('/sheet/player/trade/item', { data: { tradeId } })

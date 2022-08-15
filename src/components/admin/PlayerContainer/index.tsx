@@ -351,7 +351,7 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 	}, [socket, props.id]);
 
 	const deletePlayer = () => {
-		if (!confirm(t('prompt.delete'))) return;
+		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
 		setLoading(true);
 		api
 			.delete<PlayerApiResponse>('/sheet/player', { data: { id: props.id } })
