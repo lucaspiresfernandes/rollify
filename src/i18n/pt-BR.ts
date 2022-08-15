@@ -230,6 +230,11 @@ export const table: Locale = {
 			maxValue: 'Valor Máximo',
 			extraValue: 'Valor Extra',
 			avatarRules: 'Regras do Avatar',
+			environmentLabel: 'Travar Ambiente',
+			environment: {
+				idle: 'Idle',
+				combat: 'Combate',
+			},
 		},
 		close: 'Fechar',
 		cancel: 'Cancelar',

@@ -229,6 +229,11 @@ export const table: Locale = {
 			maxValue: 'Max Value',
 			extraValue: 'Extra Value',
 			avatarRules: 'Avatar Rules',
+			environmentLabel: 'Lock Environment',
+			environment: {
+				idle: 'Idle',
+				combat: 'Combat',
+			},
 		},
 		close: 'Close',
 		cancel: 'Cancel',

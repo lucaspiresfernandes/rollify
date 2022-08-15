@@ -1,4 +1,5 @@
 import type { RelationalOperator } from '../utils/dice';
+import type { Environment } from '../utils/portrait';
 
 export interface Locale {
 	locale: string;
@@ -107,7 +108,7 @@ export interface Locale {
 	boot: {
 		title: string;
 		selectPreset: string;
-	}
+	};
 
 	login: {
 		title: string;
@@ -225,6 +226,8 @@ export interface Locale {
 			currentValue: string;
 			maxValue: string;
 			extraValue: string;
+			environmentLabel: string;
+			environment: { [T in Environment]: string };
 		};
 		close: string;
 		cancel: string;

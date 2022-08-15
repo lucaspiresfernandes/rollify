@@ -141,6 +141,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 					socket={props.socket}
 					rotation={props.rotation}
 					debug={props.debug}
+					lockEnvironment={props.lockEnvironment}
 					typography={props.portraitConfig?.typography}
 				/>
 			</div>
@@ -160,6 +161,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 	const playerId = parseInt(ctx.query.characterID as string);
+	const lockEnvironment = (ctx.query.environment as Environment) || null;
 	const diceColor = (ctx.query.dicecolor as string) || 'ddaf0f';
 	const showDiceRoll = (ctx.query.showdiceroll as string) === 'true';
 
@@ -219,6 +221,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 			portraitConfig: JSON.parse(results[2]?.value || 'null') as PortraitConfig | null,
 			diceColor,
 			showDiceRoll,
+			lockEnvironment,
 		},
 	};
 }

@@ -10,7 +10,7 @@ import {
 	DEFAULT_PORTRAIT_CONFIG,
 	Environment,
 	getShadowStyle,
-	PortraitConfig,
+	PortraitConfig
 } from '../../utils/portrait';
 
 const bounds = {
@@ -23,6 +23,7 @@ const bounds = {
 type PortraitEnvironmentalContainerProps = {
 	socket: SocketIO | null;
 	environment: Environment;
+	lockEnvironment?: Environment;
 	attributes: PortraitAttributesContainerProps['attributes'];
 	playerName: PortraitNameContainerProps['playerName'];
 	playerId: number;
@@ -32,17 +33,20 @@ type PortraitEnvironmentalContainerProps = {
 };
 
 const PortraitEnvironmentalContainer: React.FC<PortraitEnvironmentalContainerProps> = (props) => {
-	const [environment, setEnvironment] = useState(props.environment);
+	const [environment, setEnvironment] = useState(props.lockEnvironment || props.environment);
 
 	useEffect(() => {
 		const socket = props.socket;
 		if (!socket) return;
 
-		socket.on('environmentChange', (newValue) => setEnvironment(newValue));
+		socket.on('environmentChange', (newValue) => {
+			if (props.lockEnvironment) return;
+			setEnvironment(newValue);
+		});
 		return () => {
 			socket.off('environmentChange');
 		};
-	}, [props.socket]);
+	}, [props.socket, props.lockEnvironment]);
 
 	return (
 		<>

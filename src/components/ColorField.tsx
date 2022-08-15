@@ -15,7 +15,7 @@ const ColorField: React.FC<ColorFieldProps> = ({ color, onColorChange, ...props 
 	const theme = useTheme();
 
 	return (
-		<Box position='relative' width='100%'>
+		<Box position='relative'>
 			<TextField
 				autoComplete='off'
 				value={color}

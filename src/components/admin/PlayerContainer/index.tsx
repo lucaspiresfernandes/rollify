@@ -449,7 +449,7 @@ type PlayerAvatarFieldProps = {
 };
 
 const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
-	const [src, setSrc] = useState('#');
+	const [src, setSrc] = useState('/avatar404.webp');
 	const previousStatusID = useRef(Number.MAX_SAFE_INTEGER);
 	const theme = useTheme();
 	const media = useMediaQuery(theme.breakpoints.up('sm'));

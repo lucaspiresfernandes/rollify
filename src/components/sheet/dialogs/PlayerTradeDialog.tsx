@@ -128,12 +128,13 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 							</Typography>
 
 							<FormControl fullWidth>
-								<InputLabel id='portraitSelectLabel'>{t('to')}</InputLabel>
+								<InputLabel id='tradePartnerLabel'>{t('to')}</InputLabel>
 								<Select
 									fullWidth
+									labelId='tradePartnerLabel'
 									value={partnerId}
 									onChange={(ev) => setPartnerId(ev.target.value as number)}
-									label='To'
+									label={t('to')}
 									disabled={props.partners.length === 0}>
 									{props.partners.map((partner) => (
 										<MenuItem key={partner.id} value={partner.id}>
@@ -144,12 +145,13 @@ const PlayerTradeDialog: React.FC<PlayerTradeDialogProps> = (props) => {
 							</FormControl>
 
 							<FormControl fullWidth>
-								<InputLabel id='portraitSelectLabel'>{`${t('trade')} ${t('for')}`}</InputLabel>
+								<InputLabel id='tradeOfferLabel'>{`${t('trade')} ${t('for')}`}</InputLabel>
 								<Select
 									fullWidth
+									labelId='tradeOfferLabel'
 									value={partnerItemId}
 									onChange={(ev) => setPartnerItemId(ev.target.value as number)}
-									label='Trade for'>
+									label={`${t('trade')} ${t('for')}`}>
 									<MenuItem value={0}>{t('none')}</MenuItem>
 									{availableItems.map((item) => (
 										<MenuItem key={item.id} value={item.id}>
