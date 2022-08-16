@@ -35,13 +35,13 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const [diceColor, setDiceColor] = useState('#ddaf0f');
 	const [showDiceRoll, setShowDiceRoll] = useState(true);
 	const [lockEnvironment, setLockEnvironment] = useState<LockEnvironment>('none');
-	const hostName = useRef('');
+	const hostName = useRef<string>();
 	const { t } = useI18n<Locale>();
 
 	let portraitLink: URL | string = '';
 	if (hostName.current) {
-		portraitLink = new URL(`${hostName.current}/portrait/${props.playerId || 0}`);
-		if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', String(showDiceRoll));
+		portraitLink = new URL(`${hostName.current}/portrait/${props.playerId}`);
+		if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', 'true');
 		portraitLink.searchParams.append('dicecolor', diceColor.substring(1));
 		if (lockEnvironment !== 'none')
 			portraitLink.searchParams.append('environment', lockEnvironment);
