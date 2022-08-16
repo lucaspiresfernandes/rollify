@@ -26,7 +26,6 @@ export type PlayerSkillContainerProps = {
 		value: number;
 		modifier: number;
 		checked: boolean;
-		specializationName: string | null;
 		favourite: boolean;
 	}[];
 	enableModifiers: boolean;
@@ -38,32 +37,11 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 
 	const baseSkills = playerSkills
 		.filter((skill) => !skill.favourite)
-		.map((skill) => {
-			let name = skill.name;
-			if (skill.specializationName) name = `${skill.specializationName} (${name})`;
-			return {
-				id: skill.id,
-				name,
-				modifier: skill.modifier,
-				value: skill.value,
-				checked: skill.checked,
-			};
-		})
 		.sort((a, b) => a.name.localeCompare(b.name));
 
 	const favouriteSkills = playerSkills
 		.filter((skill) => skill.favourite)
-		.map((skill) => {
-			let name = skill.name;
-			if (skill.specializationName) name = `${skill.specializationName} (${name})`;
-			return {
-				id: skill.id,
-				name,
-				modifier: skill.modifier,
-				value: skill.value,
-				checked: skill.checked,
-			};
-		});
+		.sort((a, b) => a.name.localeCompare(b.name));
 
 	const onSetFavourite = (id: number, favourite: boolean) => {
 		setPlayerSkills((sk) =>

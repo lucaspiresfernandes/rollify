@@ -77,7 +77,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 
 	return (
 		<Stack spacing={1}>
-			<PlayerAvatarImage
+			<PlayerAvatarField
 				statusID={playerAttributeStatus.find((stat) => stat.value)?.id}
 				playerAvatars={props.playerAvatars}
 				baseDice={props.baseDice}
@@ -99,7 +99,7 @@ const PlayerAttributeContainer: React.FC<PlayerAttributeContainerProps> = (props
 	);
 };
 
-type PlayerAvatarImageProps = {
+type PlayerAvatarFieldProps = {
 	statusID?: number;
 	playerAvatars: {
 		link: string | null;
@@ -111,7 +111,7 @@ type PlayerAvatarImageProps = {
 	baseDice: DiceConfig['baseDice'];
 };
 
-const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
+const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 	const [src, setSrc] = useState('/avatar404.webp');
 	const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
 	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);

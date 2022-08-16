@@ -114,10 +114,10 @@ const GettingStarted: React.FC = () => {
 			) : (
 				<>
 					<Typography variant='h3' component='h1' gutterBottom>
-						{'boot.title'}
+						{t('boot.title')}
 					</Typography>
 					<Typography variant='h5' component='h2' gutterBottom>
-						{'boot.selectPreset'}
+						{t('boot.selectPreset')}
 					</Typography>
 					<FormControl fullWidth sx={{ mb: 3 }}>
 						<InputLabel id='presetSelectLabel'>{t('preset')}</InputLabel>

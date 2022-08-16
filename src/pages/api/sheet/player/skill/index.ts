@@ -1,4 +1,4 @@
-import type { PlayerSkill } from '@prisma/client';
+import type { PlayerSkill, Skill } from '@prisma/client';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../../utils/next';
 import prisma from '../../../../../utils/prisma';
 import { withSessionApi } from '../../../../../utils/session';
@@ -6,15 +6,7 @@ import { withSessionApi } from '../../../../../utils/session';
 export type PlayerSkillApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
 	{
-		skill: PlayerSkill & {
-			Skill: {
-				Specialization: {
-					name: string;
-				} | null;
-				id: number;
-				name: string;
-			};
-		};
+		skill: PlayerSkill & { Skill: Skill };
 	}
 >;
 
@@ -44,9 +36,7 @@ const handlePost: NextApiHandlerIO<PlayerSkillApiResponse> = async (req, res) =>
 		const skill = await prisma.playerSkill.update({
 			where: { player_id_skill_id: { player_id, skill_id } },
 			data: { value, checked, modifier, favourite },
-			include: {
-				Skill: { select: { id: true, name: true, Specialization: { select: { name: true } } } },
-			},
+			include: { Skill: true },
 		});
 
 		res.json({

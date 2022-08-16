@@ -10,7 +10,6 @@ import type {
 	Item,
 	Skill,
 	Spec,
-	Specialization,
 	Spell,
 	Weapon,
 } from '@prisma/client';
@@ -29,7 +28,6 @@ export type Presets = {
 	item: Item[];
 	skill: Skill[];
 	spec: Spec[];
-	specialization: Specialization[];
 	spell: Spell[];
 	config: {
 		id: Config['id'];

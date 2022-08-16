@@ -74,20 +74,11 @@ model Characteristic {
   PlayerCharacteristic PlayerCharacteristic[]
 }
 
-model Specialization {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  Skill Skill[]
-}
-
 model Skill {
-  id                Int             @id @default(autoincrement())
-  name              String
-  Specialization    Specialization? @relation(fields: [specialization_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  specialization_id Int?
-  startValue        Int
-  PlayerSkill       PlayerSkill[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  startValue  Int
+  PlayerSkill PlayerSkill[]
 }
 
 model Weapon {

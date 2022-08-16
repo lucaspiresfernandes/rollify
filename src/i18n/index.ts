@@ -137,6 +137,7 @@ export interface Locale {
 		playerSkillTitle: string;
 		playerCombatTitle: string;
 		playerItemTitle: string;
+		playerCurrencyTitle: string;
 		playerSpellTitle: string;
 		playerNotesTitle: string;
 		playerExtraInfoTitle: string;
@@ -171,7 +172,6 @@ export interface Locale {
 
 			attribute: string;
 
-			specialization: string;
 			startValue: string;
 
 			visible: string;
@@ -198,7 +198,6 @@ export interface Locale {
 			skill: string;
 			spell: string;
 			spec: string;
-			specialization: string;
 			hasAmmo: string;
 		};
 
@@ -215,6 +214,7 @@ export interface Locale {
 			addData: string;
 			attributeEditor: string;
 			avatarEditor: string;
+			characterDetails: string;
 		};
 		label: {
 			avatarRules: string;

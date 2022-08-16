@@ -18,6 +18,7 @@ const getPlayerData = async (id: number) => {
 					Attribute: { select: { id: true, name: true, color: true } },
 					value: true,
 					maxValue: true,
+					extraValue: true,
 				},
 			},
 			PlayerAttributeStatus: {
@@ -35,7 +36,7 @@ const getPlayerData = async (id: number) => {
 			},
 			PlayerSkill: {
 				select: {
-					Skill: { select: { id: true, name: true, Specialization: { select: { name: true } } } },
+					Skill: { select: { id: true, name: true } },
 					value: true,
 					modifier: true,
 				},
@@ -105,7 +106,10 @@ const handlePost: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
 
 		if (!npcId) {
 			if (maxSlots !== undefined) listeners.emit('playerSpellSlotsChange', playerId, maxSlots);
-			if (maxLoad !== undefined) listeners.emit('playerMaxLoadChange', playerId, maxLoad);
+			if (maxLoad !== undefined) {
+				console.log('maxLoad:', maxLoad);
+				listeners.emit('playerMaxLoadChange', playerId, maxLoad);
+			}
 		}
 
 		if (name !== undefined) listeners.emit('playerNameChange', playerId, name);

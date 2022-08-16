@@ -5,20 +5,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import type {
-	Characteristic,
-	Currency,
-	ExtraInfo,
-	Info,
-	Spec,
-	Specialization,
-} from '@prisma/client';
+import type { Characteristic, Currency, ExtraInfo, Info, Spec } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import type { Locale } from '../../../../i18n';
 import type { EditorDialogProps } from '.';
 
-type EditorDialogDataType = Info | Spec | Characteristic | Specialization | Currency | ExtraInfo;
+type EditorDialogDataType = Info | Spec | Characteristic | Currency | ExtraInfo;
 
 const initialState: EditorDialogDataType = {
 	id: 0,

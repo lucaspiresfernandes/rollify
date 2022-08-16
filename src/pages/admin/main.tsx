@@ -101,6 +101,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 						Attribute: { select: { id: true, name: true, color: true } },
 						value: true,
 						maxValue: true,
+						extraValue: true,
 					},
 				},
 			},

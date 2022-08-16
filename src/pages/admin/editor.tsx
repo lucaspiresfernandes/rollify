@@ -1,7 +1,5 @@
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useI18n } from 'next-rosetta';
 import Head from 'next/head';
@@ -12,8 +10,8 @@ import CurrencyEditorContainer from '../../components/admin/editor/CurrencyEdito
 import ExtraInfoEditorContainer from '../../components/admin/editor/ExtraInfoEditorContainer';
 import InfoEditorContainer from '../../components/admin/editor/InfoEditorContainer';
 import ItemEditorContainer from '../../components/admin/editor/ItemEditorContainer';
+import SkillEditorContainer from '../../components/admin/editor/SkillEditorContainer';
 import SpecEditorContainer from '../../components/admin/editor/SpecEditorContainer';
-import SpecializationEditorContainer from '../../components/admin/editor/SpecializationEditorContainer';
 import SpellEditorContainer from '../../components/admin/editor/SpellEditorContainer';
 import WeaponEditorContainer from '../../components/admin/editor/WeaponEditorContainer';
 import type { Locale } from '../../i18n';
@@ -39,12 +37,6 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 
 	return (
 		<Container sx={{ my: 2 }}>
-			<Box textAlign='center'>
-				<Typography variant='h3' component='h1'>
-					{t('admin.editorTitle')}
-				</Typography>
-			</Box>
-
 			<Grid container pt={2} spacing={5} justifyContent='center'>
 				<Grid item xs={12} md={6}>
 					<InfoEditorContainer info={props.info} />
@@ -67,7 +59,9 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 					<CharacteristicEditorContainer characteristic={props.characteristic} />
 				</Grid>
 
-				<SpecializationEditorContainer specialization={props.specialization} skill={props.skill} />
+				<Grid item xs={12} md={6}>
+					<SkillEditorContainer skill={props.skill} />
+				</Grid>
 
 				<Grid item xs={12} md={6}>
 					<WeaponEditorContainer weapon={props.weapon} />
@@ -115,7 +109,6 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		prisma.armor.findMany(),
 		prisma.skill.findMany(),
 		prisma.item.findMany(),
-		prisma.specialization.findMany(),
 		prisma.spell.findMany(),
 		prisma.currency.findMany(),
 	]);
@@ -136,9 +129,8 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			armor: results[7],
 			skill: results[8],
 			item: results[9],
-			specialization: results[10],
-			spell: results[11],
-			currency: results[12],
+			spell: results[10],
+			currency: results[11],
 		},
 	};
 }

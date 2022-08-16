@@ -55,7 +55,6 @@ const handlePost: NextApiHandler<BootApiResponse> = async (req, res) => {
 			prisma.spec.createMany({ data: preset.spec }),
 			prisma.characteristic.createMany({ data: preset.characteristic }),
 			prisma.currency.createMany({ data: preset.currency }),
-			prisma.specialization.createMany({ data: preset.specialization }),
 			prisma.weapon.createMany({ data: preset.weapon }),
 			prisma.armor.createMany({ data: preset.armor }),
 			prisma.item.createMany({ data: preset.item }),

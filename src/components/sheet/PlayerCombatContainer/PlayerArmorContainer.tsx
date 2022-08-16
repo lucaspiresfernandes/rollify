@@ -33,6 +33,7 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 					<TableRow>
 						<TableCell padding='none'></TableCell>
 						<TableCell padding='none'></TableCell>
+						<TableCell padding='none'></TableCell>
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.type')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
@@ -82,7 +83,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 					<IconButton
 						size='small'
 						onClick={() => {
-							if (confirm(t('prompt.delete', {name: 'item'}))) props.onDelete();
+							if (confirm(t('prompt.delete', { name: 'item' }))) props.onDelete();
 						}}
 						title={t('delete')}>
 						<DeleteIcon />
@@ -101,7 +102,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 			</TableRow>
 			{props.description && (
 				<TableRow>
-					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' mb={1} px={3}>
 								{props.description}

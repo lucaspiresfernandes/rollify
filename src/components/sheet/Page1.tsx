@@ -180,7 +180,6 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 							playerSkills={props.player.PlayerSkill.map((skill) => ({
 								...skill,
 								...skill.Skill,
-								specializationName: skill.Skill.Specialization?.name || null,
 							}))}
 							enableModifiers={props.diceConfig.skill.enableModifiers}
 						/>

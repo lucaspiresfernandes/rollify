@@ -139,7 +139,8 @@ export const table: Locale = {
 		playerCharacteristicTitle: 'Abilities',
 		playerSkillTitle: 'Skills',
 		playerCombatTitle: 'Combat',
-		playerItemTitle: 'Items & Currency',
+		playerItemTitle: 'Items',
+		playerCurrencyTitle: 'Currency',
 		playerSpellTitle: 'Spells',
 		playerNotesTitle: 'Annotations',
 		playerExtraInfoTitle: 'Personal Details (Extra)',
@@ -174,7 +175,6 @@ export const table: Locale = {
 
 			attribute: 'Attribute',
 
-			specialization: 'Specialization',
 			startValue: 'Start Value',
 
 			visible: 'Visible',
@@ -190,18 +190,17 @@ export const table: Locale = {
 
 		editor: {
 			armor: 'Armor',
-			weapon: 'Weapon',
-			skill: 'Skill',
-			spell: 'Spell',
-			item: 'Item',
-			currency: 'Currency',
-			attribute: 'Attribute',
+			weapon: 'Weapons',
+			skill: 'Skills',
+			spell: 'Spells',
+			item: 'Items',
+			currency: 'Currencies',
+			attribute: 'Attributes',
 			attributeStatus: 'Character Status',
-			characteristic: 'Ability',
+			characteristic: 'Abilities',
 			extraInfo: 'Extra Info',
 			info: 'Info',
-			specialization: 'Specialization',
-			spec: 'Spec',
+			spec: 'Specs',
 			hasAmmo: 'Has ammo?',
 		},
 
@@ -218,6 +217,7 @@ export const table: Locale = {
 			addData: 'Add Data',
 			attributeEditor: 'Attribute Editor',
 			avatarEditor: 'Avatar Editor',
+			characterDetails: 'Character Details',
 		},
 		label: {
 			numberOfDices: 'Dice Number',

@@ -6,11 +6,7 @@ import { withSessionApi } from '../../../utils/session';
 export type SkillSheetApiResponse = NextApiResponseData<
 	'unauthorized' | 'invalid_body',
 	{
-		skill: (Skill & {
-			Specialization: {
-				name: string;
-			} | null;
-		})[];
+		skill: Skill[];
 	}
 >;
 
@@ -30,10 +26,7 @@ const handleGet: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 
 	const player_id = npcId || player.id;
 
-	const skill = await prisma.skill.findMany({
-		where: { PlayerSkill: { none: { player_id } } },
-		include: { Specialization: { select: { name: true } } },
-	});
+	const skill = await prisma.skill.findMany({ where: { PlayerSkill: { none: { player_id } } } });
 
 	res.json({ status: 'success', skill });
 };
@@ -43,12 +36,7 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (
-		!req.body.id ||
-		!req.body.name ||
-		req.body.startValue === undefined ||
-		req.body.specialization_id === undefined
-	) {
+	if (!req.body.id || !req.body.name || req.body.startValue === undefined) {
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
@@ -58,14 +46,11 @@ const handlePost: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => 
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
 	const startValue = Number(req.body.startValue);
-	const specialization_id =
-		req.body.specialization_id === null ? null : Number(req.body.specialization_id);
 
 	try {
 		const skill = await prisma.skill.update({
 			where: { id },
-			data: { name, startValue, specialization_id },
-			include: { Specialization: true },
+			data: { name, startValue },
 		});
 
 		res.json({ status: 'success', skill: [skill] });
@@ -80,11 +65,7 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 
 	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	if (
-		!req.body.name ||
-		req.body.startValue === undefined ||
-		req.body.specialization_id === undefined
-	) {
+	if (!req.body.name || req.body.startValue === undefined) {
 		return res.json({
 			status: 'failure',
 			reason: 'invalid_body',
@@ -93,13 +74,10 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 
 	const name = String(req.body.name);
 	const startValue = Number(req.body.startValue);
-	const specialization_id =
-		req.body.specialization_id === null ? null : Number(req.body.specialization_id);
 
 	try {
 		const skill = await prisma.skill.create({
-			data: { name, startValue, specialization_id },
-			include: { Specialization: true },
+			data: { name, startValue },
 		});
 
 		res.json({ status: 'success', skill: [skill] });
@@ -124,7 +102,7 @@ const handleDelete: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) =
 
 	try {
 		const skill = await prisma.skill.delete({ where: { id } });
-		res.json({ status: 'success', skill: [{ ...skill, Specialization: null }] });
+		res.json({ status: 'success', skill: [{ ...skill }] });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

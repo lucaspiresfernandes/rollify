@@ -68,6 +68,14 @@ const handlePost: NextApiHandlerIO<PlayerItemApiResponse> = async (req, res) => 
 		});
 
 		res.json({ status: 'success', item });
+
+		res.socket.server.io.emit(
+			'playerItemChange',
+			player_id,
+			item_id,
+			item.currentDescription,
+			item.quantity
+		);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

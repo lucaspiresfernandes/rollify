@@ -43,7 +43,7 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 
 			<Grid item xs={12}>
 				<PlayerItemContainer
-					title={t('sheet.playerItemTitle')}
+					title={`${t('sheet.playerItemTitle')} & ${t('sheet.playerCurrencyTitle')}`}
 					playerCurrency={props.playerCurrency}
 					playerItems={props.playerItems}
 					senderTrade={props.senderTrade}

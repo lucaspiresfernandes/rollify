@@ -140,7 +140,8 @@ export const table: Locale = {
 		playerCharacteristicTitle: 'Habilidades',
 		playerSkillTitle: 'Perícias',
 		playerCombatTitle: 'Combate',
-		playerItemTitle: 'Itens & Moedas',
+		playerItemTitle: 'Itens',
+		playerCurrencyTitle: 'Moedas',
 		playerSpellTitle: 'Magias',
 		playerNotesTitle: 'Anotações',
 		playerExtraInfoTitle: 'Detalhes Pessoais (Extras)',
@@ -175,7 +176,6 @@ export const table: Locale = {
 
 			attribute: 'Atributo',
 
-			specialization: 'Especialização',
 			startValue: 'Valor inicial',
 
 			visible: 'Visível',
@@ -190,19 +190,18 @@ export const table: Locale = {
 		enableCombatEnvironment: 'Habilitar ambiente de combate',
 
 		editor: {
-			armor: 'Armadura',
-			weapon: 'Arma',
-			attribute: 'Atributo',
+			armor: 'Armaduras',
+			weapon: 'Armas',
+			attribute: 'Atributos',
 			attributeStatus: 'Status de Personagem',
-			characteristic: 'Habilidade',
-			skill: 'Perícia',
-			spell: 'Magia',
-			item: 'Item',
-			currency: 'Moeda',
+			characteristic: 'Habilidades',
+			skill: 'Perícias',
+			spell: 'Magias',
+			item: 'Itens',
+			currency: 'Moedas',
 			extraInfo: 'Detalhes Pessoais (Extras)',
 			info: 'Detalhes Pessoais',
-			specialization: 'Especialização',
-			spec: 'Especificação de Personagem',
+			spec: 'Especificações de Personagem',
 			hasAmmo: 'Possui munição',
 		},
 
@@ -219,6 +218,7 @@ export const table: Locale = {
 			addData: 'Adicionar Dados',
 			attributeEditor: 'Editor de Atributo',
 			avatarEditor: 'Editor de Avatar',
+			characterDetails: 'Detalhes do Personagem',
 		},
 		label: {
 			numberOfDices: 'Número de Dados',
@@ -274,7 +274,7 @@ export const table: Locale = {
 			adminKeyDescription: 'A chave do mestre é usada para criar uma nova conta de mestre.',
 		},
 		dice: {
-			addResolver: 'Adicionar Resolver',
+			addResolver: 'Adicionar determinador',
 			baseDice: 'Dados Base',
 			baseDiceDescription:
 				'O dado base é o dado principal usado para rolar habilidades, atributos e perícias.',
@@ -291,15 +291,15 @@ export const table: Locale = {
 		portrait: {
 			attributeFontItalic: 'Atributo em Itálico',
 			attributeFontSize: 'Tamanho do Atributo',
-			currentFont: 'Fonte Atual',
+			currentFont: 'Fonte Atual:',
 			customFont: 'Fonte Personalizada',
 			diceDescriptionFontItalic: 'Descrição do Dado em Itálico',
 			diceDescriptionFontSize: 'Tamanho da Descrição do Dado',
-			diceEnterTimeout: 'Tempo para entrar no Dice',
-			diceExitTimeout: 'Tempo para sair do Dice',
+			diceEnterTimeout: 'Tempo de entrada do dado',
+			diceExitTimeout: 'Tempo de saída do dado',
 			diceResultFontItalic: 'Resultado do Dado em Itálico',
 			diceResultFontSize: 'Tamanho do Resultado do Dado',
-			diceScreenTime: 'Tempo de Exibição do Dice',
+			diceScreenTime: 'Tempo de exibição do dado',
 			nameFontItalic: 'Nome em Itálico',
 			nameFontSize: 'Tamanho do Nome',
 			transitions: 'Transições',
