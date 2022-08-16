@@ -198,6 +198,7 @@ const PlayerDetailsDialog: React.FC<PlayerDetailsDialogProps> = ({ open, onClose
 
 						{details.PlayerItem.length > 0 && (
 							<>
+								<Divider sx={{ my: 4 }} />
 								<Typography variant='h5' textAlign='center'>
 									{t('sheet.playerItemTitle')}
 								</Typography>
