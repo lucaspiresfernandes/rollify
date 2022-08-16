@@ -40,11 +40,15 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 
 	let portraitLink: URL | string = '';
 	if (hostName.current) {
-		portraitLink = new URL(`${hostName.current}/portrait/${props.playerId}`);
-		if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', 'true');
-		portraitLink.searchParams.append('dicecolor', diceColor.substring(1));
-		if (lockEnvironment !== 'none')
-			portraitLink.searchParams.append('environment', lockEnvironment);
+		try {
+			portraitLink = new URL(`${hostName.current}/portrait/${props.playerId}`);
+			if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', 'true');
+			portraitLink.searchParams.append('dicecolor', diceColor.substring(1));
+			if (lockEnvironment !== 'none')
+				portraitLink.searchParams.append('environment', lockEnvironment);
+		} catch (err) {
+			console.warn('could not create portrait link', err);
+		}
 	}
 
 	useEffect(() => {
