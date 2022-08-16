@@ -38,12 +38,14 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const hostName = useRef('');
 	const { t } = useI18n<Locale>();
 
-	const portraitLink = new URL(
-		`${hostName.current || 'https://localhost'}/portrait/${props.playerId || 0}`
-	);
-	if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', String(showDiceRoll));
-	portraitLink.searchParams.append('dicecolor', diceColor.substring(1));
-	if (lockEnvironment !== 'none') portraitLink.searchParams.append('environment', lockEnvironment);
+	let portraitLink: URL | string = '';
+	if (hostName.current) {
+		portraitLink = new URL(`${hostName.current}/portrait/${props.playerId || 0}`);
+		if (showDiceRoll) portraitLink.searchParams.append('showdiceroll', String(showDiceRoll));
+		portraitLink.searchParams.append('dicecolor', diceColor.substring(1));
+		if (lockEnvironment !== 'none')
+			portraitLink.searchParams.append('environment', lockEnvironment);
+	}
 
 	useEffect(() => {
 		hostName.current = window.location.host;
