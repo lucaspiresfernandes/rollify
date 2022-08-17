@@ -97,6 +97,10 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: weapon.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: weapon.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteWeapon}
 			/>
 			<WeaponEditorDialog

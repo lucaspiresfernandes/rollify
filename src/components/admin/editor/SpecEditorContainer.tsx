@@ -90,6 +90,10 @@ const SpecEditorContainer: React.FC<SpecEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: spec.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: spec.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteSpec}
 			/>
 			<EditorDialog

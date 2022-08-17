@@ -55,7 +55,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 	};
 
 	const onDeleteExtraInfo = (id: number) => {
-		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<ExtraInfoSheetApiResponse>('/sheet/extrainfo', { data: { id } })
@@ -90,6 +90,10 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 				data={extraInfo}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: extraInfo.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: extraInfo.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
 				onDelete={onDeleteExtraInfo}

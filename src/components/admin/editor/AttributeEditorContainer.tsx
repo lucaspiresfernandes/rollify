@@ -98,6 +98,10 @@ const AttributeEditorContainer: React.FC<AttributeEditorContainerProps> = (props
 							setDialogData({ operation: 'update', data: attribute.find((i) => i.id === id) });
 							setOpenDialog(true);
 						}}
+						onCopy={(id) => {
+							setDialogData({ operation: 'create', data: attribute.find((i) => i.id === id) });
+							setOpenDialog(true);
+						}}
 						onDelete={onDeleteAttribute}
 					/>
 					<AttributeEditorDialog
@@ -194,6 +198,10 @@ const AttributeStatusEditorContainer: React.FC<AttributeEditorContainerProps> = 
 				data={attributeStatus}
 				onEdit={(id) => {
 					setDialogData({ operation: 'update', data: attributeStatus.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: attributeStatus.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
 				onDelete={onDeleteAttribute}

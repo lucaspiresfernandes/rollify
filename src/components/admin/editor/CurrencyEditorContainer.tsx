@@ -90,6 +90,10 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 					setDialogData({ operation: 'update', data: currency.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: currency.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteCurrency}
 			/>
 			<EditorDialog

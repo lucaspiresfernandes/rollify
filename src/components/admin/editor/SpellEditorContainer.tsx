@@ -97,6 +97,10 @@ const SpellEditorContainer: React.FC<SpellEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: spell.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: spell.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteSpell}
 			/>
 			<SpellEditorDialog

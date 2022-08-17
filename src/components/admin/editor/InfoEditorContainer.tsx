@@ -90,6 +90,10 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: info.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: info.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteInfo}
 			/>
 			<EditorDialog

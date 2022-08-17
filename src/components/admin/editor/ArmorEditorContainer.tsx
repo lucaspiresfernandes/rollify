@@ -97,6 +97,10 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: armor.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: armor.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteArmor}
 			/>
 			<ArmorEditorDialog

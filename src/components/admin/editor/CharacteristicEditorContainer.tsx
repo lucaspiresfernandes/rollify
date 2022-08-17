@@ -96,6 +96,10 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 					setDialogData({ operation: 'update', data: characteristic.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: characteristic.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteCharacteristic}
 			/>
 			<EditorDialog

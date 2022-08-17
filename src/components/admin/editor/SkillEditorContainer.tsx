@@ -68,6 +68,14 @@ const SkillEditorContainer: React.FC<SkillEditorContainerProps> = (props) => {
 		[skill]
 	);
 
+	const onCopySkill = useCallback(
+		(id: number) => {
+			setDialogData({ operation: 'create', data: skill.find((i) => i.id === id) });
+			setOpenDialog(true);
+		},
+		[skill]
+	);
+
 	const onDeleteSkill = useCallback(
 		(id: number) => {
 			if (!confirm(t('prompt.delete', { name: 'item' }))) return;
@@ -105,7 +113,12 @@ const SkillEditorContainer: React.FC<SkillEditorContainerProps> = (props) => {
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<EditorContainer data={skillList} onEdit={onEditSkill} onDelete={onDeleteSkill} />
+			<EditorContainer
+				data={skillList}
+				onEdit={onEditSkill}
+				onDelete={onDeleteSkill}
+				onCopy={onCopySkill}
+			/>
 			<SkillEditorDialog
 				title={`${dialogData.operation === 'create' ? t('add') : t('update')} ${t(
 					'admin.editor.skill'

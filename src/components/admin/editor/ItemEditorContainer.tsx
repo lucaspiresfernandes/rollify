@@ -97,6 +97,10 @@ const ItemEditorContainer: React.FC<ItemEditorContainerProps> = (props) => {
 					setDialogData({ operation: 'update', data: item.find((i) => i.id === id) });
 					setOpenDialog(true);
 				}}
+				onCopy={(id) => {
+					setDialogData({ operation: 'create', data: item.find((i) => i.id === id) });
+					setOpenDialog(true);
+				}}
 				onDelete={onDeleteItem}
 			/>
 			<ItemEditorDialog
