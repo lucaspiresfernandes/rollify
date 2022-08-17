@@ -43,16 +43,22 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 		.filter((skill) => skill.favourite)
 		.sort((a, b) => a.name.localeCompare(b.name));
 
-	const onSetFavourite = (id: number, favourite: boolean) => {
-		setPlayerSkills((sk) =>
-			sk.map((skill) => {
-				if (skill.id === id) {
+	const onSetFavourite = (
+		skill: { id: number; checked: boolean; value: number; modifier: number },
+		favourite: boolean
+	) => {
+		setPlayerSkills((playerSkills) =>
+			playerSkills.map((sk) => {
+				if (sk.id === skill.id) {
 					return {
-						...skill,
+						...sk,
+						checked: skill.checked,
+						value: skill.value,
+						modifier: skill.modifier,
 						favourite,
 					};
 				}
-				return skill;
+				return sk;
 			})
 		);
 	};
@@ -64,7 +70,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 					title={`${props.title} (${t('quickAccess')})`}
 					playerSkills={favouriteSkills}
 					enableModifiers={props.enableModifiers}
-					onSkillUnfavourite={(id) => onSetFavourite(id, false)}
+					onSkillUnfavourite={(skill) => onSetFavourite(skill, false)}
 				/>
 			</Grid>
 
@@ -73,14 +79,14 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 					title={props.title}
 					playerSkills={baseSkills}
 					enableModifiers={props.enableModifiers}
-					onSkillFavourite={(id) => onSetFavourite(id, true)}
+					onSkillFavourite={(skill) => onSetFavourite(skill, true)}
 				/>
 			</Grid>
 		</>
 	);
 };
 
-type PlayerSkillFieldProps = {
+export type PlayerSkillFieldProps = {
 	id: number;
 	name: string;
 	value: number;
@@ -88,8 +94,13 @@ type PlayerSkillFieldProps = {
 	checked: boolean;
 	notifyClearChecked: boolean;
 	enableModifiers: boolean;
-	onFavourite?: () => void;
-	onUnfavourite?: () => void;
+	onFavourite?: (skill: { id: number; checked: boolean; value: number; modifier: number }) => void;
+	onUnfavourite?: (skill: {
+		id: number;
+		checked: boolean;
+		value: number;
+		modifier: number;
+	}) => void;
 };
 
 const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
@@ -200,7 +211,14 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				{props.onFavourite && (
 					<IconButton
 						size='small'
-						onClick={props.onFavourite}
+						onClick={() =>
+							props.onFavourite?.({
+								id: props.id,
+								checked,
+								value: parseInt(value),
+								modifier: parseInt(modifier as string) || 0,
+							})
+						}
 						sx={{ padding: 0, ml: 2 }}
 						title={t('star')}>
 						<BookmarkAddIcon />
@@ -209,7 +227,14 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				{props.onUnfavourite && (
 					<IconButton
 						size='small'
-						onClick={props.onUnfavourite}
+						onClick={() =>
+							props.onUnfavourite?.({
+								id: props.id,
+								checked,
+								value: parseInt(value),
+								modifier: parseInt(modifier as string) || 0,
+							})
+						}
 						sx={{ padding: 0, ml: 2 }}
 						title={t('unstar')}>
 						<BookmarkRemoveIcon />

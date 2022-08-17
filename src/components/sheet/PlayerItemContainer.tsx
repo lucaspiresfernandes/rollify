@@ -220,7 +220,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	const onDeleteItem = async (id: number) => {
-		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<PlayerItemApiResponse>('/sheet/player/item', {
@@ -285,7 +285,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	const onTradeCancel = () => {
-		if (!tradeId || !confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!tradeId || !confirm(t('prompt.delete', { name: 'item' }))) return;
 
 		api
 			.delete<TradeItemApiResponse>('/sheet/player/trade/item', { data: { tradeId } })
@@ -538,7 +538,7 @@ const PlayerItemField: React.FC<PlayerItemFieldProps> = (props) => {
 					value={currentDescription}
 					onChange={(ev) => setCurrentDescription(ev.target.value)}
 					onBlur={descriptionBlur}
-					style={{ minWidth: '20em' }}
+					style={{ minWidth: '25em' }}
 					inputProps={{
 						'aria-label': 'Description',
 					}}

@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillField, Searchbar } from '.';
+import { PlayerSkillField, PlayerSkillFieldProps, Searchbar } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
@@ -25,7 +25,7 @@ type BaseSkillsContainerProps = {
 		checked: boolean;
 	}[];
 	enableModifiers: boolean;
-	onSkillFavourite: (id: number) => void;
+	onSkillFavourite: NonNullable<PlayerSkillFieldProps['onFavourite']>;
 };
 
 const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
@@ -48,12 +48,12 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
-	const onSetFavourite = (id: number) => {
+	const onSetFavourite: BaseSkillsContainerProps['onSkillFavourite'] = (skill) => {
 		setLoading(true);
 		api
-			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id, favourite: true })
+			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: skill.id, favourite: true })
 			.then((res) => {
-				if (res.data.status === 'success') return props.onSkillFavourite(id);
+				if (res.data.status === 'success') return props.onSkillFavourite(skill);
 				handleDefaultApiResponse(res, log, t);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -102,7 +102,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 									{...skill}
 									enableModifiers={props.enableModifiers}
 									notifyClearChecked={notify}
-									onFavourite={() => onSetFavourite(skill.id)}
+									onFavourite={onSetFavourite}
 								/>
 							</Grid>
 						);

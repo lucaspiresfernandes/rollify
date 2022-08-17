@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillField, Searchbar } from '.';
+import { PlayerSkillField, PlayerSkillFieldProps, Searchbar } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
@@ -25,7 +25,7 @@ type FavouriteSkillsContainerProps = {
 		checked: boolean;
 	}[];
 	enableModifiers: boolean;
-	onSkillUnfavourite: (id: number) => void;
+	onSkillUnfavourite: NonNullable<PlayerSkillFieldProps['onUnfavourite']>;
 };
 
 const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props) => {
@@ -48,12 +48,12 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			.finally(() => setLoading(false));
 	};
 
-	const onUnfavourite = (id: number) => {
+	const onUnfavourite: FavouriteSkillsContainerProps['onSkillUnfavourite'] = (skill) => {
 		setLoading(true);
 		api
-			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id, favourite: false })
+			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: skill.id, favourite: false })
 			.then((res) => {
-				if (res.data.status === 'success') return props.onSkillUnfavourite(id);
+				if (res.data.status === 'success') return props.onSkillUnfavourite(skill);
 				handleDefaultApiResponse(res, log, t);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -87,9 +87,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 				height={{ xs: 360, sm: null }}
 				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
 				{props.playerSkills.length === 0 && (
-					<Box textAlign='center'>
-						{t('placeholder.noFavouriteSkills')}
-					</Box>
+					<Box textAlign='center'>{t('placeholder.noFavouriteSkills')}</Box>
 				)}
 				<Grid
 					container
@@ -117,7 +115,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 									{...skill}
 									enableModifiers={props.enableModifiers}
 									notifyClearChecked={notify}
-									onUnfavourite={() => onUnfavourite(skill.id)}
+									onUnfavourite={onUnfavourite}
 								/>
 							</Grid>
 						);
