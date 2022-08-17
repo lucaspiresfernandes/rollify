@@ -85,15 +85,13 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 			{/* eslint-disable-next-line jsx-a11y/alt-text */}
 			<img
 				src={oldSrc}
-				width={AVATAR_SIZE[0]}
-				height={AVATAR_SIZE[1]}
+				style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
 				className={styles.oldAvatar}
 			/>
 			{/* eslint-disable-next-line jsx-a11y/alt-text */}
 			<img
 				src={src}
-				width={AVATAR_SIZE[0]}
-				height={AVATAR_SIZE[1]}
+				style={{ width: '100%', maxWidth: AVATAR_SIZE[0], height: 'auto' }}
 				onLoad={onImageLoad}
 				onError={onImageLoadError}
 				className={showAvatar ? `${styles.avatar} ${styles.show}` : styles.avatar}
