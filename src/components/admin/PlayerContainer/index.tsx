@@ -16,7 +16,7 @@ import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
 import GetPortraitDialog from '../dialogs/GetPortraitDialog';
-import PlayerAvatarField from './PlayerAvatarField';
+import PlayerAvatarImage from './PlayerAvatarImage';
 import PlayerDetailsDialog, { PlayerDetailsDialogProps } from './PlayerDetailsDialog';
 
 type PlayerContainerProps = {
@@ -44,7 +44,23 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	const [players, setPlayers] = useState(props.players);
 	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>(0);
 	const [showDetails, setShowDetails] = useState(false);
-	const [details, setDetails] = useState<PlayerDetailsDialogProps['details']>();
+	const [details, setDetails] = useState<PlayerDetailsDialogProps['details']>({
+		id: 0,
+		maxLoad: 0,
+		spellSlots: 0,
+		name: '',
+		PlayerArmor: [],
+		PlayerAttributes: [],
+		PlayerAttributeStatus: [],
+		PlayerCharacteristic: [],
+		PlayerCurrency: [],
+		PlayerInfo: [],
+		PlayerItem: [],
+		PlayerSkill: [],
+		PlayerSpell: [],
+		PlayerWeapon: [],
+		PlayerSpec: [],
+	});
 	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 
@@ -400,7 +416,7 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 						<CircularProgress color='inherit' disableShrink />
 					</PartialBackdrop>
 					<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
-						<PlayerAvatarField
+						<PlayerAvatarImage
 							id={props.id}
 							status={props.attributeStatus}
 							width={AVATAR_SIZE[0]}

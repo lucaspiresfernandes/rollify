@@ -22,12 +22,12 @@ import { useState } from 'react';
 import type { Locale } from '../../../i18n';
 import type { PlayerApiResponsePlayerData } from '../../../pages/api/sheet/player';
 import { getAvatarSize } from '../../../utils';
-import PlayerAvatarField from './PlayerAvatarField';
+import PlayerAvatarImage from './PlayerAvatarImage';
 
 export type PlayerDetailsDialogProps = {
 	open: boolean;
 	onClose: () => void;
-	details?: NonNullable<PlayerApiResponsePlayerData>;
+	details: NonNullable<PlayerApiResponsePlayerData>;
 };
 
 const AVATAR_SIZE = getAvatarSize(1);
@@ -35,253 +35,255 @@ const AVATAR_SIZE = getAvatarSize(1);
 const PlayerDetailsDialog: React.FC<PlayerDetailsDialogProps> = ({ open, onClose, details }) => {
 	const { t } = useI18n<Locale>();
 
-	let load = 0;
-	if (details)
-		load =
-			details.PlayerItem.reduce((acc, item) => acc + item.Item.weight * item.quantity, 0) +
-			details.PlayerArmor.reduce((acc, armor) => acc + armor.Armor.weight, 0) +
-			details.PlayerWeapon.reduce((acc, weapon) => acc + weapon.Weapon.weight, 0);
+	const load =
+		details.PlayerItem.reduce((acc, item) => acc + item.Item.weight * item.quantity, 0) +
+		details.PlayerArmor.reduce((acc, armor) => acc + armor.Armor.weight, 0) +
+		details.PlayerWeapon.reduce((acc, weapon) => acc + weapon.Weapon.weight, 0);
 
-	let slots = 0;
-	if (details) slots = details.PlayerSpell.reduce((acc, sp) => acc + sp.Spell.slots, 0);
+	const slots = details.PlayerSpell.reduce((acc, sp) => acc + sp.Spell.slots, 0);
 
 	return (
 		<Dialog open={open} onClose={onClose} fullScreen>
 			<DialogTitle>{t('modal.title.characterDetails')}</DialogTitle>
 			<Divider />
 			<DialogContent>
-				{details && (
-					<>
-						<Box display='flex' flexDirection='column' alignItems='center' px={6} gap={2}>
-							<PlayerAvatarField
-								id={details.id}
-								status={details.PlayerAttributeStatus.map((attr) => ({
-									id: attr.AttributeStatus.id,
-									value: attr.value,
-								}))}
-								width={AVATAR_SIZE[0]}
-							/>
-							<Typography variant='h5'>{details.name}</Typography>
-						</Box>
-
-						<Divider sx={{ my: 4 }} />
-
-						<Typography variant='h5' textAlign='center' gutterBottom>
-							{t('sheet.playerInfoTitle')}
+				<>
+					<Box display='flex' flexDirection='column' alignItems='center' px={6}>
+						<PlayerAvatarImage
+							id={details.id}
+							status={details.PlayerAttributeStatus.map((attr) => ({
+								id: attr.AttributeStatus.id,
+								value: attr.value,
+							}))}
+							width={AVATAR_SIZE[0]}
+						/>
+						<Typography variant='h5' mt={2} gutterBottom>
+							{details.name}
 						</Typography>
-						<Grid container spacing={2} textAlign='center' justifyContent='center'>
-							{details.PlayerInfo.map((info) => (
-								<Grid item xs={6} md={4} lg={3} xl={2} key={info.Info.id}>
-									<Typography variant='h6'>{info.value || '?'}</Typography>
-									<Typography variant='caption'>{info.Info.name}</Typography>
-								</Grid>
-							))}
-							{details.PlayerSpec.map((spec) => (
-								<Grid item xs={6} md={4} lg={3} xl={2} key={spec.Spec.id}>
-									<Typography variant='h6'>{spec.value || '?'}</Typography>
-									<Typography variant='caption'>{spec.Spec.name}</Typography>
-								</Grid>
-							))}
-						</Grid>
-
-						<Divider sx={{ my: 4 }} />
-
-						<Typography variant='h5' textAlign='center' gutterBottom>
-							{t('admin.editor.attribute')}
+						<Typography variant='caption'>
+							{details.PlayerAttributeStatus.filter((attr) => attr.value)
+								.map((attr) => attr.AttributeStatus.name)
+								.join(', ')}
 						</Typography>
-						<Grid container spacing={2} textAlign='center' justifyContent='center'>
-							{details.PlayerAttributes.map((attr) => (
-								<Grid item xs={6} md={4} lg={3} xl={2} key={attr.Attribute.id}>
-									<Typography variant='h6' color={`#${attr.Attribute.color}`}>
-										{attr.value}
-										<b>{attr.extraValue ? `+${attr.extraValue}` : ''}</b>/{attr.maxValue}
-									</Typography>
-									<Typography variant='caption'>{attr.Attribute.name}</Typography>
-								</Grid>
-							))}
-						</Grid>
+					</Box>
 
-						<Divider sx={{ my: 4 }} />
+					<Divider sx={{ my: 4 }} />
 
-						<Typography variant='h5' textAlign='center' gutterBottom>
-							{t('sheet.playerCharacteristicTitle')}
-						</Typography>
-						<Grid container spacing={2} textAlign='center' justifyContent='center'>
-							{details.PlayerCharacteristic.map((char) => (
-								<Grid item xs={6} md={4} lg={3} xl={2} key={char.Characteristic.id}>
-									<Typography variant='h6'>
-										{char.value || '0'}
-										{char.modifier ? `+ ${char.modifier}` : ''}
-									</Typography>
-									<Typography variant='caption'>{char.Characteristic.name}</Typography>
-								</Grid>
-							))}
-						</Grid>
+					<Typography variant='h5' textAlign='center' gutterBottom>
+						{t('sheet.playerInfoTitle')}
+					</Typography>
+					<Grid container spacing={2} textAlign='center' justifyContent='center'>
+						{details.PlayerInfo.map((info) => (
+							<Grid item xs={6} md={4} lg={3} xl={2} key={info.Info.id}>
+								<Typography variant='h6'>{info.value || '?'}</Typography>
+								<Typography variant='caption'>{info.Info.name}</Typography>
+							</Grid>
+						))}
+						{details.PlayerSpec.map((spec) => (
+							<Grid item xs={6} md={4} lg={3} xl={2} key={spec.Spec.id}>
+								<Typography variant='h6'>{spec.value || '?'}</Typography>
+								<Typography variant='caption'>{spec.Spec.name}</Typography>
+							</Grid>
+						))}
+					</Grid>
 
-						{details.PlayerSkill.length > 0 && (
-							<>
-								<Divider sx={{ my: 4 }} />
+					<Divider sx={{ my: 4 }} />
 
-								<Typography variant='h5' textAlign='center' gutterBottom>
-									{t('sheet.playerSkillTitle')}
+					<Typography variant='h5' textAlign='center' gutterBottom>
+						{t('admin.editor.attribute')}
+					</Typography>
+					<Grid container spacing={2} textAlign='center' justifyContent='center'>
+						{details.PlayerAttributes.map((attr) => (
+							<Grid item xs={6} md={4} lg={3} xl={2} key={attr.Attribute.id}>
+								<Typography variant='h6' color={`#${attr.Attribute.color}`}>
+									{attr.value}
+									<b>{attr.extraValue ? `+${attr.extraValue}` : ''}</b>/{attr.maxValue}
 								</Typography>
-								<Grid container spacing={2} textAlign='center' justifyContent='center'>
-									{details.PlayerSkill.map((skill) => (
-										<Grid item xs={6} md={4} lg={3} xl={2} key={skill.Skill.id}>
-											<Typography variant='h6'>
-												{skill.value || '0'}
-												{skill.modifier ? `+ ${skill.modifier}` : ''}
+								<Typography variant='caption'>{attr.Attribute.name}</Typography>
+							</Grid>
+						))}
+					</Grid>
+
+					<Divider sx={{ my: 4 }} />
+
+					<Typography variant='h5' textAlign='center' gutterBottom>
+						{t('sheet.playerCharacteristicTitle')}
+					</Typography>
+					<Grid container spacing={2} textAlign='center' justifyContent='center'>
+						{details.PlayerCharacteristic.map((char) => (
+							<Grid item xs={6} md={4} lg={3} xl={2} key={char.Characteristic.id}>
+								<Typography variant='h6'>
+									{char.value || '0'}
+									{char.modifier ? `+ ${char.modifier}` : ''}
+								</Typography>
+								<Typography variant='caption'>{char.Characteristic.name}</Typography>
+							</Grid>
+						))}
+					</Grid>
+
+					{details.PlayerSkill.length > 0 && (
+						<>
+							<Divider sx={{ my: 4 }} />
+
+							<Typography variant='h5' textAlign='center' gutterBottom>
+								{t('sheet.playerSkillTitle')}
+							</Typography>
+							<Grid container spacing={2} textAlign='center' justifyContent='center'>
+								{details.PlayerSkill.map((skill) => (
+									<Grid item xs={6} md={4} lg={3} xl={2} key={skill.Skill.id}>
+										<Typography variant='h6'>
+											{skill.value || '0'}
+											{skill.modifier ? `+ ${skill.modifier}` : ''}
+										</Typography>
+										<Typography variant='caption'>{skill.Skill.name}</Typography>
+									</Grid>
+								))}
+							</Grid>
+						</>
+					)}
+
+					{details.PlayerWeapon.length > 0 && (
+						<>
+							<Divider sx={{ my: 4 }} />
+							<Typography variant='h5' textAlign='center'>
+								{t('admin.editor.weapon')}
+							</Typography>
+							<TableContainer sx={{ mb: 4 }}>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell align='center' padding='none' />
+											<TableCell align='center'>{t('sheet.table.name')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.type')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.range')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.attacks')}</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{details.PlayerWeapon.map((weapon) => (
+											<WeaponDetails key={weapon.Weapon.id} {...weapon} />
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</>
+					)}
+
+					{details.PlayerArmor.length > 0 && (
+						<>
+							<Divider sx={{ my: 4 }} />
+							<Typography variant='h5' textAlign='center'>
+								{t('admin.editor.armor')}
+							</Typography>
+							<TableContainer sx={{ mb: 4 }}>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell padding='none'></TableCell>
+											<TableCell align='center'>{t('sheet.table.name')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.type')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.damageReduction')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.penalty')}</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{details.PlayerArmor.map((armor) => (
+											<ArmorDetails key={armor.Armor.id} {...armor} />
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</>
+					)}
+
+					{details.PlayerItem.length > 0 && (
+						<>
+							<Divider sx={{ my: 4 }} />
+							<Typography variant='h5' textAlign='center'>
+								{t('sheet.playerItemTitle')}
+							</Typography>
+							<Typography variant='body2' textAlign='center' mb={2}>
+								{t('currentWeight')}:{' '}
+								<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
+									{load} / {details.maxLoad}
+								</span>
+							</Typography>
+							<Grid container spacing={2} textAlign='center' justifyContent='center'>
+								{details.PlayerItem.map((item) => (
+									<Grid item xs={6} md={4} lg={3} xl={2} key={item.Item.id}>
+										<Box border='1px solid gray' borderRadius={1} p={1}>
+											<Typography variant='h6'>{item.Item.name}</Typography>
+											<Typography variant='body2' component='div'>
+												{item.currentDescription}
 											</Typography>
-											<Typography variant='caption'>{skill.Skill.name}</Typography>
-										</Grid>
-									))}
-								</Grid>
-							</>
-						)}
+											<Typography variant='caption' component='div'>
+												{t('sheet.table.weight')}: {item.Item.weight}
+											</Typography>
+											<Typography variant='caption' component='div'>
+												{t('sheet.table.quantity')}: {item.quantity}
+											</Typography>
+										</Box>
+									</Grid>
+								))}
+							</Grid>
+						</>
+					)}
 
-						{details.PlayerWeapon.length > 0 && (
-							<>
-								<Divider sx={{ my: 4 }} />
-								<Typography variant='h5' textAlign='center'>
-									{t('admin.editor.weapon')}
-								</Typography>
-								<TableContainer sx={{ mb: 4 }}>
-									<Table>
-										<TableHead>
-											<TableRow>
-												<TableCell align='center' padding='none' />
-												<TableCell align='center'>{t('sheet.table.name')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.type')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.range')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.attacks')}</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{details.PlayerWeapon.map((weapon) => (
-												<WeaponDetails key={weapon.Weapon.id} {...weapon} />
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
-							</>
-						)}
+					<Divider sx={{ my: 4 }} />
 
-						{details.PlayerArmor.length > 0 && (
-							<>
-								<Divider sx={{ my: 4 }} />
-								<Typography variant='h5' textAlign='center'>
-									{t('admin.editor.armor')}
-								</Typography>
-								<TableContainer sx={{ mb: 4 }}>
-									<Table>
-										<TableHead>
-											<TableRow>
-												<TableCell padding='none'></TableCell>
-												<TableCell align='center'>{t('sheet.table.name')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.type')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.damageReduction')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.penalty')}</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{details.PlayerArmor.map((armor) => (
-												<ArmorDetails key={armor.Armor.id} {...armor} />
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
-							</>
-						)}
+					<Typography variant='h5' textAlign='center' gutterBottom>
+						{t('sheet.playerCurrencyTitle')}
+					</Typography>
+					<Grid container spacing={2} textAlign='center' justifyContent='center'>
+						{details.PlayerCurrency.map((cur) => (
+							<Grid item xs={6} md={4} lg={3} xl={2} key={cur.Currency.id}>
+								<Typography variant='h6'>{cur.value || '0'}</Typography>
+								<Typography variant='caption'>{cur.Currency.name}</Typography>
+							</Grid>
+						))}
+					</Grid>
 
-						{details.PlayerItem.length > 0 && (
-							<>
-								<Divider sx={{ my: 4 }} />
-								<Typography variant='h5' textAlign='center'>
-									{t('sheet.playerItemTitle')}
-								</Typography>
-								<Typography variant='body2' textAlign='center' mb={2}>
-									{t('currentWeight')}:{' '}
-									<span style={{ color: load > details.maxLoad ? 'red' : undefined }}>
-										{load} / {details.maxLoad}
-									</span>
-								</Typography>
-								<Grid container spacing={2} textAlign='center' justifyContent='center'>
-									{details.PlayerItem.map((item) => (
-										<Grid item xs={6} md={4} lg={3} xl={2} key={item.Item.id}>
-											<Box border='1px solid gray' borderRadius={1} p={1}>
-												<Typography variant='h6'>{item.Item.name}</Typography>
-												<Typography variant='body2' component='div'>
-													{item.currentDescription}
-												</Typography>
-												<Typography variant='caption' component='div'>
-													{t('sheet.table.weight')}: {item.Item.weight}
-												</Typography>
-												<Typography variant='caption' component='div'>
-													{t('sheet.table.quantity')}: {item.quantity}
-												</Typography>
-											</Box>
-										</Grid>
-									))}
-								</Grid>
-							</>
-						)}
-
-						<Divider sx={{ my: 4 }} />
-
-						<Typography variant='h5' textAlign='center' gutterBottom>
-							{t('sheet.playerCurrencyTitle')}
-						</Typography>
-						<Grid container spacing={2} textAlign='center' justifyContent='center'>
-							{details.PlayerCurrency.map((cur) => (
-								<Grid item xs={6} md={4} lg={3} xl={2} key={cur.Currency.id}>
-									<Typography variant='h6'>{cur.value || '0'}</Typography>
-									<Typography variant='caption'>{cur.Currency.name}</Typography>
-								</Grid>
-							))}
-						</Grid>
-
-						{details.PlayerSpell.length > 0 && (
-							<>
-								<Divider sx={{ my: 4 }} />
-								<Typography variant='h5' textAlign='center'>
-									{t('sheet.playerSpellTitle')}
-								</Typography>
-								<Typography variant='body2' textAlign='center' mb={2}>
-									{t('availableSlots')}:{' '}
-									<span style={{ color: slots > details.spellSlots ? 'red' : undefined }}>
-										{slots} / {details.spellSlots}
-									</span>
-								</Typography>
-								<TableContainer>
-									<Table>
-										<TableHead>
-											<TableRow>
-												<TableCell padding='none' />
-												<TableCell align='center'>{t('sheet.table.name')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.type')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.cost')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.target')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.range')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.castingTime')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.duration')}</TableCell>
-												<TableCell align='center'>{t('sheet.table.slots')}</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{details.PlayerSpell.map((spell) => (
-												<SpellDetails key={spell.Spell.id} {...spell} />
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
-							</>
-						)}
-					</>
-				)}
+					{details.PlayerSpell.length > 0 && (
+						<>
+							<Divider sx={{ my: 4 }} />
+							<Typography variant='h5' textAlign='center'>
+								{t('sheet.playerSpellTitle')}
+							</Typography>
+							<Typography variant='body2' textAlign='center' mb={2}>
+								{t('availableSlots')}:{' '}
+								<span style={{ color: slots > details.spellSlots ? 'red' : undefined }}>
+									{slots} / {details.spellSlots}
+								</span>
+							</Typography>
+							<TableContainer>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell padding='none' />
+											<TableCell align='center'>{t('sheet.table.name')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.type')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.cost')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.damage')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.target')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.range')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.castingTime')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.duration')}</TableCell>
+											<TableCell align='center'>{t('sheet.table.slots')}</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{details.PlayerSpell.map((spell) => (
+											<SpellDetails key={spell.Spell.id} {...spell} />
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</>
+					)}
+				</>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onClose}>{t('modal.close')}</Button>

@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import type { PlayerGetAvatarApiResponse } from '../../../pages/api/sheet/player/avatar/[attrStatusID]';
 import { api } from '../../../utils/createApiClient';
 
-type PlayerAvatarFieldProps = {
+type PlayerAvatarImageProps = {
 	id: number;
 	status: { id: number; value: boolean }[];
 	width: number;
 };
 
-const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
+const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	const [src, setSrc] = useState('/avatar404.webp');
 	const previousStatusID = useRef(Number.MAX_SAFE_INTEGER);
 
@@ -48,4 +48,4 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 	);
 };
 
-export default PlayerAvatarField;
+export default PlayerAvatarImage;
