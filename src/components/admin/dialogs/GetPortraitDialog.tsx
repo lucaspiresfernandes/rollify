@@ -38,26 +38,29 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 	const hostName = useRef<string>();
 	const { t } = useI18n<Locale>();
 
-	let portraitLink = '';
+	let link: URL | undefined;
 	if (hostName.current) {
-		portraitLink = `${hostName.current}/portrait/${props.playerId}?dicecolor=${diceColor.substring(1)}`;
-		if (showDiceRoll) portraitLink += '&showdiceroll=true';
-		if (lockEnvironment !== 'none') portraitLink += `&environment=${lockEnvironment}`;
+		link = new URL(`/portrait/${props.playerId}`, hostName.current);
+		link.searchParams.set('dicecolor', diceColor.substring(1));
+		if (showDiceRoll) link.searchParams.set('showdiceroll', 'true');
+		if (lockEnvironment !== 'none') link.searchParams.set('environment', lockEnvironment);
 	}
+	const portraitLink = link?.toString() || '';
 
 	useEffect(() => {
-		hostName.current = window.location.host;
+		//TODO: Use window.location.origin instead of hostname.
+		hostName.current = window.location.origin;
 	}, []);
 
 	useEffect(() => {
-		if (props.open) {
-			setDiceColor('#ddaf0f');
-			setShowDiceRoll(true);
-		}
+		if (!props.open) return;
+		setDiceColor('#ddaf0f');
+		setShowDiceRoll(true);
+		setLockEnvironment('none');
 	}, [props.open]);
 
 	const copyLink = () => {
-		const copied = copyToClipboard(portraitLink.toString());
+		const copied = copyToClipboard(portraitLink);
 		if (copied) {
 			alert(t('prompt.linkCopied'));
 			return props.onClose();
@@ -115,7 +118,7 @@ const GetPortraitDialog: React.FC<GetPortraitDialogProps> = (props) => {
 							</IconButton>
 						),
 					}}
-					value={portraitLink.toString()}
+					value={portraitLink}
 					disabled
 				/>
 			</DialogContent>
