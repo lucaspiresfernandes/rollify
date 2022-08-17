@@ -76,8 +76,19 @@ const handlePut: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 	const startValue = Number(req.body.startValue);
 
 	try {
+		const players = await prisma.player.findMany({
+			where: { role: { in: ['PLAYER', 'NPC'] } },
+			select: { id: true },
+		});
+
 		const skill = await prisma.skill.create({
-			data: { name, startValue },
+			data: {
+				name,
+				startValue,
+				PlayerSkill: {
+					createMany: { data: players.map(({ id }) => ({ player_id: id, value: startValue })) },
+				},
+			},
 		});
 
 		res.json({ status: 'success', skill: [skill] });

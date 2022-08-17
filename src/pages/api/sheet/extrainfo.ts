@@ -57,7 +57,21 @@ const handlePut: NextApiHandler<ExtraInfoSheetApiResponse> = async (req, res) =>
 	const name = String(req.body.name);
 
 	try {
-		const extraInfo = await prisma.extraInfo.create({ data: { name } });
+		const players = await prisma.player.findMany({
+			where: { role: { in: ['PLAYER', 'NPC'] } },
+			select: { id: true },
+		});
+
+		const extraInfo = await prisma.extraInfo.create({
+			data: {
+				name,
+				PlayerExtraInfo: {
+					createMany: {
+						data: players.map(({ id: player_id }) => ({ player_id, value: '' })),
+					},
+				},
+			},
+		});
 
 		res.json({ status: 'success', extraInfo });
 	} catch (err) {
