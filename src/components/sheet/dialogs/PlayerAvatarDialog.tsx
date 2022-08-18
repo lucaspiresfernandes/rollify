@@ -2,7 +2,6 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -11,9 +10,7 @@ import { useContext, useState } from 'react';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerPostAvatarApiResponse } from '../../../pages/api/sheet/player/avatar';
-import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
-
-const AVATAR_SIZE = getAvatarSize(1);
+import { handleDefaultApiResponse } from '../../../utils';
 
 type AvatarData = {
 	id: number | null;
@@ -112,9 +109,6 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>{t('modal.title.avatarEditor')}</DialogTitle>
 			<DialogContent>
-				<DialogContentText>
-					{t('modal.label.avatarRules', { width: AVATAR_SIZE[0], height: AVATAR_SIZE[1] })}
-				</DialogContentText>
 				<Grid
 					container
 					component='form'
