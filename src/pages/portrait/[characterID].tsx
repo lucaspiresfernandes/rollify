@@ -1,8 +1,6 @@
 import { useTheme } from '@mui/material';
-import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
 import type { GetServerSidePropsContext, NextPage } from 'next';
-import { useI18n } from 'next-rosetta';
 import { useEffect, useState } from 'react';
 import PortraitAvatarContainer from '../../components/portrait/PortraitAvatarContainer';
 import PortraitDiceContainer from '../../components/portrait/PortraitDiceContainer';
@@ -10,7 +8,6 @@ import PortraitEnvironmentalContainer from '../../components/portrait/PortraitEn
 import PortraitSideAttributeContainer from '../../components/portrait/PortraitSideAttributeContainer';
 import type { SocketIO } from '../../hooks/useSocket';
 import useSocket from '../../hooks/useSocket';
-import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import type { InferSsrProps } from '../../utils/next';
 import type { Environment, PortraitConfig } from '../../utils/portrait';
@@ -51,32 +48,30 @@ const PortraitPage: NextPage<PageProps> = (props) => {
 };
 
 const CharacterPortrait: React.FC<PageProps & { socket: SocketIO | null }> = (props) => {
-	const [debug, setDebug] = useState(false);
+	const [editor, setEditor] = useState(false);
 	const [rotation, setRotation] = useState(0);
-	const { t } = useI18n<Locale>();
 
 	useEffect(() => {
-		setRotation(parseInt(JSON.parse(localStorage.getItem('environment-rot') || 'null') || 0));
-	}, []);
+		setRotation(
+			parseInt(JSON.parse(localStorage.getItem(`portrait-rot${props.playerId}`) || 'null') || 0)
+		);
+	}, [props.playerId]);
 
 	const handleRotationChange = (_: Event, val: number | number[]) => {
 		setRotation(val as number);
-		localStorage.setItem('environment-rot', JSON.stringify(val));
+		localStorage.setItem(`portrait-rot${props.playerId}`, JSON.stringify(val));
 	};
 
 	return (
 		<>
-			<PortraitMainContainer {...props} rotation={rotation} debug={debug} />
+			<PortraitMainContainer
+				{...props}
+				rotation={rotation}
+				editor={editor}
+				onToggleEditor={() => setEditor((e) => !e)}
+			/>
 			<div className={styles.editor}>
-				<div style={{ marginBottom: 8 }}>
-					<Button
-						variant='contained'
-						title='Desativa o controle do ambiente pelo mestre.'
-						onClick={() => setDebug((e) => !e)}>
-						{debug ? t('disable') : t('enable')} Editor
-					</Button>
-				</div>
-				{debug && (
+				{editor && (
 					<div style={{ width: 360 }}>
 						<Slider
 							min={0}
@@ -86,6 +81,7 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO | null }> = (pr
 							onChange={handleRotationChange}
 							valueLabelDisplay='auto'
 						/>
+						<h2>Editor</h2>
 					</div>
 				)}
 			</div>
@@ -96,7 +92,8 @@ const CharacterPortrait: React.FC<PageProps & { socket: SocketIO | null }> = (pr
 type PortraitDiceRollContainerProps = PageProps & {
 	socket: SocketIO | null;
 	rotation: number;
-	debug: boolean;
+	editor: boolean;
+	onToggleEditor: () => void;
 };
 
 const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) => {
@@ -123,6 +120,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 					playerId={props.playerId}
 					attributeStatus={props.attributeStatus}
 					socket={props.socket}
+					onToggleEditor={props.onToggleEditor}
 				/>
 				<PortraitSideAttributeContainer
 					playerId={props.playerId}
@@ -140,7 +138,7 @@ const PortraitMainContainer: React.FC<PortraitDiceRollContainerProps> = (props) 
 					playerName={props.playerName}
 					socket={props.socket}
 					rotation={props.rotation}
-					debug={props.debug}
+					debug={props.editor}
 					lockEnvironment={props.lockEnvironment}
 					typography={props.portraitConfig?.typography}
 				/>

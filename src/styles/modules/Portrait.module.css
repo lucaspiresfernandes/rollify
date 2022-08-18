@@ -7,7 +7,7 @@
 	position: absolute;
 
 	transform: translateX(-50%);
-	top: calc(100% + 110px);
+	top: calc(100% + 10px);
 	left: 50%;
 }
 
@@ -18,22 +18,17 @@
 	top: 0;
 	left: 50%;
 
+	width: 100%;
+	max-width: 420px;
+	height: auto;
+
 	z-index: -50;
 }
 
 .avatar {
-	opacity: 0;
-
-	transition: none;
-}
-
-.avatar.show {
-	opacity: 1;
-
-	-webkit-transition: opacity 500ms ease;
-	-moz-transition: opacity 500ms ease;
-	-o-transition: opacity 500ms ease;
-	transition: opacity 500ms ease;
+	width: 100%;
+	max-width: 420px;
+	height: auto;
 }
 
 .draggable {
@@ -44,7 +39,7 @@
 }
 
 .sideContainer {
-	transform: translate(-50%, -50%);
+	transform: translateX(-50%);
 
 	width: 200px;
 	height: 120px;
@@ -70,7 +65,7 @@
 }
 
 .nameContainer {
-	transform: translate(-50%, -50%);
+	transform: translateX(-50%);
 
 	text-transform: uppercase;
 	line-height: 100%;
@@ -79,7 +74,7 @@
 }
 
 .attributeContainer {
-	transform: translate(-50%, -50%);
+	transform: translateX(-50%);
 
 	line-height: 100%;
 }
@@ -89,14 +84,16 @@
 
 	transform: translate(-50%, -50%);
 
-	top: 240px;
+	top: 50%;
 	left: 50%;
+
+	height: 80%;
 
 	pointer-events: none;
 }
 
 .dice {
-	width: 360px;
+	height: 100%;
 }
 
 .result {
@@ -106,8 +103,6 @@
 
 	top: 50%;
 	left: 50%;
-
-	/* font-size: 114px; */
 }
 
 .description {
@@ -115,8 +110,6 @@
 
 	transform: translate(-50%, -50%);
 
-	top: 100%;
+	top: 95%;
 	left: 50%;
-
-	/* font-size: 80px; */
 }

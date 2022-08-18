@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ApiContext, LoggerContext } from '../contexts';
 import type { Locale } from '../i18n';
 import type { DiceApiResponse } from '../pages/api/dice';
@@ -33,9 +33,6 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	const [diceResponse, setDiceResponse] = useState<DiceResponse[] | null>(null);
 	const [num, setNum] = useState(1);
 
-	const [descriptionFade, setDescriptionFade] = useState(false);
-	const descriptionDelayTimeout = useRef<NodeJS.Timeout | null>(null);
-
 	const { t } = useI18n<Locale>();
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
@@ -44,16 +41,11 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 		if (!diceResponse) return;
 
 		if (diceResponse.length === 1) {
-			if (diceResponse[0].description)
-				descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
-
 			return {
 				roll: diceResponse[0].roll,
 				description: diceResponse[0].description,
 			};
 		}
-
-		descriptionDelayTimeout.current = setTimeout(() => setDescriptionFade(true), 500);
 
 		if (diceResponse.length > 1) {
 			if (Array.isArray(diceRequest.dice)) {
@@ -86,7 +78,6 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	}, [props.dice, props.onResult]);
 
 	const roll = (diceRoll: DiceRoll) => {
-		setDescriptionFade(false);
 		setDiceRequest(diceRoll);
 		api
 			.post<DiceApiResponse>('/dice', { dices: diceRoll.dice })
@@ -100,7 +91,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 					return setDiceResponse(results);
 				}
 
-				closeDialog();
+				props.onClose();
 				switch (data.reason) {
 					case 'invalid_dices':
 						return log({ severity: 'error', text: 'Invalid Dices' });
@@ -109,7 +100,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 				}
 			})
 			.catch(() => {
-				closeDialog();
+				props.onClose();
 				log({ severity: 'error', text: t('error.unknown') });
 			});
 	};
@@ -126,21 +117,19 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 		onRollClick(ev);
 	};
 
-	const closeDialog = () => {
-		if (descriptionDelayTimeout.current) {
-			clearTimeout(descriptionDelayTimeout.current);
-			descriptionDelayTimeout.current = null;
-		}
-		props.onClose();
-	};
-
 	const loading = diceRequest.dice !== null && diceResponse === null;
 
 	return (
-		<Dialog open={props.dice !== null} onClose={closeDialog} maxWidth='xs' fullWidth>
+		<Dialog open={props.dice !== null} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{t('modal.title.rollDice')}</DialogTitle>
-			<DialogContent sx={{ textAlign: 'center', mt: 2 }}>
-				<Box display='flex' flexDirection='column' justifyContent='center' minHeight={110}>
+			<DialogContent>
+				<Box
+					display='flex'
+					flexDirection='column'
+					justifyContent='center'
+					textAlign='center'
+					mt={1}
+					minHeight={110}>
 					{diceRequest.dice ? (
 						result ? (
 							<div>
@@ -149,7 +138,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 										{result.roll}
 									</Typography>
 								</Fade>
-								<Fade in={descriptionFade}>
+								<Fade in={Boolean(result.description)} appear style={{ transitionDelay: '500ms' }}>
 									<Typography variant='body1'>{result.description}</Typography>
 								</Fade>
 							</div>
@@ -191,7 +180,7 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 				</Box>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={closeDialog}>
+				<Button onClick={props.onClose}>
 					{diceRequest.dice ? t('modal.close') : t('modal.cancel')}
 				</Button>
 				{diceRequest.dice ? (

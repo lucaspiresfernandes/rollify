@@ -6,17 +6,12 @@ import type { SocketIO } from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
 import styles from '../../styles/modules/Portrait.module.css';
 import { clamp } from '../../utils';
-import {
-	DEFAULT_PORTRAIT_CONFIG,
-	Environment,
-	getShadowStyle,
-	PortraitConfig
-} from '../../utils/portrait';
+import { DEFAULT_PORTRAIT_CONFIG, Environment, PortraitConfig } from '../../utils/portrait';
 
 const bounds = {
 	bottom: 600,
 	left: -520,
-	top: 96,
+	top: 0,
 	right: 520,
 };
 
@@ -157,7 +152,11 @@ const PortraitAttributesContainer: React.FC<PortraitAttributesContainerProps> = 
 							}}>
 							<div ref={attributesRef}>
 								{attributes.map((attr) => (
-									<div key={attr.id} style={getShadowStyle(attr.color)}>
+									<div
+										key={attr.id}
+										style={{
+											textShadow: `0 0 10px #${attr.color}, 0 0 30px #${attr.color}, 0 0 50px #${attr.color}`,
+										}}>
 										{attr.show ? (
 											<>
 												{attr.value + attr.extraValue}/{attr.maxValue}

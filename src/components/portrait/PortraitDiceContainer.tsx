@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import Fade from '@mui/material/Fade';
 import Zoom from '@mui/material/Zoom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SocketIO } from '../../hooks/useSocket';
 import styles from '../../styles/modules/Portrait.module.css';
 import { sleep } from '../../utils';
 import type { DiceResponse } from '../../utils/dice';
-import { DEFAULT_PORTRAIT_CONFIG, getShadowStyle, PortraitConfig } from '../../utils/portrait';
+import { DEFAULT_PORTRAIT_CONFIG, PortraitConfig } from '../../utils/portrait';
 
 type PortraitDiceContainerProps = {
 	socket: SocketIO | null;
@@ -19,31 +19,26 @@ type PortraitDiceContainerProps = {
 	diceTransition?: PortraitConfig['transitions']['dice'];
 };
 
+type DiceResult = {
+	show: boolean;
+	roll: number;
+	description?: string;
+};
+
 const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
+	const [diceResult, setDiceResult] = useState<DiceResult>({
+		show: false,
+		roll: 0,
+	});
 	const diceQueue = useRef<DiceResponse[]>([]);
 	const diceData = useRef<DiceResponse>();
-
 	const showDiceRef = useRef(props.showDice);
-
-	const [diceResult, setDiceResult] = useState<number | null>(null);
-	const diceResultRef = useRef<HTMLDivElement>(null);
-	const lastDiceResult = useRef(0);
-	const [diceDescription, setDiceDescription] = useState<string | null>(null);
-	const diceDescriptionRef = useRef<HTMLDivElement>(null);
-	const lastDiceDescription = useRef('');
-
 	const diceVideo = useRef<HTMLVideoElement>(null);
 
 	const exitTimeout = useMemo(
 		() => props.diceTransition?.exitTimeout || DEFAULT_PORTRAIT_CONFIG.transitions.dice.exitTimeout,
 		[props.diceTransition]
 	);
-
-	useEffect(() => {
-		const style = getShadowStyle(props.color);
-		if (diceResultRef.current) diceResultRef.current.style.textShadow = style.textShadow;
-		if (diceDescriptionRef.current) diceDescriptionRef.current.style.textShadow = style.textShadow;
-	}, [props.color]);
 
 	useEffect(() => {
 		const socket = props.socket;
@@ -72,22 +67,18 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 			diceData.current = result;
 
-			lastDiceResult.current = result.roll;
-			setDiceResult(result.roll);
-
-			if (result.description) {
-				lastDiceDescription.current = result.description;
-				await sleep(500);
-				setDiceDescription(result.description);
-			}
+			setDiceResult({
+				show: true,
+				roll: result.roll,
+				description: result.description,
+			});
 
 			await sleep(
 				props.diceTransition?.screenTimeout ||
 					DEFAULT_PORTRAIT_CONFIG.transitions.dice.screenTimeout
 			);
 
-			setDiceResult(null);
-			setDiceDescription(null);
+			setDiceResult((r) => ({ ...r, show: false }));
 
 			await sleep(100);
 
@@ -144,30 +135,32 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 					<source src='/dice_animation.webm' />
 				</video>
 			</Zoom>
-			<Fade in={diceResult !== null}>
+			<Fade in={diceResult.show}>
 				<div
 					className={styles.result}
-					ref={diceResultRef}
 					style={{
 						fontSize:
 							props.diceTypography?.result.fontSize ||
 							DEFAULT_PORTRAIT_CONFIG.typography.dice.result.fontSize,
 						fontStyle: props.diceTypography?.result.italic ? 'italic' : undefined,
+						textShadow: `0 0 10px #${props.color}, 0 0 30px #${props.color}, 0 0 50px #${props.color}`,
 					}}>
-					{diceResult || lastDiceResult.current}
+					{diceResult.roll}
 				</div>
 			</Fade>
-			<Fade in={diceDescription !== null}>
+			<Fade
+				in={diceResult.show && Boolean(diceResult.description)}
+				style={{ transitionDelay: diceResult.show ? '500ms' : undefined }}>
 				<div
 					className={styles.description}
-					ref={diceDescriptionRef}
 					style={{
 						fontSize:
 							props.diceTypography?.description.fontSize ||
 							DEFAULT_PORTRAIT_CONFIG.typography.dice.description.fontSize,
 						fontStyle: props.diceTypography?.description.italic ? 'italic' : undefined,
+						textShadow: `0 0 10px #${props.color}, 0 0 30px #${props.color}, 0 0 50px #${props.color}`,
 					}}>
-					{diceDescription || lastDiceDescription.current}
+					{diceResult.description}
 				</div>
 			</Fade>
 		</div>
