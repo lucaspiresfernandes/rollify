@@ -15,7 +15,7 @@ const SheetFirstPage: NextPage<SheetFirstPageProps> = (props) => {
 			<Head>
 				<title>Character Sheet - Rollify</title>
 			</Head>
-			<PlayerSheet {...props} />
+			<PlayerSheet {...props} isNpc={false} />
 		</>
 	);
 };

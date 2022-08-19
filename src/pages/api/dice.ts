@@ -97,6 +97,7 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 			for (let index = 0; index < data.length; index++) {
 				const result = data[index];
 				results[index] = { roll: result };
+
 				if (diceConfig.resolver)
 					results[index].description = getDiceResultDescription(
 						diceConfig.resolver,

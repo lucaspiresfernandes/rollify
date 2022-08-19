@@ -523,10 +523,10 @@
 					"resolver": [
 						{ "operator": "equals", "result": 100, "description": "Desastre" },
 						{ "operator": "equals", "result": 1, "description": "Crítico" },
-						{ "operator": "greaterThan", "result": "{result}", "description": "Fracasso" },
-						{ "operator": "lessThanOrEquals", "result": "{result}/5", "description": "Extremo" },
-						{ "operator": "lessThanOrEquals", "result": "{result}/2", "description": "Bom" },
-						{ "operator": "lessThanOrEquals", "result": "{result}", "description": "Regular" }
+						{ "operator": "greaterThan", "result": "{valor}", "description": "Fracasso" },
+						{ "operator": "lessThanOrEquals", "result": "{valor}/5", "description": "Extremo" },
+						{ "operator": "lessThanOrEquals", "result": "{valor}/2", "description": "Bom" },
+						{ "operator": "lessThanOrEquals", "result": "{valor}", "description": "Regular" }
 					],
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }

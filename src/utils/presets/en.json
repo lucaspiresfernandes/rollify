@@ -497,10 +497,10 @@
 					"resolver": [
 						{ "operator": "equals", "result": 100, "description": "Disaster" },
 						{ "operator": "equals", "result": 1, "description": "Critical" },
-						{ "operator": "greaterThan", "result": "{result}", "description": "Failure" },
-						{ "operator": "lessThanOrEquals", "result": "{result}/5", "description": "Extreme" },
-						{ "operator": "lessThanOrEquals", "result": "{result}/2", "description": "Hard" },
-						{ "operator": "lessThanOrEquals", "result": "{result}", "description": "Regular" }
+						{ "operator": "greaterThan", "result": "{value}", "description": "Failure" },
+						{ "operator": "lessThanOrEquals", "result": "{value}/5", "description": "Extreme" },
+						{ "operator": "lessThanOrEquals", "result": "{value}/2", "description": "Hard" },
+						{ "operator": "lessThanOrEquals", "result": "{value}", "description": "Regular" }
 					],
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }

@@ -14,6 +14,8 @@ const handler: NextApiHandler<PlayerExtraInfoApiResponse> = async (req, res) => 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
 
+	const player_id = npcId || player.id;
+
 	if (req.body.value === undefined || !req.body.id)
 		return res.json({ status: 'failure', reason: 'invalid_body' });
 
@@ -23,7 +25,7 @@ const handler: NextApiHandler<PlayerExtraInfoApiResponse> = async (req, res) => 
 	try {
 		await prisma.playerExtraInfo.update({
 			data: { value },
-			where: { player_id_extra_info_id: { extra_info_id, player_id: npcId || player.id } },
+			where: { player_id_extra_info_id: { extra_info_id, player_id } },
 		});
 
 		res.json({ status: 'success' });

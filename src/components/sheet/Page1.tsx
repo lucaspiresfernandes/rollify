@@ -36,7 +36,7 @@ const MemoPlayerSkillContainer = memo(PlayerSkillContainer, () => true);
 const MemoPlayerSpellContainer = memo(PlayerSpellContainer, () => true);
 const MemoPlayerLoadContainer = memo(PlayerLoadContainer, () => true);
 
-const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (props) => {
+const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (props) => {
 	const [addDataDialogOpen, setAddDataDialogOpen] = useState(false);
 	const [addDialogData, setAddDialogData] = useState<{
 		data: AddDataDialogProps['data'];
@@ -78,7 +78,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc?: boolean }> = (p
 
 	useEffect(() => {
 		if (!socket) return;
-		socket.on('playerDelete', () => api.delete('/player').then(() => Router.push('/')));
+		socket.on('playerDelete', () => Router.push('/'));
 		return () => {
 			socket.off('playerDelete');
 		};

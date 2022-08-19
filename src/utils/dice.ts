@@ -37,12 +37,14 @@ export function getDiceResultDescription(
 	diceResult: number
 ) {
 	for (const con of config) {
-		const result =
-			typeof con.result === 'string'
-				? (eval(con.result.replace(/({value})|({valor})/g, diceRoll.toString())) as number)
-				: con.result;
-		const compare = comparer.get(con.operator) as NonNullable<ReturnType<typeof comparer.get>>;
-		if (compare(diceResult, result)) return con.description;
+		let result = 0;
+		if (typeof con.result === 'string') {
+			//TODO: Find a better way to validade the math string or not use eval at all.
+			if (con.result.match(/({value})|({valor})/g) !== null)
+				result = eval(con.result.replace(/({value})|({valor})/g, diceRoll.toString())) as number;
+		} else result = con.result;
+		const compare = comparer.get(con.operator);
+		if (compare && compare(diceResult, result)) return con.description;
 	}
 	return 'Unknown';
 }

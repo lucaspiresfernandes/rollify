@@ -256,9 +256,9 @@ const PortraitNameContainer: React.FC<PortraitNameContainerProps> = (props) => {
 								fontStyle: props.nameTypography?.italic ? 'italic' : undefined,
 							}}>
 							<div ref={nameRef} style={{ textAlign: alignment }}>
-								{fullName.split(' ').map((name) => (
-									<div key={name}>{name}</div>
-								))}
+								{playerName.show
+									? fullName.split(' ').map((name) => <div key={name}>{name}</div>)
+									: '???'}
 							</div>
 						</div>
 					</div>
