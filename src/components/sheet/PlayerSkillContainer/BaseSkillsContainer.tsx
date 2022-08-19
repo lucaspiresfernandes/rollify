@@ -1,12 +1,15 @@
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
+import Pagination from '@mui/material/Pagination';
 import Paper from '@mui/material/Paper';
 import { useI18n } from 'next-rosetta';
-import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillField, PlayerSkillFieldProps, Searchbar } from '.';
+import { startTransition, useCallback, useContext, useState } from 'react';
+import { PlayerSkillField, PlayerSkillFieldProps } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
@@ -15,16 +18,17 @@ import { handleDefaultApiResponse } from '../../../utils';
 import PartialBackdrop from '../../PartialBackdrop';
 import SheetContainer from '../Section';
 
+const SKILLS_PER_PAGE = 12;
+
 type BaseSkillsContainerProps = {
 	title: string;
 	playerSkills: {
 		id: number;
 		name: string;
-		modifier: number;
+		modifier: number | null;
 		value: number;
 		checked: boolean;
 	}[];
-	enableModifiers: boolean;
 	onSkillFavourite: NonNullable<PlayerSkillFieldProps['onFavourite']>;
 };
 
@@ -32,6 +36,7 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 	const [search, setSearch] = useState('');
 	const [notify, setNotify] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [page, setPage] = useState(1);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const { t } = useI18n<Locale>();
@@ -48,67 +53,90 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 			.finally(() => setLoading(false));
 	};
 
-	const onSetFavourite: BaseSkillsContainerProps['onSkillFavourite'] = (skill) => {
-		setLoading(true);
-		api
-			.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: skill.id, favourite: true })
-			.then((res) => {
-				if (res.data.status === 'success') return props.onSkillFavourite(skill);
-				handleDefaultApiResponse(res, log, t);
-			})
-			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
-			.finally(() => setLoading(false));
-	};
+	const onSetFavourite = useCallback<BaseSkillsContainerProps['onSkillFavourite']>(
+		(skill) => {
+			setLoading(true);
+			api
+				.post<PlayerSkillApiResponse>('/sheet/player/skill', { id: skill.id, favourite: true })
+				.then((res) => {
+					if (res.data.status === 'success') return props.onSkillFavourite(skill);
+					handleDefaultApiResponse(res, log, t);
+				})
+				.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+				.finally(() => setLoading(false));
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[api, t, props.onSkillFavourite, log]
+	);
 
 	return (
-		<SheetContainer title={props.title} display='flex' flexDirection='column'>
+		<SheetContainer
+			title={props.title}
+			sideButton={
+				<IconButton title={t('sheet.clearMarkers')} onClick={clearChecks}>
+					<RemoveDoneIcon />
+				</IconButton>
+			}>
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<Box display='flex' alignItems='center' gap={1} my={1}>
-				<Paper sx={{ p: 0.5, flex: '1 0' }}>
-					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
+			<div>
+				<Paper sx={{ my: 1, py: 0.5, px: 1, flex: '1 0' }}>
+					<InputBase
+						fullWidth
+						placeholder={t('search')}
+						inputProps={{ 'aria-label': t('search') }}
+						onChange={(e) =>
+							startTransition(() => {
+								setSearch(e.target.value);
+								setPage(1);
+							})
+						}
+					/>
 				</Paper>
-				<div>
-					<Button size='small' variant='outlined' onClick={clearChecks}>
-						{t('sheet.clearMarkers')}
-					</Button>
-				</div>
-			</Box>
-			<Divider sx={{ mb: 2 }} />
-			<Box height={360} sx={{ overflowY: 'auto' }}>
-				<Grid
-					container
-					justifyContent='center'
-					alignItems='stretch'
-					rowSpacing={4}
-					columnSpacing={2}
-					pb={2}
-					sx={{ overflowWrap: 'break-word' }}>
-					{props.playerSkills.map((skill) => {
-						return (
-							<Grid
-								item
-								key={skill.id}
-								lg={2}
-								md={3}
-								sm={4}
-								xs={6}
-								display={skill.name.toLowerCase().includes(search.toLowerCase()) ? 'flex' : 'none'}
-								flexDirection='column'
-								justifyContent='center'
-								textAlign='center'>
-								<PlayerSkillField
-									{...skill}
-									enableModifiers={props.enableModifiers}
-									notifyClearChecked={notify}
-									onFavourite={onSetFavourite}
-								/>
-							</Grid>
-						);
-					})}
-				</Grid>
-			</Box>
+				<Box display='flex' justifyContent='center' my={2}>
+					<Pagination
+						color='primary'
+						count={search ? 1 : Math.floor(props.playerSkills.length / SKILLS_PER_PAGE) + 1}
+						page={page}
+						onChange={(_, page) => setPage(page)}
+					/>
+				</Box>
+			</div>
+			<Divider />
+			<Grid
+				container
+				justifyContent='center'
+				alignItems='stretch'
+				rowSpacing={4}
+				columnSpacing={2}
+				py={2}>
+				{props.playerSkills.map((skill, index) => {
+					const display = search
+						? skill.name.toLowerCase().includes(search.toLowerCase())
+						: Math.floor(index / SKILLS_PER_PAGE) + 1 === page;
+
+					return (
+						<Grid
+							item
+							key={skill.id}
+							lg={2}
+							md={3}
+							sm={4}
+							xs={6}
+							display={display ? 'flex' : 'none'}
+							flexDirection='column'
+							justifyContent='center'
+							textAlign='center'>
+							<PlayerSkillField
+								{...skill}
+								notifyClearChecked={notify}
+								onFavourite={onSetFavourite}
+							/>
+						</Grid>
+					);
+				})}
+			</Grid>
 		</SheetContainer>
 	);
 };

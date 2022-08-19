@@ -283,11 +283,11 @@ export const table: Locale = {
 			enableResolvers: 'Habilitar Determinadores',
 			enableSkillModifiers: 'Habilitar Modificadores de Perícia',
 			resolver: {
-				when: 'Quando',
-				then: 'Então',
+				when: 'Quando o resultado é',
+				then: ', então a descrição será',
 			},
 			resolverRules:
-				'Você pode usar a sintaxe "{resultado}" para referenciar o resultado da rolagem.',
+				'Você pode usar a sintaxe "{valor}" para referenciar o valor do campo testado.',
 		},
 		portrait: {
 			attributeFontItalic: 'Atributo em Itálico',

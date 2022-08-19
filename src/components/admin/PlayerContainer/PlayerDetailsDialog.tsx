@@ -110,15 +110,22 @@ const PlayerDetailsDialog: React.FC<PlayerDetailsDialogProps> = ({ open, onClose
 						{t('sheet.playerCharacteristicTitle')}
 					</Typography>
 					<Grid container spacing={2} textAlign='center' justifyContent='center'>
-						{details.PlayerCharacteristic.map((char) => (
-							<Grid item xs={6} md={4} lg={3} xl={2} key={char.Characteristic.id}>
-								<Typography variant='h6'>
-									{char.value || '0'}
-									{char.modifier ? `+ ${char.modifier}` : ''}
-								</Typography>
-								<Typography variant='caption'>{char.Characteristic.name}</Typography>
-							</Grid>
-						))}
+						{details.PlayerCharacteristic.map((char) => {
+							let modifier = '';
+							if (char.modifier) {
+								if (char.modifier >= 0) modifier = `+ ${char.modifier}`;
+								else modifier = `- ${Math.abs(char.modifier)}`;
+							}
+
+							return (
+								<Grid item xs={6} md={4} lg={3} xl={2} key={char.Characteristic.id}>
+									<Typography variant='h6'>
+										{char.value} {modifier}
+									</Typography>
+									<Typography variant='caption'>{char.Characteristic.name}</Typography>
+								</Grid>
+							);
+						})}
 					</Grid>
 
 					{details.PlayerSkill.length > 0 && (
@@ -129,15 +136,22 @@ const PlayerDetailsDialog: React.FC<PlayerDetailsDialogProps> = ({ open, onClose
 								{t('sheet.playerSkillTitle')}
 							</Typography>
 							<Grid container spacing={2} textAlign='center' justifyContent='center'>
-								{details.PlayerSkill.map((skill) => (
-									<Grid item xs={6} md={4} lg={3} xl={2} key={skill.Skill.id}>
-										<Typography variant='h6'>
-											{skill.value || '0'}
-											{skill.modifier ? `+ ${skill.modifier}` : ''}
-										</Typography>
-										<Typography variant='caption'>{skill.Skill.name}</Typography>
-									</Grid>
-								))}
+								{details.PlayerSkill.map((skill) => {
+									let modifier = '';
+									if (skill.modifier) {
+										if (skill.modifier >= 0) modifier = `+ ${skill.modifier}`;
+										else modifier = `- ${Math.abs(skill.modifier)}`;
+									}
+
+									return (
+										<Grid item xs={6} md={4} lg={3} xl={2} key={skill.Skill.id}>
+											<Typography variant='h6'>
+												{skill.value} {modifier}
+											</Typography>
+											<Typography variant='caption'>{skill.Skill.name}</Typography>
+										</Grid>
+									);
+								})}
 							</Grid>
 						</>
 					)}

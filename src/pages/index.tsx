@@ -91,6 +91,7 @@ const LoginForm: React.FC<{ onSubmit: LoginHandler }> = (props) => {
 	return (
 		<Box component='form' mt={1} onSubmit={handleSubmit}>
 			<TextField
+				autoFocus
 				fullWidth
 				label='Email'
 				margin='normal'

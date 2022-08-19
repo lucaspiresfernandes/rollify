@@ -1,11 +1,9 @@
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
-import ClearIcon from '@mui/icons-material/Clear';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
@@ -68,8 +66,10 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 			<Grid item xs={12} sm={6}>
 				<FavouriteSkillsContainer
 					title={`${props.title} (${t('quickAccess')})`}
-					playerSkills={favouriteSkills}
-					enableModifiers={props.enableModifiers}
+					playerSkills={favouriteSkills.map((skills) => ({
+						...skills,
+						modifier: props.enableModifiers ? skills.modifier : null,
+					}))}
 					onSkillUnfavourite={(skill) => onSetFavourite(skill, false)}
 				/>
 			</Grid>
@@ -77,8 +77,10 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 			<Grid item xs={12}>
 				<BaseSkillsContainer
 					title={props.title}
-					playerSkills={baseSkills}
-					enableModifiers={props.enableModifiers}
+					playerSkills={baseSkills.map((skills) => ({
+						...skills,
+						modifier: props.enableModifiers ? skills.modifier : null,
+					}))}
 					onSkillFavourite={(skill) => onSetFavourite(skill, true)}
 				/>
 			</Grid>
@@ -90,10 +92,9 @@ export type PlayerSkillFieldProps = {
 	id: number;
 	name: string;
 	value: number;
-	modifier: number;
+	modifier: number | null;
 	checked: boolean;
 	notifyClearChecked: boolean;
-	enableModifiers: boolean;
 	onFavourite?: (skill: { id: number; checked: boolean; value: number; modifier: number }) => void;
 	onUnfavourite?: (skill: {
 		id: number;
@@ -107,10 +108,10 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
 	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
-		if (!props.enableModifiers) return null;
+		if (!props.modifier) return null;
 		const modifier = props.modifier;
 		let mod = modifier.toString();
-		if (modifier > -1) mod = `+${mod}`;
+		if (modifier >= 0) mod = `+${mod}`;
 		return mod;
 	});
 	const componentDidMount = useRef(false);
@@ -205,12 +206,10 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					inputProps={{ 'aria-label': 'Marker' }}
 					checked={checked}
 					onChange={onCheckChange}
-					size='small'
 					sx={{ padding: 0 }}
 				/>
 				{props.onFavourite && (
 					<IconButton
-						size='small'
 						onClick={() =>
 							props.onFavourite?.({
 								id: props.id,
@@ -226,7 +225,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 				)}
 				{props.onUnfavourite && (
 					<IconButton
-						size='small'
 						onClick={() =>
 							props.onUnfavourite?.({
 								id: props.id,
@@ -289,44 +287,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	);
 };
 
-export const PlayerSkillField = memo(UnderlyingPlayerSkillField, (prev, next) => {
-	return (
-		prev.notifyClearChecked === next.notifyClearChecked &&
-		prev.id === next.id &&
-		prev.name === next.name
-	);
-});
-
-type SearchbarProps = {
-	onSearchChange: (search: string) => void;
-};
-
-export const Searchbar: React.FC<SearchbarProps> = (props) => {
-	const [search, setSearch] = useState('');
-	const { t } = useI18n<Locale>();
-
-	useEffect(() => {
-		props.onSearchChange(search);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [search]);
-
-	return (
-		<InputBase
-			fullWidth
-			placeholder={t('search')}
-			inputProps={{ 'aria-label': t('search') }}
-			value={search}
-			onChange={(e) => setSearch(e.target.value)}
-			endAdornment={
-				<IconButton
-					size='small'
-					onClick={() => setSearch('')}
-					sx={{ visibility: search ? undefined : 'hidden' }}>
-					<ClearIcon />
-				</IconButton>
-			}
-		/>
-	);
-};
+export const PlayerSkillField = memo(UnderlyingPlayerSkillField);
 
 export default PlayerSkillContainer;

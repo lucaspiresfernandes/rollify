@@ -281,10 +281,10 @@ export const table: Locale = {
 			enableResolvers: 'Enable resolvers',
 			enableSkillModifiers: 'Enable skill modifiers',
 			resolver: {
-				when: 'When',
-				then: 'Then',
+				when: 'When result is',
+				then: ', then the description will be',
 			},
-			resolverRules: 'You can use the syntax "{result}" to refer to the result of the dice roll.',
+			resolverRules: 'You can use the syntax "{value}" to refer to the value of the tested field.',
 		},
 		portrait: {
 			attributeFontItalic: 'Attribute font italic',

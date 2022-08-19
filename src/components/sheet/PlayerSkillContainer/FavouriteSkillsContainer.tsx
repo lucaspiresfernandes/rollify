@@ -1,12 +1,12 @@
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { startTransition, useContext, useState } from 'react';
-import { PlayerSkillField, PlayerSkillFieldProps, Searchbar } from '.';
+import { useContext, useState } from 'react';
+import { PlayerSkillField, PlayerSkillFieldProps } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { PlayerSkillApiResponse } from '../../../pages/api/sheet/player/skill';
@@ -20,11 +20,10 @@ type FavouriteSkillsContainerProps = {
 	playerSkills: {
 		id: number;
 		name: string;
-		modifier: number;
+		modifier: number | null;
 		value: number;
 		checked: boolean;
 	}[];
-	enableModifiers: boolean;
 	onSkillUnfavourite: NonNullable<PlayerSkillFieldProps['onUnfavourite']>;
 };
 
@@ -66,28 +65,24 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			display='flex'
 			flexDirection='column'
 			height='100%'
-			position='relative'>
+			position='relative'
+			sideButton={
+				<IconButton title={t('sheet.clearMarkers')} onClick={clearChecks}>
+					<RemoveDoneIcon />
+				</IconButton>
+			}>
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<Box display='flex' alignItems='center' gap={1} my={1}>
-				<Paper sx={{ p: 0.5, flex: '1 0' }}>
-					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
-				</Paper>
-				<div>
-					<Button size='small' variant='outlined' onClick={clearChecks}>
-						{t('sheet.clearMarkers')}
-					</Button>
-				</div>
-			</Box>
-			<Divider sx={{ mb: 2 }} />
 			<Box
 				position='relative'
 				flex={{ xs: null, sm: '1 0' }}
 				height={{ xs: 360, sm: null }}
 				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
 				{props.playerSkills.length === 0 && (
-					<Box textAlign='center'>{t('placeholder.noFavouriteSkills')}</Box>
+					<Typography variant='body1' textAlign='center' mt={3}>
+						{t('placeholder.noFavouriteSkills')}
+					</Typography>
 				)}
 				<Grid
 					container
@@ -113,7 +108,6 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 								textAlign='center'>
 								<PlayerSkillField
 									{...skill}
-									enableModifiers={props.enableModifiers}
 									notifyClearChecked={notify}
 									onUnfavourite={onUnfavourite}
 								/>

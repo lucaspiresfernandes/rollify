@@ -78,11 +78,7 @@ const Home: React.FC<PageProps> = (props) => {
 				<Typography variant='h4' component='h1'>
 					{t('register.title')}
 				</Typography>
-				<RegisterForm
-					onSubmit={onLogin}
-					firstAdmin={props.firstAdmin}
-					registerAsAdmin={props.registerAsAdmin}
-				/>
+				<RegisterForm onSubmit={onLogin} firstAdmin={props.firstAdmin} />
 			</Box>
 		</Container>
 	);
@@ -90,7 +86,6 @@ const Home: React.FC<PageProps> = (props) => {
 
 type RegisterFormProps = {
 	onSubmit: RegisterHandler;
-	registerAsAdmin: boolean;
 	firstAdmin: boolean;
 };
 
@@ -100,6 +95,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 	const [password, setPassword] = useState('');
 	const [passwordError, setPasswordError] = useState<string>();
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [registerAsAdmin, setRegisterAsAdmin] = useState(false);
 	const [adminKey, setAdminKey] = useState('');
 	const { t } = useI18n<Locale>();
 
@@ -111,12 +107,13 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 			return setPasswordError(t('error.credentials.empty_password'));
 		if (password !== confirmPassword)
 			return setPasswordError(t('error.credentials.password_mismatch'));
-		props.onSubmit(email, password, props.registerAsAdmin ? adminKey : undefined);
+		props.onSubmit(email, password, registerAsAdmin ? adminKey : undefined);
 	};
 
 	return (
 		<Box component='form' mt={1} onSubmit={handleSubmit}>
 			<TextField
+				autoFocus
 				fullWidth
 				label='Email'
 				margin='normal'
@@ -157,7 +154,7 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 				error={!!passwordError}
 				helperText={passwordError}
 			/>
-			{props.registerAsAdmin &&
+			{registerAsAdmin &&
 				(props.firstAdmin ? (
 					<Typography variant='caption' mt={1}>
 						{t('register.adminKeyDisabled')}
@@ -182,14 +179,14 @@ const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 					</Link>
 				</Grid>
 				<Grid item xs>
-					{props.registerAsAdmin ? (
-						<Link href='/register' passHref>
-							<MuiLink variant='body2'>{t('register.registerAsPlayer')}</MuiLink>
-						</Link>
+					{registerAsAdmin ? (
+						<MuiLink variant='body2' href='#' onClick={() => setRegisterAsAdmin(false)}>
+							{t('register.registerAsPlayer')}
+						</MuiLink>
 					) : (
-						<Link href='/register?admin=true' passHref>
-							<MuiLink variant='body2'>{t('register.registerAsAdmin')}</MuiLink>
-						</Link>
+						<MuiLink variant='body2' href='#' onClick={() => setRegisterAsAdmin(true)}>
+							{t('register.registerAsAdmin')}
+						</MuiLink>
 					)}
 				</Grid>
 			</Grid>
@@ -235,17 +232,12 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		};
 	}
 
-	const registerAsAdmin = ctx.query.admin === 'true';
-
-	let firstAdmin = false;
-	if (registerAsAdmin) {
-		const admins = await prisma.player.findMany({ where: { role: 'ADMIN' } });
-		firstAdmin = admins.length === 0;
-	}
+	const firstAdmin = (await prisma.player.findMany({ where: { role: 'ADMIN' } })).length === 0;
 
 	const locale = ctx.locale || ctx.defaultLocale;
 	const { table = {} } = await import(`../i18n/${locale}`);
-	return { props: { table, registerAsAdmin, firstAdmin } };
+
+	return { props: { table, firstAdmin } };
 }
 
 export const getServerSideProps = withSessionSsr(getSsp);

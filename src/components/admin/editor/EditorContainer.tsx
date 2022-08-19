@@ -4,13 +4,13 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
 import { memo, startTransition, useState } from 'react';
 import type { Locale } from '../../../i18n';
-import { Searchbar } from '../../sheet/PlayerSkillContainer';
 
 type EditorContainerProps = {
 	data: { id: number; name: string }[];
@@ -25,11 +25,16 @@ const EditorContainer: React.FC<EditorContainerProps> = ({ data, onEdit, onCopy,
 
 	return (
 		<>
-			<Box mx={1} my={1}>
-				<Paper sx={{ p: 0.5 }}>
-					<Searchbar onSearchChange={(s) => startTransition(() => setSearch(s))} />
+			<div>
+				<Paper sx={{ my: 1, py: 0.5, px: 1, flex: '1 0' }}>
+					<InputBase
+						fullWidth
+						placeholder={t('search')}
+						inputProps={{ 'aria-label': t('search') }}
+						onChange={(e) => startTransition(() => setSearch(e.target.value))}
+					/>
 				</Paper>
-			</Box>
+			</div>
 			<Divider />
 			<Box height={290} mt={1} sx={{ overflowY: 'auto' }}>
 				<Stack spacing={2} py={1} pr={1}>

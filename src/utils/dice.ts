@@ -39,7 +39,7 @@ export function getDiceResultDescription(
 	for (const con of config) {
 		const result =
 			typeof con.result === 'string'
-				? (eval(con.result.replace(/({result})|({resultado})/g, diceRoll.toString())) as number)
+				? (eval(con.result.replace(/({value})|({valor})/g, diceRoll.toString())) as number)
 				: con.result;
 		const compare = comparer.get(con.operator) as NonNullable<ReturnType<typeof comparer.get>>;
 		if (compare(diceResult, result)) return con.description;
