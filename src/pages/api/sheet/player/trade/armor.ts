@@ -211,10 +211,10 @@ const handlePost: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => 
 				.emit('playerArmorRemove', trade.receiver_id, trade.receiver_object_id);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerArmorAdd', trade.sender_id, newSenderArmor.Armor);
+				.emit('playerArmorAdd', trade.sender_id, newSenderArmor);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerArmorAdd', trade.receiver_id, newReceiverArmor.Armor);
+				.emit('playerArmorAdd', trade.receiver_id, newReceiverArmor);
 		} else {
 			const armor = await prisma.playerArmor.update({
 				where: {
@@ -234,7 +234,7 @@ const handlePost: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => 
 			res.socket.server.io
 				.to('admin')
 				.emit('playerArmorRemove', trade.sender_id, trade.sender_object_id);
-			res.socket.server.io.to('admin').emit('playerArmorAdd', trade.receiver_id, armor.Armor);
+			res.socket.server.io.to('admin').emit('playerArmorAdd', trade.receiver_id, armor);
 		}
 	} catch (err) {
 		console.error(err);
