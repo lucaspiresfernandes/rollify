@@ -7,6 +7,7 @@ import type {
 	PlayerArmor,
 	Armor,
 	Trade,
+	PlayerSpell,
 } from '@prisma/client';
 import type { Server as HTTPServer } from 'http';
 import type { Socket as NetSocket } from 'net';
@@ -65,7 +66,7 @@ export interface ServerToClientEvents {
 		currentDescription: string,
 		quantity: number
 	) => void;
-	playerSpellAdd: (playerId: number, spell: Spell) => void;
+	playerSpellAdd: (playerId: number, spell: PlayerSpell & { Spell: Spell }) => void;
 	playerSpellRemove: (playerId: number, spellId: number) => void;
 	playerSpellChange: (playerId: number, spellId: number, currentDescription: string) => void;
 	playerMaxLoadChange: (playerId: number, newLoad: number) => void;

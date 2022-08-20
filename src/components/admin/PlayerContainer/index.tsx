@@ -300,12 +300,12 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			});
 		});
 
-		socket.on('playerSpellAdd', (id, Spell) => {
+		socket.on('playerSpellAdd', (id, spell) => {
 			setDetails((details) => {
 				if (!details || details.id !== id) return details;
 				return {
 					...details,
-					PlayerSpell: [...details.PlayerSpell, { Spell }],
+					PlayerSpell: [...details.PlayerSpell, { ...spell, ...spell.Spell }],
 				};
 			});
 		});

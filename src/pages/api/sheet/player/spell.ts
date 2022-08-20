@@ -45,7 +45,7 @@ const handlePut: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) => 
 
 		res.json({ status: 'success', spell });
 
-		res.socket.server.io.to('admin').emit('playerSpellAdd', player_id, spell.Spell);
+		res.socket.server.io.to('admin').emit('playerSpellAdd', player_id, spell);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
