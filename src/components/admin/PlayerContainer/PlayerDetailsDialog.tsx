@@ -58,7 +58,7 @@ const PlayerDetailsDialog: React.FC<PlayerDetailsDialogProps> = ({ open, onClose
 							width={AVATAR_SIZE[0]}
 						/>
 						<Typography variant='h5' mt={2} gutterBottom>
-							{details.name}
+							{details.name || t('unknown')}
 						</Typography>
 						<Typography variant='caption'>
 							{details.PlayerAttributeStatus.filter((attr) => attr.value)

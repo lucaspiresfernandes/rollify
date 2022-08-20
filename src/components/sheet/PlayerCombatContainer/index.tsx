@@ -32,7 +32,7 @@ import SheetContainer from '../Section';
 import PlayerArmorContainer from './PlayerArmorContainer';
 import PlayerWeaponContainer from './PlayerWeaponContainer';
 
-const WeaponIcon: React.FC = () => (
+export const WeaponIcon: React.FC = () => (
 	<svg focusable='false' aria-hidden='true' viewBox='0 0 24 24' width='1em' height='1em'>
 		<path
 			fill='currentColor'
@@ -40,7 +40,7 @@ const WeaponIcon: React.FC = () => (
 	</svg>
 );
 
-const ArmorIcon: React.FC = () => (
+export const ArmorIcon: React.FC = () => (
 	<svg focusable='false' aria-hidden='true' viewBox='0 0 24 24' width='1em' height='1em'>
 		<path
 			fill='currentColor'
@@ -438,7 +438,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				playerWeapons={weaponList}
 				onDeleteWeapon={onDeleteWeapon}
 				onTrade={onTrade}
-			/>
+			/>			
 			<PlayerArmorContainer
 				playerArmor={armorList}
 				onDeleteArmor={onDeleteArmor}

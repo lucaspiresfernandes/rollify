@@ -47,6 +47,7 @@ const OPERATIONS: RelationalOperator[] = [
 	'lessThan',
 	'greaterThanOrEquals',
 	'lessThanOrEquals',
+	'any',
 ];
 
 const DICES = [
@@ -104,7 +105,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 					id: getId(),
 					description: t('unknown'),
 					operator: 'equals',
-					result: 0,
+					result: '0',
 				},
 			],
 		});
@@ -206,7 +207,7 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 											)
 										}
 										onDelete={() => {
-											if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+											if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 											startTransition(() =>
 												setForm((f) => ({
 													...f,
@@ -321,24 +322,26 @@ const ResolverField: React.FC<ResolverFieldProps> = (props) => {
 						</MenuItem>
 					))}
 				</Select>
-				<TextField
-					variant='standard'
-					size='small'
-					defaultValue={props.result}
-					onChange={(ev) =>
-						props.onChange({
-							description: props.description,
-							operator: props.operator,
-							result: ev.target.value,
-						})
-					}
-					sx={{ maxWidth: '7em' }}
-					inputProps={{
-						style: {
-							textAlign: 'center',
-						},
-					}}
-				/>
+				{props.operator !== 'any' && (
+					<TextField
+						variant='standard'
+						size='small'
+						defaultValue={props.result}
+						onChange={(ev) =>
+							props.onChange({
+								description: props.description,
+								operator: props.operator,
+								result: ev.target.value,
+							})
+						}
+						sx={{ maxWidth: '7em' }}
+						inputProps={{
+							style: {
+								textAlign: 'center',
+							},
+						}}
+					/>
+				)}
 				{t('settings.dice.resolver.then')}
 				<TextField
 					variant='standard'

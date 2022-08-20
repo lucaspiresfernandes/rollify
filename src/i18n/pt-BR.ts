@@ -64,6 +64,7 @@ export const table: Locale = {
 	},
 
 	operation: {
+		any: 'Qualquer',
 		equals: 'Igual a',
 		notEquals: 'Diferente de',
 		greaterThan: 'Maior que',

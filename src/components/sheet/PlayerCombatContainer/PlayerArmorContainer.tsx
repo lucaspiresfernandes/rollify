@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import type { Armor, TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useState } from 'react';
-import type { PlayerCombatContainerProps } from '.';
+import { ArmorIcon, PlayerCombatContainerProps } from '.';
 import type { Locale } from '../../../i18n';
 
 type PlayerArmorContainerProps = {
@@ -31,9 +31,18 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding='none'></TableCell>
-						<TableCell padding='none'></TableCell>
-						<TableCell padding='none'></TableCell>
+						<TableCell padding='none'>
+							<Typography
+								variant='h5'
+								component='div'
+								display='flex'
+								justifyContent='center'
+								alignItems='center'>
+								<ArmorIcon />
+							</Typography>
+						</TableCell>
+						<TableCell padding='none' />
+						<TableCell padding='none' />
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.type')}</TableCell>
 						<TableCell align='center'>{t('sheet.table.weight')}</TableCell>
@@ -102,7 +111,7 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 			</TableRow>
 			{props.description && (
 				<TableRow>
-					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' mb={1} px={3}>
 								{props.description}

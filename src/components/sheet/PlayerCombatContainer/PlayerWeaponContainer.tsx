@@ -18,7 +18,7 @@ import type { TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
-import type { PlayerCombatContainerProps } from '.';
+import { PlayerCombatContainerProps, WeaponIcon } from '.';
 import dice20 from '../../../../public/dice20.webp';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../../contexts';
 import useExtendedState from '../../../hooks/useExtendedState';
@@ -37,11 +37,20 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	return (
-		<TableContainer>
+		<TableContainer sx={{ mb: 3 }}>
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding='none' />
+						<TableCell padding='none'>
+							<Typography
+								variant='h5'
+								component='div'
+								display='flex'
+								justifyContent='center'
+								alignItems='center'>
+								<WeaponIcon />
+							</Typography>
+						</TableCell>
 						<TableCell padding='none' />
 						<TableCell padding='none' />
 						<TableCell align='center'>{t('sheet.table.name')}</TableCell>
@@ -61,7 +70,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 							key={weapon.id}
 							{...weapon}
 							onDelete={() => {
-								if (confirm(t('prompt.delete', {name: 'item'}))) props.onDeleteWeapon(weapon.id);
+								if (confirm(t('prompt.delete', { name: 'item' }))) props.onDeleteWeapon(weapon.id);
 							}}
 							onTrade={() => props.onTrade('weapon', weapon.id)}
 						/>
@@ -200,7 +209,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 			</TableRow>
 			{props.description && (
 				<TableRow>
-					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' mb={1} px={3}>
 								{props.description}

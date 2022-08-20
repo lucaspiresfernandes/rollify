@@ -1,7 +1,9 @@
+import { evaluate } from 'mathjs';
 import type { RosettaExtended } from 'next-rosetta';
 import type { Locale } from '../i18n';
 
 export type RelationalOperator =
+	| 'any'
 	| 'equals'
 	| 'notEquals'
 	| 'greaterThan'
@@ -10,6 +12,7 @@ export type RelationalOperator =
 	| 'lessThanOrEquals';
 
 const comparer = new Map<RelationalOperator, (a: number, b: number) => boolean>([
+	['any', () => true],
 	['equals', (a, b) => a === b],
 	['notEquals', (a, b) => a !== b],
 	['greaterThan', (a, b) => a > b],
@@ -20,7 +23,7 @@ const comparer = new Map<RelationalOperator, (a: number, b: number) => boolean>(
 
 export type DiceResultResolver = {
 	operator: RelationalOperator;
-	result: string | number;
+	result: string;
 	description: string;
 }[];
 
@@ -37,14 +40,18 @@ export function getDiceResultDescription(
 	diceResult: number
 ) {
 	for (const con of config) {
-		let result = 0;
-		if (typeof con.result === 'string') {
-			//TODO: Find a better way to validade the math string or not use eval at all.
-			if (con.result.match(/({value})|({valor})/g) !== null)
-				result = eval(con.result.replace(/({value})|({valor})/g, diceRoll.toString())) as number;
-		} else result = con.result;
-		const compare = comparer.get(con.operator);
-		if (compare && compare(diceResult, result)) return con.description;
+		try {
+			const result = evaluate(con.result.replace(/({value})|({valor})/g, diceRoll.toString()));
+
+			if (typeof result !== 'number')
+				throw new Error('Result is not a number: ' + result.toString());
+
+			const compare = comparer.get(con.operator);
+			if (compare && compare(diceResult, result)) return con.description;
+		} catch (err) {
+			console.warn('Error evaluating dice result:', err);
+			continue;
+		}
 	}
 	return 'Unknown';
 }
