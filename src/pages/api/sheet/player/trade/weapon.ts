@@ -214,12 +214,10 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 			res.socket.server.io
 				.to('admin')
 				.emit('playerWeaponRemove', trade.receiver_id, trade.receiver_object_id);
+			res.socket.server.io.to('admin').emit('playerWeaponAdd', trade.sender_id, newSenderWeapon);
 			res.socket.server.io
 				.to('admin')
-				.emit('playerWeaponAdd', trade.sender_id, newSenderWeapon.Weapon);
-			res.socket.server.io
-				.to('admin')
-				.emit('playerWeaponAdd', trade.receiver_id, newReceiverWeapon.Weapon);
+				.emit('playerWeaponAdd', trade.receiver_id, newReceiverWeapon);
 		} else {
 			const weapon = await prisma.playerWeapon.update({
 				where: {
@@ -239,7 +237,7 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 			res.socket.server.io
 				.to('admin')
 				.emit('playerWeaponRemove', trade.sender_id, trade.sender_object_id);
-			res.socket.server.io.to('admin').emit('playerWeaponAdd', trade.receiver_id, weapon.Weapon);
+			res.socket.server.io.to('admin').emit('playerWeaponAdd', trade.receiver_id, weapon);
 		}
 	} catch (err) {
 		console.error(err);

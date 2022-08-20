@@ -193,7 +193,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 											...weap,
 											...weap.Weapon,
 										}))}
-										playerArmor={props.player.PlayerArmor.map((arm) => arm.Armor)}
+										playerArmor={props.player.PlayerArmor.map((arm) => ({ ...arm, ...arm.Armor }))}
 										playerCurrency={props.player.PlayerCurrency.map((cur) => ({
 											id: cur.Currency.id,
 											name: cur.Currency.name,
@@ -212,7 +212,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 							<Grid item xs={12}>
 								<MemoPlayerSpellContainer
 									title={t('sheet.playerSpellTitle')}
-									playerSpells={props.player.PlayerSpell.map((sp) => sp.Spell)}
+									playerSpells={props.player.PlayerSpell.map((sp) => ({ ...sp, ...sp.Spell }))}
 									playerMaxSlots={props.player.spellSlots}
 								/>
 							</Grid>

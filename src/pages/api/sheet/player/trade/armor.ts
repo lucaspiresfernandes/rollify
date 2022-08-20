@@ -1,4 +1,4 @@
-import type { Armor, Trade } from '@prisma/client';
+import type { Armor, PlayerArmor, Trade } from '@prisma/client';
 import type { NextApiHandlerIO, NextApiResponseData } from '../../../../../utils/next';
 import prisma from '../../../../../utils/prisma';
 import { withSessionApi } from '../../../../../utils/session';
@@ -15,7 +15,7 @@ export type TradeArmorApiResponse = NextApiResponseData<
 	| 'trade_does_not_exist',
 	{
 		trade: Trade;
-		armor: Armor | null;
+		armor: (PlayerArmor & { Armor: Armor }) | null;
 	}
 >;
 
@@ -197,7 +197,7 @@ const handlePost: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => 
 			const newSenderArmor = results[0];
 			const newReceiverArmor = results[1];
 
-			res.json({ status: 'success', trade, armor: newSenderArmor.Armor });
+			res.json({ status: 'success', trade, armor: newSenderArmor });
 
 			res.socket.server.io
 				.to(`player${trade.sender_id}`)
@@ -227,7 +227,7 @@ const handlePost: NextApiHandlerIO<TradeArmorApiResponse> = async (req, res) => 
 				include: { Armor: true },
 			});
 
-			res.json({ status: 'success', trade, armor: armor.Armor });
+			res.json({ status: 'success', trade, armor });
 
 			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, true);
 

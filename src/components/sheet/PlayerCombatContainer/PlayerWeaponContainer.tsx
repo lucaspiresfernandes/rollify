@@ -14,7 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import type { TradeType, Weapon } from '@prisma/client';
+import type { TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
@@ -37,7 +37,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 	const { t } = useI18n<Locale>();
 
 	return (
-		<TableContainer sx={{ mb: 3 }}>
+		<TableContainer>
 			<Table>
 				<TableHead>
 					<TableRow>
@@ -81,8 +81,7 @@ const PlayerWeaponContainer: React.FC<PlayerWeaponContainerProps> = (props) => {
 	);
 };
 
-type PlayerWeaponFieldProps = { [T in keyof Weapon]: Weapon[T] } & {
-	currentAmmo: number;
+type PlayerWeaponFieldProps = PlayerWeaponContainerProps['playerWeapons'][number] & {
 	onDelete: () => void;
 	onTrade: () => void;
 };
@@ -90,6 +89,9 @@ type PlayerWeaponFieldProps = { [T in keyof Weapon]: Weapon[T] } & {
 const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	const [open, setOpen] = useState(false);
 	const [currentAmmo, setCurrentAmmo, isClean] = useExtendedState(props.currentAmmo);
+	const [currentDescription, setCurrentDescription, isDescriptionClean] = useExtendedState(
+		props.currentDescription
+	);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const rollDice = useContext(DiceRollContext);
@@ -135,19 +137,24 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
+	const descriptionBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+		if (isDescriptionClean()) return;
+		api
+			.post<PlayerWeaponApiResponse>('/sheet/player/weapon', { id: props.id, currentDescription })
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
 	return (
 		<>
-			<TableRow
-				sx={{ '& > *': { borderBottom: props.description ? 'unset !important' : undefined } }}>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset !important' } }}>
 				<TableCell align='center' padding='none'>
-					{props.description && (
-						<IconButton
-							title={open ? t('collapse') : t('expand')}
-							size='small'
-							onClick={() => setOpen(!open)}>
-							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-						</IconButton>
-					)}
+					<IconButton
+						title={open ? t('collapse') : t('expand')}
+						size='small'
+						onClick={() => setOpen(!open)}>
+						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+					</IconButton>
 				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton size='small' onClick={props.onDelete} title={t('delete')}>
@@ -207,17 +214,24 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 					)}
 				</TableCell>
 			</TableRow>
-			{props.description && (
-				<TableRow>
-					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-						<Collapse in={open}>
-							<Typography variant='body1' component='div' mb={1} px={3}>
-								{props.description}
-							</Typography>
-						</Collapse>
-					</TableCell>
-				</TableRow>
-			)}
+			<TableRow>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+					<Collapse in={open}>
+						<Box py={1} px={2}>
+							<TextField
+								fullWidth
+								multiline
+								size='small'
+								value={currentDescription}
+								onChange={(ev) => setCurrentDescription(ev.target.value)}
+								onBlur={descriptionBlur}
+								style={{ minWidth: '25em' }}
+								inputProps={{ 'aria-label': 'Description' }}
+							/>
+						</Box>
+					</Collapse>
+				</TableCell>
+			</TableRow>
 		</>
 	);
 };

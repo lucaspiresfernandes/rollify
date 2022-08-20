@@ -340,7 +340,7 @@ const WeaponDetails: React.FC<NonNullable<PlayerApiResponsePlayerData>['PlayerWe
 					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' pb={1} px={3}>
-								{weapon.Weapon.description}
+								{weapon.currentDescription}
 							</Typography>
 						</Collapse>
 					</TableCell>
@@ -383,7 +383,7 @@ const ArmorDetails: React.FC<NonNullable<PlayerApiResponsePlayerData>['PlayerArm
 					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' pb={1} px={3}>
-								{armor.Armor.description}
+								{armor.currentDescription}
 							</Typography>
 						</Collapse>
 					</TableCell>
@@ -430,7 +430,7 @@ const SpellDetails: React.FC<NonNullable<PlayerApiResponsePlayerData>['PlayerSpe
 					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
 						<Collapse in={open}>
 							<Typography variant='body1' component='div' pb={1} px={3}>
-								{spell.Spell.description}
+								{spell.currentDescription}
 							</Typography>
 						</Collapse>
 					</TableCell>

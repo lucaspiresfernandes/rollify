@@ -53,15 +53,20 @@ const handlePost: NextApiHandlerIO<PlayerWeaponApiResponse> = async (req, res) =
 	const weapon_id = Number(req.body.id);
 	const player_id = npcId || player.id;
 	const currentAmmo = req.body.currentAmmo === undefined ? undefined : Number(req.body.currentAmmo);
+	const currentDescription =
+		req.body.currentDescription === undefined ? undefined : String(req.body.currentDescription);
 
 	try {
 		const weapon = await prisma.playerWeapon.update({
-			data: { currentAmmo },
+			data: { currentAmmo, currentDescription },
 			where: { player_id_weapon_id: { player_id, weapon_id } },
 			include: { Weapon: true },
 		});
 
 		res.json({ status: 'success', weapon });
+
+		if (currentDescription)
+			res.socket.server.io.emit('playerWeaponChange', player_id, weapon_id, currentDescription);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -86,13 +91,21 @@ const handlePut: NextApiHandlerIO<PlayerWeaponApiResponse> = async (req, res) =>
 				currentAmmo: 0,
 				player_id,
 				weapon_id,
+				currentDescription: '',
 			},
 			include: { Weapon: true },
 		});
 
+		await prisma.playerWeapon.update({
+			where: { player_id_weapon_id: { player_id, weapon_id } },
+			data: { currentDescription: weapon.Weapon.description },
+		});
+
+		weapon.currentDescription = weapon.Weapon.description;
+
 		res.json({ status: 'success', weapon });
 
-		res.socket.server.io.to('admin').emit('playerWeaponAdd', player_id, weapon.Weapon);
+		res.socket.server.io.to('admin').emit('playerWeaponAdd', player_id, weapon);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

@@ -42,11 +42,11 @@ const getPlayerData = async (id: number) => {
 				},
 				where: { favourite: true },
 			},
-			PlayerWeapon: { select: { Weapon: true, currentAmmo: true } },
-			PlayerArmor: { select: { Armor: true } },
+			PlayerWeapon: { include: { Weapon: true } },
+			PlayerArmor: { include: { Armor: true } },
 			PlayerItem: { select: { Item: true, currentDescription: true, quantity: true } },
 			PlayerCurrency: { select: { Currency: { select: { id: true, name: true } }, value: true } },
-			PlayerSpell: { select: { Spell: true } },
+			PlayerSpell: { include: { Spell: true } },
 		},
 	});
 	return data;

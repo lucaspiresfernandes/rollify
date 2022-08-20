@@ -46,10 +46,12 @@ export interface ServerToClientEvents {
 		modifier: number
 	) => void;
 	playerSkillChange: (playerId: number, skillId: number, value: number, modifier: number) => void;
-	playerWeaponAdd: (playerId: number, weapon: Weapon) => void;
+	playerWeaponAdd: (playerId: number, weapon: PlayerWeapon & { Weapon: Weapon }) => void;
 	playerWeaponRemove: (playerId: number, id: number) => void;
-	playerArmorAdd: (playerId: number, armor: Armor) => void;
+	playerWeaponChange: (playerId: number, weaponID: number, currentDescription: string) => void;
+	playerArmorAdd: (playerId: number, armor: PlayerArmor & { Armor: Armor }) => void;
 	playerArmorRemove: (playerId: number, id: number) => void;
+	playerArmorChange: (playerId: number, armorID: number, currentDescription: string) => void;
 	playerItemAdd: (
 		playerId: number,
 		item: Item,
@@ -65,6 +67,7 @@ export interface ServerToClientEvents {
 	) => void;
 	playerSpellAdd: (playerId: number, spell: Spell) => void;
 	playerSpellRemove: (playerId: number, spellId: number) => void;
+	playerSpellChange: (playerId: number, spellId: number, currentDescription: string) => void;
 	playerMaxLoadChange: (playerId: number, newLoad: number) => void;
 	playerSpellSlotsChange: (playerId: number, newSpellSlots: number) => void;
 	playerTradeRequest: (trade: Trade) => void;

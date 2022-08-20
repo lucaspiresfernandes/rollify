@@ -234,12 +234,12 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			});
 		});
 
-		socket.on('playerWeaponAdd', (id, Weapon) => {
+		socket.on('playerWeaponAdd', (id, weapon) => {
 			setDetails((details) => {
 				if (!details || details.id !== id) return details;
 				return {
 					...details,
-					PlayerWeapon: [...details.PlayerWeapon, { Weapon, currentAmmo: 1 }],
+					PlayerWeapon: [...details.PlayerWeapon, weapon],
 				};
 			});
 		});
@@ -254,12 +254,25 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 			});
 		});
 
-		socket.on('playerArmorAdd', (id, Armor) => {
+		socket.on('playerWeaponChange', (id, weaponId, currentDescription) => {
 			setDetails((details) => {
 				if (!details || details.id !== id) return details;
 				return {
 					...details,
-					PlayerArmor: [...details.PlayerArmor, { Armor }],
+					PlayerWeapon: details.PlayerWeapon.map((weapon) => {
+						if (weapon.Weapon.id !== weaponId) return weapon;
+						return { ...weapon, currentDescription };
+					}),
+				};
+			});
+		});
+
+		socket.on('playerArmorAdd', (id, armor) => {
+			setDetails((details) => {
+				if (!details || details.id !== id) return details;
+				return {
+					...details,
+					PlayerArmor: [...details.PlayerArmor, armor],
 				};
 			});
 		});
@@ -270,6 +283,19 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 				return {
 					...details,
 					PlayerArmor: details.PlayerArmor.filter((ar) => ar.Armor.id !== armorId),
+				};
+			});
+		});
+
+		socket.on('playerArmorChange', (id, armorId, currentDescription) => {
+			setDetails((details) => {
+				if (!details || details.id !== id) return details;
+				return {
+					...details,
+					PlayerArmor: details.PlayerArmor.map((armor) => {
+						if (armor.Armor.id !== armorId) return armor;
+						return { ...armor, currentDescription };
+					}),
 				};
 			});
 		});
@@ -290,6 +316,19 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 				return {
 					...details,
 					PlayerSpell: details.PlayerSpell.filter((sp) => sp.Spell.id !== spellId),
+				};
+			});
+		});
+
+		socket.on('playerSpellChange', (id, spellId, currentDescription) => {
+			setDetails((details) => {
+				if (!details || details.id !== id) return details;
+				return {
+					...details,
+					PlayerSpell: details.PlayerSpell.map((spell) => {
+						if (spell.Spell.id !== spellId) return spell;
+						return { ...spell, currentDescription };
+					}),
 				};
 			});
 		});

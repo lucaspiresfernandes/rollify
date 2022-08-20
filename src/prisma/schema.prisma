@@ -85,7 +85,7 @@ model Weapon {
   id           Int            @id @default(autoincrement())
   name         String
   type         String
-  description  String         @db.Text
+  description  String         @db.LongText
   weight       Float
   damage       String
   range        String
@@ -99,7 +99,7 @@ model Armor {
   id              Int           @id @default(autoincrement())
   name            String
   type            String
-  description     String        @db.Text
+  description     String        @db.LongText
   weight          Float
   damageReduction String
   penalty         String
@@ -110,7 +110,7 @@ model Armor {
 model Item {
   id          Int          @id @default(autoincrement())
   name        String
-  description String       @db.Text
+  description String       @db.LongText
   weight      Float
   visible     Boolean
   PlayerItem  PlayerItem[]
@@ -131,7 +131,7 @@ model ExtraInfo {
 model Spell {
   id          Int           @id @default(autoincrement())
   name        String
-  description String        @db.Text
+  description String        @db.LongText
   cost        String
   type        String
   damage      String
@@ -194,6 +194,7 @@ model PlayerCharacteristic {
   characteristic_id Int
   value             Int            @default(0)
   modifier          Int            @default(0)
+  checked           Boolean        @default(false)
 
   @@id([player_id, characteristic_id])
 }
@@ -212,20 +213,22 @@ model PlayerSkill {
 }
 
 model PlayerWeapon {
-  Player      Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  player_id   Int
-  Weapon      Weapon @relation(fields: [weapon_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  weapon_id   Int
-  currentAmmo Int    @default(0)
+  Player             Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id          Int
+  Weapon             Weapon @relation(fields: [weapon_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  weapon_id          Int
+  currentAmmo        Int    @default(0)
+  currentDescription String @db.LongText
 
   @@id([player_id, weapon_id])
 }
 
 model PlayerArmor {
-  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  player_id Int
-  Armor     Armor  @relation(fields: [armor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  armor_id  Int
+  Player             Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id          Int
+  Armor              Armor  @relation(fields: [armor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  armor_id           Int
+  currentDescription String @db.LongText
 
   @@id([player_id, armor_id])
 }
@@ -235,7 +238,7 @@ model PlayerItem {
   player_id          Int
   Item               Item   @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   item_id            Int
-  currentDescription String @db.Text
+  currentDescription String @db.LongText
   quantity           Int    @default(1)
 
   @@id([player_id, item_id])
@@ -256,16 +259,17 @@ model PlayerExtraInfo {
   player_id     Int
   ExtraInfo     ExtraInfo @relation(fields: [extra_info_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   extra_info_id Int
-  value         String    @db.Text
+  value         String    @db.LongText
 
   @@id([player_id, extra_info_id])
 }
 
 model PlayerSpell {
-  Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  player_id Int
-  Spell     Spell  @relation(fields: [spell_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  spell_id  Int
+  Player             Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_id          Int
+  Spell              Spell  @relation(fields: [spell_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spell_id           Int
+  currentDescription String @db.LongText
 
   @@id([player_id, spell_id])
 }
@@ -273,7 +277,7 @@ model PlayerSpell {
 model PlayerNote {
   Player    Player @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   player_id Int
-  value     String @db.Text
+  value     String @db.LongText
 
   @@id([player_id])
 }
@@ -284,7 +288,7 @@ model PlayerAvatar {
   player_id           Int
   AttributeStatus     AttributeStatus? @relation(fields: [attribute_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   attribute_status_id Int?
-  link                String?          @db.Text
+  link                String?          @db.LongText
 
   @@unique([player_id, attribute_status_id])
 }

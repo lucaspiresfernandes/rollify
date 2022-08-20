@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
@@ -10,12 +11,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import type { Armor, TradeType } from '@prisma/client';
+import type { TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ArmorIcon, PlayerCombatContainerProps } from '.';
+import { ApiContext, LoggerContext } from '../../../contexts';
+import useExtendedState from '../../../hooks/useExtendedState';
 import type { Locale } from '../../../i18n';
+import type { PlayerArmorApiResponse } from '../../../pages/api/sheet/player/armor';
+import { handleDefaultApiResponse } from '../../../utils';
 
 type PlayerArmorContainerProps = {
 	playerArmor: PlayerCombatContainerProps['playerArmor'];
@@ -65,28 +71,38 @@ const PlayerArmorContainer: React.FC<PlayerArmorContainerProps> = (props) => {
 	);
 };
 
-type PlayerArmorFieldProps = { [T in keyof Armor]: Armor[T] } & {
+type PlayerArmorFieldProps = PlayerArmorContainerProps['playerArmor'][number] & {
 	onDelete: () => void;
 	onTrade: () => void;
 };
 
 const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
+	const [currentDescription, setCurrentDescription, isDescriptionClean] = useExtendedState(
+		props.currentDescription
+	);
 	const [open, setOpen] = useState(false);
 	const { t } = useI18n<Locale>();
+	const api = useContext(ApiContext);
+	const log = useContext(LoggerContext);
+
+	const descriptionBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+		if (isDescriptionClean()) return;
+		api
+			.post<PlayerArmorApiResponse>('/sheet/player/armor', { id: props.id, currentDescription })
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
 
 	return (
 		<>
-			<TableRow
-				sx={{ '& > *': { borderBottom: props.description ? 'unset !important' : undefined } }}>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset !important' } }}>
 				<TableCell align='center' padding='none'>
-					{props.description && (
-						<IconButton
-							title={open ? t('collapse') : t('expand')}
-							size='small'
-							onClick={() => setOpen(!open)}>
-							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-						</IconButton>
-					)}
+					<IconButton
+						title={open ? t('collapse') : t('expand')}
+						size='small'
+						onClick={() => setOpen(!open)}>
+						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+					</IconButton>
 				</TableCell>
 				<TableCell align='center' padding='none'>
 					<IconButton
@@ -109,17 +125,24 @@ const PlayerArmorField: React.FC<PlayerArmorFieldProps> = (props) => {
 				<TableCell align='center'>{props.damageReduction || '-'}</TableCell>
 				<TableCell align='center'>{props.penalty || '-'}</TableCell>
 			</TableRow>
-			{props.description && (
-				<TableRow>
-					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
-						<Collapse in={open}>
-							<Typography variant='body1' component='div' mb={1} px={3}>
-								{props.description}
-							</Typography>
-						</Collapse>
-					</TableCell>
-				</TableRow>
-			)}
+			<TableRow>
+				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+					<Collapse in={open}>
+						<Box py={1} px={2}>
+							<TextField
+								fullWidth
+								multiline
+								size='small'
+								value={currentDescription}
+								onChange={(ev) => setCurrentDescription(ev.target.value)}
+								onBlur={descriptionBlur}
+								style={{ minWidth: '25em' }}
+								inputProps={{ 'aria-label': 'Description' }}
+							/>
+						</Box>
+					</Collapse>
+				</TableCell>
+			</TableRow>
 		</>
 	);
 };

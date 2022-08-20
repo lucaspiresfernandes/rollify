@@ -1,3 +1,4 @@
+import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
@@ -51,8 +52,13 @@ export const ArmorIcon: React.FC = () => (
 
 export type PlayerCombatContainerProps = {
 	title: string;
-	playerWeapons: ({ [T in keyof Weapon]: Weapon[T] } & { currentAmmo: number })[];
-	playerArmor: Armor[];
+	playerWeapons: ({ [T in keyof Weapon]: Weapon[T] } & {
+		currentAmmo: number;
+		currentDescription: string;
+	})[];
+	playerArmor: ({ [T in keyof Armor]: Armor[T] } & {
+		currentDescription: string;
+	})[];
 
 	onEquipmentAdd: (equipment: Weapon | Armor) => void;
 	onEquipmentRemove: (equipment: Weapon | Armor) => void;
@@ -158,12 +164,22 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				if (trade.receiver_object_id) {
 					setPlayerArmor((armor) =>
 						armor.map((ar) => {
-							if (ar.id === trade.receiver_object_id) return newArmor;
+							if (ar.id === trade.receiver_object_id)
+								return {
+									...newArmor,
+									...newArmor.Armor,
+								};
 							return ar;
 						})
 					);
 				} else {
-					setPlayerArmor((weapons) => [...weapons, newArmor]);
+					setPlayerArmor((weapons) => [
+						...weapons,
+						{
+							...newArmor,
+							...newArmor.Armor,
+						},
+					]);
 				}
 			},
 		});
@@ -266,7 +282,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				setPlayerArmor((a) => a.filter((e) => e.id !== id));
-				props.onEquipmentRemove(res.data.armor);
+				props.onEquipmentRemove(res.data.armor.Armor);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -287,8 +303,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 					props.onEquipmentAdd(weapon.Weapon);
 				} else if ('armor' in res.data) {
 					const armor = res.data.armor;
-					setPlayerArmor([...playerArmor, { ...armor }]);
-					props.onEquipmentAdd(armor);
+					setPlayerArmor([...playerArmor, { ...armor, ...armor.Armor }]);
+					props.onEquipmentAdd(armor.Armor);
 				}
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -438,7 +454,8 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				playerWeapons={weaponList}
 				onDeleteWeapon={onDeleteWeapon}
 				onTrade={onTrade}
-			/>			
+			/>
+			<Divider sx={{ mt: 3 }} />
 			<PlayerArmorContainer
 				playerArmor={armorList}
 				onDeleteArmor={onDeleteArmor}

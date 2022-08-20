@@ -1,14 +1,16 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import { handleDefaultApiResponse } from '../../utils';
 import SheetContainer from './Section';
+import type { PlayerCharacteristicApiResponse } from '../../pages/api/sheet/player/characteristic';
 
 type PlayerCharacteristicContainerProps = {
 	title: string;
@@ -17,6 +19,7 @@ type PlayerCharacteristicContainerProps = {
 		name: string;
 		value: number;
 		modifier: number | null;
+		checked: boolean;
 	}[];
 };
 
@@ -39,6 +42,7 @@ type PlayerCharacteristicFieldProps =
 
 const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
+	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
 		const mod = props.modifier;
 		if (mod === null) return null;
@@ -80,7 +84,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 		if (isValueClean()) return;
 
 		api
-			.post('/sheet/player/characteristic', {
+			.post<PlayerCharacteristicApiResponse>('/sheet/player/characteristic', {
 				id: props.id,
 				value: newValue,
 			})
@@ -104,7 +108,7 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 					if (isModifierClean()) return;
 
 					api
-						.post('/sheet/player/characteristic', {
+						.post<PlayerCharacteristicApiResponse>('/sheet/player/characteristic', {
 							id: props.id,
 							modifier: parseInt(newModifier),
 						})
@@ -112,8 +116,27 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 			  };
 
+	const onCheckChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
+		const chk = ev.target.checked;
+		setChecked(chk);
+		api
+			.post<PlayerCharacteristicApiResponse>('/sheet/player/characteristic', {
+				id: props.id,
+				checked: chk,
+			})
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' textAlign='center' my={2}>
+			<div>
+				<Checkbox
+					inputProps={{ 'aria-label': 'Marker' }}
+					checked={checked}
+					onChange={onCheckChange}
+				/>
+			</div>
 			<div className='clickable decoration' onClick={handleDiceClick}>
 				<Typography component='h3' variant='subtitle1'>
 					{props.name}

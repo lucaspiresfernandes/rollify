@@ -18,12 +18,13 @@ const handler: NextApiHandlerIO<PlayerCharacteristicApiResponse> = async (req, r
 	const characteristic_id = Number(req.body.id);
 	const value = req.body.value === undefined ? undefined : Number(req.body.value);
 	const modifier = req.body.modifier === undefined ? undefined : Number(req.body.modifier);
+	const checked = req.body.checked === undefined ? undefined : Boolean(req.body.checked);
 
 	const player_id = npcId || player.id;
 
 	try {
 		const char = await prisma.playerCharacteristic.update({
-			data: { value, modifier },
+			data: { value, modifier, checked },
 			where: { player_id_characteristic_id: { player_id, characteristic_id } },
 			select: { value: true, modifier: true },
 		});
