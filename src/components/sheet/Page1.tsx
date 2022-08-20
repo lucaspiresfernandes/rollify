@@ -170,8 +170,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 								playerCharacteristics={props.player.PlayerCharacteristic.map((char) => ({
 									...char,
 									...char.Characteristic,
+									modifier: props.diceConfig.characteristic.enableModifiers ? char.modifier : null,
 								}))}
-								enableModifiers={props.diceConfig.characteristic.enableModifiers}
 							/>
 						</Grid>
 
@@ -180,8 +180,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 							playerSkills={props.player.PlayerSkill.map((skill) => ({
 								...skill,
 								...skill.Skill,
+								modifier: props.diceConfig.skill.enableModifiers ? skill.modifier : null,
 							}))}
-							enableModifiers={props.diceConfig.skill.enableModifiers}
 						/>
 
 						<AddDataDialogContext.Provider value={addDataProvider}>

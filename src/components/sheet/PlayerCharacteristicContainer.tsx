@@ -16,9 +16,8 @@ type PlayerCharacteristicContainerProps = {
 		id: number;
 		name: string;
 		value: number;
-		modifier: number;
+		modifier: number | null;
 	}[];
-	enableModifiers: boolean;
 };
 
 const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps> = (props) => {
@@ -27,10 +26,7 @@ const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps
 			<Grid container justifyContent='center' textAlign='center'>
 				{props.playerCharacteristics.map((char) => (
 					<Grid item key={char.id} md={4} xs={6}>
-						<PlayerCharacteristicField
-							{...char}
-							modifier={props.enableModifiers ? char.modifier : null}
-						/>
+						<PlayerCharacteristicField {...char} />
 					</Grid>
 				))}
 			</Grid>
@@ -38,12 +34,8 @@ const PlayerCharacteristicContainer: React.FC<PlayerCharacteristicContainerProps
 	);
 };
 
-type PlayerCharacteristicFieldProps = {
-	id: number;
-	name: string;
-	value: number;
-	modifier: number | null;
-};
+type PlayerCharacteristicFieldProps =
+	PlayerCharacteristicContainerProps['playerCharacteristics'][number];
 
 const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());

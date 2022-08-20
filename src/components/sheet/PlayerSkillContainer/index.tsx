@@ -22,11 +22,10 @@ export type PlayerSkillContainerProps = {
 		id: number;
 		name: string;
 		value: number;
-		modifier: number;
+		modifier: number | null;
 		checked: boolean;
 		favourite: boolean;
 	}[];
-	enableModifiers: boolean;
 };
 
 const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
@@ -66,10 +65,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 			<Grid item xs={12} sm={6}>
 				<FavouriteSkillsContainer
 					title={`${props.title} (${t('quickAccess')})`}
-					playerSkills={favouriteSkills.map((skills) => ({
-						...skills,
-						modifier: props.enableModifiers ? skills.modifier : null,
-					}))}
+					playerSkills={favouriteSkills}
 					onSkillUnfavourite={(skill) => onSetFavourite(skill, false)}
 				/>
 			</Grid>
@@ -77,10 +73,7 @@ const PlayerSkillContainer: React.FC<PlayerSkillContainerProps> = (props) => {
 			<Grid item xs={12}>
 				<BaseSkillsContainer
 					title={props.title}
-					playerSkills={baseSkills.map((skills) => ({
-						...skills,
-						modifier: props.enableModifiers ? skills.modifier : null,
-					}))}
+					playerSkills={baseSkills}
 					onSkillFavourite={(skill) => onSetFavourite(skill, true)}
 				/>
 			</Grid>
@@ -108,7 +101,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
 	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
-		if (!props.modifier) return null;
+		if (props.modifier === null) return null;
 		const modifier = props.modifier;
 		let mod = modifier.toString();
 		if (modifier >= 0) mod = `+${mod}`;

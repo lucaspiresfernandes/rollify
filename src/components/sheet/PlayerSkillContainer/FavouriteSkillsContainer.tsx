@@ -93,7 +93,7 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 					left={0}
 					rowSpacing={4}
 					columnSpacing={2}
-					pb={2}
+					py={2}
 					sx={{ overflowWrap: 'break-word' }}>
 					{props.playerSkills.map((skill) => {
 						return (
