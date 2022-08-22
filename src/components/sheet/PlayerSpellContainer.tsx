@@ -28,6 +28,7 @@ import type { PlayerSpellApiResponse } from '../../pages/api/sheet/player/spell'
 import type { SpellSheetApiResponse } from '../../pages/api/sheet/spell';
 import { handleDefaultApiResponse } from '../../utils';
 import { resolveDices } from '../../utils/dice';
+import SpellEditorDialog from '../admin/dialogs/editor/SpellEditorDialog';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
 
@@ -42,6 +43,7 @@ type PlayerSpellContainerProps = {
 const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [playerSpells, setPlayerSpells] = useState(props.playerSpells);
+	const [spellDialogOpen, setSpellDialogOpen] = useState(false);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataDialogContext);
@@ -70,8 +72,10 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const spells = res.data.spell;
-				if (spells.length === 0) return log({ text: t('prompt.noItemsFound') });
-				addDataDialog.openDialog(spells, onAddSpell);
+				addDataDialog.openDialog(spells, onAddSpell, () => {
+					addDataDialog.closeDialog();
+					setSpellDialogOpen(true);
+				});
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -89,6 +93,18 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 				setPlayerSpells((s) => s.filter((spell) => spell.id !== id));
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+			.finally(() => setLoading(false));
+	};
+
+	const onCreateSpell = (data: Spell) => {
+		setSpellDialogOpen(false);
+		setLoading(true);
+		api
+			.put<SpellSheetApiResponse>('/sheet/spell', data)
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
 			.finally(() => setLoading(false));
 	};
 
@@ -147,6 +163,12 @@ const PlayerSpellContainer: React.FC<PlayerSpellContainerProps> = (props) => {
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
+			<SpellEditorDialog
+				title={`${t('add')} ${t('admin.editor.weapon')}`}
+				open={spellDialogOpen}
+				onClose={() => setSpellDialogOpen(false)}
+				onSubmit={onCreateSpell}
+			/>
 		</SheetContainer>
 	);
 };

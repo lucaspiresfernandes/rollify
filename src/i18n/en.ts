@@ -238,6 +238,7 @@ export const table: Locale = {
 			},
 		},
 		close: 'Close',
+		create: 'Create',
 		cancel: 'Cancel',
 		apply: 'Apply',
 		roll: 'Roll',

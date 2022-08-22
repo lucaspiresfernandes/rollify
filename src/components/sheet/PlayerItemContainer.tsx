@@ -15,7 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-import type { Trade } from '@prisma/client';
+import type { Item, Trade } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -39,6 +39,7 @@ import type { ItemTradeObject } from '../../utils/socket';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
 import type { PlayerApiResponse } from '../../pages/api/sheet/player';
+import ItemEditorDialog from '../admin/dialogs/editor/ItemEditorDialog';
 
 export type PlayerItemContainerProps = {
 	title: string;
@@ -73,6 +74,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [tradeId, setTradeId] = useState<number>();
 	const [playerItems, setPlayerItems] = useState(props.playerItems);
+	const [itemDialogOpen, setItemDialogOpen] = useState(false);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const addDataDialog = useContext(AddDataDialogContext);
@@ -212,8 +214,10 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const items = res.data.item;
-				if (items.length === 0) return log({ text: t('prompt.noItemsFound') });
-				addDataDialog.openDialog(items, onAddItem);
+				addDataDialog.openDialog(items, onAddItem, () => {
+					addDataDialog.closeDialog();
+					setItemDialogOpen(true);
+				});
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -301,6 +305,18 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			);
 	};
 
+	const onCreateItem = (data: Item) => {
+		setItemDialogOpen(false);
+		setLoading(true);
+		api
+			.put<ItemSheetApiResponse>('/sheet/item', data)
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
+			.finally(() => setLoading(false));
+	};
+
 	const itemList = useMemo(
 		() => playerItems.sort((a, b) => a.name.localeCompare(b.name)),
 		[playerItems]
@@ -376,6 +392,12 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					</Button>
 				)}
 			</PartialBackdrop>
+			<ItemEditorDialog
+				title={`${t('add')} ${t('admin.editor.weapon')}`}
+				open={itemDialogOpen}
+				onClose={() => setItemDialogOpen(false)}
+				onSubmit={onCreateItem}
+			/>
 		</SheetContainer>
 	);
 };

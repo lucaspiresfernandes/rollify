@@ -41,7 +41,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 	const [addDialogData, setAddDialogData] = useState<{
 		data: AddDataDialogProps['data'];
 		onSubmit: AddDataDialogProps['onSubmit'];
-	}>({ data: [], onSubmit: () => {} });
+		onCreate: AddDataDialogProps['onCreate'];
+	}>({ data: [], onSubmit: () => {}, onCreate: () => {} });
 
 	const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
 	const [tradeDialogData, setTradeDialogData] = useState<{
@@ -92,8 +93,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 
 	const addDataProvider: AddDataContextType = useMemo(
 		() => ({
-			openDialog: (data, onSubmit) => {
-				setAddDialogData({ data, onSubmit });
+			openDialog: (data, onSubmit, onCreate) => {
+				setAddDialogData({ data, onSubmit, onCreate });
 				setAddDataDialogOpen(true);
 			},
 			closeDialog: () => setAddDataDialogOpen(false),

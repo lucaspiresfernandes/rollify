@@ -48,9 +48,7 @@ const PortraitAvatarContainer: React.FC<PortraitAvatarContainerProps> = (props) 
 				setSrc(data.link);
 			})
 			.catch((err) => {
-				console.log('fetch error');
-				if (axios.isCancel(err)) return console.log('Cancelled');
-				setSrc('/avatar404.webp');
+				if (!axios.isCancel(err)) setSrc('/avatar404.webp');
 			});
 
 		return () => {

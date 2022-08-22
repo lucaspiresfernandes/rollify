@@ -61,7 +61,7 @@ export type ResolvedDice = {
 	roll: number;
 };
 
-export type DiceRequest = { num?: number; ref: number } | ResolvedDice[];
+export type DiceRequest = { num?: number; mod?: number; ref: number } | ResolvedDice[];
 
 export type DiceResponse = {
 	roll: number;

@@ -231,6 +231,7 @@ export interface Locale {
 			environment: { [T in Environment]: string };
 		};
 		close: string;
+		create: string;
 		cancel: string;
 		apply: string;
 		roll: string;

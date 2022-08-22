@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { ApiContext, LoggerContext } from '../contexts';
 import type { Locale } from '../i18n';
 import type { DiceApiResponse } from '../pages/api/dice';
@@ -24,8 +24,8 @@ type DiceRollDialogProps = DiceRoll & {
 };
 
 type DisplayDice = {
-	roll: number | string;
-	description?: number | string;
+	roll: React.ReactNode;
+	description: React.ReactNode;
 };
 
 const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
@@ -37,29 +37,32 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 
-	const result: DisplayDice | undefined = useMemo(() => {
-		if (!diceResponse) return;
+	const result = useMemo<DisplayDice | undefined>(() => {
+		if (!diceResponse || !diceRequest.dice) return;
 
-		if (diceResponse.length === 1) {
-			return {
-				roll: diceResponse[0].roll,
-				description: diceResponse[0].description,
-			};
-		}
+		if (Array.isArray(diceRequest.dice)) {
+			const dices = diceResponse.map((d) => d.roll);
+			return { roll: dices.reduce((a, b) => a + b, 0), description: dices.join(' + ') };
+		} else {
+			let mod = 0;
+			if ('mod' in diceRequest.dice && diceRequest.dice.mod) mod = diceRequest.dice.mod;
 
-		if (diceResponse.length > 1) {
-			if (Array.isArray(diceRequest.dice)) {
-				const dices = diceResponse.map((d) => d.roll);
-				const sum = dices.reduce((a, b) => a + b, 0);
-				return {
-					roll: sum,
-					description: dices.join(' + '),
-				};
-			} else {
-				const roll = diceResponse.map((d) => d.roll).join(' | ');
-				const description = diceResponse.map((d) => d.description).join(' | ');
-				return { roll, description };
-			}
+			const roll = diceResponse.map((r, index) => {
+				return (
+					<Fragment key={index}>
+						<b>{r.roll}</b> {mod ? <>({r.roll - mod})</> : null}
+						{index < diceResponse.length - 1 ? ' | ' : null}
+					</Fragment>
+				);
+			});
+
+			const description =
+				diceResponse.reduce((prev, cur, index) => {
+					if (cur.description) return index > 0 ? `${prev} | ${cur.description}` : cur.description;
+					return prev;
+				}, '') || null;
+
+			return { roll, description };
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [diceResponse]);
@@ -134,12 +137,12 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 						result ? (
 							<div>
 								<Fade in appear>
-									<Typography variant='h4' component='h2' gutterBottom>
+									<Typography variant='h5' component='h2' gutterBottom>
 										{result.roll}
 									</Typography>
 								</Fade>
 								<Fade in={Boolean(result.description)} appear style={{ transitionDelay: '500ms' }}>
-									<Typography variant='body1'>{result.description}</Typography>
+									<Typography variant='body2'>{result.description || null}</Typography>
 								</Fade>
 							</div>
 						) : (

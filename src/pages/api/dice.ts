@@ -84,6 +84,7 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 		} else {
 			results = new Array(dices.num);
 			const numDices = dices.num;
+			const modifier = dices.mod || 0;
 			const roll = diceConfig.baseDice;
 			const reference = dices.ref;
 
@@ -95,7 +96,7 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 			const data = await getRandom(1, roll, numDices);
 
 			for (let index = 0; index < data.length; index++) {
-				const result = data[index];
+				const result = data[index] + modifier;
 				results[index] = { roll: result };
 
 				if (diceConfig.resolver)
@@ -109,10 +110,8 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', results });
 
-		const diceRequest = { ...dices, roll: diceConfig.baseDice };
-
-		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, diceRequest);
-		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, diceRequest);
+		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, dices);
+		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, dices);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

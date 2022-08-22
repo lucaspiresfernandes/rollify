@@ -44,10 +44,10 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	const [value, setValue, isValueClean] = useExtendedState(props.value.toString());
 	const [checked, setChecked] = useState(props.checked);
 	const [modifier, setModifier, isModifierClean] = useExtendedState(() => {
+		if (props.modifier === null) return null;
 		const mod = props.modifier;
-		if (mod === null) return null;
 		let aux = mod.toString();
-		if (mod > -1) aux = `+${aux}`;
+		if (mod > 0) aux = `+${aux}`;
 		return aux;
 	});
 	const log = useContext(LoggerContext);
@@ -56,23 +56,13 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 	const rollDice = useContext(DiceRollContext);
 
 	const handleDiceClick: React.MouseEventHandler<HTMLDivElement> = (ev) => {
-		let mod = 0;
+		let mod: number | undefined = undefined;
 		if (modifier) mod = parseInt(modifier);
 
 		const val = parseInt(value);
 		const standalone = ev.ctrlKey;
 
-		rollDice(
-			{ num: standalone ? 1 : undefined, ref: Math.max(0, val + mod) },
-			mod
-				? (results) => {
-						return results.map((res) => ({
-							roll: Math.max(1, res.roll + mod),
-							description: res.description,
-						}));
-				  }
-				: undefined
-		);
+		rollDice({ num: standalone ? 1 : undefined, mod, ref: val });
 	};
 
 	const onValueBlur: React.FocusEventHandler<HTMLInputElement> = () => {
@@ -92,29 +82,27 @@ const PlayerCharacteristicField: React.FC<PlayerCharacteristicFieldProps> = (pro
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
-	const onModifierBlur =
-		modifier === null
-			? undefined
-			: () => {
-					const num = parseInt(modifier);
+	const onModifierBlur = () => {
+		if (modifier === null) return;
 
-					let newModifier = modifier;
-					if (isNaN(num)) newModifier = '+0';
-					else if (newModifier === '-0') newModifier = '+0';
-					else if (num >= 0) newModifier = `+${num}`;
+		const num = parseInt(modifier);
 
-					if (modifier !== newModifier) setModifier(newModifier);
+		let newModifier = modifier;
+		if (isNaN(num)) newModifier = '0';
+		else if (num > 0) newModifier = `+${num}`;
 
-					if (isModifierClean()) return;
+		if (modifier !== newModifier) setModifier(newModifier);
 
-					api
-						.post<PlayerCharacteristicApiResponse>('/sheet/player/characteristic', {
-							id: props.id,
-							modifier: parseInt(newModifier),
-						})
-						.then((res) => handleDefaultApiResponse(res, log, t))
-						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
-			  };
+		if (isModifierClean()) return;
+
+		api
+			.post<PlayerCharacteristicApiResponse>('/sheet/player/characteristic', {
+				id: props.id,
+				modifier: parseInt(newModifier),
+			})
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
 
 	const onCheckChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
 		const chk = ev.target.checked;

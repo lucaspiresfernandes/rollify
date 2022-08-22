@@ -80,11 +80,7 @@ export interface ServerToClientEvents {
 
 	//---------- Dice-triggered Events ----------
 	diceRoll: () => void;
-	diceResult: (
-		playerId: number,
-		results: DiceResponse[],
-		dices: DiceRequest & { roll: number }
-	) => void;
+	diceResult: (playerId: number, results: DiceResponse[], dices: DiceRequest) => void;
 }
 
 export interface ClientToServerEvents {

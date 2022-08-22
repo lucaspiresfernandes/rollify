@@ -97,7 +97,7 @@ const handlePost: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => 
 const handlePut: NextApiHandlerIO<SpellSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
 
-	if (!player || !player.admin) return res.json({ status: 'failure', reason: 'unauthorized' });
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	if (
 		!req.body.name ||

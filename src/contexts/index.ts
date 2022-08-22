@@ -14,7 +14,11 @@ export type LoggerProps = {
 };
 
 export type AddDataContextType = {
-	openDialog: (data: AddDataDialogProps['data'], onSubmit: AddDataDialogProps['onSubmit']) => void;
+	openDialog: (
+		data: AddDataDialogProps['data'],
+		onSubmit: AddDataDialogProps['onSubmit'],
+		onCreate: AddDataDialogProps['onCreate']
+	) => void;
 	closeDialog: () => void;
 };
 
@@ -32,7 +36,7 @@ export type TradeContextType = {
 
 export type DiceRollEvent = (
 	dice: DiceRequest,
-	onResult?: (result: DiceResponse[]) => void | DiceResponse[]
+	onResult?: (result: DiceResponse[]) => void
 ) => void;
 
 export const LoggerContext = createContext<LoggerContextType>(() => {});

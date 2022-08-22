@@ -32,6 +32,8 @@ import PartialBackdrop from '../../PartialBackdrop';
 import SheetContainer from '../Section';
 import PlayerArmorContainer from './PlayerArmorContainer';
 import PlayerWeaponContainer from './PlayerWeaponContainer';
+import ArmorEditorDialog from '../../admin/dialogs/editor/ArmorEditorDialog';
+import WeaponEditorDialog from '../../admin/dialogs/editor/WeaponEditorDialog';
 
 export const WeaponIcon: React.FC = () => (
 	<svg focusable='false' aria-hidden='true' viewBox='0 0 24 24' width='1em' height='1em'>
@@ -68,10 +70,13 @@ export type PlayerCombatContainerProps = {
 };
 
 const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
-	const [trade, setTrade] = useState<{ id: number; type: TradeType }>();
 	const [loading, setLoading] = useState(false);
+	const [trade, setTrade] = useState<{ id: number; type: TradeType }>();
 	const [playerWeapons, setPlayerWeapons] = useState(props.playerWeapons);
 	const [playerArmor, setPlayerArmor] = useState(props.playerArmor);
+	const [armorDialogOpen, setArmorDialogOpen] = useState(false);
+	const [weaponDialogOpen, setWeaponDialogOpen] = useState(false);
+
 	const tradeTimeout = useRef<NodeJS.Timeout | null>(null);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
@@ -318,8 +323,14 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const weapons = res.data.weapon;
-				if (weapons.length === 0) return log({ text: t('prompt.noItemsFound') });
-				return addDataDialog.openDialog(weapons, (id) => onAddEquipment(id, 'weapon'));
+				return addDataDialog.openDialog(
+					weapons,
+					(id) => onAddEquipment(id, 'weapon'),
+					() => {
+						addDataDialog.closeDialog();
+						setWeaponDialogOpen(true);
+					}
+				);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -332,8 +343,14 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
 				const armor = res.data.armor;
-				if (armor.length === 0) return log({ text: t('prompt.noItemsFound') });
-				return addDataDialog.openDialog(armor, (id) => onAddEquipment(id, 'armor'));
+				return addDataDialog.openDialog(
+					armor,
+					(id) => onAddEquipment(id, 'armor'),
+					() => {
+						addDataDialog.closeDialog();
+						setArmorDialogOpen(true);
+					}
+				);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
 			.finally(() => setLoading(false));
@@ -415,6 +432,30 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			);
 	};
 
+	const onCreateWeapon = (data: Weapon) => {
+		setWeaponDialogOpen(false);
+		setLoading(true);
+		api
+			.put<WeaponSheetApiResponse>('/sheet/weapon', data)
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
+			.finally(() => setLoading(false));
+	};
+
+	const onCreateArmor = (data: Armor) => {
+		setArmorDialogOpen(false);
+		setLoading(true);
+		api
+			.put<ArmorSheetApiResponse>('/sheet/armor', data)
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
+			.finally(() => setLoading(false));
+	};
+
 	const weaponList = useMemo(
 		() => playerWeapons.sort((a, b) => a.name.localeCompare(b.name)),
 		[playerWeapons]
@@ -455,11 +496,23 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				onDeleteWeapon={onDeleteWeapon}
 				onTrade={onTrade}
 			/>
+			<WeaponEditorDialog
+				title={`${t('add')} ${t('admin.editor.weapon')}`}
+				open={weaponDialogOpen}
+				onClose={() => setWeaponDialogOpen(false)}
+				onSubmit={onCreateWeapon}
+			/>
 			<Divider sx={{ mt: 3 }} />
 			<PlayerArmorContainer
 				playerArmor={armorList}
 				onDeleteArmor={onDeleteArmor}
 				onTrade={onTrade}
+			/>
+			<ArmorEditorDialog
+				title={`${t('add')} ${t('admin.editor.armor')}`}
+				open={armorDialogOpen}
+				onClose={() => setArmorDialogOpen(false)}
+				onSubmit={onCreateArmor}
 			/>
 		</SheetContainer>
 	);

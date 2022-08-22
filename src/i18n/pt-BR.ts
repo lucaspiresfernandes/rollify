@@ -239,6 +239,7 @@ export const table: Locale = {
 			},
 		},
 		close: 'Fechar',
+		create: 'Criar',
 		cancel: 'Cancelar',
 		apply: 'Aplicar',
 		roll: 'Rolar',

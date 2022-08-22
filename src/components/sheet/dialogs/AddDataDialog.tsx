@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -12,6 +13,7 @@ export type AddDataDialogProps = {
 	data: { id: number; name: string }[];
 	open: boolean;
 	onClose: () => void;
+	onCreate?: () => void;
 	onSubmit: (id: number) => void;
 };
 
@@ -35,7 +37,7 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 	);
 
 	return (
-		<Dialog open={props.open} onClose={props.onClose}>
+		<Dialog open={props.open} onClose={props.onClose} maxWidth='xs' fullWidth>
 			<DialogTitle>{t('modal.title.addData')}</DialogTitle>
 			<DialogContent>
 				<form id='playerAddDataDialogForm' onSubmit={onSubmit}>
@@ -53,6 +55,11 @@ const AddDataDialog: React.FC<AddDataDialogProps> = (props) => {
 				</form>
 			</DialogContent>
 			<DialogActions>
+				{props.onCreate && (
+					<Box flexGrow={1}>
+						<Button onClick={props.onCreate}>{t('modal.create')}</Button>
+					</Box>
+				)}
 				<Button onClick={props.onClose}>{t('modal.cancel')}</Button>
 				<Button type='submit' form='playerAddDataDialogForm' disabled={props.data.length === 0}>
 					{t('modal.apply')}

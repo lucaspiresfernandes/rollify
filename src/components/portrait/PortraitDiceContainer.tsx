@@ -99,17 +99,16 @@ const PortraitDiceContainer: React.FC<PortraitDiceContainerProps> = (props) => {
 
 			if (results.length === 1) return onDiceResult(results[0]);
 
-			if (Array.isArray(dices)) {
-				onDiceResult({
+			if (Array.isArray(dices))
+				return onDiceResult({
 					roll: results.reduce((prev, cur) => prev + cur.roll, 0),
 				});
-			} else {
-				if (diceData.current) return diceQueue.current.push(...results);
-				const first = results.shift();
-				if (!first) return;
-				diceQueue.current.push(...results);
-				onDiceResult(first);
-			}
+
+			if (diceData.current) return diceQueue.current.push(...results);
+			const first = results.shift();
+			if (!first) return;
+			diceQueue.current.push(...results);
+			onDiceResult(first);
 		});
 
 		return () => {

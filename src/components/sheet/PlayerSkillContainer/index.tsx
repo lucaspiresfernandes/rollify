@@ -104,7 +104,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 		if (props.modifier === null) return null;
 		const modifier = props.modifier;
 		let mod = modifier.toString();
-		if (modifier >= 0) mod = `+${mod}`;
+		if (modifier > 0) mod = `+${mod}`;
 		return mod;
 	});
 	const componentDidMount = useRef(false);
@@ -124,23 +124,13 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 	}, [props.notifyClearChecked]);
 
 	const handleDiceRoll: React.MouseEventHandler<HTMLDivElement> = (ev) => {
-		let mod = 0;
+		let mod: number | undefined = undefined;
 		if (modifier) mod = parseInt(modifier);
 
 		const val = parseInt(value);
 		const standalone = ev.ctrlKey;
 
-		rollDice(
-			{ num: standalone ? 1 : undefined, ref: Math.max(0, val + mod) },
-			mod
-				? (results) => {
-						return results.map((res) => ({
-							roll: Math.max(1, res.roll + mod),
-							description: res.description,
-						}));
-				  }
-				: undefined
-		);
+		rollDice({ num: standalone ? 1 : undefined, mod, ref: val });
 	};
 
 	const onCheckChange: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
@@ -168,29 +158,28 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
 	};
 
-	const onModifierBlur =
-		modifier !== null
-			? () => {
-					const num = parseInt(modifier);
+	const onModifierBlur = () => {
+		if (modifier === null) return;
 
-					let newModifier = modifier;
-					if (isNaN(num)) newModifier = '+0';
-					else if (newModifier === '-0') newModifier = '+0';
-					else if (num >= 0) newModifier = `+${num}`;
+		const num = parseInt(modifier);
 
-					if (modifier !== newModifier) setModifier(newModifier);
+		let newModifier = modifier;
+		if (isNaN(num)) newModifier = '+0';
+		else if (newModifier === '-0') newModifier = '+0';
+		else if (num >= 0) newModifier = `+${num}`;
 
-					if (isModifierClean()) return;
+		if (modifier !== newModifier) setModifier(newModifier);
 
-					api
-						.post<PlayerSkillApiResponse>('/sheet/player/skill', {
-							id: props.id,
-							modifier: parseInt(newModifier),
-						})
-						.then((res) => handleDefaultApiResponse(res, log, t))
-						.catch(() => log({ severity: 'error', text: t('error.unknown') }));
-			  }
-			: undefined;
+		if (isModifierClean()) return;
+
+		api
+			.post<PlayerSkillApiResponse>('/sheet/player/skill', {
+				id: props.id,
+				modifier: parseInt(newModifier),
+			})
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
 
 	return (
 		<>
