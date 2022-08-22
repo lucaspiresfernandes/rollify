@@ -33,7 +33,7 @@ const History: React.FC<HistoryProps> = (props) => {
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.on('diceResult', (id, diceResponse, diceRequest) => {
+		socket.on('diceResult', (id, diceResponse, diceRequest, baseDice) => {
 			let dices: string[];
 			let total: string | undefined;
 
@@ -48,9 +48,9 @@ const History: React.FC<HistoryProps> = (props) => {
 				});
 				total = diceResponse.reduce((acc, cur) => acc + cur.roll, 0).toString();
 			} else if (diceRequest.num && diceRequest.num > 0) {
-				dices = [`${diceRequest.num}d${diceRequest.roll}`];
+				dices = [`${diceRequest.num}d${baseDice}`];
 			} else {
-				dices = [diceRequest.roll.toString()];
+				dices = [baseDice.toString()];
 			}
 
 			const results = diceResponse.map((res) => {

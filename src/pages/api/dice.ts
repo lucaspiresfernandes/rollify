@@ -110,8 +110,8 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', results });
 
-		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, dices);
-		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, dices);
+		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, dices, diceConfig.baseDice);
+		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, dices, diceConfig.baseDice);
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
