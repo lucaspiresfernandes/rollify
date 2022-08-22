@@ -284,7 +284,7 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 						justifyContent='center'
 						alignItems='center'
 						gap={1}>
-						{props.damage && (
+						{props.damage ? (
 							<Image
 								layout='fixed'
 								src={dice20}
@@ -295,6 +295,8 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 								width={30}
 								height={30}
 							/>
+						) : (
+							'-'
 						)}
 					</Box>
 					{damageList.length > 1 && (
