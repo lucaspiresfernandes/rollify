@@ -42,7 +42,11 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 
 		if (Array.isArray(diceRequest.dice)) {
 			const dices = diceResponse.map((d) => d.roll);
-			return { roll: dices.reduce((a, b) => a + b, 0), description: dices.join(' + ') };
+
+			return {
+				roll: dices.reduce((a, b) => a + b, 0),
+				description: dices.length > 1 ? dices.join(' + ') : undefined,
+			};
 		} else {
 			let mod = 0;
 			if ('mod' in diceRequest.dice && diceRequest.dice.mod) mod = diceRequest.dice.mod;

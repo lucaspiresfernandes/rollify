@@ -459,6 +459,7 @@ const PlayerMaxLoadField: React.FC<{
 	return (
 		<TextField
 			variant='outlined'
+			size='small'
 			label={t('load')}
 			autoComplete='off'
 			color={overload ? 'error' : undefined}

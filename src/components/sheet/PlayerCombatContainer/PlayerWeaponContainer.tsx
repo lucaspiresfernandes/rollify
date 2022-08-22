@@ -2,6 +2,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -17,7 +19,7 @@ import Typography from '@mui/material/Typography';
 import type { TradeType } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { PlayerCombatContainerProps, WeaponIcon } from '.';
 import dice20 from '../../../../public/dice20.webp';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../../contexts';
@@ -92,15 +94,41 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 	const [currentDescription, setCurrentDescription, isDescriptionClean] = useExtendedState(
 		props.currentDescription
 	);
+	const [damageAnchorElement, setDamageAnchorElement] = useState<null | HTMLElement>(null);
 	const log = useContext(LoggerContext);
 	const api = useContext(ApiContext);
 	const rollDice = useContext(DiceRollContext);
 	const { t } = useI18n<Locale>();
 
-	const handleDiceClick = () => {
+	const damageList = useMemo(() => props.damage.replace(/\s/g, '').split('|'), [props.damage]);
+
+	const handleDiceImageClick: React.MouseEventHandler<HTMLImageElement> = (ev) => {
 		if (props.ammo && !currentAmmo) return alert(t('prompt.noAmmo'));
 
+		if (damageList.length > 1 && damageAnchorElement === null)
+			return setDamageAnchorElement(ev.currentTarget);
+
 		const aux = resolveDices(props.damage, t);
+
+		if (!aux) return;
+
+		rollDice(aux);
+
+		const ammo = currentAmmo - 1;
+		setCurrentAmmo(ammo);
+		api
+			.post<PlayerWeaponApiResponse>('/sheet/player/weapon', {
+				id: props.id,
+				currentAmmo: ammo,
+			})
+			.then((res) => handleDefaultApiResponse(res, log, t))
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	};
+
+	const handleDiceMenuClick = (damage: string) => {
+		setDamageAnchorElement(null);
+
+		const aux = resolveDices(damage, t);
 
 		if (!aux) return;
 
@@ -176,26 +204,50 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 						justifyContent='center'
 						alignItems='center'
 						gap={1}>
-						<div>{props.damage || '-'}</div>
-						{props.damage && (
+						{props.damage ? (
 							<Image
 								layout='fixed'
 								src={dice20}
 								alt='Dice'
 								className='clickable'
-								onClick={handleDiceClick}
+								title={props.damage}
+								onClick={handleDiceImageClick}
 								width={30}
 								height={30}
 							/>
+						) : (
+							'-'
 						)}
 					</Box>
+					{damageList.length > 1 && (
+						<Menu
+							anchorEl={damageAnchorElement}
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'left',
+							}}
+							transformOrigin={{
+								vertical: 'top',
+								horizontal: 'left',
+							}}
+							open={Boolean(damageAnchorElement)}
+							onClose={() => setDamageAnchorElement(null)}
+							PaperProps={{ style: { maxHeight: 200 } }}>
+							{damageList.map((damage, index) => (
+								<MenuItem key={index} onClick={() => handleDiceMenuClick(damage)}>
+									{damage}
+								</MenuItem>
+							))}
+						</Menu>
+					)}
 				</TableCell>
 				<TableCell align='center'>{props.range || '-'}</TableCell>
 				<TableCell align='center'>{props.attacks || '-'}</TableCell>
 				<TableCell align='center'>
 					{props.ammo ? (
 						<TextField
-							variant='standard'
+							variant='outlined'
+							size='small'
 							value={currentAmmo}
 							onChange={onAmmoChange}
 							onBlur={onAmmoBlur}

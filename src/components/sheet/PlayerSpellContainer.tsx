@@ -2,6 +2,8 @@ import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
@@ -195,6 +197,7 @@ const PlayerMaxSlotsField: React.FC<{
 	return (
 		<TextField
 			variant='outlined'
+			size='small'
 			label={t('slots')}
 			autoComplete='off'
 			color={overload ? 'error' : undefined}
@@ -229,9 +232,21 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 	const api = useContext(ApiContext);
 	const log = useContext(LoggerContext);
 	const rollDice = useContext(DiceRollContext);
+	const [damageAnchorElement, setDamageAnchorElement] = useState<null | HTMLElement>(null);
 
-	const handleDiceClick = () => {
+	const damageList = useMemo(() => props.damage.replace(/\s/g, '').split('|'), [props.damage]);
+
+	const handleDiceImageClick: React.MouseEventHandler<HTMLImageElement> = (ev) => {
+		if (damageList.length > 1 && damageAnchorElement === null)
+			return setDamageAnchorElement(ev.currentTarget);
+
 		const aux = resolveDices(props.damage, t);
+		if (aux) rollDice(aux);
+	};
+
+	const handleDiceMenuClick = (damage: string) => {
+		setDamageAnchorElement(null);
+		const aux = resolveDices(damage, t);
 		if (aux) rollDice(aux);
 	};
 
@@ -269,19 +284,40 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 						justifyContent='center'
 						alignItems='center'
 						gap={1}>
-						<div>{props.damage || '-'}</div>
 						{props.damage && (
 							<Image
 								layout='fixed'
 								src={dice20}
 								alt='Dice'
+								title={props.damage}
 								className='clickable'
-								onClick={handleDiceClick}
+								onClick={handleDiceImageClick}
 								width={30}
 								height={30}
 							/>
 						)}
 					</Box>
+					{damageList.length > 1 && (
+						<Menu
+							anchorEl={damageAnchorElement}
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'left',
+							}}
+							transformOrigin={{
+								vertical: 'top',
+								horizontal: 'left',
+							}}
+							open={Boolean(damageAnchorElement)}
+							onClose={() => setDamageAnchorElement(null)}
+							PaperProps={{ style: { maxHeight: 200 } }}>
+							{damageList.map((damage, index) => (
+								<MenuItem key={index} onClick={() => handleDiceMenuClick(damage)}>
+									{damage}
+								</MenuItem>
+							))}
+						</Menu>
+					)}
 				</TableCell>
 				<TableCell align='center'>{props.target || '-'}</TableCell>
 				<TableCell align='center'>{props.range || '-'}</TableCell>
