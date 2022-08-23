@@ -1,5 +1,4 @@
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
-import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -64,8 +63,6 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			title={props.title}
 			display='flex'
 			flexDirection='column'
-			height='100%'
-			position='relative'
 			sideButton={
 				<IconButton title={t('sheet.clearMarkers')} onClick={clearChecks}>
 					<RemoveDoneIcon />
@@ -74,48 +71,39 @@ const FavouriteSkillsContainer: React.FC<FavouriteSkillsContainerProps> = (props
 			<PartialBackdrop open={loading}>
 				<CircularProgress color='inherit' disableShrink />
 			</PartialBackdrop>
-			<Box
-				position='relative'
-				flex={{ xs: null, sm: '1 0' }}
-				height={{ xs: 360, sm: null }}
-				sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
-				{props.playerSkills.length === 0 && (
-					<Typography variant='body1' textAlign='center' mt={3}>
-						{t('placeholder.noFavouriteSkills')}
-					</Typography>
-				)}
-				<Grid
-					container
-					justifyContent='center'
-					alignItems='stretch'
-					position='absolute'
-					top={0}
-					left={0}
-					rowSpacing={4}
-					columnSpacing={2}
-					py={2}
-					sx={{ overflowWrap: 'break-word' }}>
-					{props.playerSkills.map((skill) => {
-						return (
-							<Grid
-								item
-								key={skill.id}
-								md={4}
-								xs={6}
-								display={skill.name.toLowerCase().includes(search.toLowerCase()) ? 'flex' : 'none'}
-								flexDirection='column'
-								justifyContent='center'
-								textAlign='center'>
-								<PlayerSkillField
-									{...skill}
-									notifyClearChecked={notify}
-									onUnfavourite={onUnfavourite}
-								/>
-							</Grid>
-						);
-					})}
-				</Grid>
-			</Box>
+			{props.playerSkills.length === 0 && (
+				<Typography variant='body1' textAlign='center' mt={3}>
+					{t('placeholder.noFavouriteSkills')}
+				</Typography>
+			)}
+			<Grid
+				container
+				justifyContent='center'
+				alignItems='stretch'
+				rowSpacing={4}
+				columnSpacing={2}
+				py={2}
+				sx={{ overflowWrap: 'break-word' }}>
+				{props.playerSkills.map((skill) => {
+					return (
+						<Grid
+							item
+							key={skill.id}
+							md={4}
+							xs={6}
+							display={skill.name.toLowerCase().includes(search.toLowerCase()) ? 'flex' : 'none'}
+							flexDirection='column'
+							justifyContent='center'
+							textAlign='center'>
+							<PlayerSkillField
+								{...skill}
+								notifyClearChecked={notify}
+								onUnfavourite={onUnfavourite}
+							/>
+						</Grid>
+					);
+				})}
+			</Grid>
 		</SheetContainer>
 	);
 };

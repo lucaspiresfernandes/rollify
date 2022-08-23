@@ -214,7 +214,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 								modifier: parseInt(modifier as string) || 0,
 							})
 						}
-						sx={{ padding: 0, ml: 2 }}
+						sx={{ ml: 2 }}
 						title={t('unstar')}>
 						<BookmarkRemoveIcon />
 					</IconButton>
