@@ -26,13 +26,17 @@ type MyAppProps = AppProps & {
 
 export default function MyApp(props: MyAppProps) {
 	const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-	const [mode, setMode] = useState<PaletteMode | 'system'>('dark');
+	const [mode, setMode] = useState<PaletteMode | 'system'>('light');
 	const [snackbarProps, updateSnackbar] = useSnackbar();
 	const router = useRouter();
 
 	useEffect(() => {
 		setMode((localStorage.getItem('theme') || 'dark') as PaletteMode);
 	}, []);
+
+	useEffect(() => {
+		localStorage.setItem('theme', mode);
+	}, [mode]);
 
 	const theme = useMemo(() => {
 		let newMode = mode;
