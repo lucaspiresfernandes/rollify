@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -42,13 +43,21 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 	return (
 		<AppBar position='static'>
 			<Toolbar>
-				<Links />
-				<Box flexGrow={1}>
-					<div style={{ minWidth: 75, maxWidth: 220, margin: 'auto' }}>
-						<Image src={whiteLogo} alt='LOGO' layout='responsive' priority />
-					</div>
-				</Box>
-				<Settings {...props} />
+				<Grid container justifyContent='space-between' alignItems='center'>
+					<Grid item xs={4} textAlign='start'>
+						<Links />
+					</Grid>
+
+					<Grid item xs={4}>
+						<div style={{ minWidth: 75, maxWidth: 240, margin: 'auto' }}>
+							<Image src={whiteLogo} alt='LOGO' layout='responsive' priority />
+						</div>
+					</Grid>
+
+					<Grid item xs={4} textAlign='end'>
+						<Settings {...props} />
+					</Grid>
+				</Grid>
 			</Toolbar>
 		</AppBar>
 	);
@@ -97,7 +106,7 @@ const Links: React.FC = () => {
 
 	return (
 		<>
-			<Box width={300} display={{ xs: 'none', md: 'flex' }} gap={1}>
+			<Box display={{ xs: 'none', md: 'block' }} gap={1}>
 				{!router.pathname.includes('getting-started') &&
 					links.map(({ href, name }) => (
 						<Link key={href} href={href} passHref>
@@ -105,7 +114,7 @@ const Links: React.FC = () => {
 						</Link>
 					))}
 			</Box>
-			<Box display={{ xs: 'flex', md: 'none' }}>
+			<Box display={{ xs: 'block', md: 'none' }}>
 				<IconButton
 					size='small'
 					aria-label='menu'
@@ -153,7 +162,7 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 	const { t } = useI18n<Locale>();
 
 	return (
-		<Box display='flex' gap={1} justifyContent='end' width={{ md: 300 }}>
+		<div>
 			<Drawer
 				keepMounted
 				anchor='right'
@@ -234,7 +243,7 @@ const Settings: React.FC<NavbarProps> = ({ mode, updateMode }) => {
 				title={t('nav.admin.configurations')}>
 				<SettingsIcon />
 			</IconButton>
-		</Box>
+		</div>
 	);
 };
 

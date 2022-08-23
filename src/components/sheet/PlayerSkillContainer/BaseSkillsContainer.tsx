@@ -1,5 +1,4 @@
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
-import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -7,8 +6,9 @@ import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import Pagination from '@mui/material/Pagination';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { startTransition, useCallback, useContext, useState } from 'react';
+import { startTransition, useCallback, useContext, useMemo, useState } from 'react';
 import { PlayerSkillField, PlayerSkillFieldProps } from '.';
 import { ApiContext, LoggerContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
@@ -69,6 +69,15 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 		[api, t, props.onSkillFavourite, log]
 	);
 
+	const previousPageSkillName = useMemo(
+		() => props.playerSkills[(page - 2) * SKILLS_PER_PAGE]?.name || '-',
+		[page, props.playerSkills]
+	);
+	const nextPageSkillName = useMemo(
+		() => props.playerSkills[page * SKILLS_PER_PAGE]?.name || '-',
+		[page, props.playerSkills]
+	);
+
 	return (
 		<SheetContainer
 			title={props.title}
@@ -94,14 +103,30 @@ const BaseSkillsContainer: React.FC<BaseSkillsContainerProps> = (props) => {
 						}
 					/>
 				</Paper>
-				<Box display='flex' justifyContent='center' my={2}>
-					<Pagination
-						color='primary'
-						count={search ? 1 : Math.floor(props.playerSkills.length / SKILLS_PER_PAGE) + 1}
-						page={page}
-						onChange={(_, page) => setPage(page)}
-					/>
-				</Box>
+				<Grid container py={2} rowGap={2} alignItems='center' justifyContent='center'>
+					{!search && (
+						<Grid item xs={12} sm={2}>
+							<Typography variant='body1' component='div' color='GrayText' textAlign='center'>
+								{previousPageSkillName}
+							</Typography>
+						</Grid>
+					)}
+					<Grid item xs={12} sm={8} display='flex' justifyContent='center'>
+						<Pagination
+							color='primary'
+							count={search ? 1 : Math.ceil(props.playerSkills.length / SKILLS_PER_PAGE)}
+							page={page}
+							onChange={(_, page) => setPage(page)}
+						/>
+					</Grid>
+					{!search && (
+						<Grid item xs={12} sm={2}>
+							<Typography variant='body1' component='div' color='GrayText' textAlign='center'>
+								{nextPageSkillName}
+							</Typography>
+						</Grid>
+					)}
+				</Grid>
 			</div>
 			<Divider />
 			<Grid
