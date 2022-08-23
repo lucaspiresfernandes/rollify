@@ -84,26 +84,27 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 		} else {
 			results = new Array(dices.num);
 			const numDices = dices.num;
-			const modifier = dices.mod || 0;
-			const roll = diceConfig.baseDice;
-			const reference = dices.ref;
+			const fieldValue = dices.ref;
+			const fieldModifier = dices.mod || 0;
 
 			if (!numDices) {
-				res.json({ status: 'success', results: [{ roll }] });
+				res.json({ status: 'success', results: [{ roll: diceConfig.baseDice }] });
 				return;
 			}
 
-			const data = await getRandom(1, roll, numDices);
+			const data = await getRandom(1, diceConfig.baseDice, numDices);
 
 			for (let index = 0; index < data.length; index++) {
-				const result = data[index] + modifier;
-				results[index] = { roll: result };
+				const rollResult = data[index];
+
+				results[index] = { roll: rollResult + fieldModifier };
 
 				if (diceConfig.resolver)
 					results[index].description = getDiceResultDescription(
 						diceConfig.resolver,
-						reference,
-						result
+						fieldValue,
+						fieldModifier,
+						rollResult
 					);
 			}
 		}

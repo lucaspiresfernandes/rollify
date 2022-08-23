@@ -274,6 +274,9 @@ export interface Locale {
 			addResolver: string;
 			resolver: {
 				when: string;
+				result: string;
+				resultWithModifier: string;
+				is: string;
 				then: string;
 			};
 			resolverRules: string;

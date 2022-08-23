@@ -25,6 +25,7 @@ export type DiceResultResolver = {
 	operator: RelationalOperator;
 	result: string;
 	description: string;
+	useModifier: boolean;
 }[];
 
 export type DiceConfig = {
@@ -36,24 +37,25 @@ export type DiceConfig = {
 
 export function getDiceResultDescription(
 	config: DiceResultResolver,
-	diceRoll: number,
-	diceResult: number
+	fieldValue: number,
+	fieldModifier: number,
+	rollResult: number
 ) {
 	for (const con of config) {
 		try {
-			const result = evaluate(con.result.replace(/({value})|({valor})/g, diceRoll.toString()));
+			const result = evaluate(con.result.replace(/({value})|({valor})/g, fieldValue.toString()));
 
 			if (typeof result !== 'number')
 				throw new Error('Result is not a number: ' + result.toString());
 
-			const compare = comparer.get(con.operator);
-			if (compare && compare(diceResult, result)) return con.description;
+			const cmp = comparer.get(con.operator);
+			if (cmp && cmp(con.useModifier ? rollResult + fieldModifier : rollResult, result))
+				return con.description;
 		} catch (err) {
 			console.warn('Error evaluating dice result:', err);
 			continue;
 		}
 	}
-	return 'Unknown';
 }
 
 export type ResolvedDice = {

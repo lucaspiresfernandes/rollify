@@ -283,7 +283,10 @@ export const table: Locale = {
 			enableResolvers: 'Enable resolvers',
 			enableSkillModifiers: 'Enable skill modifiers',
 			resolver: {
-				when: 'When result is',
+				when: 'When',
+				result: 'result',
+				resultWithModifier: 'result with modifiers',
+				is: 'is',
 				then: ', then the description will be',
 			},
 			resolverRules: 'You can use the syntax "{value}" to refer to the value of the tested field.',

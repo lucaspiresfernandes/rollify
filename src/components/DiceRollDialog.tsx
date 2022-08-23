@@ -60,11 +60,10 @@ const DiceRollDialog: React.FC<DiceRollDialogProps> = (props) => {
 				);
 			});
 
-			const description =
-				diceResponse.reduce((prev, cur, index) => {
-					if (cur.description) return index > 0 ? `${prev} | ${cur.description}` : cur.description;
-					return prev;
-				}, '') || null;
+			const description = diceResponse
+				.filter((res) => Boolean(res.description))
+				.map((res) => res.description)
+				.join(' | ');
 
 			return { roll, description };
 		}

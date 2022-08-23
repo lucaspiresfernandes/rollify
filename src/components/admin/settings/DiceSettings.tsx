@@ -15,21 +15,21 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ReorderIcon from '@mui/icons-material/Reorder';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
 import { startTransition, useContext, useState } from 'react';
 import SettingsContainer from '.';
@@ -105,7 +105,8 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 					id: getId(),
 					description: t('unknown'),
 					operator: 'equals',
-					result: '0',
+					result: '1',
+					useModifier: false,
 				},
 			],
 		});
@@ -195,6 +196,9 @@ const DiceSettings: React.FC<DiceSettingsProps> = (props) => {
 									<ResolverField
 										key={res.id}
 										{...res}
+										enableModifiers={
+											form.skill.enableModifiers || form.characteristic.enableModifiers
+										}
 										onChange={(newRes) =>
 											startTransition(() =>
 												setForm((f) => ({
@@ -269,6 +273,7 @@ type ResolverFieldProps = {
 	id: number;
 	onChange: (resolver: DiceResultResolver[number]) => void;
 	onDelete: () => void;
+	enableModifiers: boolean;
 };
 
 const ResolverField: React.FC<ResolverFieldProps> = (props) => {
@@ -304,17 +309,28 @@ const ResolverField: React.FC<ResolverFieldProps> = (props) => {
 				<IconButton onClick={props.onDelete}>
 					<DeleteIcon />
 				</IconButton>
-				{t('settings.dice.resolver.when')}
+				{t('settings.dice.resolver.when')}{' '}
+				{props.enableModifiers ? (
+					<Select
+						size='small'
+						variant='standard'
+						value={String(props.useModifier)}
+						onChange={(ev) =>
+							props.onChange({ ...props, useModifier: ev.target.value === 'true' })
+						}>
+						<MenuItem value='true'>{t('settings.dice.resolver.resultWithModifier')}</MenuItem>
+						<MenuItem value='false'>{t('settings.dice.resolver.result')}</MenuItem>
+					</Select>
+				) : (
+					t('settings.dice.resolver.result') + ' '
+				)}
+				{t('settings.dice.resolver.is')}
 				<Select
 					size='small'
 					variant='standard'
 					value={props.operator}
 					onChange={(ev) =>
-						props.onChange({
-							description: props.description,
-							operator: ev.target.value as RelationalOperator,
-							result: props.result,
-						})
+						props.onChange({ ...props, operator: ev.target.value as RelationalOperator })
 					}>
 					{OPERATIONS.map((op) => (
 						<MenuItem key={op} value={op}>
@@ -327,13 +343,7 @@ const ResolverField: React.FC<ResolverFieldProps> = (props) => {
 						variant='standard'
 						size='small'
 						defaultValue={props.result}
-						onChange={(ev) =>
-							props.onChange({
-								description: props.description,
-								operator: props.operator,
-								result: ev.target.value,
-							})
-						}
+						onChange={(ev) => props.onChange({ ...props, result: ev.target.value })}
 						sx={{ maxWidth: '7em' }}
 						inputProps={{
 							style: {
@@ -347,13 +357,7 @@ const ResolverField: React.FC<ResolverFieldProps> = (props) => {
 					variant='standard'
 					size='small'
 					defaultValue={props.description}
-					onChange={(ev) =>
-						props.onChange({
-							result: props.result,
-							operator: props.operator,
-							description: ev.target.value,
-						})
-					}
+					onChange={(ev) => props.onChange({ ...props, description: ev.target.value })}
 					sx={{ maxWidth: '7em' }}
 					inputProps={{
 						style: {

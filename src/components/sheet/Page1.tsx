@@ -121,7 +121,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 			<Typography variant='h3' component='h1' textAlign='center'>
 				{t('sheet.playerTitle')}
 			</Typography>
-			<Grid container spacing={2} py={2}>
+			<Grid container spacing={4} py={2}>
 				<ApiContext.Provider value={api}>
 					<Grid item xs={12} sm={6}>
 						<MemoPlayerInfoContainer

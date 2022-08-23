@@ -285,7 +285,10 @@ export const table: Locale = {
 			enableResolvers: 'Habilitar Determinadores',
 			enableSkillModifiers: 'Habilitar Modificadores de Perícia',
 			resolver: {
-				when: 'Quando o resultado é',
+				when: 'Quando o',
+				result: 'resultado',
+				resultWithModifier: 'resultado com modificadores',
+				is: 'é',
 				then: ', então a descrição será',
 			},
 			resolverRules:
