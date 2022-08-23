@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -41,13 +40,11 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc: boolean }> = (p
 
 	return (
 		<Container sx={{ mt: 2 }}>
-			<Box textAlign='center'>
-				<Typography variant='h3' component='h1'>
-					{t('sheet.playerTitle')}
-				</Typography>
-			</Box>
+			<Typography variant='h3' component='h1' textAlign='center'>
+				{t('sheet.playerTitle')}
+			</Typography>
 			<ApiContext.Provider value={api}>
-				<Grid container spacing={2} my={2}>
+				<Grid container spacing={2} py={2}>
 					<Grid item xs={12}>
 						<PlayerNotesContainer
 							title={t('sheet.playerNotesTitle')}

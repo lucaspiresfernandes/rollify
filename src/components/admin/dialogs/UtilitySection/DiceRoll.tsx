@@ -20,7 +20,7 @@ const DiceRoll: React.FC<{ baseDice: DiceConfig['baseDice'] }> = (props) => {
 
 	return (
 		<Section title='Dice Roll'>
-			<Box my={2} textAlign='center'>
+			<Box textAlign='center'>
 				<GeneralDiceRollDialog
 					open={generalDiceDialogOpen}
 					onClose={() => setGeneralDiceDialogOpen(false)}

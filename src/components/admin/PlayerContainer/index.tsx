@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -449,49 +450,51 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 
 	return (
 		<Grid item xs={12} md={6} lg={4} ref={ref}>
-			<Box borderRadius={2} border='1px solid darkgray' p={1}>
-				<Box display='flex' gap={1} position='relative'>
-					<PartialBackdrop open={loading}>
-						<CircularProgress color='inherit' disableShrink />
-					</PartialBackdrop>
-					<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
-						<PlayerAvatarImage
-							id={props.id}
-							status={props.attributeStatus}
-							width={AVATAR_SIZE[0]}
-						/>
-					</Box>
-					<Box display='flex' flexDirection='column' gap={1} justifyContent='space-between'>
-						<Typography variant='h6' component='h2'>
-							{props.name}
-						</Typography>
-						<div>
-							{props.attribute.map((attr) => (
-								<Typography key={attr.id} variant='body1' color={`#${attr.color}`}>
-									{attr.name}: {attr.value + attr.extraValue}/{attr.maxValue}
-								</Typography>
-							))}
-						</div>
-						<Box display='flex' flexWrap='wrap' gap={1}>
-							<Tooltip title={t('details')} describeChild>
-								<Button variant='outlined' size='small' onClick={onShowDetails}>
-									<OpenInFullIcon />
-								</Button>
-							</Tooltip>
-							<Tooltip title={t('portrait')} describeChild>
-								<Button variant='outlined' size='small' onClick={props.onGetPortrait}>
-									<VideoCameraFrontIcon />
-								</Button>
-							</Tooltip>
-							<Tooltip title={t('delete')} describeChild>
-								<Button variant='outlined' size='small' onClick={deletePlayer}>
-									<DeleteIcon />
-								</Button>
-							</Tooltip>
+			<Paper elevation={2}>
+				<Box p={1}>
+					<Box display='flex' gap={1} position='relative'>
+						<PartialBackdrop open={loading}>
+							<CircularProgress color='inherit' disableShrink />
+						</PartialBackdrop>
+						<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
+							<PlayerAvatarImage
+								id={props.id}
+								status={props.attributeStatus}
+								width={AVATAR_SIZE[0]}
+							/>
+						</Box>
+						<Box display='flex' flexDirection='column' gap={1} justifyContent='space-between'>
+							<Typography variant='h6' component='h2'>
+								{props.name}
+							</Typography>
+							<div>
+								{props.attribute.map((attr) => (
+									<Typography key={attr.id} variant='body1' color={`#${attr.color}`}>
+										{attr.name}: {attr.value + attr.extraValue}/{attr.maxValue}
+									</Typography>
+								))}
+							</div>
+							<Box display='flex' flexWrap='wrap' gap={1}>
+								<Tooltip title={t('details')} describeChild>
+									<Button variant='outlined' size='small' onClick={onShowDetails}>
+										<OpenInFullIcon />
+									</Button>
+								</Tooltip>
+								<Tooltip title={t('portrait')} describeChild>
+									<Button variant='outlined' size='small' onClick={props.onGetPortrait}>
+										<VideoCameraFrontIcon />
+									</Button>
+								</Tooltip>
+								<Tooltip title={t('delete')} describeChild>
+									<Button variant='outlined' size='small' onClick={deletePlayer}>
+										<DeleteIcon />
+									</Button>
+								</Tooltip>
+							</Box>
 						</Box>
 					</Box>
 				</Box>
-			</Box>
+			</Paper>
 		</Grid>
 	);
 };

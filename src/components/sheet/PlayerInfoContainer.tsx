@@ -1,9 +1,9 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
@@ -36,15 +36,15 @@ type PlayerInfoContainerProps = {
 
 const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (props) => {
 	return (
-		<SheetContainer title={props.title} mt={2}>
-			<PlayerNameField {...props.playerName} />
-			<Stack my={2} spacing={3}>
+		<SheetContainer title={props.title}>
+			<Stack spacing={3} pt={3}>
+				<PlayerNameField {...props.playerName} />
 				{props.playerInfo.map((info) => (
 					<PlayerInfoField key={info.id} {...info} />
 				))}
 			</Stack>
 			<Divider sx={{ my: 2 }} />
-			<Grid container mb={2} spacing={3} justifyContent='center'>
+			<Grid container spacing={3} justifyContent='center'>
 				{props.playerSpec.map((spec) => (
 					<Grid item key={spec.id} md={4} xs={6}>
 						<PlayerSpecField {...spec} />
@@ -84,20 +84,23 @@ const PlayerNameField: React.FC<PlayerNameFieldProps> = (props) => {
 	};
 
 	return (
-		<Box display='flex' alignItems='end' mt={2}>
-			<IconButton onClick={onShowChange} size='small' title={show ? t('hide') : t('show')}>
-				{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
-			</IconButton>
-			<TextField
-				sx={{ ml: 1, flex: '1 0' }}
-				variant='standard'
-				label={t('name')}
-				autoComplete='off'
-				defaultValue={value}
-				onChange={(ev) => startTransition(() => setValue(ev.target.value))}
-				onBlur={onValueBlur}
-			/>
-		</Box>
+		<TextField
+			variant='outlined'
+			label={t('name')}
+			autoComplete='off'
+			defaultValue={value}
+			onChange={(ev) => startTransition(() => setValue(ev.target.value))}
+			onBlur={onValueBlur}
+			InputProps={{
+				startAdornment: (
+					<InputAdornment position='start'>
+						<IconButton onClick={onShowChange} title={show ? t('hide') : t('show')}>
+							{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
+						</IconButton>
+					</InputAdornment>
+				),
+			}}
+		/>
 	);
 };
 
@@ -133,7 +136,8 @@ const PlayerInfoField: React.FC<PlayerInfoFieldProps> = (props) => {
 
 	return (
 		<TextField
-			variant='standard'
+			variant='outlined'
+			size='small'
 			label={props.name}
 			autoComplete='off'
 			value={value}
@@ -166,7 +170,6 @@ const PlayerSpecField: React.FC<PlayerSpecFieldProps> = (props) => {
 	return (
 		<TextField
 			variant='outlined'
-			size='small'
 			label={props.name}
 			fullWidth
 			value={value}

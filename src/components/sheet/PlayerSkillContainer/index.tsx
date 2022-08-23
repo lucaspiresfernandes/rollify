@@ -188,7 +188,6 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 					inputProps={{ 'aria-label': 'Marker' }}
 					checked={checked}
 					onChange={onCheckChange}
-					sx={{ padding: 0 }}
 				/>
 				{props.onFavourite && (
 					<IconButton
@@ -200,7 +199,7 @@ const UnderlyingPlayerSkillField: React.FC<PlayerSkillFieldProps> = (props) => {
 								modifier: parseInt(modifier as string) || 0,
 							})
 						}
-						sx={{ padding: 0, ml: 2 }}
+						sx={{ ml: 2 }}
 						title={t('star')}>
 						<BookmarkAddIcon />
 					</IconButton>

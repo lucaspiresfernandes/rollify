@@ -2,7 +2,6 @@ import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
-import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -12,7 +11,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import type { Locale } from '../../../../i18n';
 import Section from '../../../sheet/Section';
 import GetPortraitDialog from '../GetPortraitDialog';
@@ -54,9 +53,6 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 	return (
 		<Section
 			title='NPCs'
-			display='flex'
-			flexDirection='column'
-			height='100%'
 			sideButton={
 				<>
 					<IconButton onClick={handleClick} aria-label='Add'>
@@ -68,77 +64,74 @@ const NpcManager: React.FC<NpcManagerProps> = (props) => {
 					</Menu>
 				</>
 			}>
-			<Box position='relative' flex={{ md: '1 0' }} height={{ xs: 250 }} sx={{ overflowY: 'auto' }}>
-				<List sx={{ position: 'absolute', left: 0, top: 0, width: '100%' }}>
-					{props.basicNpcs.map((npc) => (
-						<Fragment key={npc.id}>
-							<ListItem
-								secondaryAction={
-									<IconButton
-										size='small'
-										onClick={() => props.onRemoveBasicNpc(npc.id)}
-										title={t('delete')}>
-										<DeleteIcon />
-									</IconButton>
-								}
-								sx={{ pr: 8 }}>
-								<TextField
-									variant='standard'
-									label='Name'
-									defaultValue={npc.name}
-									onChange={(ev) => props.onChangeBasicNpc(ev, npc.id)}
-									sx={{ flex: '1', pr: 4 }}
-								/>
-								<TextField
-									variant='standard'
-									label='Health'
-									defaultValue='0/0'
-									sx={{ width: '5rem' }}
-									inputProps={{ style: { textAlign: 'center' } }}
-								/>
-							</ListItem>
-							<Divider variant='middle' component='li' />
-						</Fragment>
-					))}
-					{props.complexNpcs.map((npc, index) => (
-						<Fragment key={npc.id}>
-							<ListItem
-								secondaryAction={
-									<>
-										<IconButton
-											size='small'
-											href={`/sheet/npc/${npc.id}/1`}
-											target='_blank'
-											title={t('access')}>
-											<LaunchIcon />
-										</IconButton>
-										<IconButton
-											size='small'
-											onClick={() => setPortraitDialogPlayerId(npc.id)}
-											sx={{ mx: 1 }}
-											title={t('portrait')}>
-											<VideoCameraFrontIcon />
-										</IconButton>
-										<IconButton
-											size='small'
-											onClick={() => props.onRemoveComplexNpc(npc.id)}
-											title={t('delete')}>
-											<DeleteIcon />
-										</IconButton>
-									</>
-								}>
-								<ListItemText>{npc.name}</ListItemText>
-							</ListItem>
-							{index < props.basicNpcs.length - 1 && <Divider variant='middle' component='li' />}
-						</Fragment>
-					))}
-				</List>
-				<GetPortraitDialog
-					open={Boolean(portraitDialogPlayerId)}
-					onClose={() => setPortraitDialogPlayerId(undefined)}
-					playerId={portraitDialogPlayerId || 0}
-				/>
-			</Box>
+			<List>
+				{props.basicNpcs.map((npc) => (
+					<ListItem
+						key={npc.id}
+						secondaryAction={
+							<IconButton
+								size='small'
+								onClick={() => props.onRemoveBasicNpc(npc.id)}
+								title={t('delete')}>
+								<DeleteIcon />
+							</IconButton>
+						}
+						sx={{ pr: 8 }}>
+						<TextField
+							variant='standard'
+							label='Name'
+							defaultValue={npc.name}
+							onChange={(ev) => props.onChangeBasicNpc(ev, npc.id)}
+							sx={{ flex: '1', pr: 4 }}
+						/>
+						<TextField
+							variant='standard'
+							label='Health'
+							defaultValue='0/0'
+							sx={{ width: '5rem' }}
+							inputProps={{ style: { textAlign: 'center' } }}
+						/>
+					</ListItem>
+				))}
+				{props.basicNpcs.length > 0 && props.complexNpcs.length > 0 && (
+					<Divider variant='middle' component='li' />
+				)}
+				{props.complexNpcs.map((npc, index) => (
+					<ListItem
+						key={npc.id}
+						secondaryAction={
+							<>
+								<IconButton
+									size='small'
+									href={`/sheet/npc/${npc.id}/1`}
+									target='_blank'
+									title={t('access')}>
+									<LaunchIcon />
+								</IconButton>
+								<IconButton
+									size='small'
+									onClick={() => setPortraitDialogPlayerId(npc.id)}
+									sx={{ mx: 1 }}
+									title={t('portrait')}>
+									<VideoCameraFrontIcon />
+								</IconButton>
+								<IconButton
+									size='small'
+									onClick={() => props.onRemoveComplexNpc(npc.id)}
+									title={t('delete')}>
+									<DeleteIcon />
+								</IconButton>
+							</>
+						}>
+						<ListItemText>{npc.name}</ListItemText>
+					</ListItem>
+				))}
+			</List>
+			<GetPortraitDialog
+				open={Boolean(portraitDialogPlayerId)}
+				onClose={() => setPortraitDialogPlayerId(undefined)}
+				playerId={portraitDialogPlayerId || 0}
+			/>
 		</Section>
 	);
 };

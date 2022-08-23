@@ -319,12 +319,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 
 	return (
 		<div>
-			<Box
-				display='flex'
-				flexDirection='row'
-				alignItems='end'
-				justifyContent='space-between'
-				mb={0.5}>
+			<Box display='flex' flexDirection='row' alignItems='end' justifyContent='space-between'>
 				<Typography variant='body1' component='label' id={`attributeBar${props.id}`}>
 					{t('sheet.attributePoints', { name: props.name })}
 				</Typography>
@@ -353,9 +348,9 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 					</IconButton>
 				</div>
 			</Box>
-			<Box display='flex' flexDirection='row' alignItems='center'>
+			<Box display='flex' flexDirection='row' alignItems='center' mb={0.5}>
 				{props.visibilityEnabled && (
-					<IconButton onClick={onShowChange} size='small' title={show ? t('hide') : t('show')}>
+					<IconButton onClick={onShowChange} title={show ? t('hide') : t('show')}>
 						{show ? <VisibilityIcon /> : <VisibilityOffIcon />}
 					</IconButton>
 				)}

@@ -224,6 +224,7 @@ const CombatManager: React.FC<CombatManagerProps> = (props) => {
 	return (
 		<Section
 			title='Combat'
+			height='100%'
 			sideButton={
 				<>
 					<IconButton
