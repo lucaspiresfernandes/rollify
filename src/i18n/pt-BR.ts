@@ -275,6 +275,9 @@ export const table: Locale = {
 		general: {
 			adminKey: 'Chave do Mestre',
 			adminKeyDescription: 'A chave do mestre é usada para criar uma nova conta de mestre.',
+			section: 'Seções',
+			sectionDescription: 'As seções são os blocos de informações da ficha do personagem.',
+			sectionField: 'Seção de {{name}}'
 		},
 		dice: {
 			addResolver: 'Adicionar determinador',

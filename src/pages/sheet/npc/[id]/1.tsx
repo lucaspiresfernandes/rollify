@@ -6,6 +6,7 @@ import type { DiceConfig } from '../../../../utils/dice';
 import type { InferSsrProps } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
 import { withSessionSsr } from '../../../../utils/session';
+import type { GeneralConfig } from '../../../../utils/settings';
 
 export type SheetFirstPageProps = InferSsrProps<typeof getSsp>;
 
@@ -66,6 +67,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			},
 		}),
 		prisma.config.findUnique({ where: { name: 'dice' } }),
+		prisma.config.findUnique({ where: { name: 'general' } }),
 	]);
 
 	if (!results[0]) {
@@ -85,6 +87,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		props: {
 			player: results[0],
 			diceConfig: JSON.parse(results[1]?.value as string) as DiceConfig,
+			section: (JSON.parse(results[2]?.value as string) as GeneralConfig).section,
 			table,
 		},
 	};

@@ -24,6 +24,21 @@
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }
 				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Detalhes Pessoais",
+						"characteristic": "Atributos",
+						"skill": "Perícias",
+						"combat": "Combate",
+						"item": "Itens & Moedas",
+						"spell": "Magias"
+					}
+				}
 			}
 		]
 	},
@@ -531,6 +546,21 @@
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }
 				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Detalhes Pessoais",
+						"characteristic": "Características",
+						"skill": "Perícias",
+						"combat": "Combate",
+						"item": "Itens & Moedas",
+						"spell": "Magias"
+					}
+				}
 			}
 		]
 	},
@@ -695,6 +725,21 @@
 					"resolver": null,
 					"characteristic": { "enableModifiers": true },
 					"skill": { "enableModifiers": true }
+				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Detalhes Pessoais",
+						"characteristic": "Habilidades",
+						"skill": "Perícias",
+						"combat": "Combate",
+						"item": "Itens & Moedas",
+						"spell": "Magias"
+					}
 				}
 			}
 		]

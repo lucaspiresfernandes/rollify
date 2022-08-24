@@ -18,6 +18,7 @@ import type { InferSsrProps } from '../../utils/next';
 import type { PortraitConfig } from '../../utils/portrait';
 import prisma from '../../utils/prisma';
 import { withSessionSsr } from '../../utils/session';
+import type { GeneralConfig } from '../../utils/settings';
 
 type AdminSettingsPageProps = InferSsrProps<typeof getSsp>;
 
@@ -50,7 +51,7 @@ const AdminSettings: React.FC<AdminSettingsPageProps> = (props) => {
 			</Tabs>
 
 			<Container sx={{ my: 4 }}>
-				{tab === 0 && <GeneralSettings adminKey={props.adminKey} />}
+				{tab === 0 && <GeneralSettings generalSettings={props.general} />}
 				{tab === 1 && <DiceSettings diceConfig={props.dice} />}
 				{tab === 2 && <PortraitSettings portraitConfig={props.portrait} />}
 			</Container>
@@ -71,7 +72,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	}
 
 	const results = await prisma.$transaction([
-		prisma.config.findUnique({ where: { name: 'adminKey' }, select: { value: true } }),
+		prisma.config.findUnique({ where: { name: 'general' }, select: { value: true } }),
 		prisma.config.findUnique({ where: { name: 'dice' }, select: { value: true } }),
 		prisma.config.findUnique({
 			where: { name: 'portrait' },
@@ -85,7 +86,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			table,
-			adminKey: results[0]?.value || null,
+			general: JSON.parse(results[0]?.value as string) as GeneralConfig,
 			dice: JSON.parse(results[1]?.value as string) as DiceConfig,
 			portrait: JSON.parse(results[2]?.value || 'null') as PortraitConfig | null,
 		},

@@ -273,6 +273,9 @@ export const table: Locale = {
 		general: {
 			adminKey: 'GM key',
 			adminKeyDescription: 'The GM key is used to create a new admin account.',
+			section: 'Sections',
+			sectionDescription: 'The sections are the information blocks that are displayed on the character sheet.',
+			sectionField: '{{name}} Section'
 		},
 		dice: {
 			addResolver: 'Add resolver',

@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useI18n } from 'next-rosetta';
 import { useContext, useState } from 'react';
@@ -106,28 +106,27 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 	};
 
 	return (
-		<Dialog open={props.open} onClose={props.onClose}>
+		<Dialog open={props.open} onClose={props.onClose} maxWidth='sm' fullWidth>
 			<DialogTitle>{t('modal.title.avatarEditor')}</DialogTitle>
 			<DialogContent>
-				<Grid
-					container
+				<Box
 					component='form'
-					id='playerAvatarDialogForm'
-					onSubmit={onSubmit}
-					spacing={3}
-					mt={0}>
+					display='flex'
+					flexDirection='column'
+					gap={3}
+					mt={1}
+					onSubmit={onSubmit}>
 					{avatars.map((avatar) => (
-						<Grid item key={avatar.id} xs={12}>
-							<TextField
-								fullWidth
-								variant='standard'
-								label={`Avatar (${avatar.name})`}
-								value={avatar.link}
-								onChange={(ev) => onAvatarChange(avatar.id, ev.target.value)}
-							/>
-						</Grid>
+						<TextField
+							key={avatar.id}
+							fullWidth
+							variant='standard'
+							label={`Avatar (${avatar.name})`}
+							value={avatar.link}
+							onChange={(ev) => onAvatarChange(avatar.id, ev.target.value)}
+						/>
 					))}
-				</Grid>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onCancel}>{t('modal.cancel')}</Button>

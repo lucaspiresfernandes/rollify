@@ -1,8 +1,6 @@
 import Grid from '@mui/material/Grid';
 import type { Trade } from '@prisma/client';
-import { useI18n } from 'next-rosetta';
 import { useState } from 'react';
-import type { Locale } from '../../i18n';
 import type { PlayerCombatContainerProps } from './PlayerCombatContainer';
 import PlayerCombatContainer from './PlayerCombatContainer';
 import type { PlayerItemContainerProps } from './PlayerItemContainer';
@@ -13,6 +11,8 @@ type ItemProps = Pick<PlayerItemContainerProps, 'playerItems' | 'playerCurrency'
 
 type PlayerLoadContainerProps = CombatProps &
 	ItemProps & {
+		combatTitle: string;
+		itemTitle: string;
 		senderTrade: Trade | null;
 		receiverTrade: Trade | null;
 		playerMaxLoad: number;
@@ -25,13 +25,12 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 		const itemWeight = props.playerItems.reduce((prev, cur) => prev + cur.weight * cur.quantity, 0);
 		return armorWeight + weaponWeight + itemWeight;
 	});
-	const { t } = useI18n<Locale>();
 
 	return (
 		<>
 			<Grid item xs={12}>
 				<PlayerCombatContainer
-					title={t('sheet.playerCombatTitle')}
+					title={props.combatTitle}
 					playerWeapons={props.playerWeapons}
 					playerArmor={props.playerArmor}
 					senderTrade={props.senderTrade}
@@ -43,7 +42,7 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 
 			<Grid item xs={12}>
 				<PlayerItemContainer
-					title={`${t('sheet.playerItemTitle')} & ${t('sheet.playerCurrencyTitle')}`}
+					title={props.itemTitle}
 					playerCurrency={props.playerCurrency}
 					playerItems={props.playerItems}
 					senderTrade={props.senderTrade}

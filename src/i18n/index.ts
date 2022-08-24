@@ -266,6 +266,9 @@ export interface Locale {
 		general: {
 			adminKey: string;
 			adminKeyDescription: string;
+			section: string;
+			sectionDescription: string;
+			sectionField: string;
 		};
 		dice: {
 			baseDice: string;

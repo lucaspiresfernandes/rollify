@@ -54,7 +54,7 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc: boolean }> = (p
 
 					<Grid item xs={12}>
 						<PlayerExtraInfoContainer
-							title={t('sheet.playerExtraInfoTitle')}
+							title={props.section.info}
 							extraInfo={props.player.PlayerExtraInfo.map((info) => ({
 								...info,
 								...info.ExtraInfo,

@@ -24,6 +24,21 @@
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }
 				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Personal Details",
+						"characteristic": "Characteristics",
+						"skill": "Skills",
+						"combat": "Combat",
+						"item": "Items & Currency",
+						"spell": "Spells"
+					}
+				}
 			}
 		]
 	},
@@ -505,6 +520,21 @@
 					"characteristic": { "enableModifiers": false },
 					"skill": { "enableModifiers": false }
 				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Personal Details",
+						"characteristic": "Characteristics",
+						"skill": "Skills",
+						"combat": "Combat",
+						"item": "Items & Currency",
+						"spell": "Spells"
+					}
+				}
 			}
 		]
 	},
@@ -643,6 +673,21 @@
 					"resolver": null,
 					"characteristic": { "enableModifiers": true },
 					"skill": { "enableModifiers": true }
+				}
+			},
+			{
+				"id": 3,
+				"name": "general",
+				"value": {
+					"adminKey": "",
+					"section": {
+						"info": "Personal Details",
+						"characteristic": "Abilities",
+						"skill": "Skills",
+						"combat": "Combat",
+						"item": "Items & Currency",
+						"spell": "Spells"
+					}
 				}
 			}
 		]

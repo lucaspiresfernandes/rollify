@@ -43,18 +43,18 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 	return (
 		<AppBar position='static'>
 			<Toolbar>
-				<Grid container justifyContent='space-between' alignItems='center'>
-					<Grid item xs={4} textAlign='start'>
+				<Grid container justifyContent='space-between' alignItems='center' spacing={3}>
+					<Grid item xs={2} md={4} textAlign='start'>
 						<Links />
 					</Grid>
 
-					<Grid item xs={4}>
+					<Grid item xs={8} md={4}>
 						<div style={{ minWidth: 75, maxWidth: 240, margin: 'auto' }}>
 							<Image src={whiteLogo} alt='LOGO' layout='responsive' priority />
 						</div>
 					</Grid>
 
-					<Grid item xs={4} textAlign='end'>
+					<Grid item xs={2} md={4} textAlign='end'>
 						<Settings {...props} />
 					</Grid>
 				</Grid>

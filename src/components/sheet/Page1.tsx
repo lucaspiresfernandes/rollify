@@ -12,7 +12,7 @@ import {
 	DiceRollEvent,
 	SocketContext,
 	TradeContextType,
-	TradeDialogContext
+	TradeDialogContext,
 } from '../../contexts';
 import useSocket from '../../hooks/useSocket';
 import type { Locale } from '../../i18n';
@@ -125,7 +125,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 				<ApiContext.Provider value={api}>
 					<Grid item xs={12} sm={6}>
 						<MemoPlayerInfoContainer
-							title={t('sheet.playerInfoTitle')}
+							title={props.section.info}
 							playerName={{
 								value: props.player.name,
 								show: props.player.showName,
@@ -164,7 +164,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 
 						<Grid item xs={12} sm={6}>
 							<MemoPlayerCharacteristicContainer
-								title={t('sheet.playerCharacteristicTitle')}
+								title={props.section.characteristic}
 								playerCharacteristics={props.player.PlayerCharacteristic.map((char) => ({
 									...char,
 									...char.Characteristic,
@@ -174,7 +174,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 						</Grid>
 
 						<MemoPlayerSkillContainer
-							title={t('sheet.playerSkillTitle')}
+							title={props.section.skill}
 							playerSkills={props.player.PlayerSkill.map((skill) => ({
 								...skill,
 								...skill.Skill,
@@ -186,6 +186,8 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 							<TradeDialogContext.Provider value={tradeProvider}>
 								<SocketContext.Provider value={socket}>
 									<MemoPlayerLoadContainer
+										combatTitle={props.section.combat}
+										itemTitle={props.section.item}
 										playerMaxLoad={props.player.maxLoad}
 										playerWeapons={props.player.PlayerWeapon.map((weap) => ({
 											...weap,
@@ -209,7 +211,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 
 							<Grid item xs={12}>
 								<MemoPlayerSpellContainer
-									title={t('sheet.playerSpellTitle')}
+									title={props.section.spell}
 									playerSpells={props.player.PlayerSpell.map((sp) => ({ ...sp, ...sp.Spell }))}
 									playerMaxSlots={props.player.spellSlots}
 								/>

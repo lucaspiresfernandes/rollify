@@ -5,6 +5,7 @@ import PlayerSheetPage2 from '../../../../components/sheet/Page2';
 import type { InferSsrProps } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
 import { withSessionSsr } from '../../../../utils/session';
+import type { GeneralConfig } from '../../../../utils/settings';
 
 export type SheetSecondPageProps = InferSsrProps<typeof getSsp>;
 
@@ -44,6 +45,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 				},
 			},
 		}),
+		prisma.config.findUnique({ where: { name: 'general' } }),
 	]);
 
 	if (!results[0]) {
@@ -62,6 +64,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 	return {
 		props: {
 			player: results[0],
+			section: (JSON.parse(results[1]?.value as string) as GeneralConfig).section,
 			table,
 		},
 	};
