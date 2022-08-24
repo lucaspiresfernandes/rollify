@@ -1,4 +1,4 @@
-import type { Attribute, PortraitAttribute } from '@prisma/client';
+import type { Attribute, PortraitAttribute, RollableAttribute } from '@prisma/client';
 import type { NextApiHandler } from 'next';
 import type { NextApiResponseData } from '../../../../utils/next';
 import prisma from '../../../../utils/prisma';
@@ -36,7 +36,7 @@ const handlePost: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =
 	const id = Number(req.body.id);
 	const name = String(req.body.name);
 	const color = String(req.body.color);
-	const rollable = Boolean(req.body.rollable);
+	const rollable = req.body.rollable as RollableAttribute | null;
 	const portrait = req.body.portrait as PortraitAttribute | null;
 
 	try {
@@ -70,7 +70,7 @@ const handlePut: NextApiHandler<AttributeSheetApiResponse> = async (req, res) =>
 
 	const name = String(req.body.name);
 	const color = String(req.body.color);
-	const rollable = Boolean(req.body.rollable);
+	const rollable = req.body.rollable as RollableAttribute | null;
 	const portrait = req.body.portrait as PortraitAttribute | null;
 
 	try {

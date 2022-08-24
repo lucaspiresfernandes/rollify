@@ -52,6 +52,7 @@ export const table: Locale = {
 	to: 'To',
 	name: 'Name',
 	copy: 'Copy',
+	no: 'No',
 
 	placeholder: {
 		noFavouriteSkills: 'Your favourite skills will appear here.',
@@ -274,8 +275,9 @@ export const table: Locale = {
 			adminKey: 'GM key',
 			adminKeyDescription: 'The GM key is used to create a new admin account.',
 			section: 'Sections',
-			sectionDescription: 'The sections are the information blocks that are displayed on the character sheet.',
-			sectionField: '{{name}} Section'
+			sectionDescription:
+				'The sections are the information blocks that are displayed on the character sheet.',
+			sectionField: '{{name}} Section',
 		},
 		dice: {
 			addResolver: 'Add resolver',

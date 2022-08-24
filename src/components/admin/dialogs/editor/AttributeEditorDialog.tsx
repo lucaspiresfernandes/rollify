@@ -1,17 +1,15 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import type { Attribute, PortraitAttribute } from '@prisma/client';
+import type { Attribute, PortraitAttribute, RollableAttribute } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useEffect, useMemo, useState } from 'react';
 import type { EditorDialogProps } from '.';
@@ -19,13 +17,14 @@ import type { Locale } from '../../../../i18n';
 import ColorField from '../../../ColorField';
 
 type PortraitValue = { name: string; value: PortraitAttribute | 'NONE' }[];
+type RollableValue = { name: string; value: RollableAttribute | 'NO' }[];
 
 const initialState = {
 	id: 0,
 	name: '',
 	color: '#ddaf0f',
 	portrait: 'NONE',
-	rollable: false,
+	rollable: 'NO',
 };
 
 const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) => {
@@ -39,12 +38,13 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 					...props.data,
 					color: `#${props.data.color}`,
 					portrait: props.data.portrait || 'NONE',
+					rollable: props.data.rollable || 'NO',
 				});
 			else setAttribute(initialState);
 		}
 	}, [props.data, props.open]);
 
-	const portraitValues: PortraitValue = useMemo(
+	const portraitValues = useMemo<PortraitValue>(
 		() => [
 			{
 				name: t('none'),
@@ -62,12 +62,28 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 		[t]
 	);
 
+	const rollableValues = useMemo<RollableValue>(
+		() => [
+			{ name: t('no'), value: 'NO' },
+			{
+				name: t('modal.label.currentValue'),
+				value: 'VALUE',
+			},
+			{
+				name: t('modal.label.maxValue'),
+				value: 'MAX_VALUE',
+			},
+		],
+		[t]
+	);
+
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
 		e.preventDefault();
 		props.onSubmit({
 			...attribute,
 			color: attribute.color.substring(1),
 			portrait: attribute.portrait === 'NONE' ? null : (attribute.portrait as PortraitAttribute),
+			rollable: attribute.rollable === 'NO' ? null : (attribute.rollable as RollableAttribute),
 		});
 	};
 
@@ -114,15 +130,20 @@ const AttributeEditorDialog: React.FC<EditorDialogProps<Attribute>> = (props) =>
 							</Select>
 						</FormControl>
 					</Box>
-					<FormControlLabel
-						control={
-							<Checkbox
-								checked={attribute.rollable}
-								onChange={(ev) => setAttribute({ ...attribute, rollable: ev.target.checked })}
-							/>
-						}
-						label={t('sheet.table.rollable')}
-					/>
+					<FormControl fullWidth required>
+						<InputLabel id='attributeRollable'>{t('sheet.table.rollable')}</InputLabel>
+						<Select
+							labelId='attributeRollable'
+							label={t('sheet.table.rollable')}
+							value={attribute.rollable}
+							onChange={(ev) => setAttribute({ ...attribute, rollable: ev.target.value })}>
+							{rollableValues.map((rollable) => (
+								<MenuItem key={rollable.value} value={rollable.value}>
+									{rollable.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 				</Box>
 			</DialogContent>
 			<DialogActions>

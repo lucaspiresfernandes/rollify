@@ -50,21 +50,21 @@
 				"id": 1,
 				"name": "Health",
 				"color": "b62323",
-				"rollable": false,
+				"rollable": null,
 				"portrait": "PRIMARY"
 			},
 			{
 				"id": 2,
 				"name": "Sanity",
 				"color": "1f3ce0",
-				"rollable": true,
+				"rollable": "VALUE",
 				"portrait": "PRIMARY"
 			},
 			{
 				"id": 3,
 				"name": "Magic",
 				"color": "ae00ff",
-				"rollable": false,
+				"rollable": null,
 				"portrait": "SECONDARY"
 			}
 		],
@@ -546,7 +546,7 @@
 				"id": 1,
 				"name": "Vida",
 				"color": "b62323",
-				"rollable": false,
+				"rollable": null,
 				"portrait": "PRIMARY"
 			}
 		],

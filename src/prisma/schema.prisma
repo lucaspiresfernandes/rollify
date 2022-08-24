@@ -47,7 +47,7 @@ model Attribute {
   id              Int                @id @default(autoincrement())
   name            String
   color           String             @db.Char(6)
-  rollable        Boolean
+  rollable        RollableAttribute?
   portrait        PortraitAttribute?
   PlayerAttribute PlayerAttribute[]
   AttributeStatus AttributeStatus[]
@@ -319,6 +319,11 @@ enum Role {
 enum PortraitAttribute {
   PRIMARY
   SECONDARY
+}
+
+enum RollableAttribute {
+  VALUE
+  MAX_VALUE
 }
 
 enum TradeType {

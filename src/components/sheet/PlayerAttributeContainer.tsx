@@ -12,7 +12,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Zoom from '@mui/material/Zoom';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { PortraitAttribute } from '@prisma/client';
+import type { PortraitAttribute, RollableAttribute } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -44,7 +44,7 @@ type PlayerAttributeContainerProps = {
 		extraValue: number;
 		show: boolean;
 		color: string;
-		rollable: boolean;
+		rollable: RollableAttribute | null;
 		portrait: PortraitAttribute | null;
 	}[];
 	playerAttributeStatus: {
@@ -191,15 +191,8 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 };
 
 type PlayerAttributeFieldProps = {
-	id: number;
-	name: string;
-	value: number;
-	maxValue: number;
-	extraValue: number;
-	show: boolean;
-	color: string;
-	rollable: boolean;
-
+	[T in keyof PlayerAttributeContainerProps['playerAttributes'][number]]: PlayerAttributeContainerProps['playerAttributes'][number][T];
+} & {
 	status: {
 		id: number;
 		name: string;
@@ -253,9 +246,11 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 	};
 
 	const handleDiceClick = (standalone: boolean) => {
+		const val = props.rollable === 'VALUE' ? value : maxValue;
+
 		rollDice({
 			num: standalone ? 1 : undefined,
-			ref: value,
+			ref: val,
 		});
 	};
 

@@ -52,6 +52,7 @@ export const table: Locale = {
 	to: 'Para',
 	name: 'Nome',
 	copy: 'Copiar',
+	no: 'Não',
 
 	placeholder: {
 		noFavouriteSkills: 'Suas perícias favoritadas aparecerão aqui.',

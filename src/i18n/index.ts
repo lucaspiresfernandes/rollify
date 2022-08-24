@@ -53,6 +53,7 @@ export interface Locale {
 	to: string;
 	name: string;
 	copy: string;
+	no: string;
 
 	placeholder: {
 		noFavouriteSkills: string;
