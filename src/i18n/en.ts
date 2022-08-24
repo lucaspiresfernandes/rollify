@@ -40,7 +40,7 @@ export const table: Locale = {
 	offering: 'Offering',
 	load: 'Current Load',
 	slots: 'Available Slots',
-	quickAccess: 'Quick Access',
+	quickAccess: 'Q.A.',
 	clear: 'Clear',
 	update: 'Update',
 	expand: 'Expand',
