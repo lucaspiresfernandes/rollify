@@ -1,34 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+ <a href="#">
+    <img src="https://user-images.githubusercontent.com/71353674/186519694-d80949d4-4a6f-48ee-90c8-878f75aca3ed.png" alt="Rollify logo" title="Rollify" height="65" align="right" />
+  </a>
 
-## Getting Started
+# Rollify: Electronic RPG Character Sheet
 
-First, run the development server:
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z3BVAJ2)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+:star: Star this project on GitHub — it motivates me a lot!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Rollify is a web application that features several resources that help players and masters to play a dynamic and agile RPG game.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+#### Support me on Ko-fi!
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Did you like my work? Please consider donating to me on [Ko-fi](https://ko-fi.com/alyssafernandes). Donations help me to keep creating free projects.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Table of Content
 
-## Learn More
+- [Key Features](#key-features)
+  - [GMs](#for-gms)
+  - [Players](#for-players)
+  - [OBS Integration](#obs-integration)
+- [Installation](#installation)
+  - [With Rollify Manager](#with-rollify-manager)
+  - [Manual Installation](#manual-installation)
+- [License](#license)
+- [Links](#links)
+  
+## Key Features
 
-To learn more about Next.js, take a look at the following resources:
+Rollify has several features for both GMs and players.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### For GMs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Players panel (with character information tracking)
+- NPC management
+- Combat/Initiative management
+- Player roll history
+- Character's sheet complete customization
+- System settings
+- OBS integration (with Portraits)
 
-## Deploy on Vercel
+### For Players
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Character sheet (includes all character information customized by the GM)
+- Avatar and variations (with Character Status)
+- Automatic dice roll
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### OBS Integration
+
+The OBS Integration, named Portraits, is an integration with OBS that shares character information on stream. The informations shown are:
+- Name and attributes
+- Avatar (including variations)
+- Dice roll
+
+The Portraits are completely customizable in appearance and features.
+  
+## Installation
+
+The installation process can be done in two ways:
+
+### With Rollify Manager
+
+Rollify Manager is a tool that helps you manage your Rollify applications.
+
+### Manual Installation
+
+Install Rollify manually, using Heroku.
+
+## License
+
+The Rollify application is licensed under the terms of the GPL Open Source license and is available for free.
+
+## Links
+
+- [Documentation](#)
+- [Discussions](https://github.com/alyssapiresfernandescefet/rollify/discussions)
+- [Issues](https://github.com/alyssapiresfernandescefet/rollify/issues)
