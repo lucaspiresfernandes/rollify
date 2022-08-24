@@ -21,7 +21,7 @@ import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useMemo, useState } from 'react';
 import { PlayerCombatContainerProps, WeaponIcon } from '.';
-import dice20 from '../../../../public/dice20.webp';
+import dice from '../../../../public/dice.webp';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../../contexts';
 import useExtendedState from '../../../hooks/useExtendedState';
 import type { Locale } from '../../../i18n';
@@ -207,7 +207,7 @@ const PlayerWeaponField: React.FC<PlayerWeaponFieldProps> = (props) => {
 						{props.damage ? (
 							<Image
 								layout='fixed'
-								src={dice20}
+								src={dice}
 								alt='Dice'
 								className='clickable'
 								title={props.damage}

@@ -4,7 +4,7 @@ import GeneralDiceRollDialog, {
 	GeneralDiceRollDialogSubmitHandler,
 } from '../../../GeneralDiceRollDialog';
 import Section from '../../../sheet/Section';
-import dice20 from '../../../../../public/dice20.webp';
+import dice from '../../../../../public/dice.webp';
 import Image from 'next/image';
 import Box from '@mui/material/Box';
 import type { DiceConfig } from '../../../../utils/dice';
@@ -26,7 +26,7 @@ const DiceRoll: React.FC<{ baseDice: DiceConfig['baseDice'] }> = (props) => {
 					onClose={() => setGeneralDiceDialogOpen(false)}
 					onSubmit={onGeneralDiceDialogSubmit}>
 					<Image
-						src={dice20}
+						src={dice}
 						alt='D20'
 						className='clickable'
 						width={80}

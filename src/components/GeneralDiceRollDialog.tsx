@@ -13,6 +13,7 @@ import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import dice10 from '../../public/dice10.webp';
+import dice100 from '../../public/dice100.webp';
 import dice12 from '../../public/dice12.webp';
 import dice20 from '../../public/dice20.webp';
 import dice4 from '../../public/dice4.webp';
@@ -62,6 +63,11 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 			roll: 20,
 			img: dice20,
 		},
+		{
+			num: 0,
+			roll: 100,
+			img: dice100,
+		},
 	]);
 	const { t } = useI18n<Locale>();
 
@@ -95,19 +101,19 @@ const GeneralDiceRollDialog: React.FC<GeneralDiceRollDialogProps> = (props) => {
 			<Dialog open={props.open} onClose={props.onClose}>
 				<DialogTitle>{t('modal.title.generalDiceRoll')}</DialogTitle>
 				<DialogContent>
-					<Grid container spacing={4}>
+					<Grid container spacing={4} p={2} justifyContent='center' alignItems='center'>
 						{dices.map((dice) => (
 							<Grid item key={dice.roll} sm={4} xs={6} textAlign='center'>
-								<div>
-									<Box width={100} display='inline-block'>
-										<Image
-											src={dice.img}
-											alt={`${dice.num || ''}D${dice.roll}`}
-											title={`${dice.num || ''}D${dice.roll}`}
-											layout='responsive'
-										/>
-									</Box>
-								</div>
+								<Box width={100} display='inline-block'>
+									<Image
+										src={dice.img}
+										alt={`${dice.num || ''}D${dice.roll}`}
+										title={`${dice.num || ''}D${dice.roll}`}
+										layout='responsive'
+										className='clickable'
+										onClick={() => props.onSubmit([{ num: 1, roll: dice.roll }])}
+									/>
+								</Box>
 								<Box display='flex' alignItems='center' px={2}>
 									<IconButton
 										title={t('subtract')}

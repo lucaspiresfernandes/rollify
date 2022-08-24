@@ -16,7 +16,7 @@ import type { PortraitAttribute } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useEffect, useRef, useState } from 'react';
-import dice20 from '../../../public/dice20.webp';
+import dice from '../../../public/dice.webp';
 import { ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import type { Locale } from '../../i18n';
 import type { PlayerAttributeApiResponse } from '../../pages/api/sheet/player/attribute';
@@ -164,7 +164,7 @@ const PlayerAvatarField: React.FC<PlayerAvatarFieldProps> = (props) => {
 				onSubmit={onGeneralDiceDialogSubmit}>
 				<div>
 					<Image
-						src={dice20}
+						src={dice}
 						alt='D20'
 						layout='fixed'
 						className='clickable'
@@ -379,7 +379,7 @@ const PlayerAttributeField: React.FC<PlayerAttributeFieldProps> = (props) => {
 				</Box>
 				{props.rollable && (
 					<Image
-						src={dice20}
+						src={dice}
 						alt='Dice'
 						className='clickable'
 						onClick={(ev) => handleDiceClick(ev.ctrlKey)}

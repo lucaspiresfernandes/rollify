@@ -21,7 +21,7 @@ import type { Spell } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import Image from 'next/image';
 import { useContext, useMemo, useState } from 'react';
-import dice20 from '../../../public/dice20.webp';
+import dice from '../../../public/dice.webp';
 import { AddDataDialogContext, ApiContext, DiceRollContext, LoggerContext } from '../../contexts';
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
@@ -287,7 +287,7 @@ const PlayerSpellField: React.FC<PlayerSpellFieldProps> = (props) => {
 						{props.damage ? (
 							<Image
 								layout='fixed'
-								src={dice20}
+								src={dice}
 								alt='Dice'
 								title={props.damage}
 								className='clickable'
