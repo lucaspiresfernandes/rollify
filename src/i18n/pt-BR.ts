@@ -53,6 +53,8 @@ export const table: Locale = {
 	name: 'Nome',
 	copy: 'Copiar',
 	no: 'Não',
+	archive: 'Arquivo',
+	unarchive: 'Desarquivar',
 
 	placeholder: {
 		noFavouriteSkills: 'Suas perícias favoritadas aparecerão aqui.',
@@ -189,6 +191,7 @@ export const table: Locale = {
 		panelTitle: 'Painel do Mestre',
 		editorTitle: 'Editor',
 		configurationsTitle: 'Configurações',
+		npcTitle: 'NPCS Rápidos',
 
 		enableCombatEnvironment: 'Habilitar ambiente de combate',
 
@@ -208,9 +211,7 @@ export const table: Locale = {
 			hasAmmo: 'Possui munição',
 		},
 
-		info: {
-			noPlayers: 'Todos os jogadores cadastrados aparecerão aqui.',
-		},
+		addNpc: 'Adicionar NPC',
 	},
 
 	modal: {

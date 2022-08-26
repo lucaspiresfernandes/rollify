@@ -3,8 +3,8 @@ import type { NextApiHandlerIO, NextApiResponseData } from '../../../../utils/ne
 import prisma from '../../../../utils/prisma';
 import { withSessionApi } from '../../../../utils/session';
 
-const getPlayerData = async (id: number) => {
-	const data = await prisma.player.findUnique({
+const getPlayerData = (id: number) => {
+	return prisma.player.findUnique({
 		where: { id },
 		select: {
 			id: true,
@@ -49,7 +49,6 @@ const getPlayerData = async (id: number) => {
 			PlayerSpell: { include: { Spell: true } },
 		},
 	});
-	return data;
 };
 
 export type PlayerApiResponsePlayerData = AsyncReturnType<typeof getPlayerData>;

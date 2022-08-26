@@ -1,21 +1,27 @@
-import { useContext, useState } from 'react';
-import { DiceRollContext } from '../../../../contexts';
+import Box from '@mui/material/Box';
+import Image from 'next/image';
+import { useCallback, useState } from 'react';
+import dice from '../../../../../public/dice.webp';
+import type { DiceRollEvent } from '../../../../contexts';
+import type { DiceConfig } from '../../../../utils/dice';
+import DiceRollDialog, { DiceRoll as DiceRollType } from '../../../DiceRollDialog';
 import GeneralDiceRollDialog, {
 	GeneralDiceRollDialogSubmitHandler,
 } from '../../../GeneralDiceRollDialog';
 import Section from '../../../sheet/Section';
-import dice from '../../../../../public/dice.webp';
-import Image from 'next/image';
-import Box from '@mui/material/Box';
-import type { DiceConfig } from '../../../../utils/dice';
 
 const DiceRoll: React.FC<{ baseDice: DiceConfig['baseDice'] }> = (props) => {
+	const [diceRoll, setDiceRoll] = useState<DiceRollType>({ dice: null });
 	const [generalDiceDialogOpen, setGeneralDiceDialogOpen] = useState(false);
-	const rollDice = useContext(DiceRollContext);
+
+	const onRollDice: DiceRollEvent = useCallback(
+		(dice, onResult) => setDiceRoll({ dice, onResult }),
+		[]
+	);
 
 	const onGeneralDiceDialogSubmit: GeneralDiceRollDialogSubmitHandler = (dice) => {
 		setGeneralDiceDialogOpen(false);
-		if (dice.length > 0) rollDice(dice);
+		if (dice.length > 0) onRollDice(dice);
 	};
 
 	return (
@@ -32,12 +38,13 @@ const DiceRoll: React.FC<{ baseDice: DiceConfig['baseDice'] }> = (props) => {
 						width={80}
 						height={80}
 						onClick={(ev) => {
-							if (ev.ctrlKey) return rollDice([{ num: 1, roll: props.baseDice }]);
+							if (ev.ctrlKey) return onRollDice([{ num: 1, roll: props.baseDice }]);
 							setGeneralDiceDialogOpen(true);
 						}}
 					/>
 				</GeneralDiceRollDialog>
 			</Box>
+			<DiceRollDialog onClose={() => setDiceRoll({ dice: null })} {...diceRoll} />
 		</Section>
 	);
 };

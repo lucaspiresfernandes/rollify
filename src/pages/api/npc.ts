@@ -1,10 +1,35 @@
 import type { NextApiHandler } from 'next';
+import type { AsyncReturnType } from '../../utils';
 import type { NextApiResponseData } from '../../utils/next';
 import prisma from '../../utils/prisma';
 import { withSessionApi } from '../../utils/session';
 import { registerSheetData } from './register';
 
-export type NpcApiResponse = NextApiResponseData<'unauthorized' | 'invalid_body', { id: number }>;
+function getNpc(id: number) {
+	return prisma.player.findUnique({
+		where: { id },
+		select: {
+			id: true,
+			name: true,
+			PlayerAttributeStatus: {
+				select: { AttributeStatus: { select: { id: true } }, value: true },
+			},
+			PlayerAttributes: {
+				select: {
+					Attribute: { select: { id: true, name: true, color: true } },
+					value: true,
+					maxValue: true,
+					extraValue: true,
+				},
+			},
+		},
+	});
+}
+
+export type NpcApiResponse = NextApiResponseData<
+	'unauthorized' | 'invalid_body',
+	{ npc: AsyncReturnType<typeof getNpc> }
+>;
 
 const handler: NextApiHandler = (req, res) => {
 	if (req.method === 'PUT') return handlePut(req, res);
@@ -32,8 +57,8 @@ const handlePut: NextApiHandler<NpcApiResponse> = async (req, res) => {
 	try {
 		const name = String(req.body.name);
 		const id = await registerSheetData(undefined, { name });
-
-		res.json({ status: 'success', id });
+		const npc = await getNpc(id);
+		res.json({ status: 'success', npc });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -61,7 +86,7 @@ const handleDelete: NextApiHandler<NpcApiResponse> = async (req, res) => {
 
 	try {
 		await prisma.player.delete({ where: { id } });
-		res.json({ status: 'success', id });
+		res.json({ status: 'success', npc: null });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });

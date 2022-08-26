@@ -1,25 +1,32 @@
+import ArchiveIcon from '@mui/icons-material/Archive';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LaunchIcon from '@mui/icons-material/Launch';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useI18n } from 'next-rosetta';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { LoggerContext, SocketContext } from '../../../contexts';
 import type { Locale } from '../../../i18n';
+import type { NpcApiResponse } from '../../../pages/api/npc';
 import type { PlayerApiResponse } from '../../../pages/api/sheet/player';
 import { getAvatarSize, handleDefaultApiResponse } from '../../../utils';
 import { api } from '../../../utils/createApiClient';
 import PartialBackdrop from '../../PartialBackdrop';
 import GetPortraitDialog from '../dialogs/GetPortraitDialog';
+import UtilitySection from '../dialogs/UtilitySection';
 import PlayerAvatarImage from './PlayerAvatarImage';
 import PlayerDetailsDialog, { PlayerDetailsDialogProps } from './PlayerDetailsDialog';
 
-type PlayerContainerProps = {
+type CharacterContainerProps = {
 	players: {
 		id: number;
 		name: string;
@@ -36,12 +43,35 @@ type PlayerContainerProps = {
 			value: boolean;
 		}[];
 	}[];
+
+	npcs: {
+		id: number;
+		name: string;
+		attribute: {
+			id: number;
+			name: string;
+			color: string;
+			value: number;
+			maxValue: number;
+			extraValue: number;
+		}[];
+		attributeStatus: {
+			id: number;
+			value: boolean;
+		}[];
+	}[];
+
+	baseDice: number;
 };
 
 const AVATAR_SIZE = getAvatarSize(0.35);
 
-const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
+const CharacterContainer: React.FC<CharacterContainerProps> = (props) => {
 	const [players, setPlayers] = useState(props.players);
+	const [npcs, setNpcs] = useState(props.npcs);
+	const [archivedCharacters, setArchivedCharacters] = useState<
+		(typeof props.players[number] & { npc: boolean })[]
+	>([]);
 	const [portraitDialogPlayerId, setPortraitDialogPlayerId] = useState<number>(0);
 	const [showDetails, setShowDetails] = useState(false);
 	const [details, setDetails] = useState<PlayerDetailsDialogProps['details']>({
@@ -62,7 +92,28 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 		PlayerSpec: [],
 	});
 	const socket = useContext(SocketContext);
+	const log = useContext(LoggerContext);
 	const { t } = useI18n<Locale>();
+
+	useEffect(() => {
+		const archivedIds = JSON.parse(localStorage.getItem('archived_players') || '[]');
+		setArchivedCharacters([
+			...players
+				.filter((player) => archivedIds.includes(player.id))
+				.map((p) => ({ ...p, npc: false })),
+			...npcs.filter((player) => archivedIds.includes(player.id)).map((p) => ({ ...p, npc: true })),
+		]);
+		setPlayers(players.filter((player) => !archivedIds.includes(player.id)));
+		setNpcs(npcs.filter((player) => !archivedIds.includes(player.id)));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		localStorage.setItem(
+			'archived_players',
+			JSON.stringify(archivedCharacters.map((player) => player.id))
+		);
+	}, [archivedCharacters]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -72,6 +123,13 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 				p.map((player) => {
 					if (player.id === id) return { ...player, name: name || t('unknown') };
 					return player;
+				})
+			);
+
+			setNpcs((npcs) =>
+				npcs.map((npc) => {
+					if (npc.id === id) return { ...npc, name: name || t('unknown') };
+					return npc;
 				})
 			);
 
@@ -88,6 +146,19 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 					return {
 						...player,
 						attribute: player.attribute.map((attr) => {
+							if (attr.id === attrId) return { ...attr, value, maxValue, extraValue };
+							return attr;
+						}),
+					};
+				})
+			);
+
+			setNpcs((npcs) =>
+				npcs.map((npc) => {
+					if (npc.id !== id) return npc;
+					return {
+						...npc,
+						attribute: npc.attribute.map((attr) => {
 							if (attr.id === attrId) return { ...attr, value, maxValue, extraValue };
 							return attr;
 						}),
@@ -114,6 +185,19 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 					return {
 						...player,
 						attributeStatus: player.attributeStatus.map((attr) => {
+							if (attr.id === attrId) return { ...attr, value };
+							return attr;
+						}),
+					};
+				})
+			);
+
+			setNpcs((npcs) =>
+				npcs.map((npc) => {
+					if (npc.id !== id) return npc;
+					return {
+						...npc,
+						attributeStatus: npc.attributeStatus.map((attr) => {
 							if (attr.id === attrId) return { ...attr, value };
 							return attr;
 						}),
@@ -372,29 +456,109 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket]);
 
-	if (players.length === 0)
-		return (
-			<Typography variant='h6' component='h2' textAlign='center' mt={3} color='GrayText'>
-				{t('admin.info.noPlayers')}
-			</Typography>
-		);
+	const addNpc = useCallback(() => {
+		const name = prompt(t('prompt.addNpcName'));
+		if (!name) return;
+		api
+			.put<NpcApiResponse>('/npc', { name })
+			.then((res) => {
+				if (res.data.status === 'success') {
+					const npc = res.data.npc as NonNullable<typeof res.data.npc>;
+					return setNpcs((npcs) => [
+						...npcs,
+						{
+							id: npc.id,
+							name: npc.name,
+							attribute: npc.PlayerAttributes.map((attr) => ({ ...attr, ...attr.Attribute })),
+							attributeStatus: npc.PlayerAttributeStatus.map((attr) => ({
+								...attr,
+								...attr.AttributeStatus,
+							})),
+						},
+					]);
+				}
+				handleDefaultApiResponse(res, log, t);
+			})
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }));
+	}, [log, t]);
 
 	return (
 		<>
-			<Grid container spacing={2} mt={2} alignItems='stretch'>
-				{players.map((player) => (
-					<PlayerField
-						key={player.id}
-						{...player}
-						onDeletePlayer={() => setPlayers((p) => p.filter((pl) => pl.id !== player.id))}
-						onGetPortrait={() => setPortraitDialogPlayerId(player.id)}
-						onShowDetails={(det) => {
-							setShowDetails(true);
-							setDetails(det);
-						}}
-					/>
+			<Grid container spacing={2} py={2} alignItems='start'>
+				{archivedCharacters.map((char) => (
+					<Grid item xs={6} md={4} lg={3} key={char.id}>
+						<Paper elevation={6} sx={{ borderRadius: 4 }}>
+							<Box p={1.5} display='flex' justifyContent='space-between'>
+								<Typography variant='h5'>
+									{char.npc ? 'NPC: ' : ''}
+									{char.name}
+								</Typography>
+								<Tooltip title={t('unarchive')} describeChild>
+									<Button
+										variant='contained'
+										size='small'
+										onClick={() => {
+											if (char.npc) setNpcs((npcs) => [...npcs, char]);
+											else setPlayers((players) => [...players, char]);
+											setArchivedCharacters((archivedPlayers) =>
+												archivedPlayers.filter((p) => p.id !== char.id)
+											);
+										}}>
+										<UnarchiveIcon />
+									</Button>
+								</Tooltip>
+							</Box>
+						</Paper>
+					</Grid>
 				))}
 			</Grid>
+			<Grid container spacing={2} pb={3} alignItems='start'>
+				{players.map((player) => (
+					<Grid item xs={12} md={6} lg={4} key={player.id}>
+						<PlayerField
+							{...player}
+							onGetPortrait={() => setPortraitDialogPlayerId(player.id)}
+							onShowDetails={(det) => {
+								setShowDetails(true);
+								setDetails(det);
+							}}
+							onDelete={() => setPlayers((p) => p.filter((pl) => pl.id !== player.id))}
+							onArchive={() => {
+								setPlayers((p) => p.filter((pl) => pl.id !== player.id));
+								setArchivedCharacters((ap) => [...ap, { ...player, npc: false }]);
+							}}
+						/>
+					</Grid>
+				))}
+			</Grid>
+
+			<Divider />
+
+			<Typography my={3} textAlign='end'>
+				<Button variant='contained' color='primary' onClick={addNpc}>
+					Add new NPC
+				</Button>
+			</Typography>
+			<Grid container spacing={2} pb={3} alignItems='start' textAlign='start'>
+				{npcs.map((npc) => (
+					<Grid item xs={12} md={6} lg={4} key={npc.id}>
+						<NpcField
+							{...npc}
+							onGetPortrait={() => setPortraitDialogPlayerId(npc.id)}
+							onDelete={() => setNpcs((np) => np.filter((n) => n.id !== npc.id))}
+							onArchive={() => {
+								setNpcs((npcs) => npcs.filter((n) => n.id !== npc.id));
+								setArchivedCharacters((ap) => [...ap, { ...npc, npc: true }]);
+							}}
+						/>
+					</Grid>
+				))}
+			</Grid>
+
+			<Divider />
+
+			<UtilitySection players={[...players, ...npcs]} baseDice={props.baseDice} />
+
 			<GetPortraitDialog
 				open={Boolean(portraitDialogPlayerId)}
 				onClose={() => setPortraitDialogPlayerId(0)}
@@ -409,16 +573,16 @@ const PlayerContainer: React.FC<PlayerContainerProps> = (props) => {
 	);
 };
 
-type PlayerFieldProps = PlayerContainerProps['players'][number] & {
+type PlayerFieldProps = CharacterContainerProps['players'][number] & {
 	onShowDetails: (details: PlayerDetailsDialogProps['details']) => void;
 	onGetPortrait: () => void;
-	onDeletePlayer: () => void;
+	onDelete: () => void;
+	onArchive: () => void;
 };
 
 const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 	const [loading, setLoading] = useState(false);
 	const log = useContext(LoggerContext);
-	const ref = useRef<HTMLDivElement>(null);
 	const { t } = useI18n<Locale>();
 
 	const deletePlayer = () => {
@@ -427,7 +591,7 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 		api
 			.delete<PlayerApiResponse>('/sheet/player', { data: { id: props.id } })
 			.then((res) => {
-				if (res.data.status === 'success') return props.onDeletePlayer();
+				if (res.data.status === 'success') return props.onDelete();
 				handleDefaultApiResponse(res, log, t);
 			})
 			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
@@ -448,52 +612,180 @@ const PlayerField: React.FC<PlayerFieldProps> = (props) => {
 	};
 
 	return (
-		<Grid item xs={12} md={6} lg={4} ref={ref}>
-			<Box borderRadius={2} border='1px solid darkgray' p={1}>
-				<Box display='flex' gap={1} position='relative'>
-					<PartialBackdrop open={loading}>
-						<CircularProgress color='inherit' disableShrink />
-					</PartialBackdrop>
-					<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
-						<PlayerAvatarImage
-							id={props.id}
-							status={props.attributeStatus}
-							width={AVATAR_SIZE[0]}
-						/>
-					</Box>
-					<Box display='flex' flexDirection='column' gap={1} justifyContent='space-between'>
-						<Typography variant='h6' component='h2'>
-							{props.name}
-						</Typography>
-						<div>
-							{props.attribute.map((attr) => (
-								<Typography key={attr.id} variant='body1' color={`#${attr.color}`}>
-									{attr.name}: {attr.value + attr.extraValue}/{attr.maxValue}
-								</Typography>
-							))}
-						</div>
-						<Box display='flex' flexWrap='wrap' gap={1}>
-							<Tooltip title={t('details')} describeChild>
-								<Button variant='outlined' size='small' onClick={onShowDetails}>
+		<Paper elevation={6} sx={{ borderRadius: 4 }}>
+			<Box display='flex' gap={1} p={1.5} position='relative'>
+				<PartialBackdrop open={loading}>
+					<CircularProgress color='inherit' disableShrink />
+				</PartialBackdrop>
+				<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
+					<PlayerAvatarImage id={props.id} status={props.attributeStatus} width={AVATAR_SIZE[0]} />
+				</Box>
+				<Box display='flex' flexDirection='column' gap={1} justifyContent='space-between'>
+					<Typography variant='h6' component='h2'>
+						{props.name}
+					</Typography>
+					<div>
+						{props.attribute.map((attr) => (
+							<Typography key={attr.id} variant='body1' color={`#${attr.color}`}>
+								{attr.name}: {attr.value + attr.extraValue}/{attr.maxValue}
+							</Typography>
+						))}
+					</div>
+					<Grid container spacing={1} justifyContent='start' alignItems='center'>
+						<Grid item xs={6}>
+							<Tooltip title={t('details')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={onShowDetails}>
 									<OpenInFullIcon />
 								</Button>
 							</Tooltip>
-							<Tooltip title={t('portrait')} describeChild>
-								<Button variant='outlined' size='small' onClick={props.onGetPortrait}>
-									<VideoCameraFrontIcon />
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('portrait')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={props.onGetPortrait}>
+									<VideocamIcon />
 								</Button>
 							</Tooltip>
-							<Tooltip title={t('delete')} describeChild>
-								<Button variant='outlined' size='small' onClick={deletePlayer}>
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('delete')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={deletePlayer}>
 									<DeleteIcon />
 								</Button>
 							</Tooltip>
-						</Box>
-					</Box>
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('archive')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={props.onArchive}>
+									<ArchiveIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+					</Grid>
 				</Box>
 			</Box>
-		</Grid>
+		</Paper>
 	);
 };
 
-export default PlayerContainer;
+type NpcFieldProps = CharacterContainerProps['npcs'][number] & {
+	onGetPortrait: () => void;
+	onDelete: () => void;
+	onArchive: () => void;
+};
+
+const NpcField: React.FC<NpcFieldProps> = (props) => {
+	const [loading, setLoading] = useState(false);
+	const log = useContext(LoggerContext);
+	const { t } = useI18n<Locale>();
+
+	const deleteNpc = () => {
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
+		setLoading(true);
+		api
+			.delete<NpcApiResponse>('/npc', { data: { id: props.id } })
+			.then((res) => {
+				if (res.data.status === 'success') return props.onDelete();
+				handleDefaultApiResponse(res, log, t);
+			})
+			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+			.finally(() => setLoading(false));
+	};
+
+	return (
+		<Paper elevation={2} sx={{ borderRadius: 4 }}>
+			<Box display='flex' gap={1} p={1.5} position='relative'>
+				<PartialBackdrop open={loading}>
+					<CircularProgress color='inherit' disableShrink />
+				</PartialBackdrop>
+				<Box display='flex' alignItems='center' width={AVATAR_SIZE[0]} height={AVATAR_SIZE[1]}>
+					<PlayerAvatarImage id={props.id} status={props.attributeStatus} width={AVATAR_SIZE[0]} />
+				</Box>
+				<Box display='flex' flexDirection='column' gap={1} justifyContent='space-between'>
+					<Typography variant='h6' component='h2'>
+						NPC: {props.name}
+					</Typography>
+					<div>
+						{props.attribute.map((attr) => (
+							<Typography key={attr.id} variant='body1' color={`#${attr.color}`}>
+								{attr.name}: {attr.value + attr.extraValue}/{attr.maxValue}
+							</Typography>
+						))}
+					</div>
+					<Grid container spacing={1} justifyContent='start' alignItems='center'>
+						<Grid item xs={6}>
+							<Tooltip title={t('access')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									target='_blank'
+									href={`/sheet/npc/${props.id}/1`}>
+									<LaunchIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('portrait')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={props.onGetPortrait}>
+									<VideocamIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('delete')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={deleteNpc}>
+									<DeleteIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+						<Grid item xs={6}>
+							<Tooltip title={t('archive')} describeChild disableInteractive>
+								<Button
+									disableRipple
+									fullWidth
+									variant='contained'
+									size='small'
+									onClick={props.onArchive}>
+									<ArchiveIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+					</Grid>
+				</Box>
+			</Box>
+		</Paper>
+	);
+};
+
+export default CharacterContainer;

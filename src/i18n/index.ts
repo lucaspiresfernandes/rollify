@@ -54,6 +54,8 @@ export interface Locale {
 	name: string;
 	copy: string;
 	no: string;
+	archive: string;
+	unarchive: string;
 
 	placeholder: {
 		noFavouriteSkills: string;
@@ -184,6 +186,7 @@ export interface Locale {
 		panelTitle: string;
 		editorTitle: string;
 		configurationsTitle: string;
+		npcTitle: string;
 
 		enableCombatEnvironment: string;
 
@@ -203,9 +206,7 @@ export interface Locale {
 			hasAmmo: string;
 		};
 
-		info: {
-			noPlayers: string;
-		};
+		addNpc: string;
 	};
 
 	modal: {

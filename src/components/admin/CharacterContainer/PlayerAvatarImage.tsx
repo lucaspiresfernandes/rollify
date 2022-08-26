@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PlayerGetAvatarApiResponse } from '../../../pages/api/sheet/player/avatar/[attrStatusID]';
 import { api } from '../../../utils/createApiClient';
+import Avatar from '@mui/material/Avatar';
 
 type PlayerAvatarImageProps = {
 	id: number;
@@ -37,7 +38,7 @@ const PlayerAvatarImage: React.FC<PlayerAvatarImageProps> = (props) => {
 	}, [props.id, props.status]);
 
 	return (
-		<img
+		<Avatar
 			src={src}
 			alt='Character Avatar'
 			style={{ width: '100%', maxWidth: props.width, height: 'auto' }}

@@ -53,6 +53,8 @@ export const table: Locale = {
 	name: 'Name',
 	copy: 'Copy',
 	no: 'No',
+	archive: 'Archive',
+	unarchive: 'Unarchive',
 
 	placeholder: {
 		noFavouriteSkills: 'Your favourite skills will appear here.',
@@ -188,6 +190,7 @@ export const table: Locale = {
 		panelTitle: "GM's Panel",
 		editorTitle: "GM's Editor",
 		configurationsTitle: 'Settings',
+		npcTitle: 'Quick NPCS',
 
 		enableCombatEnvironment: 'Enable combat environment',
 
@@ -207,9 +210,7 @@ export const table: Locale = {
 			hasAmmo: 'Has ammo?',
 		},
 
-		info: {
-			noPlayers: 'All registered players will be listed here.',
-		},
+		addNpc: 'Add NPC',
 	},
 
 	modal: {
