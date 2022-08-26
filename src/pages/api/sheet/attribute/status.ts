@@ -76,6 +76,14 @@ const handlePut: NextApiHandler<AttributeStatusSheetApiResponse> = async (req, r
 			},
 		});
 
+		await prisma.playerAvatar.createMany({
+			data: players.map(({ id: player_id }) => ({
+				player_id,
+				attribute_status_id: attributeStatus.id,
+				link: null,
+			})),
+		});
+
 		res.json({ status: 'success', attributeStatus });
 	} catch (err) {
 		console.error(err);

@@ -87,6 +87,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 		ev.preventDefault();
 
 		for (const avatar of avatars) {
+			console.log(avatar);
 			if (!avatar.link) continue;
 			if (!isValidHttpUrl(avatar.link))
 				return alert(t('prompt.invalidAvatar', { name: avatar.name }));
@@ -110,6 +111,7 @@ const PlayerAvatarDialog: React.FC<PlayerAvatarDialogProps> = (props) => {
 			<DialogTitle>{t('modal.title.avatarEditor')}</DialogTitle>
 			<DialogContent>
 				<Box
+					id='playerAvatarDialogForm'
 					component='form'
 					display='flex'
 					flexDirection='column'
