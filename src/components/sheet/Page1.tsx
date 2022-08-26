@@ -1,6 +1,7 @@
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -65,14 +66,16 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 
 	const api = useMemo(
 		() =>
-			createApiClient({
-				transformRequest: [
-					(data) => {
-						if (props.isNpc) data = { ...data, npcId: props.player.id };
-						return data;
-					},
-				],
-			}),
+			createApiClient(
+				props.isNpc
+					? {
+							params: {
+								...axios.defaults.params,
+								npcId: props.player.id,
+							},
+					  }
+					: undefined
+			),
 		[props.isNpc, props.player.id]
 	);
 
@@ -186,6 +189,7 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 							<TradeDialogContext.Provider value={tradeProvider}>
 								<SocketContext.Provider value={socket}>
 									<MemoPlayerLoadContainer
+										playerId={props.player.id}
 										combatTitle={props.section.combat}
 										itemTitle={props.section.item}
 										playerMaxLoad={props.player.maxLoad}
@@ -203,8 +207,6 @@ const PlayerSheetPage1: React.FC<SheetFirstPageProps & { isNpc: boolean }> = (pr
 											...it,
 											...it.Item,
 										}))}
-										senderTrade={props.player.SenderTrade}
-										receiverTrade={props.player.ReceiverTrade}
 									/>
 								</SocketContext.Provider>
 							</TradeDialogContext.Provider>

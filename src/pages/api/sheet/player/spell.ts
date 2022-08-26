@@ -16,7 +16,7 @@ const handler: NextApiHandlerIO = async (req, res) => {
 
 const handlePut: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -54,7 +54,7 @@ const handlePut: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) => 
 
 const handlePost: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -85,7 +85,7 @@ const handlePost: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) =>
 
 const handleDelete: NextApiHandlerIO<PlayerSpellApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });

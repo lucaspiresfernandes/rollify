@@ -18,14 +18,14 @@ const handler: NextApiHandlerIO = (req, res) => {
 
 const handleGet: NextApiHandlerIO<ItemSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const player_id = npcId || player.id;
 
 	const item = await prisma.item.findMany({
-		where: { visible: true, PlayerItem: { none: { player_id } } },
+		where: { visible: player.admin ? undefined : true, PlayerItem: { none: { player_id } } },
 	});
 
 	res.json({ status: 'success', item });

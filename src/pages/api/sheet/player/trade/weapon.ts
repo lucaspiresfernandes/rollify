@@ -32,10 +32,11 @@ const handler: NextApiHandlerIO<TradeWeaponApiResponse> = (req, res) => {
 
 const handlePut: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	const senderId = player.id;
+	const senderId = npcId || player.id;
 	const senderWeaponId: number | undefined = req.body.offerId;
 
 	const receiverId: number | undefined = req.body.to;
@@ -138,14 +139,10 @@ const handlePut: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => 
 
 		res.json({ status: 'success', trade, weapon: null });
 
-		res.socket.server.io.to(`player${receiverId}`).emit(
-			'playerTradeRequest',
-			trade
-			// trade.id,
-			// receiverWeaponId || null,
-			// senderWeapon.Player.name,
-			// senderWeapon.Weapon.name
-		);
+		res.socket.server.io.to(`player${receiverId}`).emit('playerTradeRequest', trade, {
+			name: senderWeapon.Player.name,
+			objectName: senderWeapon.Weapon.name,
+		});
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -154,8 +151,11 @@ const handlePut: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => 
 
 const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) => {
 	const player = req.session.player;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
 
 	const tradeId: number | undefined = req.body.tradeId;
 
@@ -165,7 +165,7 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 	try {
 		const trade = await prisma.trade.findUnique({ where: { id: tradeId } });
 
-		if (trade === null || trade.receiver_id !== player.id)
+		if (trade === null || trade.receiver_id !== player_id)
 			return res.json({ status: 'failure', reason: 'trade_does_not_exist' });
 
 		await prisma.trade.delete({ where: { id: tradeId } });
@@ -231,6 +231,8 @@ const handlePost: NextApiHandlerIO<TradeWeaponApiResponse> = async (req, res) =>
 			});
 
 			res.json({ status: 'success', trade, weapon });
+
+			console.log('ay');
 
 			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, true);
 

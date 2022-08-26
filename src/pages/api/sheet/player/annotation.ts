@@ -9,7 +9,7 @@ const handler: NextApiHandler<PlayerAnnotationApiResponse> = async (req, res) =>
 	if (req.method !== 'POST') return res.status(405).end();
 
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 

@@ -1,8 +1,8 @@
-import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import type { Armor, Trade, TradeType, Weapon } from '@prisma/client';
+import type { Armor, TradeType, Weapon } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -14,26 +14,24 @@ import {
 } from '../../../contexts';
 import type { Locale } from '../../../i18n';
 import type { ArmorSheetApiResponse } from '../../../pages/api/sheet/armor';
-import type {
-	PlayerArmorApiResponse,
-	PlayerGetArmorApiResponse,
-} from '../../../pages/api/sheet/player/armor';
+import type { PlayerArmorApiResponse } from '../../../pages/api/sheet/player/armor';
 import type { PlayerListApiResponse } from '../../../pages/api/sheet/player/list';
 import type { TradeArmorApiResponse } from '../../../pages/api/sheet/player/trade/armor';
 import type { TradeWeaponApiResponse } from '../../../pages/api/sheet/player/trade/weapon';
-import type {
-	PlayerGetWeaponApiResponse,
-	PlayerWeaponApiResponse,
-} from '../../../pages/api/sheet/player/weapon';
+import type { PlayerWeaponApiResponse } from '../../../pages/api/sheet/player/weapon';
 import type { WeaponSheetApiResponse } from '../../../pages/api/sheet/weapon';
 import { handleDefaultApiResponse } from '../../../utils';
-import type { ArmorTradeObject, WeaponTradeObject } from '../../../utils/socket';
+import type {
+	ArmorTradeObject,
+	ServerToClientEvents,
+	WeaponTradeObject,
+} from '../../../utils/socket';
+import ArmorEditorDialog from '../../admin/dialogs/editor/ArmorEditorDialog';
+import WeaponEditorDialog from '../../admin/dialogs/editor/WeaponEditorDialog';
 import PartialBackdrop from '../../PartialBackdrop';
 import SheetContainer from '../Section';
 import PlayerArmorContainer from './PlayerArmorContainer';
 import PlayerWeaponContainer from './PlayerWeaponContainer';
-import ArmorEditorDialog from '../../admin/dialogs/editor/ArmorEditorDialog';
-import WeaponEditorDialog from '../../admin/dialogs/editor/WeaponEditorDialog';
 
 export const WeaponIcon: React.FC = () => (
 	<svg focusable='false' aria-hidden='true' viewBox='0 0 24 24' width='1em' height='1em'>
@@ -53,7 +51,10 @@ export const ArmorIcon: React.FC = () => (
 );
 
 export type PlayerCombatContainerProps = {
+	playerId: number;
+
 	title: string;
+
 	playerWeapons: ({ [T in keyof Weapon]: Weapon[T] } & {
 		currentAmmo: number;
 		currentDescription: string;
@@ -64,9 +65,6 @@ export type PlayerCombatContainerProps = {
 
 	onEquipmentAdd: (equipment: Weapon | Armor) => void;
 	onEquipmentRemove: (equipment: Weapon | Armor) => void;
-
-	senderTrade: Trade | null;
-	receiverTrade: Trade | null;
 };
 
 const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
@@ -85,22 +83,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 
-	const openTradeRequest = async (trade: Trade) => {
+	const openTradeRequest: ServerToClientEvents['playerTradeRequest'] = async (trade, sender) => {
 		if (trade.type !== 'weapon' && trade.type !== 'armor') return;
-
-		const listRequest = (
-			await api.get<PlayerListApiResponse>('/sheet/player/list', {
-				params: { id: trade.sender_id },
-			})
-		).data;
-		const itemRequest = (
-			await api.get<PlayerGetArmorApiResponse | PlayerGetWeaponApiResponse>(
-				`/sheet/player/${trade.type}`,
-				{
-					params: { playerId: trade.sender_id, [`${trade.type}Id`]: trade.sender_object_id },
-				}
-			)
-		).data;
+		localStorage.setItem('trade', JSON.stringify({ trade, sender }));
 
 		let receiverEquipmentName: string | undefined = undefined;
 
@@ -108,99 +93,90 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			receiverEquipmentName = playerWeapons.find((it) => it.id === trade.receiver_object_id)?.name;
 		else receiverEquipmentName = playerArmor.find((it) => it.id === trade.receiver_object_id)?.name;
 
-		let senderName = t('unknown');
-		if (listRequest.status === 'success' && listRequest.players.length > 0)
-			senderName = listRequest.players[0].name || senderName;
-
-		let senderItemName = t('unknown');
-		if (itemRequest.status === 'success') {
-			if ('weapon' in itemRequest && itemRequest.weapon.length > 0)
-				senderItemName = itemRequest.weapon[0].name || senderItemName;
-			else if ('armor' in itemRequest && itemRequest.armor.length > 0)
-				senderItemName = itemRequest.armor[0].name || senderItemName;
-		}
-
 		tradeDialog.openRequest({
-			from: senderName,
-			offer: senderItemName,
+			from: sender.name,
+			offer: sender.objectName,
 			for: receiverEquipmentName,
 			onResponse: async (accept) => {
 				tradeDialog.closeDialog();
-				if (trade.type === 'weapon') {
-					const res = await api.post<TradeWeaponApiResponse>('/sheet/player/trade/item', {
+				localStorage.removeItem('trade');
+
+				const res = await api.post<TradeWeaponApiResponse | TradeArmorApiResponse>(
+					`/sheet/player/trade/${trade.type}`,
+					{
 						tradeId: trade.id,
 						accept,
-					});
+					}
+				);
 
-					if (!accept) return;
+				if (res.data.status === 'failure')
+					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
 
-					if (res.data.status === 'failure')
-						return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
+				if (!accept) return;
 
+				if ('weapon' in res.data) {
 					const newWeapon = res.data.weapon as NonNullable<typeof res.data.weapon>;
 
-					if (trade.receiver_object_id) {
-						setPlayerWeapons((weapons) =>
+					if (trade.receiver_object_id)
+						return setPlayerWeapons((weapons) =>
 							weapons.map((weapon) => {
 								if (weapon.id === trade.receiver_object_id)
 									return { ...newWeapon, ...newWeapon.Weapon };
 								return weapon;
 							})
 						);
-					} else {
-						setPlayerWeapons((weapons) => [...weapons, { ...newWeapon, ...newWeapon.Weapon }]);
-					}
-
-					return;
+					else
+						return setPlayerWeapons((weapons) => [
+							...weapons,
+							{ ...newWeapon, ...newWeapon.Weapon },
+						]);
 				}
-
-				const res = await api.post<TradeArmorApiResponse>('/sheet/player/trade/item', {
-					tradeId: trade.id,
-					accept,
-				});
-
-				if (!accept) return;
-
-				if (res.data.status === 'failure')
-					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
 
 				const newArmor = res.data.armor as NonNullable<typeof res.data.armor>;
 
-				if (trade.receiver_object_id) {
+				if (trade.receiver_object_id)
 					setPlayerArmor((armor) =>
 						armor.map((ar) => {
-							if (ar.id === trade.receiver_object_id)
-								return {
-									...newArmor,
-									...newArmor.Armor,
-								};
+							if (ar.id === trade.receiver_object_id) return { ...newArmor, ...newArmor.Armor };
 							return ar;
 						})
 					);
-				} else {
-					setPlayerArmor((weapons) => [
-						...weapons,
-						{
-							...newArmor,
-							...newArmor.Armor,
-						},
-					]);
-				}
+				else setPlayerArmor((weapons) => [...weapons, { ...newArmor, ...newArmor.Armor }]);
 			},
 		});
 	};
 
 	useEffect(() => {
+		type SocketTradeRequestEvent = {
+			trade: Parameters<ServerToClientEvents['playerTradeRequest']>[0];
+			sender?: Parameters<ServerToClientEvents['playerTradeRequest']>[1];
+		};
+
+		const currentTrade = JSON.parse(
+			localStorage.getItem('trade') || 'null'
+		) as SocketTradeRequestEvent | null;
+
 		if (
-			props.senderTrade &&
-			(props.senderTrade.type === 'weapon' || props.senderTrade.type === 'armor')
-		) {
+			!currentTrade ||
+			(currentTrade.trade.type !== 'weapon' && currentTrade.trade.type !== 'armor')
+		)
+			return;
+
+		const trade = currentTrade.trade;
+
+		if (trade.sender_id === props.playerId) {
 			setLoading(true);
-			setTrade(props.senderTrade);
+			return setTrade({ id: trade.id, type: trade.type });
 		}
-		if (props.receiverTrade) openTradeRequest(props.receiverTrade);
+
+		if (trade.receiver_id === props.playerId && currentTrade.sender) {
+			openTradeRequest(trade, currentTrade.sender);
+			return;
+		}
+
+		localStorage.removeItem('trade');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.senderTrade, props.receiverTrade]);
+	}, []);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -214,6 +190,10 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				clearTimeout(tradeTimeout.current);
 				tradeTimeout.current = null;
 			}
+
+			setLoading(false);
+			setTrade(undefined);
+			localStorage.removeItem('trade');
 
 			if (accept) {
 				if (trade.type === 'weapon') {
@@ -251,8 +231,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			} else {
 				log({ severity: 'warning', text: t('prompt.tradeRejected') });
 			}
-			setLoading(false);
-			setTrade(undefined);
 		});
 
 		return () => {
@@ -301,7 +279,6 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.put<PlayerArmorApiResponse | PlayerWeaponApiResponse>('/sheet/player/' + type, { id })
 			.then((res) => {
 				if (res.data.status === 'failure') return handleDefaultApiResponse(res, log, t);
-
 				if ('weapon' in res.data) {
 					const weapon = res.data.weapon;
 					setPlayerWeapons([...playerWeapons, { ...weapon, ...weapon.Weapon }]);
@@ -312,7 +289,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 					props.onEquipmentAdd(armor.Armor);
 				}
 			})
-			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
 			.finally(() => setLoading(false));
 	};
 
@@ -332,7 +311,9 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 					}
 				);
 			})
-			.catch(() => log({ severity: 'error', text: t('error.unknown') }))
+			.catch((err) =>
+				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
+			)
 			.finally(() => setLoading(false));
 	};
 
@@ -406,7 +387,11 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 			.then((res) => {
 				if (res.data.status === 'failure')
 					return log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
-				setTrade(res.data.trade);
+
+				const trade = res.data.trade;
+
+				localStorage.setItem('trade', JSON.stringify({ trade }));
+				setTrade({ id: trade.id, type: trade.type });
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -426,6 +411,7 @@ const PlayerCombatContainer: React.FC<PlayerCombatContainerProps> = (props) => {
 				}
 				setTrade(undefined);
 				setLoading(false);
+				localStorage.removeItem('trade');
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })

@@ -1,5 +1,4 @@
 import Grid from '@mui/material/Grid';
-import type { Trade } from '@prisma/client';
 import { useState } from 'react';
 import type { PlayerCombatContainerProps } from './PlayerCombatContainer';
 import PlayerCombatContainer from './PlayerCombatContainer';
@@ -11,10 +10,9 @@ type ItemProps = Pick<PlayerItemContainerProps, 'playerItems' | 'playerCurrency'
 
 type PlayerLoadContainerProps = CombatProps &
 	ItemProps & {
+		playerId: number;
 		combatTitle: string;
 		itemTitle: string;
-		senderTrade: Trade | null;
-		receiverTrade: Trade | null;
 		playerMaxLoad: number;
 	};
 
@@ -30,11 +28,10 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 		<>
 			<Grid item xs={12}>
 				<PlayerCombatContainer
+					playerId={props.playerId}
 					title={props.combatTitle}
 					playerWeapons={props.playerWeapons}
 					playerArmor={props.playerArmor}
-					senderTrade={props.senderTrade}
-					receiverTrade={props.receiverTrade}
 					onEquipmentAdd={(eq) => setCurrentLoad((w) => w + eq.weight)}
 					onEquipmentRemove={(eq) => setCurrentLoad((w) => w - eq.weight)}
 				/>
@@ -42,11 +39,10 @@ const PlayerLoadContainer: React.FC<PlayerLoadContainerProps> = (props) => {
 
 			<Grid item xs={12}>
 				<PlayerItemContainer
+					playerId={props.playerId}
 					title={props.itemTitle}
 					playerCurrency={props.playerCurrency}
 					playerItems={props.playerItems}
-					senderTrade={props.senderTrade}
-					receiverTrade={props.receiverTrade}
 					onItemAdd={(item) => setCurrentLoad((w) => w + item.weight * item.quantity)}
 					onItemRemove={(item) => setCurrentLoad((w) => w - item.weight * item.quantity)}
 					onItemChange={(oldItem, newItem) => {

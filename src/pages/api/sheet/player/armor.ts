@@ -32,7 +32,7 @@ const handleGet: NextApiHandlerIO<PlayerGetArmorApiResponse> = async (req, res) 
 
 	const armor = (
 		await prisma.playerArmor.findMany({
-			where: { player_id: player_id },
+			where: { player_id: player_id, Armor: { visible: true } },
 			select: { Armor: true },
 		})
 	).map((e) => e.Armor);
@@ -42,7 +42,7 @@ const handleGet: NextApiHandlerIO<PlayerGetArmorApiResponse> = async (req, res) 
 
 const handlePut: NextApiHandlerIO<PlayerArmorApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -80,7 +80,7 @@ const handlePut: NextApiHandlerIO<PlayerArmorApiResponse> = async (req, res) => 
 
 const handlePost: NextApiHandlerIO<PlayerArmorApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });
@@ -111,7 +111,7 @@ const handlePost: NextApiHandlerIO<PlayerArmorApiResponse> = async (req, res) =>
 
 const handleDelete: NextApiHandlerIO<PlayerArmorApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });

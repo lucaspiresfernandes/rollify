@@ -8,7 +8,7 @@ const handler: NextApiHandlerIO<PlayerCharacteristicApiResponse> = async (req, r
 	if (req.method !== 'POST') return res.status(405).end();
 
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });

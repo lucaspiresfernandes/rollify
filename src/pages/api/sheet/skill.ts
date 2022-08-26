@@ -20,7 +20,7 @@ const handler: NextApiHandlerIO = (req, res) => {
 
 const handleGet: NextApiHandlerIO<SkillSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 

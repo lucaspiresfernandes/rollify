@@ -82,7 +82,7 @@ const handleGet: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
 
 const handlePost: NextApiHandlerIO<PlayerApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player || (player.admin && !npcId))
 		return res.json({ status: 'failure', reason: 'unauthorized' });

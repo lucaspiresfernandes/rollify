@@ -29,7 +29,7 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 	if (req.method !== 'POST') return res.status(405).end();
 
 	const player = req.session.player;
-	const npcId: number | undefined = req.body.npcId;
+	const npcId = req.query.npcId ? Number(req.query.npcId) : undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
@@ -111,7 +111,8 @@ const handler: NextApiHandlerIO<DiceApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', results });
 
-		if (!player.admin) io.to('admin').emit('diceResult', playerId, results, dices, diceConfig.baseDice);
+		if (!player.admin)
+			io.to('admin').emit('diceResult', playerId, results, dices, diceConfig.baseDice);
 		io.to(`portrait${playerId}`).emit('diceResult', playerId, results, dices, diceConfig.baseDice);
 	} catch (err) {
 		console.error(err);

@@ -32,13 +32,11 @@ const handler: NextApiHandlerIO<TradeItemApiResponse> = (req, res) => {
 
 const handlePut: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 	const player = req.session.player;
+	const npcId = Number(req.query.npcId) || undefined;
 
-	if (!player) {
-		res.status(401).end();
-		return;
-	}
+	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
-	const senderId = player.id;
+	const senderId = npcId || player.id;
 	const senderItemId: number | undefined = req.body.offerId;
 
 	const receiverId: number | undefined = req.body.to;
@@ -140,14 +138,12 @@ const handlePut: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 		res.json({ status: 'success', trade, item: null });
 
-		res.socket.server.io.to(`player${receiverId}`).emit(
-			'playerTradeRequest',
-			trade
-			// trade.id,
-			// trade.receiver_object_id,
-			// senderItem.Player.name,
-			// senderItem.Item.name
-		);
+		res.socket.server.io
+			.to(`player${receiverId}`)
+			.emit('playerTradeRequest', trade, {
+				name: senderItem.Player.name,
+				objectName: senderItem.Item.name,
+			});
 	} catch (err) {
 		console.error(err);
 		res.json({ status: 'failure', reason: 'unknown_error' });
@@ -156,8 +152,11 @@ const handlePut: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 	const player = req.session.player;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
+
+	const player_id = npcId || player.id;
 
 	const tradeId: number | undefined = req.body.tradeId;
 
@@ -167,15 +166,13 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 	try {
 		const trade = await prisma.trade.findUnique({ where: { id: tradeId } });
 
-		if (trade === null || trade.receiver_id !== player.id)
+		if (trade === null || trade.receiver_id !== player_id)
 			return res.json({ status: 'failure', reason: 'trade_does_not_exist' });
 
 		await prisma.trade.delete({ where: { id: tradeId } });
 
 		if (!req.body.accept) {
-			res.socket.server.io
-				.to(`player${trade.sender_id}`)
-				.emit('playerTradeResponse', trade, false);
+			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, false);
 			return res.json({ status: 'success', trade, item: null });
 		}
 
@@ -250,9 +247,7 @@ const handlePost: NextApiHandlerIO<TradeItemApiResponse> = async (req, res) => {
 
 			res.json({ status: 'success', trade, item });
 
-			res.socket.server.io
-				.to(`player${trade.sender_id}`)
-				.emit('playerTradeResponse', trade, true);
+			res.socket.server.io.to(`player${trade.sender_id}`).emit('playerTradeResponse', trade, true);
 
 			res.socket.server.io
 				.to('admin')

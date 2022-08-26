@@ -71,7 +71,13 @@ export interface ServerToClientEvents {
 	playerSpellChange: (playerId: number, spellId: number, currentDescription: string) => void;
 	playerMaxLoadChange: (playerId: number, newLoad: number) => void;
 	playerSpellSlotsChange: (playerId: number, newSpellSlots: number) => void;
-	playerTradeRequest: (trade: Trade) => void;
+	playerTradeRequest: (
+		trade: Trade,
+		sender: {
+			name: string;
+			objectName: string;
+		}
+	) => void;
 	playerTradeResponse: (trade: Trade, accept: boolean, object?: TradeObject) => void;
 
 	//---------- Admin-triggered Events ----------
@@ -80,7 +86,12 @@ export interface ServerToClientEvents {
 
 	//---------- Dice-triggered Events ----------
 	diceRoll: () => void;
-	diceResult: (playerId: number, results: DiceResponse[], dices: DiceRequest, baseDice: number) => void;
+	diceResult: (
+		playerId: number,
+		results: DiceResponse[],
+		dices: DiceRequest,
+		baseDice: number
+	) => void;
 }
 
 export interface ClientToServerEvents {

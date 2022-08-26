@@ -18,14 +18,14 @@ const handler: NextApiHandlerIO = (req, res) => {
 
 const handleGet: NextApiHandlerIO<ArmorSheetApiResponse> = async (req, res) => {
 	const player = req.session.player;
-	const npcId = Number(req.body.npcId) || undefined;
+	const npcId = Number(req.query.npcId) || undefined;
 
 	if (!player) return res.json({ status: 'failure', reason: 'unauthorized' });
 
 	const player_id = npcId || player.id;
 
 	const armor = await prisma.armor.findMany({
-		where: { visible: true, PlayerArmor: { none: { player_id } } },
+		where: { visible: player.admin ? undefined : true, PlayerArmor: { none: { player_id } } },
 	});
 
 	res.json({ status: 'success', armor });

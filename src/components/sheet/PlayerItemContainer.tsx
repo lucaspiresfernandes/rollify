@@ -1,21 +1,21 @@
 import AddIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import InputAdornment from '@mui/material/InputAdornment';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-import type { Item, Trade } from '@prisma/client';
+import type { Item } from '@prisma/client';
 import { useI18n } from 'next-rosetta';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -28,21 +28,21 @@ import {
 import useExtendedState from '../../hooks/useExtendedState';
 import type { Locale } from '../../i18n';
 import type { ItemSheetApiResponse } from '../../pages/api/sheet/item';
-import type {
-	PlayerGetItemApiResponse,
-	PlayerItemApiResponse,
-} from '../../pages/api/sheet/player/item';
+import type { PlayerApiResponse } from '../../pages/api/sheet/player';
+import type { PlayerItemApiResponse } from '../../pages/api/sheet/player/item';
 import type { PlayerListApiResponse } from '../../pages/api/sheet/player/list';
 import type { TradeItemApiResponse } from '../../pages/api/sheet/player/trade/item';
 import { handleDefaultApiResponse } from '../../utils';
-import type { ItemTradeObject } from '../../utils/socket';
+import type { ItemTradeObject, ServerToClientEvents } from '../../utils/socket';
+import ItemEditorDialog from '../admin/dialogs/editor/ItemEditorDialog';
 import PartialBackdrop from '../PartialBackdrop';
 import SheetContainer from './Section';
-import type { PlayerApiResponse } from '../../pages/api/sheet/player';
-import ItemEditorDialog from '../admin/dialogs/editor/ItemEditorDialog';
 
 export type PlayerItemContainerProps = {
+	playerId: number;
+
 	title: string;
+
 	playerCurrency: {
 		id: number;
 		name: string;
@@ -65,9 +65,6 @@ export type PlayerItemContainerProps = {
 		oldItem: PlayerItemContainerProps['playerItems'][number],
 		newItem: PlayerItemContainerProps['playerItems'][number]
 	) => void;
-
-	senderTrade: Trade | null;
-	receiverTrade: Trade | null;
 };
 
 const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
@@ -82,34 +79,19 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	const socket = useContext(SocketContext);
 	const { t } = useI18n<Locale>();
 
-	const openTradeRequest = async (trade: Trade) => {
-		const listRequest = (
-			await api.get<PlayerListApiResponse>('/sheet/player/list', {
-				params: { id: trade.sender_id },
-			})
-		).data;
-		const itemRequest = (
-			await api.get<PlayerGetItemApiResponse>('/sheet/player/item', {
-				params: { playerId: trade.sender_id, itemId: trade.sender_object_id },
-			})
-		).data;
+	const openTradeRequest: ServerToClientEvents['playerTradeRequest'] = async (trade, sender) => {
+		if (trade.type !== 'item') return;
+		localStorage.setItem('trade', JSON.stringify({ trade, sender }));
 
 		const receiverItemName = playerItems.find((it) => it.id === trade.receiver_object_id)?.name;
 
-		let senderName = t('unknown');
-		if (listRequest.status === 'success' && listRequest.players.length > 0)
-			senderName = listRequest.players[0].name || senderName;
-
-		let senderItemName = t('unknown');
-		if (itemRequest.status === 'success' && itemRequest.item.length > 0)
-			senderItemName = itemRequest.item[0].name || senderItemName;
-
 		tradeDialog.openRequest({
-			from: senderName,
-			offer: senderItemName,
+			from: sender.name,
+			offer: sender.objectName,
 			for: receiverItemName,
 			onResponse: async (accept) => {
 				tradeDialog.closeDialog();
+				localStorage.removeItem('trade');
 
 				const { data } = await api.post<TradeItemApiResponse>('/sheet/player/trade/item', {
 					tradeId: trade.id,
@@ -141,23 +123,42 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 	};
 
 	useEffect(() => {
-		if (props.senderTrade && props.senderTrade.type === 'item') {
+		type SocketTradeRequestEvent = {
+			trade: Parameters<ServerToClientEvents['playerTradeRequest']>[0];
+			sender?: Parameters<ServerToClientEvents['playerTradeRequest']>[1];
+		};
+
+		const currentTrade = JSON.parse(
+			localStorage.getItem('trade') || 'null'
+		) as SocketTradeRequestEvent | null;
+
+		if (!currentTrade || currentTrade.trade.type !== 'item') return;
+
+		if (currentTrade.trade.sender_id === props.playerId) {
 			setLoading(true);
-			setTradeId(props.senderTrade.id);
-		} else if (props.receiverTrade) openTradeRequest(props.receiverTrade);
+			setTradeId(currentTrade.trade.id);
+			return;
+		}
+
+		if (currentTrade.trade.receiver_id === props.playerId && currentTrade.sender) {
+			openTradeRequest(currentTrade.trade, currentTrade.sender);
+			return;
+		}
+
+		localStorage.removeItem('trade');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.senderTrade, props.receiverTrade]);
+	}, []);
 
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.on('playerTradeRequest', async (trade) => {
-			if (trade.type !== 'item') return;
-			openTradeRequest(trade);
-		});
+		socket.on('playerTradeRequest', openTradeRequest);
 
 		socket.on('playerTradeResponse', (trade, accept, _tradeObject) => {
 			if (trade.type !== 'item') return;
+
+			setLoading(false);
+			setTradeId(undefined);
 
 			if (accept) {
 				const tradeObject = _tradeObject as ItemTradeObject | undefined;
@@ -176,8 +177,6 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 			} else {
 				log({ severity: 'warning', text: t('prompt.tradeRejected') });
 			}
-			setLoading(false);
-			setTradeId(undefined);
 		});
 
 		return () => {
@@ -281,6 +280,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 					log({ severity: 'error', text: 'Trade Error: ' + res.data.reason });
 					return setLoading(false);
 				}
+				localStorage.setItem('trade', JSON.stringify({ trade: res.data.trade }));
 				setTradeId(res.data.trade.id);
 			})
 			.catch((err) =>
@@ -299,6 +299,7 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				}
 				setTradeId(undefined);
 				setLoading(false);
+				localStorage.removeItem('trade');
 			})
 			.catch((err) =>
 				log({ severity: 'error', text: t('error.unknown', { message: err.message }) })
@@ -385,11 +386,15 @@ const PlayerItemContainer: React.FC<PlayerItemContainerProps> = (props) => {
 				</Table>
 			</TableContainer>
 			<PartialBackdrop open={loading} sx={{ flexDirection: 'column', gap: 3 }}>
-				<CircularProgress color='inherit' disableShrink />
+				<div>
+					<CircularProgress color='inherit' disableShrink />
+				</div>
 				{tradeId && (
-					<Button variant='contained' onClick={onTradeCancel}>
-						{`${t('cancel')} ${t('trade')}`}
-					</Button>
+					<div>
+						<Button variant='contained' onClick={onTradeCancel}>
+							{`${t('cancel')} ${t('trade')}`}
+						</Button>
+					</div>
 				)}
 			</PartialBackdrop>
 			<ItemEditorDialog
