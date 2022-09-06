@@ -16,7 +16,6 @@
 		"spell": [],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 20,
@@ -26,7 +25,6 @@
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",
@@ -69,29 +67,25 @@
 			}
 		],
 		"attribute_status": [
-			{ "id": 1, "name": "Inconsciente", "attribute_id": 1 },
-			{ "id": 2, "name": "Ferimento Grave", "attribute_id": 1 },
-			{ "id": 3, "name": "Insanidade Temp.", "attribute_id": 2 },
-			{ "id": 4, "name": "Insanidade Indef.", "attribute_id": 2 },
-			{ "id": 5, "name": "Insanidade Perm.", "attribute_id": 2 }
+			{ "name": "Inconsciente", "attribute_id": 1 },
+			{ "name": "Ferimento Grave", "attribute_id": 1 },
+			{ "name": "Insanidade Temp.", "attribute_id": 2 },
+			{ "name": "Insanidade Indef.", "attribute_id": 2 },
+			{ "name": "Insanidade Perm.", "attribute_id": 2 }
 		],
 		"characteristic": [
-			{ "id": 1, "name": "Força" },
-			{ "id": 2, "name": "Destreza" },
-			{ "id": 3, "name": "Inteligência" },
-			{ "id": 4, "name": "Constituição" },
-			{ "id": 5, "name": "Aparência" },
-			{ "id": 6, "name": "Poder" },
-			{ "id": 7, "name": "Tamanho" },
-			{ "id": 8, "name": "Educação" }
+			{ "name": "Força" },
+			{ "name": "Destreza" },
+			{ "name": "Inteligência" },
+			{ "name": "Constituição" },
+			{ "name": "Aparência" },
+			{ "name": "Poder" },
+			{ "name": "Tamanho" },
+			{ "name": "Educação" }
 		],
-		"currency": [
-			{ "id": 1, "name": "Nível de Gasto Diário" },
-			{ "id": 2, "name": "Dinheiro" }
-		],
+		"currency": [{ "name": "Nível de Gasto Diário" }, { "name": "Dinheiro" }],
 		"weapon": [
 			{
-				"id": 1,
 				"name": "Desarmado",
 				"type": "Comum",
 				"description": "",
@@ -105,433 +99,353 @@
 		],
 		"armor": [],
 		"extraInfo": [
-			{ "id": 1, "name": "Descrição Pessoal" },
-			{ "id": 2, "name": "Ideologia & Crenças" },
-			{ "id": 3, "name": "Pessoas & Lugares Significativos" },
-			{ "id": 4, "name": "Patrimônio & Bens Preciosos" },
-			{ "id": 5, "name": "Características" },
-			{ "id": 6, "name": "Lesões/Cicatrizes" },
-			{ "id": 7, "name": "Fobias & Manias" },
-			{ "id": 8, "name": "Encontros com Criaturas" }
+			{ "name": "Descrição Pessoal" },
+			{ "name": "Ideologia & Crenças" },
+			{ "name": "Pessoas & Lugares Significativos" },
+			{ "name": "Patrimônio & Bens Preciosos" },
+			{ "name": "Características" },
+			{ "name": "Lesões/Cicatrizes" },
+			{ "name": "Fobias & Manias" },
+			{ "name": "Encontros com Criaturas" }
 		],
 		"info": [
-			{ "id": 1, "name": "Player" },
-			{ "id": 2, "name": "Ocupação" },
-			{ "id": 3, "name": "Idade" },
-			{ "id": 4, "name": "Gênero" },
-			{ "id": 5, "name": "Residência" },
-			{ "id": 6, "name": "Local de Nascimento" },
-			{ "id": 7, "name": "Peso" },
-			{ "id": 8, "name": "Altura" }
+			{ "name": "Player" },
+			{ "name": "Ocupação" },
+			{ "name": "Idade" },
+			{ "name": "Gênero" },
+			{ "name": "Residência" },
+			{ "name": "Local de Nascimento" },
+			{ "name": "Peso" },
+			{ "name": "Altura" }
 		],
 		"item": [],
 		"skill": [
 			{
-				"id": 1,
 				"name": "Antropologia",
 				"startValue": 1
 			},
 			{
-				"id": 2,
 				"name": "Armas de Fogo (Arcos)",
 				"startValue": 15
 			},
 			{
-				"id": 3,
 				"name": "Armas de Fogo (Armas Pesadas)",
 				"startValue": 10
 			},
 			{
-				"id": 4,
 				"name": "Armas de Fogo (Lança-Chamas)",
 				"startValue": 10
 			},
 			{
-				"id": 5,
 				"name": "Armas de Fogo (Metralhadoras)",
 				"startValue": 10
 			},
 			{
-				"id": 6,
 				"name": "Armas de Fogo (Pistolas)",
 				"startValue": 20
 			},
 			{
-				"id": 7,
 				"name": "Armas de Fogo (Rifles/Espingardas)",
 				"startValue": 25
 			},
 			{
-				"id": 8,
 				"name": "Armas de Fogo (Submetralhadoras)",
 				"startValue": 15
 			},
 			{
-				"id": 9,
 				"name": "Arqueologia",
 				"startValue": 1
 			},
 			{
-				"id": 10,
 				"name": "Arremessar",
 				"startValue": 20
 			},
 			{
-				"id": 11,
 				"name": "Arte e Ofício (Atuação)",
 				"startValue": 5
 			},
 			{
-				"id": 12,
 				"name": "Arte e Ofício (Belas Artes)",
 				"startValue": 5
 			},
 			{
-				"id": 13,
 				"name": "Arte e Ofício (Criptografia)",
 				"startValue": 1
 			},
 			{
-				"id": 14,
 				"name": "Arte e Ofício (Falsificação)",
 				"startValue": 5
 			},
 			{
-				"id": 15,
 				"name": "Arte e Ofício (Fotografia)",
 				"startValue": 5
 			},
 			{
-				"id": 16,
 				"name": "Artilharia",
 				"startValue": 1
 			},
 			{
-				"id": 17,
 				"name": "Avaliação",
 				"startValue": 5
 			},
 			{
-				"id": 18,
 				"name": "Cavalgar",
 				"startValue": 5
 			},
 			{
-				"id": 19,
 				"name": "Charme",
 				"startValue": 15
 			},
 			{
-				"id": 20,
 				"name": "Chaveiro",
 				"startValue": 1
 			},
 			{
-				"id": 21,
 				"name": "Ciência (Astronomia)",
 				"startValue": 1
 			},
 			{
-				"id": 22,
 				"name": "Ciência (Biologia)",
 				"startValue": 1
 			},
 			{
-				"id": 23,
 				"name": "Ciência (Botânica)",
 				"startValue": 1
 			},
 			{
-				"id": 24,
 				"name": "Ciência (Ciência Forense)",
 				"startValue": 1
 			},
 			{
-				"id": 25,
 				"name": "Ciência (Engenharia)",
 				"startValue": 1
 			},
 			{
-				"id": 26,
 				"name": "Ciência (Farmácia)",
 				"startValue": 1
 			},
 			{
-				"id": 27,
 				"name": "Ciência (Física)",
 				"startValue": 1
 			},
 			{
-				"id": 28,
 				"name": "Ciência (Geologia)",
 				"startValue": 1
 			},
 			{
-				"id": 29,
 				"name": "Ciência (Matemática)",
 				"startValue": 1
 			},
 			{
-				"id": 30,
 				"name": "Ciência (Meteorologia)",
 				"startValue": 1
 			},
 			{
-				"id": 31,
 				"name": "Ciência (Química)",
 				"startValue": 1
 			},
 			{
-				"id": 32,
 				"name": "Ciência (Zoologia)",
 				"startValue": 1
 			},
 			{
-				"id": 33,
 				"name": "Consertos Elétricos",
 				"startValue": 10
 			},
 			{
-				"id": 34,
 				"name": "Consertos Mecânicos",
 				"startValue": 10
 			},
 			{
-				"id": 35,
 				"name": "Contabilidade",
 				"startValue": 5
 			},
 			{
-				"id": 36,
 				"name": "Demolições",
 				"startValue": 1
 			},
 			{
-				"id": 37,
 				"name": "Direito",
 				"startValue": 5
 			},
 			{
-				"id": 38,
 				"name": "Dirigir Automóveis",
 				"startValue": 20
 			},
 			{
-				"id": 39,
 				"name": "Disfarce",
 				"startValue": 5
 			},
 			{
-				"id": 40,
 				"name": "Eletrônica",
 				"startValue": 1
 			},
 			{
-				"id": 41,
 				"name": "Encontrar",
 				"startValue": 25
 			},
 			{
-				"id": 42,
 				"name": "Escalar",
 				"startValue": 20
 			},
 			{
-				"id": 43,
 				"name": "Escutar",
 				"startValue": 20
 			},
 			{
-				"id": 44,
 				"name": "Esquivar",
 				"startValue": 0
 			},
 			{
-				"id": 45,
 				"name": "Furtividade",
 				"startValue": 20
 			},
 			{
-				"id": 46,
 				"name": "Hipnose",
 				"startValue": 1
 			},
 			{
-				"id": 47,
 				"name": "História",
 				"startValue": 5
 			},
 			{
-				"id": 48,
 				"name": "Intimidação",
 				"startValue": 15
 			},
 			{
-				"id": 49,
 				"name": "Lábia",
 				"startValue": 5
 			},
 			{
-				"id": 50,
 				"name": "Leitura Labial",
 				"startValue": 1
 			},
 			{
-				"id": 51,
 				"name": "Língua (Nativa)",
 				"startValue": 0
 			},
 			{
-				"id": 52,
 				"name": "Lutar (Briga)",
 				"startValue": 25
 			},
 			{
-				"id": 53,
 				"name": "Lutar (Chicotes)",
 				"startValue": 5
 			},
 			{
-				"id": 54,
 				"name": "Lutar (Espadas)",
 				"startValue": 20
 			},
 			{
-				"id": 55,
 				"name": "Lutar (Garrote)",
 				"startValue": 15
 			},
 			{
-				"id": 56,
 				"name": "Lutar (Lanças)",
 				"startValue": 20
 			},
 			{
-				"id": 57,
 				"name": "Lutar (Machados)",
 				"startValue": 15
 			},
 			{
-				"id": 58,
 				"name": "Lutar (Manguais)",
 				"startValue": 10
 			},
 			{
-				"id": 59,
 				"name": "Lutar (Motosserras)",
 				"startValue": 10
 			},
 			{
-				"id": 60,
 				"name": "Medicina",
 				"startValue": 1
 			},
 			{
-				"id": 61,
 				"name": "Mergulho",
 				"startValue": 1
 			},
 			{
-				"id": 62,
 				"name": "Mundo Natural",
 				"startValue": 10
 			},
 			{
-				"id": 63,
 				"name": "Natação",
 				"startValue": 20
 			},
 			{
-				"id": 64,
 				"name": "Navegação",
 				"startValue": 10
 			},
 			{
-				"id": 65,
 				"name": "Nível de Crédito",
 				"startValue": 0
 			},
 			{
-				"id": 66,
 				"name": "Ocultismo",
 				"startValue": 5
 			},
 			{
-				"id": 67,
 				"name": "Operar Maquinário Pesado",
 				"startValue": 1
 			},
 			{
-				"id": 68,
 				"name": "Persuasão",
 				"startValue": 10
 			},
 			{
-				"id": 69,
 				"name": "Pilotar (Aeronave)",
 				"startValue": 1
 			},
 			{
-				"id": 70,
 				"name": "Pilotar (Barco)",
 				"startValue": 1
 			},
 			{
-				"id": 71,
 				"name": "Prestidigitação",
 				"startValue": 10
 			},
 			{
-				"id": 72,
 				"name": "Primeiros Socorros",
 				"startValue": 30
 			},
 			{
-				"id": 73,
 				"name": "Psicanálise",
 				"startValue": 1
 			},
 			{
-				"id": 74,
 				"name": "Psicologia",
 				"startValue": 10
 			},
 			{
-				"id": 75,
 				"name": "Rastrear",
 				"startValue": 10
 			},
 			{
-				"id": 76,
 				"name": "Saltar",
 				"startValue": 20
 			},
 			{
-				"id": 77,
 				"name": "Treinar Animais",
 				"startValue": 5
 			},
 			{
-				"id": 78,
 				"name": "Usar Bibliotecas",
 				"startValue": 20
 			},
 			{
-				"id": 79,
 				"name": "Usar Computadores",
 				"startValue": 5
 			}
 		],
 		"spec": [
-			{ "id": 1, "name": "Cthulhu Mythos" },
-			{ "id": 2, "name": "Dano Bônus" },
-			{ "id": 3, "name": "Corpo" },
-			{ "id": 4, "name": "Taxa de Movimento" }
+			{ "name": "Cthulhu Mythos" },
+			{ "name": "Dano Bônus" },
+			{ "name": "Corpo" },
+			{ "name": "Taxa de Movimento" }
 		],
 		"spell": [],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 100,
@@ -548,7 +462,6 @@
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",
@@ -578,157 +491,908 @@
 		],
 		"attribute_status": [
 			{
-				"id": 1,
 				"name": "Inconsciente",
+				"attribute_id": 1
+			},
+			{
+				"name": "Morrendo",
+				"attribute_id": 1
+			},
+			{
+				"name": "Agarrado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Amedrontado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Atordoado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Caído",
+				"attribute_id": 1
+			},
+			{
+				"name": "Cego",
+				"attribute_id": 1
+			},
+			{
+				"name": "Enfeitiçado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Envenenado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Impedido",
+				"attribute_id": 1
+			},
+			{
+				"name": "Incapacitado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Invisível",
+				"attribute_id": 1
+			},
+			{
+				"name": "Paralisado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Petrificado",
+				"attribute_id": 1
+			},
+			{
+				"name": "Surdo",
+				"attribute_id": 1
+			},
+			{
+				"name": "Exausto",
 				"attribute_id": 1
 			}
 		],
 		"characteristic": [
-			{ "id": 1, "name": "Força" },
-			{ "id": 2, "name": "Destreza" },
-			{ "id": 3, "name": "Constituição" },
-			{ "id": 4, "name": "Inteligência" },
-			{ "id": 5, "name": "Sabedoria" },
-			{ "id": 6, "name": "Carisma" }
+			{ "name": "Força" },
+			{ "name": "Destreza" },
+			{ "name": "Constituição" },
+			{ "name": "Inteligência" },
+			{ "name": "Sabedoria" },
+			{ "name": "Carisma" }
 		],
 		"currency": [
-			{ "id": 1, "name": "Peças de Cobre" },
-			{ "id": 2, "name": "Peças de Prata" },
-			{ "id": 3, "name": "Peças de Electrum" },
-			{ "id": 4, "name": "Peças de Ouro" },
-			{ "id": 5, "name": "Peças de Platina" }
+			{ "name": "Cobre" },
+			{ "name": "Prata" },
+			{ "name": "Electrum" },
+			{ "name": "Ouro" },
+			{ "name": "Platina" }
 		],
-		"weapon": [],
-		"armor": [],
+		"weapon": [
+			{
+				"name": "Alabarda",
+				"type": "Cortante (Marcial)",
+				"description": "20 po\nPesada, alcance, duas mãos",
+				"weight": 3,
+				"damage": "1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "3m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Azagaia",
+				"type": "Perfurante (Simples)",
+				"description": "5 pp.\nArremesso",
+				"weight": 1,
+				"damage": "1d6+mod(FOR) | 1d6+BON+mod(FOR)",
+				"range": "Arremesso 9m/36m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Clava Grande",
+				"type": "Concussão (Simples)",
+				"description": "2 pp.\nPesada, duas mãos",
+				"weight": 5,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Foice Curta",
+				"type": "Cortante (Simples)",
+				"description": "1 po.\nLeve",
+				"weight": 1,
+				"damage": "1d4 | 1d4+BON | 1d4+mod(FOR) | 1d4+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Espada Grande",
+				"type": "Cortante (Marcial)",
+				"description": "50 po\nPesada, duas mãos",
+				"weight": 3,
+				"damage": "2d6+mod(FOR) | 2d6+BON+mod(FOR)",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Maça",
+				"type": "Concussão (Simples)",
+				"description": "5 po.\nArremesso (distância 6/18), versátil",
+				"weight": 2,
+				"damage": "1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "Arremesso 6m/18m",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Glaive",
+				"type": "Cortante (Marcial)",
+				"description": "20 po.\nPesada, alcance, duas mãos",
+				"weight": 3,
+				"damage": "1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "3m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Machadinha",
+				"type": "Cortante (Simples)",
+				"description": "5 po.\nLeve, arremesso",
+				"weight": 1,
+				"damage": "1d6 | 1d6+BON | 1d6+mod(FOR) | 1d6+BON+mod(FOR)",
+				"range": "Arremesso 6m/18m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Lança de Montaria",
+				"type": "Perfurante (Marcial)",
+				"description": "10 po.\nAlcance, especial.\nDesvantagem ao usar a lança longa para atacar um alvo a até 1,5 metro de você. Uma lança longa requer as duas mãos para ser empunhada quando em montaria.",
+				"weight": 3,
+				"damage": "1d12+mod(FOR) | 1d12+BON+mod(FOR)",
+				"range": "Bônus (Alcance)",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Martelo Leve",
+				"type": "Concussão (Simples)",
+				"description": "2 po.\nLeve, arremesso",
+				"weight": 1,
+				"damage": "1d4 | 1d4+BON | 1d4+mod(FOR) | 1d4+BON+mod(FOR)",
+				"range": "Arremesso 6m/18m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Lança Longa",
+				"type": "Perfurante (Marcial)",
+				"description": "5 po.\nPesada, alcance, duas mãos",
+				"weight": 4,
+				"damage": "1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "3m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Maça Estrela",
+				"type": "Perfurante (Marcial)",
+				"description": "15 po\n-",
+				"weight": 2,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Porrete",
+				"type": "Concussão (Simples)",
+				"description": "1 pp.\nLeve",
+				"weight": 1,
+				"damage": "1d4 | 1d4+BON | 1d4+mod(FOR) | 1d4+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Machado Grande",
+				"type": "Cortante (Marcial)",
+				"description": "30 po\nPesada, duas mãos",
+				"weight": 3.5,
+				"damage": "1d12+mod(FOR) | 1d12+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Arco Curto",
+				"type": "Perfurante (Simples)",
+				"description": "25 po.\nMunição, duas mãos",
+				"weight": 1,
+				"damage": "1d6+mod(DES) | 1d6+BON+mod(DES)",
+				"range": "24m/96m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Besta Leve",
+				"type": "Perfurante (Simples)",
+				"description": "25 po.\nMunição, recarga, duas mãos",
+				"weight": 2.5,
+				"damage": "1d8+mod(DES) | 1d8+BON+mod(DES)",
+				"range": "24m/96m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Malho",
+				"type": "Concussão (Marcial)",
+				"description": "10 po\nPesada, duas mãos",
+				"weight": 5,
+				"damage": "2d6+mod(FOR) | 2d6+BON+mod(FOR)",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Dardo",
+				"type": "Perfurante (Simples)",
+				"description": "5 pc.\nAcuidade, arremesso",
+				"weight": 0.1,
+				"damage": "1d4+mod(FOR) | 1d4+BON+mod(FOR) | 1d4+mod(DES) | 1d4+BON+mod(DES)",
+				"range": "6m/18m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Mangual",
+				"type": "Concussão (Marcial)",
+				"description": "10 po\n-",
+				"weight": 1,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Funda",
+				"type": "Concussão (Simples)",
+				"description": "1 pp.\nMunição",
+				"weight": 0,
+				"damage": "1d4+mod(DES) | 1d4+BON+mod(DES)",
+				"range": "9m/36m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Picareta de Guerra",
+				"type": "Perfurante (Marcial)",
+				"description": "5 po\n-",
+				"weight": 1,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Arco Longo",
+				"type": "Perfurante (Marcial)",
+				"description": "50 po.\nMunição, pesada, duas mãos",
+				"weight": 1,
+				"damage": "1d8+mod(DES) | 1d8+BON+mod(DES)",
+				"range": "45m/180m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Besta de Mão",
+				"type": "Perfurante (Marcial)",
+				"description": "75 po.\nMunição, leve, recarga",
+				"weight": 1.5,
+				"damage": "1d6 | 1d6+BON | 1d6+mod(DES) | 1d6+BON+mod(DES)",
+				"range": "9m/36m",
+				"attacks": "",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Besta Pesada",
+				"type": "Perfurante (Marcial)",
+				"description": "50 po.\nMunição, pesada, recarga, duas mãos",
+				"weight": 4.5,
+				"damage": "1d10+mod(DES) | 1d10+BON+mod(DES)",
+				"range": "30m/120m",
+				"attacks": "1",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Rede",
+				"type": "Marcial",
+				"description": "1 po.\nEspecial, arremesso (distância 1,5/4,5)",
+				"weight": 1.5,
+				"damage": "",
+				"range": "",
+				"attacks": "1",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Zarabatana",
+				"type": "Perfurante (Marcial)",
+				"description": "10 po.\nMunição, recarga",
+				"weight": 0.5,
+				"damage": "1+MOD(DES) | 1+BON+MOD(DES)",
+				"range": "7.5m/30m",
+				"attacks": "1",
+				"ammo": 20,
+				"visible": 1
+			},
+			{
+				"name": "Bordão",
+				"type": "Concussão (Simples)",
+				"description": "2 pp.\nVersátil",
+				"weight": 2,
+				"damage": "1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Lança",
+				"type": "Perfurante (Simples)",
+				"description": "1 po.\nArremesso, versátil",
+				"weight": 1.5,
+				"damage": "1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "6m/18m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Chicote",
+				"type": "Cortante (Marcial)",
+				"description": "2 po.\nAcuidade, alcance",
+				"weight": 1.5,
+				"damage": "1d4+mod(FOR) | 1d4+BON+mod(FOR) | 1d4+mod(DES) | 1d4+BON+mod(DES)",
+				"range": "Bônus (Alcance)",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Espada Curta",
+				"type": "Perfurante (Marcial)",
+				"description": "10 po.\nAcuidade, leve",
+				"weight": 1,
+				"damage": "1d6 | 1d6+BON | 1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d6+mod(DES) | 1d6+BON+mod(DES)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Espada Longa",
+				"type": "Cortante (Marcial)",
+				"description": "15 po.\nVersátil",
+				"weight": 1.5,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR) | 1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Machado de Batalha",
+				"type": "Cortante (Marcial)",
+				"description": "10 po.\nVersátil",
+				"weight": 2,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR) | 1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Martelo de Guerra",
+				"type": "Concussão (Marcial)",
+				"description": "10 po.\nVersátil",
+				"weight": 1,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR) | 1d10+mod(FOR) | 1d10+BON+mod(FOR)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Rapieira",
+				"type": "Perfurante (Marcial)",
+				"description": "25 po.\nAcuidade",
+				"weight": 1,
+				"damage": "1d8+mod(FOR) | 1d8+BON+mod(FOR) | 1d8+mod(DES) | 1d8+BON+mod(DES)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Tridente",
+				"type": "Perfurante (Marcial)",
+				"description": "5 po.\nArremesso, versátil",
+				"weight": 2,
+				"damage": "1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d8+mod(FOR) | 1d8+BON+mod(FOR)",
+				"range": "Arremesso 6m/18m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Adaga",
+				"type": "Perfurante (Simples)",
+				"description": "2 po.\nAcuidade, leve, arremesso",
+				"weight": 0.5,
+				"damage": "1d4 | 1d4+BON | 1d4+mod(FOR) | 1d4+BON+mod(FOR) | 1d4+mod(DES) | 1d4+BON+mod(DES)",
+				"range": "Arremesso 6m/18m",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			},
+			{
+				"name": "Cimitarra",
+				"type": "Cortante (Marcial)",
+				"description": "25 po.\nAcuidade, leve",
+				"weight": 1.5,
+				"damage": "1d6 | 1d6+BON | 1d6+mod(FOR) | 1d6+BON+mod(FOR) | 1d6+mod(DES) | 1d6+BON+mod(DES)",
+				"range": "",
+				"attacks": "",
+				"ammo": 0,
+				"visible": 1
+			}
+		],
+		"armor": [
+			{
+				"name": "Armadura Acolchoada",
+				"type": "Leve",
+				"description": "5 po.",
+				"weight": 4,
+				"damageReduction": "11 + DES CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Cota de Anéis",
+				"type": "Pesada",
+				"description": "30 po",
+				"weight": 20,
+				"damageReduction": "15 CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Armadura de Couro",
+				"type": "Leve",
+				"description": "10 po",
+				"weight": 5,
+				"damageReduction": "11 + DES CA",
+				"penalty": "",
+				"visible": 1
+			},
+			{
+				"name": "Armadura de Couro Batido",
+				"type": "Leve",
+				"description": "45 po.",
+				"weight": 6.5,
+				"damageReduction": "12 + DES CA",
+				"penalty": "",
+				"visible": 1
+			},
+			{
+				"name": "Cota de Malha",
+				"type": "Pesada",
+				"description": "75 po\nFor 13",
+				"weight": 27.5,
+				"damageReduction": "16 CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Gibão de Peles",
+				"type": "Média",
+				"description": "10 po.",
+				"weight": 6,
+				"damageReduction": "12 + DES (máx. +2) CA",
+				"penalty": "",
+				"visible": 1
+			},
+			{
+				"name": "Camisão de Malha",
+				"type": "Média",
+				"description": "30 po.",
+				"weight": 10,
+				"damageReduction": "13 + DES (máx. +2) CA",
+				"penalty": "",
+				"visible": 1
+			},
+			{
+				"name": "Cota de Talas",
+				"type": "Pesada",
+				"description": "200 po\nFor 15",
+				"weight": 30,
+				"damageReduction": "17 CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Armadura Brunea",
+				"type": "Média",
+				"description": "50 po.",
+				"weight": 22.5,
+				"damageReduction": "14 + DES (máx. +2) CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Placas",
+				"type": "Armadura Pesada",
+				"description": "1.500 po\nFor 15",
+				"weight": 32.5,
+				"damageReduction": "18 CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Peitoral",
+				"type": "Média",
+				"description": "400 po.",
+				"weight": 10,
+				"damageReduction": "14 + DES (máx. +2) CA",
+				"penalty": "",
+				"visible": 1
+			},
+			{
+				"name": "Meia-Armadura",
+				"type": "Média",
+				"description": "750 po.",
+				"weight": 20,
+				"damageReduction": "15 + DES (máx. +2) CA",
+				"penalty": "Furtividade",
+				"visible": 1
+			},
+			{
+				"name": "Escudo",
+				"type": "Escudo",
+				"description": "10 po",
+				"weight": 3,
+				"damageReduction": "+2 CA",
+				"penalty": "Nenhuma",
+				"visible": 1
+			}
+		],
 		"extraInfo": [
-			{ "id": 1, "name": "Descrição Pessoal" },
-			{ "id": 2, "name": "Traços de Personalidade" },
-			{ "id": 3, "name": "Ideais" },
-			{ "id": 4, "name": "Ligações" },
-			{ "id": 5, "name": "Defeitos" }
+			{ "name": "Traços de Personalidade" },
+			{ "name": "Ideais" },
+			{ "name": "Vínculos" },
+			{ "name": "Defeitos" },
+			{ "name": "Características & Traços" },
+			{ "name": "Aparência do Personagem" },
+			{ "name": "Histórico do Personagem" },
+			{ "name": "Aliados e Organizações" },
+			{ "name": "Tesouro" },
+			{ "name": "Informações da Raça" },
+			{ "name": "Informações da Classe" },
+			{ "name": "Proficiências & Línguas" }
 		],
 		"info": [
-			{ "id": 1, "name": "Player" },
-			{ "id": 2, "name": "Classe e Nível" },
-			{ "id": 3, "name": "Antecedente" },
-			{ "id": 4, "name": "Raça" },
-			{ "id": 5, "name": "Tendência" },
-			{ "id": 6, "name": "Pontos de EXP" },
-			{ "id": 7, "name": "Idade" },
-			{ "id": 8, "name": "Peso" },
-			{ "id": 9, "name": "Altura" },
-			{ "id": 10, "name": "Olhos" },
-			{ "id": 11, "name": "Pele" },
-			{ "id": 12, "name": "Cabelo" }
+			{ "name": "Raça" },
+			{ "name": "Classe & Nível" },
+			{ "name": "Pontos de Experiência" },
+			{ "name": "Tendência" },
+			{ "name": "Antecedente" },
+			{ "name": "Idade" },
+			{ "name": "Peso" },
+			{ "name": "Tamanho" },
+			{ "name": "Olhos" },
+			{ "name": "Pele" },
+			{ "name": "Cabelo" },
+			{ "name": "Habilidade de Conjuração & CD de Resistência" }
 		],
 		"item": [],
 		"skill": [
 			{
-				"id": 1,
 				"name": "Acrobacia (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 2,
 				"name": "Arcanismo (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 3,
 				"name": "Atletismo (For)",
 				"startValue": 0
 			},
 			{
-				"id": 4,
 				"name": "Atuação (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 5,
 				"name": "Blefar (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 6,
 				"name": "Furtividade (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 7,
 				"name": "História (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 8,
 				"name": "Intimidação (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 9,
 				"name": "Intuição (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 10,
 				"name": "Investigação (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 11,
 				"name": "Lidar com Animais (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 12,
 				"name": "Medicina (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 13,
 				"name": "Natureza (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 14,
 				"name": "Percepção (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 15,
 				"name": "Persuasão (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 16,
 				"name": "Prestidigitação (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 17,
 				"name": "Religião (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 18,
 				"name": "Sobrevivência (Sab)",
 				"startValue": 0
 			}
 		],
-		"spec": [{ "id": 1, "name": "Classe de Armadura" }],
-		"spell": [],
+		"spec": [
+			{ "name": "Classe de Armadura" },
+			{ "name": "Deslocamento" },
+			{ "name": "Dado de Vida" },
+			{ "name": "Percepção Passiva" },
+			{ "name": "BON - Bônus de Proficiência" },
+			{ "name": "BOM - Bônus de Magia" }
+		],
+		"spell": [
+			{
+				"name": "Raio de Fogo",
+				"description": "Você arremessa um cisco de fogo em uma criatura ou\nobjeto dentro do alcance. Faça um ataque à distância com\nmagia contra o alvo. Se atingir, o alvo sofre 1d10 de dano\nde fogo. Um objeto inflamável atingido por essa magia,\nincendeia se não estiver sendo vestido ou carregado.\nO dano dessa magia aumenta em 1d10 quando você\nalcança o 5° nível (2d10), 11° nível (3d10) e 17° nível\n(4d10).",
+				"cost": "",
+				"type": "Evocação 0",
+				"damage": "1d10 | 2d10 | 3d10",
+				"target": "Área (Cone)",
+				"castingTime": "1 ação",
+				"range": "36 metros",
+				"duration": "Instantânea",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Orientação",
+				"description": "Você toca uma criatura voluntária. Uma vez, antes da magia acabar, o alvo pode rolar um d4 e adicionar o número rolado a um teste de habilidade a escolha dele. Ele pode rolar o dado antes ou depois de realizar o teste de habilidade. Após isso, a magia termina.",
+				"cost": "",
+				"type": "Adivinhação 0",
+				"damage": "",
+				"target": "Único",
+				"castingTime": "1 ação",
+				"range": "Toque",
+				"duration": "Concentração, 1 min",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Criar Chamas",
+				"description": "Uma chama tremulante aparece na sua mão. A chama\npermanece ai pela duração e não machuca nem você nem\nseu equipamento. A chama emite luz plena num raio de 3\nmetros e penumbra por 3 metros adicionais. A magia\nacaba se você dissipa-la usando uma ação ou se conjura-la\nnovamente.\nVocê pode, também, atacar com a chama, no entanto,\nfazer isso acaba com a magia. Quando você conjura essa\nmagia ou com uma ação em um turno posterior, você pode\narremessar a chama numa criatura a até 9 metros de\nvocê. Faça um ataque à distância com magia. Se atingir, o\nalvo sofre 1d8 de dano de fogo.\nO dano dessa magia aumenta em 1d8 quando você\nalcança o 5° nível (2d8), 11° nível (3d8) e 17° nível (4d8).",
+				"cost": "",
+				"type": "Conjuração 0",
+				"damage": "1d8 | 2d8 | 3d8 | 4d8",
+				"target": "Pessoal, Único",
+				"castingTime": "1 ação",
+				"range": "9 metros",
+				"duration": "10 minutos",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Taumaturgia",
+				"description": "Você manifesta pequenas maravilhas, um sinal de poder sobrenatural, dentro do alcance. Você cria um dos seguintes efeitos mágicos dentro do alcance:\n Sua voz ressoa com o triplo do volume normal por 1 minuto.\n Você provoca tremores inofensivos no solo por 1 minuto.\n Você cria, instantaneamente, um som que se origina de um ponto, à sua escolha, dentro do alcance, como o barulho de um trovão, o gralhar de um corvo ou sussurros sinistros.\n Você, instantaneamente, faz uma porta ou janela destrancada se abrir ou se fechar.\n Você altera a aparência dos seus olhos por 1 minuto. Se você conjurar essa magia diversas vezes, você pode ter até três dos efeitos de 1 minuto ativos por vez, e você pode dissipar um desses efeitos com uma ação.",
+				"cost": "",
+				"type": "Transmutação 0",
+				"damage": "",
+				"target": "Pessoal",
+				"castingTime": "1 ação",
+				"range": "9 metros",
+				"duration": "Até 1 minuto",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Curar Ferimentos",
+				"description": "Uma criatura que você tocar recupera uma quantidade de pontos de vida igual a 1d8 + seu modificador de habilidade de conjuração. Essa magia não produz efeito em mortos-vivos ou constructos.\nEm Níveis Superiores. Se você conjurar essa magia usando um espaço de magia de 2° nível ou superior, a cura aumenta em 1d8 para cada nível do espaço acima do 1°.",
+				"cost": "",
+				"type": "Evocação 1",
+				"damage": "1d8+BOM",
+				"target": "Único",
+				"castingTime": "1 ação",
+				"range": "Toque",
+				"duration": "Instantânea",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Enfentiçar Pessoa",
+				"description": "Você tenta enfeitiçar um humanoide que você possa ver dentro do alcance. Ele deve realizar um teste de resistência de Sabedoria, e recebe vantagem nesse teste se você ou seus companheiros estiverem lutando com ele. Se ele falhar, ficará enfeitiçado por você até a magia acabar ou até você ou seus companheiros fizerem qualquer coisa nociva contra ele. A criatura enfeitiçada reconhece você como um conhecido amigável. Quando a magia acabar, a criatura saberá que foi enfeitiçada por você. Em Níveis Superiores. Se você conjurar essa magia usando um espaço de magia de 2° nível ou superior, você pode afetar uma criatura adicional para cada nível do espaço acima do 1°. As criaturas devem estar a até 9 metros umas das outras quando você for afeta-las.",
+				"cost": "",
+				"type": "Encantamento 1",
+				"damage": "",
+				"target": "Único",
+				"castingTime": "1 ação",
+				"range": "9 metros",
+				"duration": "1 hora",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Falar com Animais",
+				"description": "Você adquire a habilidade de compreender e se comunicar verbalmente com bestas, pela duração. O conhecimento e consciência de muitas bestas é limitado pela inteligência delas mas, no mínimo, as bestas poderão dar informações a você sobre os locais e monstros próximos, incluindo tudo que eles possam perceber ou tenham percebido no dia anterior. Você pode tentar persuadir uma besta a lhe prestar um favor, à critério do Mestre.",
+				"cost": "",
+				"type": "Adivinhação 1 (Ritual)",
+				"damage": "",
+				"target": "Pessoal",
+				"castingTime": "1 ação",
+				"range": "",
+				"duration": "10 minutos",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Golpe Constritor",
+				"description": "Da próxima vez que você atingir uma criatura com um ataque com arma, antes do final da magia, um emaranhado maciço de vinhas espinhentas aparecem no local do impacto e o alvo deve ser bem sucedido num teste de resistência de Força ou ficará impedido pelas vinhas mágicas, até o fim da magia. Uma criatura Grande ou maior tem vantagem no seu teste de resistência. Se o alvo for bem sucedido na resistência, as vinhas murcharão. Enquanto estiver impedido pela magia, um alvo sofre 1d6 de dano perfurante no início de cada um dos turnos dele. Uma criatura impedida pelas vinhas ou uma que possa tocar a criatura, pode usar sua ação para realizar um teste de Força contra a CD da magia. Num sucesso, o alvo é libertado.\nEm níveis superiores, o dano aumenta em 1d6 para cada nível do espaço acima de 1°.",
+				"cost": "",
+				"type": "Conjuração 1",
+				"damage": "1d8",
+				"target": "Único",
+				"castingTime": "1 ação bônus",
+				"range": "Pessoal",
+				"duration": "Concentração, até 1 minuto",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Marca do Caçador",
+				"description": "Você escolhe uma criatura que possa ver, dentro do alcance e a marca misticamente como sua presa. Até a magia acabar, você causa 1d6 de dano extra ao alvo sempre que você o atingir com um ataque com arma e você tem vantagem em quaisquer testes de Sabedoria (Percepção) ou Sabedoria (Sobrevivência) feitos para encontrá-la. Se o alvo cair a 0 pontos de vida antes da magia acabar, você pode usar uma ação bônus, no seu turno subsequente para marcar uma nova criatura.\nEm níveis superiores:\n- 3° ou 4° nível: Poderá manter sua concentração por até 8 horas.\n- 5° nível ou superior: Poderá manter sua concentração por até 24 horas.",
+				"cost": "",
+				"type": "Adivinhação 1",
+				"damage": "1d6",
+				"target": "Único",
+				"castingTime": "1 ação bônus",
+				"range": "27 metros",
+				"duration": "Concentração, até 1 hora",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Proteção Contra Lâminas",
+				"description": "Você estende suas mãos e desenha um símbolo de proteção no ar. Até o final do seu próximo turno, você terá resistência contra dano de concussão, cortante e perfurante causado por ataques com armas.",
+				"cost": "",
+				"type": "Abjuração 0",
+				"damage": "",
+				"target": "",
+				"castingTime": "1 ação",
+				"range": "Pessoal",
+				"duration": "1 rodada",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Zombaria Viciosa",
+				"description": "Você libera uma série de insultos atados com encantamentos sutis numa criatura que você possa ver, dentro do alcance. Se o alvo puder ouvir você (apesar de não precisar compreende-lo), ele deve ser bem sucedido num teste de resistência de Sabedoria ou sofrerá 1d4 de dano psíquico e terá desvantagem na próxima jogada de ataque que ele fizer antes do final do próximo turno dele.",
+				"cost": "",
+				"type": "Encantamento 0",
+				"damage": "1d4 | 2d4 | 3d4 | 4d4",
+				"target": "Único",
+				"castingTime": "1 ação",
+				"range": "18m",
+				"duration": "Instantâneo",
+				"slots": 0,
+				"visible": 1
+			},
+			{
+				"name": "Mensagem",
+				"description": "Você aponta seu dedo para uma criatura dentro do alcance e sussurra uma mensagem. O alvo (e apenas ele) ouvi a mensagem e pode responder com um sussurro que apenas você pode ouvir. Você pode conjurar essa magia através de objetos sólidos se você tiver familiaridade com o alvo. Silêncio mágico, 30 centímetros de rocha, 2,5 centímetros de metal comum, uma fina camada de chumbo, ou 90 centímetros de madeira ou terra bloqueiam a magia. A magia não precisa seguir uma linha reta e pode viajar livremente, dobrando esquinas ou através de aberturas.",
+				"cost": "Um pedaço curto de fio de cobre",
+				"type": "Transmutação 0",
+				"damage": "",
+				"target": "Único",
+				"castingTime": "1 ação",
+				"range": "36m",
+				"duration": "1 rodada",
+				"slots": 0,
+				"visible": 1
+			}
+		],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 20,
-					"resolver": null,
+					"resolver": [
+						{
+							"description": "Fracasso",
+							"operator": "equals",
+							"result": "1",
+							"useModifier": false,
+							"enableModifiers": true
+						},
+						{
+							"description": "Crítico",
+							"operator": "equals",
+							"result": "20",
+							"useModifier": false,
+							"enableModifiers": true
+						}
+					],
 					"characteristic": { "enableModifiers": true },
 					"skill": { "enableModifiers": true }
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",

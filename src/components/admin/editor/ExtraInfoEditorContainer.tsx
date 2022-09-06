@@ -17,6 +17,7 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type ExtraInfoEditorContainerProps = {
+	title: string;
 	extraInfo: ExtraInfo[];
 };
 
@@ -71,7 +72,7 @@ const ExtraInfoEditorContainer: React.FC<ExtraInfoEditorContainerProps> = (props
 
 	return (
 		<Section
-			title={t('admin.editor.extraInfo')}
+			title={`${props.title} (Extra)`}
 			position='relative'
 			sideButton={
 				<IconButton

@@ -16,7 +16,6 @@
 		"spell": [],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 20,
@@ -26,7 +25,6 @@
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",
@@ -69,17 +67,16 @@
 			}
 		],
 		"attribute_status": [
-			{ "id": 1, "name": "Unconscious", "attribute_id": 1 },
-			{ "id": 2, "name": "Major Wound", "attribute_id": 1 },
-			{ "id": 3, "name": "Temp. Insanity", "attribute_id": 2 },
-			{ "id": 4, "name": "Indef. Insanity", "attribute_id": 2 },
-			{ "id": 5, "name": "Perm. Insanity", "attribute_id": 2 }
+			{ "name": "Unconscious", "attribute_id": 1 },
+			{ "name": "Major Wound", "attribute_id": 1 },
+			{ "name": "Temp. Insanity", "attribute_id": 2 },
+			{ "name": "Indef. Insanity", "attribute_id": 2 },
+			{ "name": "Perm. Insanity", "attribute_id": 2 }
 		],
 		"characteristic": [],
 		"currency": [],
 		"weapon": [
 			{
-				"id": 1,
 				"name": "Unarmed",
 				"type": "Common",
 				"description": "",
@@ -93,410 +90,331 @@
 		],
 		"armor": [],
 		"extraInfo": [
-			{ "id": 1, "name": "Personal Description" },
-			{ "id": 2, "name": "Ideology & Beliefs" },
-			{ "id": 3, "name": "Significant People & Places" },
-			{ "id": 4, "name": "Heritage & Precious Goods" },
-			{ "id": 5, "name": "Character" },
-			{ "id": 6, "name": "Injuries/Scars" },
-			{ "id": 7, "name": "Phobias & Manias" },
-			{ "id": 8, "name": "Encounters with Creatures" }
+			{ "name": "Personal Description" },
+			{ "name": "Ideology & Beliefs" },
+			{ "name": "Significant People & Places" },
+			{ "name": "Heritage & Precious Goods" },
+			{ "name": "Character" },
+			{ "name": "Injuries/Scars" },
+			{ "name": "Phobias & Manias" },
+			{ "name": "Encounters with Creatures" }
 		],
 		"info": [],
 		"item": [],
 		"skill": [
 			{
-				"id": 1,
 				"name": "Antropologia",
 				"startValue": 1
 			},
 			{
-				"id": 2,
 				"name": "Armas de Fogo (Arcos)",
 				"startValue": 15
 			},
 			{
-				"id": 3,
 				"name": "Armas de Fogo (Armas Pesadas)",
 				"startValue": 10
 			},
 			{
-				"id": 4,
 				"name": "Armas de Fogo (Lança-Chamas)",
 				"startValue": 10
 			},
 			{
-				"id": 5,
 				"name": "Armas de Fogo (Metralhadoras)",
 				"startValue": 10
 			},
 			{
-				"id": 6,
 				"name": "Armas de Fogo (Pistolas)",
 				"startValue": 20
 			},
 			{
-				"id": 7,
 				"name": "Armas de Fogo (Rifles/Espingardas)",
 				"startValue": 25
 			},
 			{
-				"id": 8,
 				"name": "Armas de Fogo (Submetralhadoras)",
 				"startValue": 15
 			},
 			{
-				"id": 9,
 				"name": "Arqueologia",
 				"startValue": 1
 			},
 			{
-				"id": 10,
 				"name": "Arremessar",
 				"startValue": 20
 			},
 			{
-				"id": 11,
 				"name": "Arte e Ofício (Atuação)",
 				"startValue": 5
 			},
 			{
-				"id": 12,
 				"name": "Arte e Ofício (Belas Artes)",
 				"startValue": 5
 			},
 			{
-				"id": 13,
 				"name": "Arte e Ofício (Criptografia)",
 				"startValue": 1
 			},
 			{
-				"id": 14,
 				"name": "Arte e Ofício (Falsificação)",
 				"startValue": 5
 			},
 			{
-				"id": 15,
 				"name": "Arte e Ofício (Fotografia)",
 				"startValue": 5
 			},
 			{
-				"id": 16,
 				"name": "Artilharia",
 				"startValue": 1
 			},
 			{
-				"id": 17,
 				"name": "Avaliação",
 				"startValue": 5
 			},
 			{
-				"id": 18,
 				"name": "Cavalgar",
 				"startValue": 5
 			},
 			{
-				"id": 19,
 				"name": "Charme",
 				"startValue": 15
 			},
 			{
-				"id": 20,
 				"name": "Chaveiro",
 				"startValue": 1
 			},
 			{
-				"id": 21,
 				"name": "Ciência (Astronomia)",
 				"startValue": 1
 			},
 			{
-				"id": 22,
 				"name": "Ciência (Biologia)",
 				"startValue": 1
 			},
 			{
-				"id": 23,
 				"name": "Ciência (Botânica)",
 				"startValue": 1
 			},
 			{
-				"id": 24,
 				"name": "Ciência (Ciência Forense)",
 				"startValue": 1
 			},
 			{
-				"id": 25,
 				"name": "Ciência (Engenharia)",
 				"startValue": 1
 			},
 			{
-				"id": 26,
 				"name": "Ciência (Farmácia)",
 				"startValue": 1
 			},
 			{
-				"id": 27,
 				"name": "Ciência (Física)",
 				"startValue": 1
 			},
 			{
-				"id": 28,
 				"name": "Ciência (Geologia)",
 				"startValue": 1
 			},
 			{
-				"id": 29,
 				"name": "Ciência (Matemática)",
 				"startValue": 1
 			},
 			{
-				"id": 30,
 				"name": "Ciência (Meteorologia)",
 				"startValue": 1
 			},
 			{
-				"id": 31,
 				"name": "Ciência (Química)",
 				"startValue": 1
 			},
 			{
-				"id": 32,
 				"name": "Ciência (Zoologia)",
 				"startValue": 1
 			},
 			{
-				"id": 33,
 				"name": "Consertos Elétricos",
 				"startValue": 10
 			},
 			{
-				"id": 34,
 				"name": "Consertos Mecânicos",
 				"startValue": 10
 			},
 			{
-				"id": 35,
 				"name": "Contabilidade",
 				"startValue": 5
 			},
 			{
-				"id": 36,
 				"name": "Demolições",
 				"startValue": 1
 			},
 			{
-				"id": 37,
 				"name": "Direito",
 				"startValue": 5
 			},
 			{
-				"id": 38,
 				"name": "Dirigir Automóveis",
 				"startValue": 20
 			},
 			{
-				"id": 39,
 				"name": "Disfarce",
 				"startValue": 5
 			},
 			{
-				"id": 40,
 				"name": "Eletrônica",
 				"startValue": 1
 			},
 			{
-				"id": 41,
 				"name": "Encontrar",
 				"startValue": 25
 			},
 			{
-				"id": 42,
 				"name": "Escalar",
 				"startValue": 20
 			},
 			{
-				"id": 43,
 				"name": "Escutar",
 				"startValue": 20
 			},
 			{
-				"id": 44,
 				"name": "Esquivar",
 				"startValue": 0
 			},
 			{
-				"id": 45,
 				"name": "Furtividade",
 				"startValue": 20
 			},
 			{
-				"id": 46,
 				"name": "Hipnose",
 				"startValue": 1
 			},
 			{
-				"id": 47,
 				"name": "História",
 				"startValue": 5
 			},
 			{
-				"id": 48,
 				"name": "Intimidação",
 				"startValue": 15
 			},
 			{
-				"id": 49,
 				"name": "Lábia",
 				"startValue": 5
 			},
 			{
-				"id": 50,
 				"name": "Leitura Labial",
 				"startValue": 1
 			},
 			{
-				"id": 51,
 				"name": "Língua (Nativa)",
 				"startValue": 0
 			},
 			{
-				"id": 52,
 				"name": "Lutar (Briga)",
 				"startValue": 25
 			},
 			{
-				"id": 53,
 				"name": "Lutar (Chicotes)",
 				"startValue": 5
 			},
 			{
-				"id": 54,
 				"name": "Lutar (Espadas)",
 				"startValue": 20
 			},
 			{
-				"id": 55,
 				"name": "Lutar (Garrote)",
 				"startValue": 15
 			},
 			{
-				"id": 56,
 				"name": "Lutar (Lanças)",
 				"startValue": 20
 			},
 			{
-				"id": 57,
 				"name": "Lutar (Machados)",
 				"startValue": 15
 			},
 			{
-				"id": 58,
 				"name": "Lutar (Manguais)",
 				"startValue": 10
 			},
 			{
-				"id": 59,
 				"name": "Lutar (Motosserras)",
 				"startValue": 10
 			},
 			{
-				"id": 60,
 				"name": "Medicina",
 				"startValue": 1
 			},
 			{
-				"id": 61,
 				"name": "Mergulho",
 				"startValue": 1
 			},
 			{
-				"id": 62,
 				"name": "Mundo Natural",
 				"startValue": 10
 			},
 			{
-				"id": 63,
 				"name": "Natação",
 				"startValue": 20
 			},
 			{
-				"id": 64,
 				"name": "Navegação",
 				"startValue": 10
 			},
 			{
-				"id": 65,
 				"name": "Nível de Crédito",
 				"startValue": 0
 			},
 			{
-				"id": 66,
 				"name": "Ocultismo",
 				"startValue": 5
 			},
 			{
-				"id": 67,
 				"name": "Operar Maquinário Pesado",
 				"startValue": 1
 			},
 			{
-				"id": 68,
 				"name": "Persuasão",
 				"startValue": 10
 			},
 			{
-				"id": 69,
 				"name": "Pilotar (Aeronave)",
 				"startValue": 1
 			},
 			{
-				"id": 70,
 				"name": "Pilotar (Barco)",
 				"startValue": 1
 			},
 			{
-				"id": 71,
 				"name": "Prestidigitação",
 				"startValue": 10
 			},
 			{
-				"id": 72,
 				"name": "Primeiros Socorros",
 				"startValue": 30
 			},
 			{
-				"id": 73,
 				"name": "Psicanálise",
 				"startValue": 1
 			},
 			{
-				"id": 74,
 				"name": "Psicologia",
 				"startValue": 10
 			},
 			{
-				"id": 75,
 				"name": "Rastrear",
 				"startValue": 10
 			},
 			{
-				"id": 76,
 				"name": "Saltar",
 				"startValue": 20
 			},
 			{
-				"id": 77,
 				"name": "Treinar Animais",
 				"startValue": 5
 			},
 			{
-				"id": 78,
 				"name": "Usar Bibliotecas",
 				"startValue": 20
 			},
 			{
-				"id": 79,
 				"name": "Usar Computadores",
 				"startValue": 5
 			}
@@ -505,7 +423,6 @@
 		"spell": [],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 100,
@@ -522,7 +439,6 @@
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",
@@ -544,7 +460,7 @@
 		"attribute": [
 			{
 				"id": 1,
-				"name": "Vida",
+				"name": "Health",
 				"color": "b62323",
 				"rollable": null,
 				"portrait": "PRIMARY"
@@ -552,7 +468,6 @@
 		],
 		"attribute_status": [
 			{
-				"id": 1,
 				"name": "Inconsciente",
 				"attribute_id": 1
 			}
@@ -562,102 +477,84 @@
 		"weapon": [],
 		"armor": [],
 		"extraInfo": [
-			{ "id": 1, "name": "Descrição Pessoal" },
-			{ "id": 2, "name": "Traços de Personalidade" },
-			{ "id": 3, "name": "Ideais" },
-			{ "id": 4, "name": "Ligações" },
-			{ "id": 5, "name": "Defeitos" }
+			{ "name": "Descrição Pessoal" },
+			{ "name": "Traços de Personalidade" },
+			{ "name": "Ideais" },
+			{ "name": "Ligações" },
+			{ "name": "Defeitos" }
 		],
 		"info": [],
 		"item": [],
 		"skill": [
 			{
-				"id": 1,
 				"name": "Acrobacia (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 2,
 				"name": "Arcanismo (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 3,
 				"name": "Atletismo (For)",
 				"startValue": 0
 			},
 			{
-				"id": 4,
 				"name": "Atuação (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 5,
 				"name": "Blefar (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 6,
 				"name": "Furtividade (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 7,
 				"name": "História (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 8,
 				"name": "Intimidação (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 9,
 				"name": "Intuição (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 10,
 				"name": "Investigação (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 11,
 				"name": "Lidar com Animais (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 12,
 				"name": "Medicina (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 13,
 				"name": "Natureza (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 14,
 				"name": "Percepção (Sab)",
 				"startValue": 0
 			},
 			{
-				"id": 15,
 				"name": "Persuasão (Car)",
 				"startValue": 0
 			},
 			{
-				"id": 16,
 				"name": "Prestidigitação (Des)",
 				"startValue": 0
 			},
 			{
-				"id": 17,
 				"name": "Religião (Int)",
 				"startValue": 0
 			},
 			{
-				"id": 18,
 				"name": "Sobrevivência (Sab)",
 				"startValue": 0
 			}
@@ -666,7 +563,6 @@
 		"spell": [],
 		"config": [
 			{
-				"id": 2,
 				"name": "dice",
 				"value": {
 					"baseDice": 20,
@@ -676,7 +572,6 @@
 				}
 			},
 			{
-				"id": 3,
 				"name": "general",
 				"value": {
 					"adminKey": "",

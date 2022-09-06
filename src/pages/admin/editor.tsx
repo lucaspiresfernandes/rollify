@@ -18,6 +18,7 @@ import type { Locale } from '../../i18n';
 import type { InferSsrProps } from '../../utils/next';
 import prisma from '../../utils/prisma';
 import { withSessionSsr } from '../../utils/session';
+import type { GeneralConfig } from '../../utils/settings';
 
 type AdminEditorPageProps = InferSsrProps<typeof getSsp>;
 
@@ -39,11 +40,11 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 		<Container sx={{ my: 2 }}>
 			<Grid container pt={2} spacing={5} justifyContent='center'>
 				<Grid item xs={12} md={6}>
-					<InfoEditorContainer info={props.info} />
+					<InfoEditorContainer title={props.section.info} info={props.info} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ExtraInfoEditorContainer extraInfo={props.extraInfo} />
+					<ExtraInfoEditorContainer title={props.section.info} extraInfo={props.extraInfo} />
 				</Grid>
 
 				<AttributeEditorContainer
@@ -56,31 +57,34 @@ const AdminEditor: React.FC<AdminEditorPageProps> = (props) => {
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<CharacteristicEditorContainer characteristic={props.characteristic} />
+					<CharacteristicEditorContainer
+						title={props.section.characteristic}
+						characteristic={props.characteristic}
+					/>
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<SkillEditorContainer skill={props.skill} />
+					<SkillEditorContainer title={props.section.skill} skill={props.skill} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<WeaponEditorContainer weapon={props.weapon} />
+					<WeaponEditorContainer title={props.section.combat} weapon={props.weapon} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ArmorEditorContainer armor={props.armor} />
+					<ArmorEditorContainer title={props.section.combat} armor={props.armor} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<CurrencyEditorContainer currency={props.currency} />
+					<CurrencyEditorContainer title={props.section.item} currency={props.currency} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<ItemEditorContainer item={props.item} />
+					<ItemEditorContainer title={props.section.item} item={props.item} />
 				</Grid>
 
 				<Grid item xs={12} md={6}>
-					<SpellEditorContainer spell={props.spell} />
+					<SpellEditorContainer title={props.section.spell} spell={props.spell} />
 				</Grid>
 			</Grid>
 		</Container>
@@ -111,6 +115,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 		prisma.item.findMany(),
 		prisma.spell.findMany(),
 		prisma.currency.findMany(),
+		prisma.config.findUnique({ where: { name: 'general' } }),
 	]);
 
 	const locale = ctx.locale || ctx.defaultLocale;
@@ -131,6 +136,7 @@ async function getSsp(ctx: GetServerSidePropsContext) {
 			item: results[9],
 			spell: results[10],
 			currency: results[11],
+			section: (JSON.parse(results[12]?.value as string) as GeneralConfig).section,
 		},
 	};
 }

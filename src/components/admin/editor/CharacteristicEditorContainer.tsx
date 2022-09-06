@@ -17,6 +17,7 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type CharacteristicEditorContainerProps = {
+	title: string;
 	characteristic: Characteristic[];
 };
 
@@ -59,7 +60,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 	};
 
 	const onDeleteCharacteristic = (id: number) => {
-		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<CharacteristicSheetApiResponse>('/sheet/characteristic', { data: { id } })
@@ -75,7 +76,7 @@ const CharacteristicEditorContainer: React.FC<CharacteristicEditorContainerProps
 
 	return (
 		<Section
-			title={t('admin.editor.characteristic')}
+			title={props.title}
 			position='relative'
 			sideButton={
 				<IconButton

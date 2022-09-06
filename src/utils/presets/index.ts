@@ -18,19 +18,18 @@ export type Presets = {
 	preset_name: string;
 	preset_id: string;
 	attribute: Attribute[];
-	attribute_status: AttributeStatus[];
-	characteristic: Characteristic[];
-	currency: Currency[];
-	weapon: Weapon[];
-	armor: Armor[];
-	extraInfo: ExtraInfo[];
-	info: Info[];
-	item: Item[];
-	skill: Skill[];
-	spec: Spec[];
-	spell: Spell[];
+	attribute_status: Omit<AttributeStatus, 'id'>[];
+	characteristic: Omit<Characteristic, 'id'>[];
+	currency: Omit<Currency, 'id'>[];
+	weapon: Omit<Weapon, 'id'>[];
+	armor: Omit<Armor, 'id'>[];
+	extraInfo: Omit<ExtraInfo, 'id'>[];
+	info: Omit<Info, 'id'>[];
+	item: Omit<Item, 'id'>[];
+	skill: Omit<Skill, 'id'>[];
+	spec: Omit<Spec, 'id'>[];
+	spell: Omit<Spell, 'id'>[];
 	config: {
-		id: Config['id'];
 		name: Config['name'];
 		value:
 			| string

@@ -17,6 +17,7 @@ import ArmorEditorDialog from '../dialogs/editor/ArmorEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type ArmorEditorContainerProps = {
+	title: string;
 	armor: Armor[];
 };
 
@@ -76,7 +77,7 @@ const ArmorEditorContainer: React.FC<ArmorEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={t('admin.editor.armor')}
+			title={`${props.title} (${t('admin.editor.armor')})`}
 			position='relative'
 			sideButton={
 				<IconButton

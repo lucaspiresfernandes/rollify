@@ -17,6 +17,7 @@ import SkillEditorDialog from '../dialogs/editor/SkillEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type SkillEditorContainerProps = {
+	title: string;
 	skill: Skill[];
 };
 
@@ -98,7 +99,7 @@ const SkillEditorContainer: React.FC<SkillEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={t('admin.editor.skill')}
+			title={props.title}
 			position='relative'
 			sideButton={
 				<IconButton

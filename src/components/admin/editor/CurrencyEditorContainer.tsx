@@ -17,6 +17,7 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type CurrencyEditorContainerProps = {
+	title: string;
 	currency: Currency[];
 };
 
@@ -53,7 +54,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 	};
 
 	const onDeleteCurrency = (id: number) => {
-		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<CurrencySheetApiResponse>('/sheet/currency', { data: { id } })
@@ -69,7 +70,7 @@ const CurrencyEditorContainer: React.FC<CurrencyEditorContainerProps> = (props) 
 
 	return (
 		<Section
-			title={t('admin.editor.currency')}
+			title={`${props.title} (${t('admin.editor.currency')})`}
 			position='relative'
 			sideButton={
 				<IconButton

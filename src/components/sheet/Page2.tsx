@@ -1,7 +1,6 @@
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import axios from 'axios';
 import { useI18n } from 'next-rosetta';
 import Router from 'next/router';
 import { useEffect, useMemo } from 'react';
@@ -18,17 +17,7 @@ const PlayerSheetPage2: React.FC<SheetSecondPageProps & { isNpc: boolean }> = (p
 	const { t } = useI18n<Locale>();
 
 	const api = useMemo(
-		() =>
-			createApiClient(
-				props.isNpc
-					? {
-							params: {
-								...axios.defaults.params,
-								npcId: props.player.id,
-							},
-					  }
-					: undefined
-			),
+		() => createApiClient(props.isNpc ? { params: { npcId: props.player.id } } : undefined),
 		[props.isNpc, props.player.id]
 	);
 

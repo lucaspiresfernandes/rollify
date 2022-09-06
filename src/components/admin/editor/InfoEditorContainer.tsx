@@ -17,6 +17,7 @@ import EditorDialog from '../dialogs/editor/EditorDialog';
 import EditorContainer from './EditorContainer';
 
 type InfoEditorContainerProps = {
+	title: string;
 	info: Info[];
 };
 
@@ -53,7 +54,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 	};
 
 	const onDeleteInfo = (id: number) => {
-		if (!confirm(t('prompt.delete', {name: 'item'}))) return;
+		if (!confirm(t('prompt.delete', { name: 'item' }))) return;
 		setLoading(true);
 		api
 			.delete<InfoSheetApiResponse>('/sheet/info', { data: { id } })
@@ -69,7 +70,7 @@ const InfoEditorContainer: React.FC<InfoEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={t('admin.editor.info')}
+			title={props.title}
 			position='relative'
 			sideButton={
 				<IconButton
