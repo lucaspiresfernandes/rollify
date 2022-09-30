@@ -17,6 +17,7 @@ import WeaponEditorDialog from '../dialogs/editor/WeaponEditorDialog';
 import EditorContainer from './EditorContainer';
 
 type WeaponEditorContainerProps = {
+	title: string;
 	weapon: Weapon[];
 };
 
@@ -76,7 +77,7 @@ const WeaponEditorContainer: React.FC<WeaponEditorContainerProps> = (props) => {
 
 	return (
 		<Section
-			title={t('admin.editor.weapon')}
+			title={props.title}
 			position='relative'
 			sideButton={
 				<IconButton
