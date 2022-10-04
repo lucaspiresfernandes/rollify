@@ -10,6 +10,7 @@ export type PlayerSpellApiResponse = NextApiResponseData<
 
 const handler: NextApiHandlerIO = async (req, res) => {
 	if (req.method === 'PUT') return handlePut(req, res);
+	if (req.method === 'POST') return handlePost(req, res);
 	if (req.method === 'DELETE') return handleDelete(req, res);
 	return res.status(405).end();
 };
