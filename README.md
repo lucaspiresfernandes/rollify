@@ -16,8 +16,6 @@ Espero vê-lo a bordo do Rollify Beyond!
 
 # Rollify: Electronic RPG Character Sheet
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z3BVAJ2)
-
 :star: Star this project on GitHub — it motivates me a lot!
 
 Rollify is a web application that features several resources that help players and masters to play a dynamic and agile RPG game.
