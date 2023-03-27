@@ -1,4 +1,16 @@
- <a href="#">
+# ATENÇÃO: Projeto Descontinuado
+
+O Rollify foi um sucesso, mas a comunidade necessita de algo a mais. Por isso, trago a vocês o Rollify Beyond.
+
+![Rollify Beyond Logo](https://rollifybeyond.com/rollify_white.png)
+
+Sucessor do Open RPG e Rollify, o Rollify Beyond combina o melhor dos meus projetos até agora.
+
+O Open RPG e Rollify permanecerão disponíveis, porém não serão mais atualizados e, com o tempo, se tornarão obsoletos.
+
+Espero vê-lo a bordo do Rollify Beyond!
+
+<a href="#">
     <img src="https://user-images.githubusercontent.com/71353674/186519694-d80949d4-4a6f-48ee-90c8-878f75aca3ed.png" alt="Rollify logo" title="Rollify" height="65" align="right" />
   </a>
 
